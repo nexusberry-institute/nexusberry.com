@@ -52,8 +52,8 @@ export default function Hero({ title, image, courseFormat, difficultyLevel, dura
           <Image
             src={image?.url || '/placeHolders/placeholderImg.jpg'}
             fill
-            priority={true}
-            loading="eager"
+            // priority={true}
+            loading="lazy"
             alt={image?.alt || "Poster of Course " + title}
             className="object-contain rounded-xl"
             sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
