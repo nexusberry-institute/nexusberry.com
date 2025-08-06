@@ -33,8 +33,6 @@ export default async function RootLayout({ children }: { children: React.ReactNo
         <InitTheme />
         <link href="/icons/favi.jpg" rel="icon" sizes="32x32" />
         <link href="/icons/favi.jpg" rel="icon" type="image/svg+xml" />
-        <title>NexusBerry</title>
-        <meta name="description" content="NexusBerry Training & Solutions" />
       </head>
       <body>
         <Toaster />
