@@ -1,0 +1,14 @@
+.mytable {
+  border-collapse: collapse;
+  width: 100%;
+  min-width: fit-content;
+  border: 1px solid #ddd;
+}
+
+.mytable th,
+.mytable td {
+  padding: 8px;
+  text-align: left;
+  min-width: 80px;
+  border-bottom: 1px solid #ddd;
+}

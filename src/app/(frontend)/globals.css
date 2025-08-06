@@ -1,0 +1,327 @@
+@import "tailwindcss";
+@config "../../../tailwind.config.mjs";
+
+html {
+  scroll-behavior: smooth;
+}
+button {
+  cursor: pointer;
+}
+
+.required {
+  @apply after:text-red-500 after:px-1 after:content-['*'];
+}
+
+.loadingBlock {
+  @apply absolute inset-0 z-100 bg-black/30 flex items-center justify-center backdrop-blur-none pointer-events-auto rounded-lg
+}
+
+.loadingSpinner {
+  @apply h-8 w-8 animate-spin rounded-full border-4 border-primary border-t-transparent
+}
+
+.shadowcss {
+  box-shadow: inset 100px 100px 200px hsl(215, 68%, 90%), inset 0 -100px 200px hsl(215, 68%, 90%);
+}
+
+.bgImg {
+  background-image: url('/bg-images/whatsapp-bg-1.svg'),
+    url('/bg-images/whatsapp-bg-2.svg'),
+    url('/bg-images/whatsapp-bg-3.svg'),
+    url('/bg-images/whatsapp-bg-4.svg');
+  background-repeat: no-repeat;
+  background-position: 80% top, right bottom, 60% bottom, 50% top;
+}
+
+@media (max-width: 1024px) {
+  .bgImg {
+    background-image: none;
+  }
+}
+
+.padding-x {
+  @apply max-xs:px-2 max-sm:px-3 max-md:px-4 max-lg:px-6 max-xl:px-8 xl:px-12;
+}
+
+.padding-y {
+  @apply max-xs:py-2 max-sm:py-3 max-md:py-4 max-lg:py-6 max-xl:py-8 xl:py-12;
+}
+
+.glassEffect {
+  backdrop-filter: blur(25px) saturate(100%);
+  -webkit-backdrop-filter: blur(20px) saturate(100%);
+  background-color: rgba(255, 255, 255, 0.5);
+}
+
+@layer base {
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    font-family: var(--font-montserrat);
+    font-size: auto;
+    font-weight: auto;
+  }
+
+  body {
+    font-family: var(--font-open-sans);
+  }
+
+  :root {
+    --background: 0 0% 96%;
+    --foreground: 222.2 84% 4.9%;
+
+    --card: 0 0% 100%;
+    --card-foreground: 222.2 84% 4.9%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 222.2 84% 4.9%;
+
+    --primary-50: 215, 68%, 97%;
+    --primary-100: 215, 68%, 92%;
+    --primary-200: 215, 68%, 85%;
+    --primary-300: 215, 68%, 75%;
+    --primary-400: 215, 68%, 45%;
+    --primary-500: 215, 68%, 25%;
+    /* Your base color #14386A */
+    --primary-600: 215, 68%, 20%;
+    --primary-700: 215, 68%, 17%;
+    --primary-800: 215, 68%, 14%;
+    --primary-900: 215, 68%, 12%;
+    --primary-950: 215, 68%, 9%;
+
+    --primary-foreground: 210 40% 98%;
+
+    --secondary-50: 355, 80%, 97%;
+    --secondary-100: 355, 80%, 92%;
+    --secondary-200: 355, 80%, 85%;
+    --secondary-300: 355, 80%, 75%;
+    --secondary-400: 355, 80%, 65%;
+    --secondary-500: 355, 80%, 39%;
+    /* Your base color #B51424 */
+    --secondary-600: 355, 80%, 32%;
+    --secondary-700: 355, 80%, 25%;
+    --secondary-800: 355, 80%, 20%;
+    --secondary-900: 355, 80%, 15%;
+    --secondary-950: 355, 80%, 10%;
+    --secondary-foreground: 222.2 47.4% 11.2%;
+    --muted: 210 40% 96.1%;
+    --muted-foreground: 215.4 16.3% 46.9%;
+    --accent: 210 40% 96.1%;
+    --accent-foreground: 222.2 47.4% 11.2%;
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 210 40% 98%;
+    --border: 240 6% 90%;
+    --input: 214.3 31.8% 91.4%;
+    --ring: 222.2 84% 4.9%;
+    --radius: 0.2rem;
+    --success: 142 70% 45%;
+    --warning: 38 95% 50%;
+    --error: 358 85% 55%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+  }
+}
+
+html {
+  opacity: 0;
+}
+
+html[data-theme='dark'],
+html[data-theme='light'] {
+  opacity: initial;
+}
+
+::-webkit-scrollbar {
+  width: 5px;
+  height: 5px;
+  /* Width of the scrollbar */
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+  /* Background of the scrollbar track */
+  box-shadow: inset 0 0 6px #0000004d;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #333;
+  /* Color of the scrollbar thumb */
+  border-radius: 6px;
+  /* Round the corners */
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #555;
+  /* Color of the scrollbar thumb on hover */
+}
+
+/* anas */
+.scrollbar-hidden::-webkit-scrollbar {
+  display: none;
+}
+
+.scrollbar-hidden {
+  -ms-overflow-style: none;
+  /* IE and Edge */
+  scrollbar-width: none;
+  /* Firefox */
+}
+
+/* @import "tailwindcss";
+@config "../../../tailwind.config.mjs";
+
+@layer base {
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    font-size: unset;
+    font-weight: unset;
+  }
+
+  :root {
+    --background: 0 0% 100%;
+    --foreground: 222.2 84% 4.9%;
+
+    --card: 240 5% 96%;
+    --card-foreground: 222.2 84% 4.9%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 222.2 84% 4.9%;
+
+    --primary: 222.2 47.4% 11.2%;
+    --primary-foreground: 210 40% 98%;
+
+    --secondary: 210 40% 96.1%;
+    --secondary-foreground: 222.2 47.4% 11.2%;
+
+    --muted: 210 40% 96.1%;
+    --muted-foreground: 215.4 16.3% 46.9%;
+
+    --accent: 210 40% 96.1%;
+    --accent-foreground: 222.2 47.4% 11.2%;
+
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 210 40% 98%;
+
+    --border: 240 6% 80%;
+    --input: 214.3 31.8% 91.4%;
+    --ring: 222.2 84% 4.9%;
+
+    --radius: 0.2rem;
+
+    --success: 196 52% 74%;
+    --warning: 34 89% 85%;
+    --error: 10 100% 86%;
+  }
+
+  [data-theme='dark'] {
+    --background: 0 0% 0%;
+    --foreground: 210 40% 98%;
+
+    --card: 0 0% 4%;
+    --card-foreground: 210 40% 98%;
+
+    --popover: 222.2 84% 4.9%;
+    --popover-foreground: 210 40% 98%;
+
+    --primary: 210 40% 98%;
+    --primary-foreground: 222.2 47.4% 11.2%;
+
+    --secondary: 217.2 32.6% 17.5%;
+    --secondary-foreground: 210 40% 98%;
+
+    --muted: 217.2 32.6% 17.5%;
+    --muted-foreground: 215 20.2% 65.1%;
+
+    --accent: 217.2 32.6% 17.5%;
+    --accent-foreground: 210 40% 98%;
+
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 210 40% 98%;
+
+    --border: 0, 0%, 15%, 0.8;
+    --input: 217.2 32.6% 17.5%;
+    --ring: 212.7 26.8% 83.9%;
+
+    --success: 196 100% 14%;
+    --warning: 34 51% 25%;
+    --error: 10 39% 43%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground min-h-[100vh] flex flex-col;
+  }
+}
+
+html {
+  opacity: 0;
+}
+
+html[data-theme='dark'],
+html[data-theme='light'] {
+  opacity: initial;
+} */
+
+:root {
+  --sidebar: hsl(0 0% 98%);
+  --sidebar-foreground: hsl(240 5.3% 26.1%);
+  --sidebar-primary: hsl(240 5.9% 10%);
+  --sidebar-primary-foreground: hsl(0 0% 98%);
+  --sidebar-accent: hsl(240 4.8% 95.9%);
+  --sidebar-accent-foreground: hsl(240 5.9% 10%);
+  --sidebar-border: hsl(220 13% 91%);
+  --sidebar-ring: hsl(217.2 91.2% 59.8%);
+}
+
+.dark {
+  --sidebar: hsl(240 5.9% 10%);
+  --sidebar-foreground: hsl(240 4.8% 95.9%);
+  --sidebar-primary: hsl(224.3 76.3% 48%);
+  --sidebar-primary-foreground: hsl(0 0% 100%);
+  --sidebar-accent: hsl(240 3.7% 15.9%);
+  --sidebar-accent-foreground: hsl(240 4.8% 95.9%);
+  --sidebar-border: hsl(240 3.7% 15.9%);
+  --sidebar-ring: hsl(217.2 91.2% 59.8%);
+}
+
+@theme inline {
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-ring: var(--sidebar-ring);
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+  }
+}
