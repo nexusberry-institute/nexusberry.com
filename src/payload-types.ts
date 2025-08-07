@@ -902,6 +902,26 @@ export interface WebCourse {
      */
     image?: (number | null) | Media;
     description?: string | null;
+    /**
+     * The canonical URL for this page. Leave blank to use the default URL.
+     */
+    canonical?: string | null;
+    /**
+     * Add relevant keywords separated by commas
+     */
+    keywords?: string | null;
+    /**
+     * Add structured data for rich snippets
+     */
+    jsonld?:
+      | {
+          [k: string]: unknown;
+        }
+      | unknown[]
+      | string
+      | number
+      | boolean
+      | null;
   };
   updatedAt: string;
   createdAt: string;
@@ -2141,6 +2161,9 @@ export interface WebCoursesSelect<T extends boolean = true> {
         title?: T;
         image?: T;
         description?: T;
+        canonical?: T;
+        keywords?: T;
+        jsonld?: T;
       };
   updatedAt?: T;
   createdAt?: T;

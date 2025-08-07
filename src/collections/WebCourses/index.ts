@@ -229,6 +229,41 @@ export const WebCourses: CollectionConfig = {
                 }),
 
                 MetaDescriptionField({}),
+
+                // Canonical URL field from SEO plugin
+                {
+                  name: 'canonical',
+                  type: 'text',
+                  label: 'Canonical URL',
+                  admin: {
+                    description: 'The canonical URL for this page. Leave blank to use the default URL.',
+                    placeholder: 'https://yoursite.com/courses/course-slug',
+                  },
+                  // validate: (val : '') => {
+                  //   if (val && !/^https?:\/\//.test(val)) {
+                  //     return 'Must be a valid URL starting with http:// or https://';
+                  //   }
+                  //   return true;
+                  // }
+                },
+                {
+                  name: 'keywords',
+                  type: 'textarea',
+                  label: 'Keywords',
+                  admin: {
+                    description: 'Add relevant keywords separated by commas',
+                    placeholder: 'keyword1, keyword2, keyword3',
+                  },
+                },
+                {
+                  name: 'jsonld',
+                  type: 'json',
+                  label: 'JSON-LD Structured Data',
+                  admin: {
+                    description: 'Add structured data for rich snippets',
+                  },
+                },
+
                 PreviewField({
                   // if the `generateUrl` function is configured
                   hasGenerateFn: true,
@@ -236,6 +271,7 @@ export const WebCourses: CollectionConfig = {
                   titlePath: 'meta.title',
                   descriptionPath: 'meta.description',
                 }),
+
               ],
             },
           ]
