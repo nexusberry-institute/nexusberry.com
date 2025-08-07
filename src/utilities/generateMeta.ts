@@ -29,6 +29,10 @@ export const generateMeta = async (args: {
     ? doc?.meta?.title + ' | NexusBerry Training & Solutions'
     : 'NexusBerry Training & Solutions'
 
+  const canonicalUrl =
+    (typeof doc?.meta === 'object' && 'canonical' in doc.meta && doc.meta.canonical?.trim()) ||
+    (doc?.slug ? `${getServerSideURL()}/courses/${doc.slug}` : undefined)
+
   return {
     description: doc?.meta?.description,
     openGraph: mergeOpenGraph({
@@ -41,8 +45,13 @@ export const generateMeta = async (args: {
         ]
         : undefined,
       title,
-      url: Array.isArray(doc?.slug) ? doc?.slug.join('/') : '/',
+      url: canonicalUrl || (Array.isArray(doc?.slug) ? doc?.slug.join('/') : '/'),
     }),
+    alternates: canonicalUrl
+      ? {
+        canonical: canonicalUrl,
+      }
+      : undefined,
     title,
   }
 }
