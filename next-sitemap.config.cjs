@@ -1,8 +1,4 @@
-const SITE_URL =
-  process.env.NEXT_PUBLIC_SERVER_URL ||
-  process.env.VERCEL_PROJECT_PRODUCTION_URL ||
-  'http://localhost:3000'; // Update this to your production URL if needed
-// 'https://example.com'
+const SITE_URL = process.env.NEXT_PUBLIC_SERVER_URL
 
 /** @type {import('next-sitemap').IConfig} */
 module.exports = {
