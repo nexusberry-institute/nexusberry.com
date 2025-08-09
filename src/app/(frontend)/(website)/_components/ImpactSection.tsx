@@ -86,18 +86,23 @@ export default function ImpactSection({
                                     <div className="flex flex-col md:flex-row items-center gap-4"> {/* increased space */}
                                         {/* IMAGE LEFT SIDE */}
                                         <div className="flex-shrink-0">
-                                            {typeof testimonial.cardImage === 'object' && testimonial.cardImage && 'url' in testimonial.cardImage ? (
+                                            {typeof testimonial.cardImage === 'object' &&
+                                                testimonial.cardImage &&
+                                                'url' in testimonial.cardImage ? (
                                                 <img
                                                     src={testimonial.cardImage.url || "/default-avatar.png"}
                                                     alt={testimonial.cardImage.alt || testimonial.name}
-                                                    className=" object-cover h-40 w-40 mx-auto md:mx-0"
+                                                    className="object-cover h-40 w-40 mx-auto md:mx-0 rounded-full border-2 border-primary-500"
                                                 />
                                             ) : (
-                                                <div className="w-24 h-24 rounded-full bg-gray-200 flex items-center justify-center mx-auto md:mx-0">
-                                                    <span className="text-gray-500 text-xl">{testimonial.name?.charAt(0)}</span>
+                                                <div className="w-24 h-24 rounded-full bg-gray-200 flex items-center justify-center mx-auto md:mx-0 border-2 border-primary-500">
+                                                    <span className="text-gray-500 text-xl">
+                                                        {testimonial.name?.charAt(0)}
+                                                    </span>
                                                 </div>
                                             )}
                                         </div>
+
                                         {/* CONTENT */}
                                         <div className="flex-1">
                                             <div className="mb-6">
