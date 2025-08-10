@@ -8,6 +8,3 @@ node_modules
 
 # Payload default media upload directory
 public/media/
-
-public/robots.txt
-public/sitemap*.xml

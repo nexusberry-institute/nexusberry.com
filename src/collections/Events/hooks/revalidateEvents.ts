@@ -19,7 +19,7 @@ export const revalidateEvents: CollectionAfterChangeHook<Event> = ({
     revalidatePath(path + "/review")
     revalidatePath(path + "/live-stream")
     revalidatePath(path + "/certificate")
-    revalidateTag('events-sitemap')
+    // revalidateTag('events-sitemap')
   }
   return doc
 }
@@ -36,7 +36,7 @@ export const revalidateDelete: CollectionAfterDeleteHook<Event> = ({ doc, req: {
     revalidatePath(path + "/review")
     revalidatePath(path + "/live-stream")
     revalidatePath(path + "/certificate")
-    revalidateTag('events-sitemap')
+    // revalidateTag('events-sitemap')
   }
 
   return doc
