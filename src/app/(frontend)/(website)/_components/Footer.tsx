@@ -129,7 +129,7 @@ export default async function Footer() {
           <FooterResources />
           <div>
             <p className="text-center text-[12px] lg:text-sm  leading-4">
-              © Copyright 2025, All Rights Reserved By NexusBerry Training and Solutions
+              © Copyright 2025, All Rights Reserved By NexusBerry Training & Solutions
             </p>
           </div>
         </div>
