@@ -60,10 +60,10 @@ const NavBar = ({ departments }: {
                 <Link href='/contact-us'>
                     <Button className='text-lg text-card hover:underline'>Contact us</Button>
                 </Link>
-                <Link href='/register'>
+                <Link href='#'>
                     <Button className='border-2 rounded-xl text-lg p-6 hover:bg-card hover:text-foreground focus-visible:ring-card focus-visible:ring-0'>Register</Button>
                 </Link>
-                <Link href='/login'>
+                <Link href='#'>
                     <Button className='border-2 rounded-xl text-lg p-6 hover:bg-card hover:text-foreground focus-visible:ring-card focus-visible:ring-0'>Login</Button>
                 </Link>
             </div>
