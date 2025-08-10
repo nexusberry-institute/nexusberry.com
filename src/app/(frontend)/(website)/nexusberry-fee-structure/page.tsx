@@ -2,7 +2,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import Link from "next/link" // Corrected import for Link
-import { Code, Smartphone, Brain, BarChart3, Bot, IndianRupee, Clock, Users, Award } from "lucide-react"
+import { Code, Smartphone, Brain, BarChart3, Bot, Clock, Users, Award } from "lucide-react"
 
 const courses = [
   {
@@ -139,7 +139,6 @@ export default function FeeStructurePage() {
                     {/* Price */}
                     <div className="text-center py-4 bg-gray-50 rounded-lg">
                       <div className="flex items-center justify-center gap-1 text-3xl font-bold text-green-600">
-                        <IndianRupee className="h-8 w-8" />
                         Rs. {course.price}
                       </div>
                       <p className="text-sm text-gray-600 mt-1">Complete Course Fee</p>
@@ -187,7 +186,6 @@ export default function FeeStructurePage() {
           <Card>
             <CardHeader>
               <CardTitle className="text-2xl flex items-center gap-2">
-                <IndianRupee className="h-6 w-6 text-green-600" />
                 Payment Options
               </CardTitle>
             </CardHeader>
