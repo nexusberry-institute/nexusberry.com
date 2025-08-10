@@ -140,13 +140,27 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const pagesSitemap = await getPagesSitemap(payload, SITE_URL)
   // const jobsSitemap = await getJobsSitemap(payload, SITE_URL)
   // const formsSitemap = await getJobsSitemap(payload, SITE_URL)
+  // const bootcampsSitemap = await getBootcampSitemap(payload, SITE_URL)
 
   return [
+    // 1. static routes /////////////////////////////////////////////
     {
       url: 'https://www.nexusberry.com',
       lastModified: new Date(),
       changeFrequency: 'weekly',
       priority: 1,
+    },
+    {
+      url: 'https://www.nexusberry.com/contact-us',
+      lastModified: new Date(),
+      changeFrequency: 'weekly',
+      priority: 0.8,
+    },
+    {
+      url: 'https://www.nexusberry.com/search',
+      lastModified: new Date(),
+      changeFrequency: 'weekly',
+      priority: 0.7,
     },
     {
       url: 'https://www.nexusberry.com/departments',
@@ -166,23 +180,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       changeFrequency: 'weekly',
       priority: 0.8,
     },
-    {
-      url: 'https://www.nexusberry.com/contact-us',
-      lastModified: new Date(),
-      changeFrequency: 'weekly',
-      priority: 0.8,
-    },
-    {
-      url: 'https://www.nexusberry.com/search',
-      lastModified: new Date(),
-      changeFrequency: 'weekly',
-      priority: 0.7,
-    },
-    // https://www.nexusberry.com/courses
-    // https://www.nexusberry.com/jobs
-    // https://www.nexusberry.com/forms
-    // https://www.nexusberry.com/bootcamps
-    // contact-us
+    // about-us
     // gallery
     // training-schedule
     // privacy policy
@@ -192,11 +190,29 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     // nexusberry-fee-structure
     // faqs
     // verify
+    // https://www.nexusberry.com/courses
     // enroll-now
-    // 
+
+    // 2. Pages Collection Routes (static pages content) /////////////////////////////////////////////
+    ...pagesSitemap,
+
+
+    // 3. Web Courses Collection Pages /////////////////////////////////////////////
     ...coursesSitemap,
+
+    // 4. Events Collection Pages /////////////////////////////////////////////
     ...eventsSitemap,
+
+    // 5. Blog Posts Collection Pages /////////////////////////////////////////////
     ...blogSitemap,
-    ...pagesSitemap
+
+    // 6. Jobs Collection Pages /////////////////////////////////////////////
+    // https://www.nexusberry.com/jobs
+
+    // 7. Students Forms Collection Psges /////////////////////////////////////////////
+    // https://www.nexusberry.com/forms
+
+    // 8. Bootcamps Collection Psges /////////////////////////////////////////////
+    // https://www.nexusberry.com/bootcamps
   ]
 }
