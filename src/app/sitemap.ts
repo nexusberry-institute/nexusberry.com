@@ -186,6 +186,12 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       changeFrequency: 'weekly',
       priority: 0.8,
     },
+    {
+      url: 'https://www.nexusberry.com/payment-methods',
+      lastModified: new Date(),
+      changeFrequency: 'weekly',
+      priority: 0.8,
+    },
     // about-us
     // gallery
     // training-schedule
@@ -198,6 +204,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     // verify
     // https://www.nexusberry.com/courses
     // enroll-now
+    // internship
 
     // 2. Pages Collection Routes (static pages content) /////////////////////////////////////////////
     ...pagesSitemap,
@@ -226,6 +233,8 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 
     // 8. Bootcamps Collection Psges /////////////////////////////////////////////
     // https://www.nexusberry.com/bootcamps
+
+    // 9. Free Courses (nexusberry youtube channel)
   ]
 }
 
