@@ -161,7 +161,7 @@ export default function FeeStructurePage() {
                     <div>
                       <h4 className="font-semibold text-gray-900 mb-2 flex items-center gap-1">
                         <Award className="h-4 w-4" />
-                        What You'll Learn:
+                        {"What You'll Learn:"}
                       </h4>
                       <ul className="text-sm text-gray-600 space-y-1">
                         {course.features.map((feature, index) => (
@@ -212,7 +212,7 @@ export default function FeeStructurePage() {
 
           <Card>
             <CardHeader>
-              <CardTitle className="text-2xl">What's Included</CardTitle>
+              <CardTitle className="text-2xl">{"What's Included"}</CardTitle>
             </CardHeader>
             <CardContent>
               <div className="space-y-3 text-gray-600">

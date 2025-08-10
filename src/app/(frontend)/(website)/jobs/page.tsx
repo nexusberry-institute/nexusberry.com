@@ -73,7 +73,7 @@ export default function JobsPage() {
         <div className="text-center mb-12">
           <h2 className="text-3xl font-bold text-gray-900 mb-4">Current Job Openings</h2>
           <p className="text-lg text-gray-600 max-w-3xl mx-auto">
-            We're looking for passionate individuals to join our team and help us deliver exceptional training
+            We are looking for passionate individuals to join our team and help us deliver exceptional training
             solutions. Explore our current opportunities below.
           </p>
         </div>
@@ -136,7 +136,7 @@ export default function JobsPage() {
             <CardHeader>
               <CardTitle className="text-2xl">Ready to Join Us?</CardTitle>
               <CardDescription className="text-base">
-                Don't see a position that matches your skills? We're always looking for talented individuals.
+                Don&apos;t see a position that matches your skills? We&apos;re always looking for talented individuals.
               </CardDescription>
             </CardHeader>
             <CardContent>
