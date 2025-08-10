@@ -6,7 +6,7 @@ import Link from 'next/link';
 import { EnrolledCoursesDisplay } from './components/EnrolledCoursesDisplay';
 
 
-export default async function CoursesPage({ searchParams }: { searchParams: Promise<URLSearchParams> }) {
+export default async function CoursesPage() {
   try {
     const courses = await getUserEnrolledCourses();
 
