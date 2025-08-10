@@ -33,6 +33,11 @@ export default async function RootLayout({ children }: { children: React.ReactNo
         <InitTheme />
         <link href="/icons/favi.jpg" rel="icon" sizes="32x32" />
         <link href="/icons/favi.jpg" rel="icon" type="image/svg+xml" />
+        <link
+          rel="sitemap"
+          type="application/xml"
+          href="/sitemap.xml"
+        />
       </head>
       <body>
         <Toaster />
