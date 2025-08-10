@@ -25,9 +25,9 @@ const getCoursesSitemap = async (payload: any, SITE_URL: string) => {
 
   const sitemap = results.docs
     ? results.docs
-      .filter((course) => Boolean(course?.slug))
-      .map((course) => ({
-        url: `${SITE_URL}/course/${course?.slug}`, // Changed from 'loc' to 'url'
+      .filter((course: any) => Boolean(course?.slug))
+      .map((course: any) => ({
+        url: `${SITE_URL}/course/${course?.slug}`,
         lastModified: course.updatedAt || dateFallback,
         changeFrequency: 'weekly' as const,
         priority: 0.9, // (valid range: 0.0-1.0)
@@ -60,8 +60,8 @@ const getEventsSitemap = async (payload: any, SITE_URL: string) => {
 
   const sitemap = results.docs
     ? results.docs
-      .filter((event) => Boolean(event?.slug))
-      .map((event) => ({
+      .filter((event: any) => Boolean(event?.slug))
+      .map((event: any) => ({
         url: `${SITE_URL}/events/${event?.slug}`,
         lastModified: event.updatedAt || dateFallback,
         changeFrequency: 'weekly' as const,
@@ -95,8 +95,8 @@ const getBlogSitemap = async (payload: any, SITE_URL: string) => {
 
   const sitemap = results.docs
     ? results.docs
-      .filter((post) => Boolean(post?.slug))
-      .map((post) => ({
+      .filter((post: any) => Boolean(post?.slug))
+      .map((post: any) => ({
         url: `${SITE_URL}/blog/${post?.slug}`,
         lastModified: post.updatedAt || dateFallback,
         changeFrequency: 'weekly' as const,
@@ -130,8 +130,8 @@ const getPagesSitemap = async (payload: any, SITE_URL: string) => {
 
   const sitemap = results.docs
     ? results.docs
-      .filter((page) => Boolean(page?.slug))
-      .map((page) => ({
+      .filter((page: any) => Boolean(page?.slug))
+      .map((page: any) => ({
         url: `${SITE_URL}/${page?.slug}`,
         lastModified: page.updatedAt || dateFallback,
         changeFrequency: 'weekly' as const,
