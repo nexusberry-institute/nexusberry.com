@@ -65,7 +65,7 @@ export default function ContactUsForm() {
     return (
         <div className='bg-card padding-x lg:px-10 space-y-10 max-md:space-y-6 max-sm:space-y-4 padding-y shadow-[10px_20px_10px] shadow-foreground/30 border-2 border-dashed border-primary-400 rounded-2xl'>
             <Toaster />
-            <h1 className="text-2xl max-sm:text-xl text-center font-bold mx-auto">Contact Our Education Experts Now!</h1>
+            <h1 className="text-2xl max-sm:text-xl text-center font-bold mx-auto">Contact NexusBerry Team Now!</h1>
             <div>
                 <Form {...form}>
                     <form onSubmit={form.handleSubmit(onSubmit)} className="grid grid-cols-2 max-md:grid-cols-1 lg:gap-4 max-lg:gap-2">
@@ -146,7 +146,9 @@ export default function ContactUsForm() {
                                 </FormItem>
                             )}
                         />
-                        <Button type="submit" className="flex md:col-span-2 mt-8 max-lg:mt-6 max-sm:mt-3 self-center mx-auto rounded-full text-lg bg-primary hover:bg-primary-400 py-8 px-16 max-lg:py-7 max-lg:px-12 max-sm:px-8 max-sm:py-5 max-sm:text-base">Send Your Questions</Button>
+                        <Button type="submit" className="flex md:col-span-2 mt-8 max-lg:mt-6 max-sm:mt-3 self-center mx-auto rounded-full text-lg bg-primary hover:bg-primary-400 py-8 px-16 max-lg:py-7 max-lg:px-12 max-sm:px-8 max-sm:py-5 max-sm:text-base">
+                            Submit Your Question
+                        </Button>
                     </form>
                 </Form>
             </div>

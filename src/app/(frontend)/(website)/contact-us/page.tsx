@@ -4,8 +4,7 @@ import Location from './_components/Location';
 
 const ContactUsPage = () => {
   return (
-    <div>
-      <h1>Contact us page commented due to build error at vercel</h1>
+    <div className='m-8'>
       {/* <Hero
         title="Contact Us"
         breadcrumbs={[
@@ -14,7 +13,7 @@ const ContactUsPage = () => {
         ]}
         image={heroCourse2}
       /> */}
-      {/* <ReachUsSection /> */}
+      <ReachUsSection />
       {/* <Location /> */}
     </div>
   )

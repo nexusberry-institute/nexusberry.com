@@ -259,7 +259,7 @@ export default function FeeStructurePage() {
                 <p className="text-gray-600">
                   Call us:{" "}
                   <a href="tel:+911234567890" className="text-green-600 hover:underline font-medium">
-                    +92 3250362286&
+                    +92 3250362286
                   </a>
                 </p>
                 <Button className="bg-green-600 hover:bg-green-700">Schedule Free Consultation</Button>
