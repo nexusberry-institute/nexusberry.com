@@ -180,6 +180,12 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       changeFrequency: 'weekly',
       priority: 0.8,
     },
+    {
+      url: 'https://www.nexusberry.com/nexusberry-fee-structure',
+      lastModified: new Date(),
+      changeFrequency: 'weekly',
+      priority: 0.8,
+    },
     // about-us
     // gallery
     // training-schedule
@@ -207,7 +213,13 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     ...blogSitemap,
 
     // 6. Jobs Collection Pages /////////////////////////////////////////////
-    // https://www.nexusberry.com/jobs
+    {
+      url: 'https://www.nexusberry.com/jobs',
+      lastModified: new Date(),
+      changeFrequency: 'weekly',
+      priority: 0.8,
+    },
+    // jobs collection is not made yet
 
     // 7. Students Forms Collection Psges /////////////////////////////////////////////
     // https://www.nexusberry.com/forms
@@ -216,3 +228,6 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     // https://www.nexusberry.com/bootcamps
   ]
 }
+
+// Pages already indexed by google
+// source: https://search.google.com/search-console/index/drilldown?resource_id=https%3A%2F%2Fwww.nexusberry.com%2F&pages=ALL_URLS&hl=en
