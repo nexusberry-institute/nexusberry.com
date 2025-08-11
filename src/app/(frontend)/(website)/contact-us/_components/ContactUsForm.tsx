@@ -51,15 +51,31 @@ export default function ContactUsForm() {
         },
     })
 
-    function onSubmit(data: z.infer<typeof FormSchema>) {
-        toast({
-            title: "You submitted the following values:",
-            description: (
-                <pre className="mt-2 w-[340px] rounded-md p-4">
-                    your data
-                </pre>
-            ),
-        })
+    async function onSubmit(data: z.infer<typeof FormSchema>) {
+        try {
+            const res = await fetch("/api/contact-messages", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify(data),
+            });
+
+            if (!res.ok) throw new Error("Failed to send message");
+
+            toast({
+                title: "Message sent successfully!",
+                description: "Our team will get back to you soon.",
+                variant: 'success',
+            });
+            form.reset();
+        } catch (error) {
+            toast({
+                title: "Error",
+                description: "Something went wrong. Please try again.",
+                variant: "destructive",
+            });
+        }
     }
 
     return (

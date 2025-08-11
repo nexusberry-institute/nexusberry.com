@@ -18,6 +18,45 @@ export function middleware(request: NextRequest) {
   const token = request.cookies.get('payload-token')
   const pathName = request.nextUrl.pathname
 
+  // ===== REDIRECT SECTION - YE PRODUCTION ME BHI KAAM KAREGA =====
+  // try {
+  //   // Production ke liye proper URL banao
+  //   const host = request.headers.get('host')
+  //   const protocol = request.headers.get('x-forwarded-proto') || 'https'
+  //   const baseUrl = `${protocol}://${host}`
+
+  //   console.log('Checking redirects for:', pathName, 'Base URL:', baseUrl)
+
+  //   const res = await fetch(`${baseUrl}/api/redirects?limit=100`, {
+  //     cache: 'no-store', // Important: fresh data har baar
+  //     headers: {
+  //       'Accept': 'application/json',
+  //       'User-Agent': 'NextJS-Middleware'
+  //     }
+  //   })
+
+  //   if (res.ok) {
+  //     const data = await res.json()
+  //     console.log('Redirects found:', data.docs?.length || 0)
+
+  //     // Find matching redirect
+  //     const match = data.docs?.find((redirect: any) => {
+  //       return redirect.from === pathName && redirect.to !== pathName
+  //     })
+
+  //     if (match) {
+  //       console.log('Redirect match found:', match.from, '->', match.to)
+  //       return NextResponse.redirect(new URL(match.to, request.url), 301)
+  //     }
+  //   } else {
+  //     console.error('Redirects API failed:', res.status, res.statusText)
+  //   }
+  // } catch (err) {
+  //   console.error("Redirect error:", err)
+  //   // Error aaye to bhi continue karo
+  // }
+  // ===== END REDIRECT SECTION =====
+
   // Check if the URL already has a toast parameter to prevent redirect loops
   const hasToastParam = request.nextUrl.searchParams.has('toast')
 

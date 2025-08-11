@@ -97,6 +97,7 @@ export interface Config {
     leads: Lead;
     sops: Sop;
     'courses-collection': CoursesCollection;
+    'contact-messages': ContactMessage;
     redirects: Redirect;
     forms: Form;
     'form-submissions': FormSubmission;
@@ -157,6 +158,7 @@ export interface Config {
     leads: LeadsSelect<false> | LeadsSelect<true>;
     sops: SopsSelect<false> | SopsSelect<true>;
     'courses-collection': CoursesCollectionSelect<false> | CoursesCollectionSelect<true>;
+    'contact-messages': ContactMessagesSelect<false> | ContactMessagesSelect<true>;
     redirects: RedirectsSelect<false> | RedirectsSelect<true>;
     forms: FormsSelect<false> | FormsSelect<true>;
     'form-submissions': FormSubmissionsSelect<false> | FormSubmissionsSelect<true>;
@@ -1611,6 +1613,20 @@ export interface CoursesCollection {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "contact-messages".
+ */
+export interface ContactMessage {
+  id: number;
+  username: string;
+  phone: string;
+  email: string;
+  occupation?: string | null;
+  message: string;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "redirects".
  */
 export interface Redirect {
@@ -1640,6 +1656,7 @@ export interface Redirect {
         } | null);
     url?: string | null;
   };
+  type: '301' | '302';
   updatedAt: string;
   createdAt: string;
 }
@@ -1816,6 +1833,10 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'courses-collection';
         value: number | CoursesCollection;
+      } | null)
+    | ({
+        relationTo: 'contact-messages';
+        value: number | ContactMessage;
       } | null)
     | ({
         relationTo: 'redirects';
@@ -2631,6 +2652,19 @@ export interface CoursesCollectionSelect<T extends boolean = true> {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "contact-messages_select".
+ */
+export interface ContactMessagesSelect<T extends boolean = true> {
+  username?: T;
+  phone?: T;
+  email?: T;
+  occupation?: T;
+  message?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "redirects_select".
  */
 export interface RedirectsSelect<T extends boolean = true> {
@@ -2642,6 +2676,7 @@ export interface RedirectsSelect<T extends boolean = true> {
         reference?: T;
         url?: T;
       };
+  type?: T;
   updatedAt?: T;
   createdAt?: T;
 }
