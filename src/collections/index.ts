@@ -29,6 +29,7 @@ import { PaymentPlans } from './PaymentPlans'
 import { DiscountCodes } from './DiscountCodes'
 import { SOPs } from './SOPs'
 import { CoursesCollection } from './CoursesCollection'
+import { ContactMessages } from './ContactMessages'
 
 const collections = [
    Users, Media, Pages,
@@ -58,7 +59,8 @@ const collections = [
    AttendanceDetails,
    Leads,
    SOPs,
-   CoursesCollection
+   CoursesCollection,
+   ContactMessages
 ];
 export default collections;
 

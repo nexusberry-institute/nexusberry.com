@@ -26,6 +26,7 @@ import { getServerSideURL } from '@/utilities/getURL'
 export const plugins: Plugin[] = [
   redirectsPlugin({
     collections: ['pages', 'posts', 'departments', 'web-courses'],
+    redirectTypes: ['301', '302'],
     overrides: {
       // @ts-expect-error
       fields: ({ defaultFields }) => {
