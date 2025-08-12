@@ -98,6 +98,7 @@ export interface Config {
     sops: Sop;
     'courses-collection': CoursesCollection;
     'contact-messages': ContactMessage;
+    inquiries: Inquiry;
     redirects: Redirect;
     forms: Form;
     'form-submissions': FormSubmission;
@@ -159,6 +160,7 @@ export interface Config {
     sops: SopsSelect<false> | SopsSelect<true>;
     'courses-collection': CoursesCollectionSelect<false> | CoursesCollectionSelect<true>;
     'contact-messages': ContactMessagesSelect<false> | ContactMessagesSelect<true>;
+    inquiries: InquiriesSelect<false> | InquiriesSelect<true>;
     redirects: RedirectsSelect<false> | RedirectsSelect<true>;
     forms: FormsSelect<false> | FormsSelect<true>;
     'form-submissions': FormSubmissionsSelect<false> | FormSubmissionsSelect<true>;
@@ -1627,6 +1629,20 @@ export interface ContactMessage {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "inquiries".
+ */
+export interface Inquiry {
+  id: number;
+  name: string;
+  email: string;
+  contact: string;
+  subject: 'general' | 'support' | 'sales' | 'partnership' | 'feedback' | 'other';
+  query: string;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "redirects".
  */
 export interface Redirect {
@@ -1837,6 +1853,10 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'contact-messages';
         value: number | ContactMessage;
+      } | null)
+    | ({
+        relationTo: 'inquiries';
+        value: number | Inquiry;
       } | null)
     | ({
         relationTo: 'redirects';
@@ -2660,6 +2680,19 @@ export interface ContactMessagesSelect<T extends boolean = true> {
   email?: T;
   occupation?: T;
   message?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "inquiries_select".
+ */
+export interface InquiriesSelect<T extends boolean = true> {
+  name?: T;
+  email?: T;
+  contact?: T;
+  subject?: T;
+  query?: T;
   updatedAt?: T;
   createdAt?: T;
 }

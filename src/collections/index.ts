@@ -30,6 +30,7 @@ import { DiscountCodes } from './DiscountCodes'
 import { SOPs } from './SOPs'
 import { CoursesCollection } from './CoursesCollection'
 import { ContactMessages } from './ContactMessages'
+import { Inquiries } from './InquiriesForm'
 
 const collections = [
    Users, Media, Pages,
@@ -60,7 +61,8 @@ const collections = [
    Leads,
    SOPs,
    CoursesCollection,
-   ContactMessages
+   ContactMessages,
+   Inquiries
 ];
 export default collections;
 
