@@ -3,7 +3,7 @@ import type { Page, Post } from '@/payload-types'
 
 import { getCachedDocument } from '@/utilities/getDocument'
 import { getCachedRedirects } from '@/utilities/getRedirects'
-import { notFound, redirect } from 'next/navigation'
+import { notFound, redirect, permanentRedirect } from 'next/navigation'
 
 interface Props {
   disableNotFound?: boolean
@@ -19,7 +19,7 @@ export const PayloadRedirects: React.FC<Props> = async ({ disableNotFound, url }
 
   if (redirectItem) {
     if (redirectItem.to?.url) {
-      redirect(redirectItem.to.url)
+      return redirectItem.type === '301' ? permanentRedirect(redirectItem.to.url) : redirect(redirectItem.to.url)
     }
 
     let redirectUrl: string
@@ -33,12 +33,14 @@ export const PayloadRedirects: React.FC<Props> = async ({ disableNotFound, url }
         }`
     } else {
       redirectUrl = `${redirectItem.to?.reference?.relationTo !== 'pages' ? `/${redirectItem.to?.reference?.relationTo}` : ''}/${typeof redirectItem.to?.reference?.value === 'object'
-          ? redirectItem.to?.reference?.value?.slug
-          : ''
+        ? redirectItem.to?.reference?.value?.slug
+        : ''
         }`
     }
 
-    if (redirectUrl) redirect(redirectUrl)
+    if (redirectUrl) {
+      return redirectItem.type === '301' ? permanentRedirect(redirectUrl) : redirect(redirectUrl)
+    }
   }
 
   if (disableNotFound) return null
