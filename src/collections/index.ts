@@ -31,6 +31,8 @@ import { SOPs } from './SOPs'
 import { CoursesCollection } from './CoursesCollection'
 import { ContactMessages } from './ContactMessages'
 import { Inquiries } from './InquiriesForm'
+import { Employees } from './Employees'
+import { ClassRecords } from './ClassRecords'
 
 const collections = [
    Users, Media, Pages,
@@ -62,7 +64,9 @@ const collections = [
    SOPs,
    CoursesCollection,
    ContactMessages,
-   Inquiries
+   Inquiries,
+   Employees,
+   ClassRecords
 ];
 export default collections;
 

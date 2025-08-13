@@ -73,7 +73,84 @@ export const Students: CollectionConfig = {
           })
         }
       }
-    }
+    },
+    {
+      path: "/export-emails",
+      method: "get",
+      handler: async (req) => {
+        try {
+          const result = await req.payload.find({
+            collection: "students",
+            where: {
+              and: [
+                { otpVerified: { equals: true } },
+                { user: { exists: true } }
+              ]
+            },
+            depth: 1,
+            limit: 0
+          })
+
+          const csvRows = ['"Email"']
+          for (const student of result.docs) {
+            if (student.user && typeof student.user === 'object' && 'email' in student.user && student.user.email) {
+              csvRows.push(`"${(student.user.email as string).replace(/"/g, '""')}"`)
+            }
+          }
+
+          return new Response(csvRows.join("\n"), {
+            status: 200,
+            headers: {
+              "Content-Type": "text/csv; charset=utf-8",
+              "Content-Disposition": 'attachment; filename="students_emails.csv"'
+            }
+          })
+        } catch (error: any) {
+          return new Response(JSON.stringify({ error: error.message }), {
+            status: 500,
+            headers: { "Content-Type": "application/json" }
+          })
+        }
+      }
+    },
+
+
+    // {
+    //   path: '/export-mobiles',
+    //   method: 'get',
+    //   handler: async (req) => {
+    //     try {
+    //       const result = await req.payload.find({
+    //         collection: 'students',
+    //         where: { phoneNumber: { exists: true } }, // only those with phone numbers
+    //         limit: 0,
+    //         depth: 0,
+    //       })
+
+    //       const csvRows = ['"Mobile Number"']
+    //       for (const student of result.docs) {
+    //         if (student.phoneNumber) {
+    //           csvRows.push(`"${student.phoneNumber.replace(/"/g, '""')}"`)
+    //         }
+    //       }
+
+    //       return new Response(csvRows.join('\n'), {
+    //         status: 200,
+    //         headers: {
+    //           'Content-Type': 'text/csv; charset=utf-8',
+    //           'Content-Disposition': 'attachment; filename="students_mobiles.csv"',
+    //         },
+    //       })
+    //     } catch (error: any) {
+    //       return new Response(JSON.stringify({ error: 'Export failed', message: error.message }), {
+    //         status: 500,
+    //         headers: { 'Content-Type': 'application/json' },
+    //       })
+    //     }
+    //   }
+    // },
+
+
   ],
 
   fields: [

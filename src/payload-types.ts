@@ -99,6 +99,8 @@ export interface Config {
     'courses-collection': CoursesCollection;
     'contact-messages': ContactMessage;
     inquiries: Inquiry;
+    'classes-employee': ClassesEmployee;
+    'class-records': ClassRecord;
     redirects: Redirect;
     forms: Form;
     'form-submissions': FormSubmission;
@@ -161,6 +163,8 @@ export interface Config {
     'courses-collection': CoursesCollectionSelect<false> | CoursesCollectionSelect<true>;
     'contact-messages': ContactMessagesSelect<false> | ContactMessagesSelect<true>;
     inquiries: InquiriesSelect<false> | InquiriesSelect<true>;
+    'classes-employee': ClassesEmployeeSelect<false> | ClassesEmployeeSelect<true>;
+    'class-records': ClassRecordsSelect<false> | ClassRecordsSelect<true>;
     redirects: RedirectsSelect<false> | RedirectsSelect<true>;
     forms: FormsSelect<false> | FormsSelect<true>;
     'form-submissions': FormSubmissionsSelect<false> | FormSubmissionsSelect<true>;
@@ -1643,6 +1647,29 @@ export interface Inquiry {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "classes-employee".
+ */
+export interface ClassesEmployee {
+  id: number;
+  name: string;
+  perClassRate: number;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "class-records".
+ */
+export interface ClassRecord {
+  id: number;
+  employee: number | ClassesEmployee;
+  date: string;
+  notes?: string | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "redirects".
  */
 export interface Redirect {
@@ -1857,6 +1884,14 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'inquiries';
         value: number | Inquiry;
+      } | null)
+    | ({
+        relationTo: 'classes-employee';
+        value: number | ClassesEmployee;
+      } | null)
+    | ({
+        relationTo: 'class-records';
+        value: number | ClassRecord;
       } | null)
     | ({
         relationTo: 'redirects';
@@ -2693,6 +2728,27 @@ export interface InquiriesSelect<T extends boolean = true> {
   contact?: T;
   subject?: T;
   query?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "classes-employee_select".
+ */
+export interface ClassesEmployeeSelect<T extends boolean = true> {
+  name?: T;
+  perClassRate?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "class-records_select".
+ */
+export interface ClassRecordsSelect<T extends boolean = true> {
+  employee?: T;
+  date?: T;
+  notes?: T;
   updatedAt?: T;
   createdAt?: T;
 }
