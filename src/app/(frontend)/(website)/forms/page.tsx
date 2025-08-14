@@ -119,7 +119,7 @@ const FormsPage = () => {
                     <div className="bg-white rounded-lg shadow-md p-8 max-w-2xl mx-auto">
                         <h3 className="text-lg font-semibold text-gray-900 mb-2">Need Help?</h3>
                         <p className="text-gray-600 mb-4">
-                            If you can not find the form you're looking for or need assistance, our support team is here to help.
+                            If you can not find the form you are looking for or need assistance, our support team is here to help.
                         </p>
                         <Button
                             variant="outline"
