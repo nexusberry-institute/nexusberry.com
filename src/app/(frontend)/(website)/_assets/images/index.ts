@@ -82,7 +82,7 @@ import Quz from './3.png'
 import certificate from './4.png'
 import RegisterForFreeImg from './RegisterForFreeImg.jpg'
 import register from './register.png'
-
+import nexusBerryImg from './photo2.webp'
 
 export {
   android, flutter, Asp, dataAnalytics, Django, dl, Dsml,
@@ -92,7 +92,7 @@ export {
   RanaAjmal, thambnail, HeroBgTmg, beginer,
   eventsBanner, data, master3, masterNew, masterclass,
   scan, learning, Certificate, mentor, mentor2,
-  ourMentor, dataVisual, whtsppIcon, register,
+  ourMentor, dataVisual, whtsppIcon, register, nexusBerryImg,
   MearnHomeImg, MLHomeImg, FlutterHomeImg, Map, twitter, facebook, instagram, youtube,
   adobeLogo, DjangoLogo, FlutterLogo, JsLogo, NextLogo, NodejsLogo, powerbiLogo, pythonLogo, ReactLogo, tensorFlowLogo,
   heroCourse2, bgImg, Majid, certification, interactiveLearning, extraLearn, Quz, certificate,

@@ -14,7 +14,7 @@ const ContactUsPage = () => {
         image={heroCourse2}
       /> */}
       <ReachUsSection />
-      {/* <Location /> */}
+      <Location />
     </div>
   )
 }
