@@ -1,13 +1,21 @@
 // import { checkAccess } from '@/access/accessControl';
-import { CollectionConfig } from 'payload';
+// import { CollectionConfig } from 'payload';
 import { getPayload } from "payload";
 import config from '@payload-config'
+import { message } from 'antd';
+import { ExportAllBatchEmailsButton } from '@/components/BatchCSVExport';
+import { CollectionConfig, PayloadRequest, CustomComponent } from 'payload'
+
 
 export const Batches: CollectionConfig = {
   slug: "batches",
   admin: {
     useAsTitle: "slug",
-    group: "Academic Operations"
+    group: "Academic Operations",
+
+    components: {
+      beforeList: [ExportAllBatchEmailsButton as any]
+    }
   },
   access: {
     // create: checkAccess('batches', 'create'),
@@ -15,6 +23,95 @@ export const Batches: CollectionConfig = {
     // update: checkAccess('batches', 'update'),
     // delete: checkAccess('batches', 'delete'),
   },
+
+
+  // payload.config.ts ya custom endpoint file me
+
+
+
+  endpoints: [
+    {
+      path: '/export-all-batch-emails',
+      method: 'get',
+      handler: async (req) => {
+        try {
+          // Get all batches
+          const batches = await req.payload.find({
+            collection: 'batches',
+            limit: 0,
+            depth: 0,
+            select: {
+              id: true,
+              slug: true
+            }
+          });
+
+          const allEmails = new Set(); // Use Set to avoid duplicates
+
+          // Loop through each batch
+          for (const batch of batches.docs) {
+            // Get enrollments for this batch
+            const enrollments = await req.payload.find({
+              collection: 'enrollments',
+              where: {
+                'batchEnrollments.batch': {
+                  equals: batch.id
+                }
+              },
+              depth: 2, // Deep enough to get student -> user -> email
+              limit: 0
+            });
+
+            // Extract emails from enrollments
+            for (const enrollment of enrollments.docs) {
+              if (enrollment.student && typeof enrollment.student === 'object') {
+                const student = enrollment.student as any;
+
+                // Get user email if exists
+                if (student.user && typeof student.user === 'object' && student.user.email) {
+                  const email = student.user.email as string;
+                  allEmails.add(email);
+                }
+              }
+            }
+          }
+
+          // Convert Set to Array and create CSV
+          const emailsArray = Array.from(allEmails) as string[];
+          const csvRows = ['"Email"'];
+
+          for (const email of emailsArray) {
+            csvRows.push(`"${email.replace(/"/g, '""')}"`);
+          }
+
+          const csvContent = csvRows.join('\n');
+
+          return new Response(csvContent, {
+            status: 200,
+            headers: {
+              'Content-Type': 'text/csv; charset=utf-8',
+              'Content-Disposition': 'attachment; filename="all_batches_students_emails.csv"',
+            }
+          });
+
+        } catch (error: any) {
+          console.error('All batch emails export error:', error);
+          return new Response(JSON.stringify({
+            error: 'Export failed',
+            message: error.message
+          }), {
+            status: 500,
+            headers: { 'Content-Type': 'application/json' }
+          });
+        }
+      },
+    },
+  ],
+
+
+
+
+
   fields: [
     {
       type: "tabs",
@@ -213,8 +310,16 @@ export const Batches: CollectionConfig = {
             }
           ]
         }
-      ]
-    }
+      ],
+      // admin: {
+      //   components: {
+      //     Field: {
+      //       path: "@/components/BatchCSVExport"
+      //     },
+      //   }
+      // }
+    },
+
     // {
     //   name: "TimeTable",
     //   type: "ui",
