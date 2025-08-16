@@ -42,6 +42,7 @@ export const CSVExportButton: React.FC = () => {
         }
     }
 
+
     const handleDownloadEmails = async () => {
         setIsLoadingEmails(true)
         setError(null)
