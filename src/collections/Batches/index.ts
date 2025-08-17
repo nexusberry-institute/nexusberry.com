@@ -1,22 +1,26 @@
 // import { checkAccess } from '@/access/accessControl';
 // import { CollectionConfig } from 'payload';
+// import { message } from 'antd';
 import { getPayload } from "payload";
 import config from '@payload-config'
-import { message } from 'antd';
-import { ExportAllBatchEmailsButton } from '@/components/BatchCSVExport';
 import { CollectionConfig, PayloadRequest, CustomComponent } from 'payload'
-
+import { ExportAllBatchEmailsButton } from '@/components/BatchCSVExport';
+import { ExportBatchEmails } from "@/components/ExportButtons/ExportBatchEmails";
 
 export const Batches: CollectionConfig = {
   slug: "batches",
+
   admin: {
     useAsTitle: "slug",
     group: "Academic Operations",
-
     components: {
-      beforeList: [ExportAllBatchEmailsButton as any]
+      beforeList: [ExportAllBatchEmailsButton as any],
+      edit: {
+        beforeDocumentControls: [ExportBatchEmails as any],
+      },
     }
   },
+
   access: {
     // create: checkAccess('batches', 'create'),
     // read: checkAccess('batches', 'read'),
@@ -24,11 +28,7 @@ export const Batches: CollectionConfig = {
     // delete: checkAccess('batches', 'delete'),
   },
 
-
   // payload.config.ts ya custom endpoint file me
-
-
-
   endpoints: [
     {
       path: '/export-all-batch-emails',
@@ -107,10 +107,6 @@ export const Batches: CollectionConfig = {
       },
     },
   ],
-
-
-
-
 
   fields: [
     {
