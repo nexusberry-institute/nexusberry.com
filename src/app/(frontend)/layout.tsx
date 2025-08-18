@@ -4,8 +4,6 @@ import { Open_Sans } from 'next/font/google'
 import { cn } from 'src/utilities/cn'
 import { Providers } from '@/providers'
 import { InitTheme } from '@/providers/Theme/InitTheme'
-import { mergeOpenGraph } from '@/utilities/mergeOpenGraph'
-import { getServerSideURL } from '@/utilities/getURL'
 import { Toaster } from '@/components/ui/toaster'
 import WhatsappButton from '../(frontend)/(website)/_components/WhatsappButton'
 import { getSettings } from "@/lib/getSettings";
@@ -38,6 +36,31 @@ export default async function RootLayout({ children }: { children: React.ReactNo
           type="application/xml"
           href="/sitemap.xml"
         />
+        {/* Meta Pixel Code - start */}
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              !function(f,b,e,v,n,t,s)
+              {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+              n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+              if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+              n.queue=[];t=b.createElement(e);t.async=!0;
+              t.src=v;s=b.getElementsByTagName(e)[0];
+              s.parentNode.insertBefore(t,s)}(window, document,'script',
+              'https://connect.facebook.net/en_US/fbevents.js');
+              fbq('init', '1454534582531274');
+              fbq('track', 'PageView');
+            `,
+          }}
+        />
+        <noscript>
+          <img
+            height="1"
+            width="1"
+            style={{ display: "none" }}
+            src="https://www.facebook.com/tr?id=1454534582531274&ev=PageView&noscript=1" />
+        </noscript>
+        {/* Meta Pixel Code - end */}
       </head>
       <body>
         <Toaster />
