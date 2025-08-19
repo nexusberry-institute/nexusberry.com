@@ -106,6 +106,84 @@ export const Batches: CollectionConfig = {
         }
       },
     },
+    {
+      path: '/export-all-batch-mobiles',
+      method: 'get',
+      handler: async (req) => {
+        try {
+          // Get all batches
+          const batches = await req.payload.find({
+            collection: 'batches',
+            limit: 0,
+            depth: 0,
+            select: {
+              id: true,
+              slug: true
+            }
+          });
+
+          const allMobiles = new Set(); // Use Set to avoid duplicates
+
+          // Loop through each batch
+          for (const batch of batches.docs) {
+            // Get enrollments for this batch
+            const enrollments = await req.payload.find({
+              collection: 'enrollments',
+              where: {
+                'batchEnrollments.batch': {
+                  equals: batch.id
+                }
+              },
+              depth: 2, // Deep enough to get student -> user -> mobile
+              limit: 0
+            });
+
+            // Extract mobile numbers from enrollments
+            for (const enrollment of enrollments.docs) {
+              if (enrollment.student && typeof enrollment.student === 'object') {
+                const student = enrollment.student as any;
+
+                // Get student phone number if exists
+                if (student.phoneNumber) {
+                  const mobile = student.phoneNumber as string;
+                  allMobiles.add(mobile);
+                }
+              }
+            }
+          }
+
+          // Convert Set to Array and create CSV
+          const mobilesArray = Array.from(allMobiles) as string[];
+          const csvRows = ['"Mobile Number"'];
+
+          for (const mobile of mobilesArray) {
+            csvRows.push(`"${mobile.replace(/"/g, '""')}"`);
+          }
+
+          const csvContent = csvRows.join('\n');
+
+          return new Response(csvContent, {
+            status: 200,
+            headers: {
+              'Content-Type': 'text/csv; charset=utf-8',
+              'Content-Disposition': 'attachment; filename="all_batches_students_mobiles.csv"',
+            }
+          });
+
+        } catch (error: any) {
+          console.error('All batch mobiles export error:', error);
+          return new Response(JSON.stringify({
+            error: 'Export failed',
+            message: error.message
+          }), {
+            status: 500,
+            headers: { 'Content-Type': 'application/json' }
+          });
+        }
+      },
+    },
+
+
   ],
 
   fields: [
