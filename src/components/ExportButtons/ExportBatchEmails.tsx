@@ -2,8 +2,18 @@
 import { useState, useEffect } from "react"
 import type { BeforeDocumentControlsClientProps } from "payload"
 
+type BatchDataType = {
+  name: string;
+  mobile: string;
+  email: string
+}
+
 export function ExportBatchEmails(props?: BeforeDocumentControlsClientProps) {
   const [batchId, setBatchId] = useState<string | undefined>("")
+  const [batchData, setBatchData] = useState<BatchDataType | null>(null);
+
+  const getLeadData = async () => {
+  }
 
   useEffect(() => {
     const path = window.location.pathname
@@ -11,5 +21,5 @@ export function ExportBatchEmails(props?: BeforeDocumentControlsClientProps) {
     setBatchId(batchId)
   }, [])
 
-  return <div>Export Emails: {batchId}</div>
+  return <button>Export Btch: {batchId}</button>
 }
