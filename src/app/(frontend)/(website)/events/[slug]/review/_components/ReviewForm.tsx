@@ -123,7 +123,7 @@ const ReviewForm = ({ eventSlug }: { eventSlug: string }) => {
       if (success) {
         toast({
           variant: 'success',
-          title: 'SUbmitted Successfully',
+          title: 'Submitted Successfully',
           description: message,
         })
         router.push(`/events/${eventSlug}/certificate`)
