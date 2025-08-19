@@ -52,9 +52,9 @@ const feedBacks = [
 export default function LearnerFeedback() {
   return (
     <div className="rounded-xl lg:mb-20 mb-10 mt-5 lg:mt-20  overflow-hidden">
-      <h1 className="mb-12 text-center font-semibold text-3xl leading-[48px]">
+      <h4 className="mb-12 text-center font-semibold text-3xl leading-[48px]">
         See what learners are saying
-      </h1>
+      </h4>
       <div className="flex gap-5 animate-stream-rtl hover:[animation-play-state:paused] ">
         {feedBacks.map((feedBack, ind) => (
           <div
@@ -76,7 +76,7 @@ export default function LearnerFeedback() {
             <p className="line-clamp-5">
               {feedBack.review}
             </p>
-            <h2 className="font-semibold text-lg">{feedBack.name}</h2>
+            <h3 className="font-semibold text-lg">{feedBack.name}</h3>
           </div>
         ))}
 
@@ -100,7 +100,7 @@ export default function LearnerFeedback() {
             <p className="line-clamp-5">
               {feedBack.review}
             </p>
-            <h2 className="font-semibold text-lg">{feedBack.name}</h2>
+            <h3 className="font-semibold text-lg">{feedBack.name}</h3>
           </div>
         ))}
       </div>

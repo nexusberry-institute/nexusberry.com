@@ -54,9 +54,9 @@ export default async function UpcomingClasses({ slug }: { slug: string }) {
   return (
     <div className="mt-20 max-sm:mt-10 mb-6" >
       <div className="flex justify-between items-center mb-10 lg:px-10 px-4 max-lg:flex-col max-lg:space-y-4">
-        <h1 className="text-4xl font-semibold leading-[48px] max-sm:text-center max-md:text-[32px] ">
+        <h2 className="text-4xl font-semibold leading-[48px] max-sm:text-center max-md:text-[32px] ">
           Upcoming Masterclasses
-        </h1>
+        </h2>
         <Link href="/events" className="inline-block text-sm text-primary-400 font-bold">
           See all the Master classes{' '}
           <ChevronRight className="inline-block stroke-primary-400" size={18} />
@@ -79,7 +79,7 @@ export default async function UpcomingClasses({ slug }: { slug: string }) {
                 />
               </div>
               <div className="space-y-4 p-4">
-                <h1 className="text-[1.1rem] font-semibold leading-7 h-14 line-clamp-2">{event.title}</h1>
+                <h2 className="text-[1.1rem] font-semibold leading-7 h-14 line-clamp-2">{event.title}</h2>
                 <div className="space-y-3">
                   <div className="flex items-center gap-2">
                     <Calendar size={18} className="inline" />

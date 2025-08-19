@@ -112,9 +112,9 @@ export default function EventCart({ eventsData }: { eventsData: Event[] }) {
             </div>
 
             <div className="space-y-4 p-4 flex flex-col ">
-              <h1 className="text-[1.1rem] font-semibold leading-7 h-14 line-clamp-2 ">
+              <h2 className="text-[1.1rem] font-semibold leading-7 h-14 line-clamp-2 ">
                 {event.title}
-              </h1>
+              </h2>
 
               <div className="space-y-3">
                 <div className="flex  items-center gap-2">

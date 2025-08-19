@@ -18,9 +18,10 @@ export default function Hero({ title, instructor, startDateTime, endTime, eventI
   return (
     <div className="p-8 bg-primary-700 grid grid-cols-2 max-lg:grid-cols-1  ">
       <div className="text-background space-y-8 max-sm:space-y-6">
-        <h1 className="text-[1.6rem] leading-5 font-light max-lg:text-center">
+        <h2 className="text-[1.6rem] leading-5 font-light max-lg:text-center">
+          {/* {eventType ? `${eventType} - ` : ''} */}
           MASTERCLASS
-        </h1>
+        </h2>
 
         <div className="relative mx-auto w-fit flex flex-col gap-2 space-y-4 text-center lg:hidden">
           <div className="w-32 rounded-full bg-muted mx-auto  aspect-square overflow-hidden relative ">
@@ -34,9 +35,17 @@ export default function Hero({ title, instructor, startDateTime, endTime, eventI
           </div>
 
           <div>
-            <h2 className="font-bold">{typeof instructor === "object" ? instructor?.name : "Nexusberry Trainer"}</h2>
+            <h2 className="font-bold">
+              {instructor && typeof instructor === "object" && instructor.name
+                ? instructor.name
+                : "Nexusberry Trainer"}
+            </h2>
             <div>
-              <span>({instructor && typeof instructor === "object" ? `${instructor.experience || 5}+ Years of Professional Experience` : "Certified Instructor at NexusBerry Institute"})</span>
+              <span>
+                {instructor && typeof instructor === "object" && instructor.experience
+                  ? `${instructor.experience}+ Years of Professional Experience`
+                  : "18+ Years of Professional Experience"}
+              </span>
             </div>
           </div>
           <Image
@@ -47,9 +56,9 @@ export default function Hero({ title, instructor, startDateTime, endTime, eventI
           />
         </div>
 
-        <h2 className="font-semibold text-4xl max-lg:text-center ">
+        <h1 className="font-semibold text-xl md:text-4xl max-lg:text-center ">
           {title}
-        </h2>
+        </h1>
         <TimeSlote startDateTime={startDateTime} endTime={endTime} />
 
         <div className="flex gap-4 max-lg:justify-center max-lg:flex-col max-lg:gap-6">
@@ -84,8 +93,16 @@ export default function Hero({ title, instructor, startDateTime, endTime, eventI
             </div>
           </div>
           <div className="px-20 pb-5 ">
-            <h3 className="text-primary font-bold">{typeof instructor === "object" ? instructor?.name : "Nexusberry Trainer"}</h3>
-            <span className="pt-2 inline-block">({typeof instructor === "object" ? `${instructor?.experience}+ Years of Professional Experience` : "Certified Instructor at NexusBerry Institute"})</span>
+            <h3 className="text-primary font-bold">
+              {instructor && typeof instructor === "object" && instructor.name
+                ? instructor.name
+                : "Nexusberry Trainer"}
+            </h3>
+            <span className="pt-2 inline-block">
+              ({instructor && typeof instructor === "object" && instructor.experience
+                ? `${instructor.experience}+ Years of Professional Experience`
+                : "18+ Years of Professional Experience"})
+            </span>
           </div>
           <Image src={ourMentor} alt="our mentor" className="absolute top-8 left-4" priority sizes='107px' />
         </div>

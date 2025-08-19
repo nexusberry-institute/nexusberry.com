@@ -43,6 +43,11 @@ export const Events: CollectionConfig = {
               required: true,
             },
             ...slugField(),
+            // {
+            //   name: 'eventType',
+            //   type: 'text',
+            //   required: true,
+            // },
             {
               name: 'image',
               type: 'upload',

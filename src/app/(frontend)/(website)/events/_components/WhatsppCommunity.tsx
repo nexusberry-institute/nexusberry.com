@@ -9,7 +9,7 @@ export default function WhatsppCommunity({ whatsappLink, whatsappQrCode }: { wha
       <div className="bgImg bg-green-100 flex justify-between  gap-20 mx-10 p-8 rounded-xl max-lg:mx-4 max-lg:p-4 mt-10 max-sm:mt-5">
         <div className="space-y-6">
           <div className="space-y-2 max-lg:text-center">
-            <h1 className="font-semibold text-2xl">Join NexusBerry WhatsApp Community</h1>
+            <h2 className="font-semibold text-2xl">Join NexusBerry WhatsApp Community</h2>
             <p className="text-lg">to get regular updates on Masterclasses </p>
             <Link
               href={`${whatsappLink || "#"}`}

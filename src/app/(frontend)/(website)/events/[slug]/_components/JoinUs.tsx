@@ -41,7 +41,7 @@ export default function JoinUs(
             <div className="absolute -bottom-14  md:bottom-5 w-[100%]  ">
               <div className="glassEffect rounded-full flex flex-col justify-center items-center py-2">
                 <span>Mentored by</span>
-                <h1 className="font-bold">{instructor?.name ?? "NexusBerry"}</h1>
+                <h3 className="font-bold">{instructor?.name ?? "NexusBerry"}</h3>
               </div>
             </div>
           </div>

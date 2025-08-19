@@ -13,6 +13,9 @@ import { generateMeta } from '@/utilities/generateMeta'
 import { Metadata } from 'next'
 import Link from 'next/link'
 import ErrorCard from '../../_components/ErrorCard'
+import { Media } from '@/payload-types'
+
+
 
 export async function generateStaticParams() {
   const payload = await getPayload({ config: configPromise })
@@ -79,6 +82,7 @@ export default async function SlugPage({ params }: { params: Promise<{ slug: str
   return (
     <div className="max-w-[1600px] mx-auto bg-card">
       <Hero
+        // eventType={event.eventType}
         title={event.title}
         startDateTime={event.startDateTime}
         endTime={event.endTime}
@@ -116,13 +120,77 @@ export default async function SlugPage({ params }: { params: Promise<{ slug: str
 export async function generateMetadata({ params: paramsPromise }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
   const { slug = '' } = await paramsPromise
   const { event } = await queryEventsBySlug({ slug })
+  const getImageURL = (image?: number | string | Media | null): string => {
+    if (image && typeof image === 'object' && 'url' in image && image.url) {
+      return image.url
+    }
+    return 'https://www.nexusberry.com/og-image.jpg'
+  }
   if (!event) {
     return {
       title: 'Event Not Found | Nexusberry Institute',
-      description: 'The requested event could not be found.'
+      description: 'The requested event could not be found.',
+      keywords: ["events", "event registration", "nexusberry events", "upcoming events"],
+      alternates: {
+        canonical: "https://www.nexusberry.com/events", // ✅ canonical URL
+      },
+      openGraph: {
+        title: 'Events',
+        description: 'Events - This is events page that all events show here you can register from here',
+        url: 'https://www.nexusberry.com/',
+        siteName: 'Events',
+        images: [
+          {
+            url: 'https://www.nexusberry.com/og-image.jpg',
+            width: 1200,
+            height: 630,
+            alt: 'Events',
+          },
+        ],
+        locale: 'en_US',
+        type: 'website',
+      },
+      twitter: {
+        card: 'summary_large_image',
+        creator: '@nexusberry',
+      },
     }
   }
-  return generateMeta({ doc: event })
+  return {
+    title: event.meta?.title
+      ? `${event.meta.title} | Nexusberry Institute`
+      : 'Event | Nexusberry Institute',
+    description: event.meta?.description || 'Join our upcoming event at Nexusberry Institute.',
+    keywords: (event?.meta as any)?.keywords
+      ? Array.isArray((event?.meta as any).keywords)
+        ? (event?.meta as any).keywords
+        : [(event?.meta as any).keywords]
+      : ["events", "event registration", "nexusberry events", "upcoming events", "Nexusberry Institute", "Lahore"],// 👈 default keywords for events
+
+    alternates: {
+      canonical: `https://www.nexusberry.com/events/${slug}`,
+    },
+    openGraph: {
+      title: event.meta?.title || 'Event',
+      description: event.meta?.description || 'Join our upcoming event at Nexusberry Institute.',
+      url: `https://www.nexusberry.com/events/${slug}`,
+      siteName: 'Nexusberry Institute',
+      images: [
+        {
+          url: getImageURL(event.meta?.image), // ab TS ko pata hai ye string hi hoga
+          width: 1200,
+          height: 630,
+          alt: event.meta?.title || 'Event',
+        },
+      ],
+      locale: 'en_US',
+      type: 'article',
+    },
+    twitter: {
+      card: 'summary_large_image',
+      creator: '@nexusberry',
+    },
+  }
 }
 
 const queryEventsBySlug = cache(async ({ slug }: { slug: string }) => {

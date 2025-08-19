@@ -33,8 +33,28 @@ export const generateMeta = async (args: {
     (typeof doc?.meta === 'object' && 'canonical' in doc.meta && doc.meta.canonical?.trim()) ||
     (doc?.slug ? `${getServerSideURL()}/courses/${doc.slug}` : undefined)
 
+  // ✅ Hardcoded keywords
+  let keywords: string[] = ["NexusBerry", "Training", "Courses", "Education", "Solutions"]
+
+  // Agar chaho to page type ke hisaab se bhi kar sakte ho:
+  if ("courseName" in (doc || {})) {
+    keywords = ["Courses", "Online Learning", "NexusBerry Training"]
+  }
+  if ("departmentName" in (doc || {})) {
+    keywords = ["Departments", "Teams", "NexusBerry"]
+  }
+
   return {
     description: doc?.meta?.description,
+
+    keywords,
+    // keywords: doc?.meta?.keywords
+    //   ? Array.isArray(doc.meta.keywords)
+    //     ? doc.meta.keywords
+    //     : [doc.meta.keywords] // agar string ho to array bana do
+    //   : ["NexusBerry", "Training", "Courses", "Education", "Solutions"],
+
+
     openGraph: mergeOpenGraph({
       description: doc?.meta?.description || '',
       images: ogImage
