@@ -1,5 +1,5 @@
 'use client'
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { placeholderImg } from '@/app/(frontend)/(website)/_assets/images'
 import Image from 'next/image'
 import Link from 'next/link'
@@ -10,6 +10,16 @@ import { masterClassBenefits } from '@/app/(frontend)/(website)/_constants/data'
 
 export default function CourseInfo({ eventId, slug, startDateTime }: { eventId: number, slug: string | null | undefined, startDateTime: string }) {
   const [isOPenModel, setIsOpenModel] = useState(false)
+  const [isRegistered, setIsRegistered] = useState(false)
+
+  useEffect(() => {
+    if (typeof window !== 'undefined' && slug) {
+      const userDetails = localStorage.getItem(`${slug}-registration`)
+      console.log('Fetched userDetails from localStorage for slug:', slug, userDetails)
+      setIsRegistered(!!userDetails)
+    }
+  }, [slug])
+
   return (
     <>
       {
@@ -27,18 +37,29 @@ export default function CourseInfo({ eventId, slug, startDateTime }: { eventId: 
                 transform theory into real-world skills in just a few hours! Discover the joy of mastering
                 new tools and concepts that could launch your next career leap!
               </p>
-              <Link
-                href="#"
-                aria-label="register yourself"
-                className="max-lg:mx-auto max-lg:w-1/2 max-sm:w-full pt-20"
-              >
-                <Button
-                  disabled={startDateTime < new Date().toISOString()}
-                  onClick={() => setIsOpenModel(true)}
-                  className="bg-primary-400  w-fit hover:bg-primary-400 font-bold py-8 px-8 rounded-xl hover:shadow-[4px_4px_0px_rgba(181,20,36,0.9)] duration-300">
-                  {startDateTime < new Date().toISOString() ? "Registerations Closed" : "Register for free!!"}
-                </Button>
-              </Link>
+              {/* Registration / Live stream button */}
+          {isRegistered ? (
+            <Button
+              onClick={() => {
+  if (slug) {
+    window.open(`/events/${slug}/live-stream`, '_blank', 'noopener,noreferrer')
+  }
+}}
+              className="bg-primary-400 w-fit max-lg:mx-auto hover:bg-primary-400 font-bold py-6 rounded-xl hover:shadow-[4px_3px_0px_rgba(181,20,36,0.9)] duration-300"
+            >
+              Visit Live Stream
+            </Button>
+          ) : (
+            <Button
+              onClick={() => setIsOpenModel(true)}
+              disabled={startDateTime < new Date().toISOString()}
+              className="bg-primary-400 w-fit max-lg:mx-auto hover:bg-primary-400 font-bold py-6 rounded-xl hover:shadow-[4px_3px_0px_rgba(181,20,36,0.9)] duration-300"
+            >
+              {startDateTime < new Date().toISOString()
+                ? 'Registrations Closed'
+                : 'Register for free!!'}
+            </Button>
+          )}
             </div>
           </div>
           <ul className="flex flex-col max-xl:flex-row gap-48 relative pt-[calc(50%-26rem)] pb-[calc(50%-30rem)] pr-16">

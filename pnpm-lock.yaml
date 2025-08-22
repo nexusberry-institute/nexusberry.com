@@ -161,6 +161,9 @@ importers:
       next-themes:
         specifier: ^0.4.6
         version: 0.4.6(react-dom@19.1.1(react@19.1.1))(react@19.1.1)
+      nexusberry-payloadcms:
+        specifier: 'link:'
+        version: 'link:'
       payload:
         specifier: latest
         version: 3.51.0(graphql@16.10.0)(typescript@5.9.2)
