@@ -128,7 +128,7 @@ const RegistrationForm = ({
                     render={({ field }) => (
                         <FormItem>
                             <FormLabel className='text-lg max-sm:text-base'>Your name*</FormLabel>
-                            <FormControl className='text-muted-foreground h-16 max-sm:h-12 text-lg'>
+                            <FormControl className='text-white h-16 max-sm:h-12 text-lg'>
                                 <Input placeholder="Enter your full name" {...field} />
                             </FormControl>
                             <FormMessage />
@@ -142,7 +142,7 @@ const RegistrationForm = ({
                     render={({ field }) => (
                         <FormItem>
                             <FormLabel className='text-lg max-sm:text-base'>Mobile Number*</FormLabel>
-                            <FormControl className='text-muted-foreground h-16 max-sm:h-12 text-lg'>
+                            <FormControl className='text-white h-16 max-sm:h-12 text-lg'>
                                 <Input
                                     placeholder="Enter your mobile number"
                                     type="tel"
