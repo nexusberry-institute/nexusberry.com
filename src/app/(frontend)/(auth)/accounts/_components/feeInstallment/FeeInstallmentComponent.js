@@ -20,7 +20,7 @@ const FeeInstallmentComponent = ({ student, selectedCourseId }) => {
         mutation.mutate({ installments: dataObj.installments, studentId: student.id, selectedCourseId }, {
           onSuccess: (data) => {
             message.success("Data uploaded successfully!");
-            console.log(data);
+            // console.log(data);
             form.resetFields();
           },
           onError: (error) => {

@@ -20,14 +20,14 @@ const InstallmentIdBadgeModal = ({ student, fee, course }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const mutation = usePutInstallmentApi();
 
-  const {id, amount, status, note} = fee;
-  const {name} = student;
-  const  courseNick = student.trainingCourses?.find(c => c.id === course)?.nick ?? "";
+  const { id, amount, status, note } = fee;
+  const { name } = student;
+  const courseNick = student.trainingCourses?.find(c => c.id === course)?.nick ?? "";
 
   const onFinish = (values) => {
     // values.paymentDate is dayjs object
     values.paymentDate = values.paymentDate.format('YYYY-MM-DD HH:mm:ss');
-    console.log(values);
+    // console.log(values);
 
     mutation.mutate(
       { id, data: values },
@@ -54,8 +54,8 @@ const InstallmentIdBadgeModal = ({ student, fee, course }) => {
           status === "Received"
             ? "green"
             : status === "Pending"
-            ? "orange"
-            : "red"
+              ? "orange"
+              : "red"
         }
         // onClick={() =>
         //   navigate(`/fee-detail?id=${rowData.id}`)
@@ -71,7 +71,7 @@ const InstallmentIdBadgeModal = ({ student, fee, course }) => {
           onCancel={() => setIsModalOpen(false)}
           footer={null}
         >
-          <p style={{textAlign: "center"}}><b>Amount: Rs. {amount}</b></p>
+          <p style={{ textAlign: "center" }}><b>Amount: Rs. {amount}</b></p>
           <Form
             name="basic"
             labelCol={{
@@ -84,7 +84,7 @@ const InstallmentIdBadgeModal = ({ student, fee, course }) => {
               maxWidth: 600,
             }}
             initialValues={{
-              status : "Received",
+              status: "Received",
               paymentMethod: "Bank",
               paymentDate: dayjs(),
               note,
@@ -119,9 +119,9 @@ const InstallmentIdBadgeModal = ({ student, fee, course }) => {
                 ]}
               />
             </Form.Item>
-            
-             {/* Payment Method */}
-             <Form.Item
+
+            {/* Payment Method */}
+            <Form.Item
               label="Payment Method"
               name="paymentMethod"
               rules={[
