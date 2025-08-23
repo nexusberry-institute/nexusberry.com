@@ -23,7 +23,7 @@ export default function JoinUs({
       <div
         className="relative -top-16 flex gap-4 sm:gap-10 p-2 sm:p-6 rounded-2xl bg-secondary-100 m-10 max-lg:flex-col max-sm:m-2"
         style={{
-          backgroundImage: "url('/Image_fx.jpg')",
+          backgroundImage: "url('/test_bg.png')",
           backgroundSize: 'cover',
           backgroundPosition: 'center',
         }}
@@ -75,6 +75,57 @@ export default function JoinUs({
           </div>
         </div>
         <div className="flex flex-col justify-center space-y-6 max-lg:items-center">
+          {/* Add to Google Calendar Card */}
+          <div className="bg-white rounded-xl shadow-md p-6 w-full max-w-xs mx-auto mb-2 flex flex-col items-center">
+            <p className="text-center text-md font-medium mb-4">
+              Add to your Google Calendar and never miss the event!
+            </p>
+            <button
+              className="bg-[#1557FF] hover:bg-[#003ccd] text-white font-bold py-3 px-6 rounded-lg w-full flex items-center justify-center gap-2 mb-2"
+              onClick={() => {
+                const eventTitle = encodeURIComponent(title || 'Nexusberry Masterclass')
+                const details = encodeURIComponent(
+                  'Join the live Masterclass - upgrade your skills and shape your future.',
+                )
+                const location = encodeURIComponent('Online')
+                const start = startDateTime
+                  ? new Date(startDateTime)
+                      .toISOString()
+                      .replace(/[-:]|\.\d{3}/g, '')
+                      .slice(0, 15)
+                  : ''
+                const end = endTime
+                  ? new Date(endTime)
+                      .toISOString()
+                      .replace(/[-:]|\.\d{3}/g, '')
+                      .slice(0, 15)
+                  : ''
+                const calendarUrl = `https://www.google.com/calendar/render?action=TEMPLATE&text=${eventTitle}&details=${details}&location=${location}&dates=${start}/${end}`
+                window.open(calendarUrl, '_blank')
+              }}
+            >
+              Add to Google Calendar
+            </button>
+            {/* Show Join Now if event has started */}
+            {startDateTime && new Date(startDateTime) <= new Date() && (
+              <a
+                href={
+                  typeof window !== 'undefined'
+                    ? `/events/${
+                        typeof instructor === 'object' && instructor && 'slug' in instructor
+                          ? instructor.slug
+                          : ''
+                      }/live-stream`
+                    : '#'
+                }
+                className="bg-[#1557FF] hover:bg-[#003ccd] text-white font-bold py-3 px-6 rounded-lg w-full flex items-center justify-center gap-2 mt-2"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                Join Now
+              </a>
+            )}
+          </div>
           <h2 className="text-center text-2xl font-bold">Event start soon</h2>
           <div className="flex gap-4 text-sm font-semibold ">
             <div className="flex flex-col gap-1  items-center">
