@@ -1,4 +1,6 @@
 import React from 'react'
+import { useEffect } from 'react'
+
 import Hero from './_components/Hero'
 import CourseDetail from './_components/CourseDetail'
 import JoinUs from './_components/JoinUs'
@@ -14,7 +16,6 @@ import { Metadata } from 'next'
 import Link from 'next/link'
 import ErrorCard from '../../_components/ErrorCard'
 import { Media } from '@/payload-types'
-
 
 
 export async function generateStaticParams() {
@@ -78,7 +79,7 @@ export default async function SlugPage({ params }: { params: Promise<{ slug: str
       </div>
     )
   }
-
+  
   return (
     <div className="max-w-[1600px] mx-auto bg-card">
       <Hero

@@ -169,7 +169,7 @@ export default function StreamPage({ event, applicant, changeRegistration }: { e
                       }`}
                     disabled={streamStatus === 'ended'}
                   >
-                    {streamStatus === 'live' ? 'Join Live Session Now' : 'Open Google Meet Link'}
+                    {streamStatus === 'live' ? 'Join Live Session Now' : 'Visit Session Link'}
                     <ExternalLinkIcon className="h-5 w-5" />
                   </Button>
                 )}
@@ -178,7 +178,7 @@ export default function StreamPage({ event, applicant, changeRegistration }: { e
               {
                 event.learningOutcomes && (
                   <div className="p-6 border-t border-slate-200">
-                    <h2 className="text-xl font-bold mb-4 text-primary-700">What You&#39;ll Learn</h2>
+                    {/* <h2 className="text-xl font-bold mb-4 text-primary-700">What You&#39;ll Learn</h2> */}
                     <div
                       className="prose prose-slate max-w-none prose-li:text-slate-700"
                     />

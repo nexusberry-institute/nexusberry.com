@@ -8,13 +8,29 @@ import { format } from 'date-fns'
 import { CountdownTimer } from '@/components/CountDownTimer'
 import { EventModel } from './EventModel'
 
-export default function RegistrationFooter({ startDateTime, endTime, eventId, slug }: {
-  startDateTime: string, endTime: string | null | undefined,
-  slug: string | null | undefined, eventId: number
-}
-) {
+export default function RegistrationFooter({
+  startDateTime,
+  endTime,
+  eventId,
+  slug,
+}: {
+  startDateTime: string
+  endTime: string | null | undefined
+  slug: string | null | undefined
+  eventId: number
+}) {
   const [showFooter, setShowFooter] = useState(false)
   const [isOPenModel, setIsOpenModel] = useState(false)
+  const [isRegistered, setIsRegistered] = useState(false)
+
+  useEffect(() => {
+    if (typeof window !== 'undefined' && slug) {
+      const userDetails = localStorage.getItem(`${slug}-registration`)
+      console.log('Fetched userDetails from localStorage for slug:', slug, userDetails)
+      setIsRegistered(!!userDetails)
+    }
+  }, [slug])
+
   useEffect(() => {
     const handleScroll = () => {
       const element = document.getElementById('show_footer')
@@ -48,7 +64,8 @@ export default function RegistrationFooter({ startDateTime, endTime, eventId, sl
             <div className="flex  items-center gap-2 max-lg:justify-center">
               <Clock size={18} className="inline" />
               <span>
-                {format(new Date(startDateTime), 'h:mm a')} {endTime ? `- ${format(new Date(endTime), 'h:mm a')}` : ''}
+                {format(new Date(startDateTime), 'h:mm a')}{' '}
+                {endTime ? `- ${format(new Date(endTime), 'h:mm a')}` : ''}
               </span>
             </div>
           </div>
@@ -60,7 +77,8 @@ export default function RegistrationFooter({ startDateTime, endTime, eventId, sl
             <div className="flex  items-center gap-2 max-lg:justify-center">
               <Clock size={18} className="inline" />
               <span>
-                {format(new Date(startDateTime), 'h:mm a')} - {endTime ? format(new Date(endTime), 'h:mm a') : ""}
+                {format(new Date(startDateTime), 'h:mm a')} -{' '}
+                {endTime ? format(new Date(endTime), 'h:mm a') : ''}
               </span>
             </div>
           </div>
@@ -86,20 +104,29 @@ export default function RegistrationFooter({ startDateTime, endTime, eventId, sl
             </div>
           </div>
         </div>
-        <Link
-          href="#"
-          aria-label="register yourself"
-          className="max-lg:mx-auto max-lg:w-1/2 max-sm:w-full "
-        >
+        {/* Registration / Live stream button */}
+        {isRegistered ? (
           <Button
-            disabled={startDateTime < new Date().toISOString()}
-            onClick={() => setIsOpenModel(true)}
-            className="bg-primary-400  w-fit max-lg:w-full max-lg:mx-auto hover:bg-primary-400 font-bold py-8 max-lg:py-6 px-8 rounded-xl hover:shado-1px-4px-0px-rgb hover:shadow-[2px_2px_0px_rgba(255,255,0,0.9)]"
+            onClick={() => {
+              if (slug) {
+                window.open(`/events/${slug}/live-stream`, '_blank', 'noopener,noreferrer')
+              }
+            }}
+            className="bg-primary-400 w-fit max-lg:mx-auto hover:bg-primary-400 font-bold py-6 rounded-xl hover:shadow-[4px_3px_0px_rgba(181,20,36,0.9)] duration-300"
           >
-            {startDateTime < new Date().toISOString() ? "Registerations Closed" : "Register for free!!"}
+            Visit Live Stream
           </Button>
-        </Link>
-
+        ) : (
+          <Button
+            onClick={() => setIsOpenModel(true)}
+            disabled={startDateTime < new Date().toISOString()}
+            className="bg-primary-400 w-fit max-lg:mx-auto hover:bg-primary-400 font-bold py-6 rounded-xl hover:shadow-[4px_3px_0px_rgba(181,20,36,0.9)] duration-300"
+          >
+            {startDateTime < new Date().toISOString()
+              ? 'Registrations Closed'
+              : 'Register for free!!'}
+          </Button>
+        )}
       </div>
       {isOPenModel && <EventModel setIsOpenModel={setIsOpenModel} eventId={eventId} slug={slug} />}
     </>
