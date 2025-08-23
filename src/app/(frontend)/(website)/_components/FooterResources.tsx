@@ -34,7 +34,7 @@ export default async function FooterResources() {
   try {
     const departments = await queryDepartments();
     if (!departments.length) {
-      return <div className='font-bold text-2xl  text-center text-red-500'>footer resources  are not found</div>
+      return <div />
     }
     return (
       <div className="space-y-6 hidden lg:block ">

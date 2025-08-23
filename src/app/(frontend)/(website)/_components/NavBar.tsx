@@ -36,7 +36,7 @@ const NavBar = ({ departments }: {
                 </Link>
                 <DropdownMenu open={dropdownOpen} onOpenChange={setDropdownOpen}>
                     <DropdownMenuTrigger asChild className='max-lg:hidden'>
-                        <Button className='border-2 rounded-xl text-lg p-6 hover:bg-card focus-visible:ring-card focus-visible:ring-0 hover:text-foreground'>Explore Departments <ChevronsDown strokeWidth={3} /></Button>
+                        <Button className='border-2 rounded-xl text-lg p-6 hover:bg-card focus-visible:ring-card focus-visible:ring-0 hover:text-foreground'>Explore Courses <ChevronsDown strokeWidth={3} /></Button>
                     </DropdownMenuTrigger>
                     <DropdownMenuContent className='w-72 space-y-2 p-4 rounded-xl  bg-card font-openSans' onClick={() => setDropdownOpen(false)}>
                         {!departments?.length ?
@@ -57,14 +57,18 @@ const NavBar = ({ departments }: {
                 </DropdownMenu>
             </div>
             <div className='space-x-4 max-lg:hidden'>
+                <Link href='/events'>
+                    <Button className='text-lg text-card hover:underline'>Upcoming Events</Button>
+                </Link>
+                <Link href='/blog'>
+                    <Button className='text-lg text-card hover:underline'>Blog</Button>
+                </Link>
                 <Link href='/contact-us'>
                     <Button className='text-lg text-card hover:underline'>Contact us</Button>
                 </Link>
-                <Link href='#'>
-                    <Button className='border-2 rounded-xl text-lg p-6 hover:bg-card hover:text-foreground focus-visible:ring-card focus-visible:ring-0'>Register</Button>
-                </Link>
-                <Link href='#'>
-                    <Button className='border-2 rounded-xl text-lg p-6 hover:bg-card hover:text-foreground focus-visible:ring-card focus-visible:ring-0'>Login</Button>
+                <Link href='/login'>
+                    <Button className='border-2 rounded-xl text-lg p-6 hover:bg-card hover:text-foreground focus-visible:ring-card focus-visible:ring-0'>
+                        Login</Button>
                 </Link>
             </div>
             <Sheet open={open} onOpenChange={setOpen}>

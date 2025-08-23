@@ -385,7 +385,7 @@ export const footerLinks: FooterLinks[] = [
       },
       {
         name: 'Contact Us',
-        link: '#'
+        link: '/contact-us'
       },
       {
         name: 'NexusBerry Tech Blog',
