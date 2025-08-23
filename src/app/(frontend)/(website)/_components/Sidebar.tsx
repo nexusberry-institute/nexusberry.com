@@ -38,12 +38,10 @@ export function Sidebar({ setOpen, courseLinks }: SidebarProps) {
                         </div>
                     </SheetHeader>
                     <div className="grid grid-cols-1 space-y-4 pt-8 ">
-                        <Link href={'/'} onClick={handleLinkClick}>
-                            <Button>About us</Button>
-                        </Link>
                         <div className="grid grid-cols-1 w-full">
                             <CollapsibleTrigger className="flex justify-between text-sm px-4">
-                                Departments<ChevronDown className="ml-auto size-5 transition-transform group-data-[state=open]/collapsible:rotate-180" />
+                                Explore Courses
+                                <ChevronDown className="ml-auto size-5 transition-transform group-data-[state=open]/collapsible:rotate-180" />
                             </CollapsibleTrigger>
                             <CollapsibleContent className="grid grid-cols-1 px-5">
                                 {courseLinks?.map(({ slug, title }) => (
@@ -53,17 +51,20 @@ export function Sidebar({ setOpen, courseLinks }: SidebarProps) {
                                 ))}
                             </CollapsibleContent>
                         </div>
+                        <Link href='/events' onClick={handleLinkClick}>
+                            <Button>Upcoming Events</Button>
+                        </Link>
+                        <Link href='/blog' onClick={handleLinkClick}>
+                            <Button>Blog</Button>
+                        </Link>
                         <Link href='/contact-us' onClick={handleLinkClick}>
                             <Button>Contact us</Button>
                         </Link>
                     </div>
                 </div>
-                <div className='flex justify-between max-xs:*:px-4 *:py-4 *:border *:rounded-xl *:text-xs *:px-8'>
+                <div className='flex justify-center max-xs:*:px-4 *:py-4 *:border *:rounded-xl *:text-xs *:px-8'>
                     <Link href='/login'>
                         <Button >Login</Button>
-                    </Link>
-                    <Link href='/register'>
-                        <Button >Register Now</Button>
                     </Link>
                 </div>
             </Collapsible>

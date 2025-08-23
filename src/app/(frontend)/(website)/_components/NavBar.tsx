@@ -56,6 +56,8 @@ const NavBar = ({ departments }: {
                     </DropdownMenuContent>
                 </DropdownMenu>
             </div>
+
+            {/* Menu on Computer Screen */}
             <div className='space-x-4 max-lg:hidden'>
                 <Link href='/events'>
                     <Button className='text-lg text-card hover:underline'>Upcoming Events</Button>
@@ -71,6 +73,8 @@ const NavBar = ({ departments }: {
                         Login</Button>
                 </Link>
             </div>
+
+            {/* Burger Menu on Mobile Screens */}
             <Sheet open={open} onOpenChange={setOpen}>
                 <SheetTrigger asChild aria-haspopup="dialog"
                     aria-expanded="false"
