@@ -99,9 +99,6 @@ export default buildConfig({
       connectionString: process.env.DATABASE_URI || '',
     },
   }),
-
-
-
   collections,
   cors: [getServerSideURL()].filter(Boolean),
   csrf: [getServerSideURL()].filter(Boolean),
@@ -109,8 +106,6 @@ export default buildConfig({
   plugins: [
     ...plugins,
     // storage-adapter-placeholder
-
-
   ],
   upload: {
     limits: {
@@ -140,10 +135,6 @@ export default buildConfig({
     },
   }),
 
-
-
-
-
   async onInit(payload) {
     const existingUsers = await payload.find({
       collection: 'users',
@@ -160,7 +151,7 @@ export default buildConfig({
         collection: 'users',
         data: {
           username: 'superadmin',
-          email: 'superadmin@payloadcms.com',
+          email: 'admin@nexusberry.com',
           password: '12345678',
           roles: ["superadmin"]
         },
