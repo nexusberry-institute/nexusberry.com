@@ -76,7 +76,7 @@ export const AccountForm: React.FC = () => {
   )
 
   useEffect(() => {
-    if (user === null) {
+    if (!user) {
       router.push(`/login?unauthorized=account`)
     }
 

@@ -35,7 +35,7 @@ export const LoginForm: React.FC = () => {
     formState: { errors, isSubmitting },
   } = useForm<FormData>({
     defaultValues: {
-      email: 'admin@payloadcms.com',
+      email: 'user@gmail.com',
       password: '12345678',
     },
   })
