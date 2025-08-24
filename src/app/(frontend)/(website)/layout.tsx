@@ -30,22 +30,6 @@ export default async function Layout({ children }: { children: React.ReactNode }
       </noscript>
       {/* Meta Pixel Code - end */}
 
-      {/* Google Analytics - Google tag (gtag.js) */}
-      <Script src="https://www.googletagmanager.com/gtag/js?id=G-SH5EZVJWFM" strategy="afterInteractive" />
-      <Script
-        id="google-analytics"
-        strategy="afterInteractive"
-        dangerouslySetInnerHTML={{
-          __html: `
-              window.dataLayer = window.dataLayer || [];
-              function gtag(){dataLayer.push(arguments);}
-              gtag('js', new Date());
-              gtag('config', 'G-SH5EZVJWFM');
-            `,
-        }}
-      />
-      {/* End Google Analytics - Google tag (gtag.js) */}
-
       {/* Start Google Tag Manager*/}
       <Script
         id="gtm-head"
