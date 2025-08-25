@@ -1,10 +1,11 @@
+import { buildConfig } from 'payload'
 // storage-adapter-import-placeholder
 import { postgresAdapter } from '@payloadcms/db-postgres'
 import { nodemailerAdapter } from '@payloadcms/email-nodemailer'
+import nodemailer from 'nodemailer'
 
 import sharp from 'sharp' // sharp-import
 import path from 'path'
-import { buildConfig } from 'payload'
 import { fileURLToPath } from 'url'
 // import { NexusBerryLogo } from '../public/placeHolders/NexusBerry_favi.jpg'
 
@@ -119,19 +120,26 @@ export default buildConfig({
   },
 
   email: nodemailerAdapter({
-    defaultFromAddress: process.env.DEFAULT_EMAIL_ADDRESS!,
+    defaultFromAddress: process.env.SMTP_USER!, // Use the same email as in auth.user
     defaultFromName: process.env.DEFAULT_EMAIL_NAME!,
     transportOptions: {
       host: process.env.SMTP_HOST!,
-      port: Number(process.env.SMTP_PORT!),
-      secure: true,
+      port: Number(process.env.SMTP_PORT!), // Use 587
+      secure: process.env.SMTP_PORT === "465", // true for 465, false for 587
+      requireTLS: process.env.SMTP_PORT === "587", // only for 587
       auth: {
         user: process.env.SMTP_USER!,
         pass: process.env.SMTP_PASS!,
       },
-      // Add debug logging
-      // debug: true,
-      // logger: true,
+      // GoDaddy-specific TLS settings
+      tls: {
+        ciphers: "SSLv3",
+        rejectUnauthorized: false, // Allow self-signed certificates
+      },
+      // Additional options for better reliability
+      connectionTimeout: 60000, // 60 seconds
+      greetingTimeout: 30000, // 30 seconds
+      socketTimeout: 60000, // 60 seconds
     },
   }),
 
