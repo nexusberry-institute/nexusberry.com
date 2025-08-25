@@ -78,6 +78,7 @@ export interface Config {
     events: Event;
     'event-registrations': EventRegistration;
     'event-feedbacks': EventFeedback;
+    campaigns: Campaign;
     staffs: Staff;
     messages: Message;
     teachers: Teacher;
@@ -142,6 +143,7 @@ export interface Config {
     events: EventsSelect<false> | EventsSelect<true>;
     'event-registrations': EventRegistrationsSelect<false> | EventRegistrationsSelect<true>;
     'event-feedbacks': EventFeedbacksSelect<false> | EventFeedbacksSelect<true>;
+    campaigns: CampaignsSelect<false> | CampaignsSelect<true>;
     staffs: StaffsSelect<false> | StaffsSelect<true>;
     messages: MessagesSelect<false> | MessagesSelect<true>;
     teachers: TeachersSelect<false> | TeachersSelect<true>;
@@ -1010,6 +1012,8 @@ export interface Event {
   department?: (number | null) | Department;
   whatsappLink?: string | null;
   whatsappQrCode?: (number | null) | Media;
+  defaultParticipants?: number | null;
+  actualRegistrations?: number | null;
   meta?: {
     title?: string | null;
     /**
@@ -1030,11 +1034,29 @@ export interface EventRegistration {
   name: string;
   email: string;
   phoneNumber: string;
+  campaign?: (number | null) | Campaign;
   registeredEvents: {
     event: number | Event;
     hasAttended?: boolean | null;
     id?: string | null;
   }[];
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "campaigns".
+ */
+export interface Campaign {
+  id: number;
+  name: string;
+  platform?: string | null;
+  startDate?: string | null;
+  endDate?: string | null;
+  budget?: number | null;
+  utm?: string | null;
+  events?: (number | Event)[] | null;
+  visitorCount?: number | null;
   updatedAt: string;
   createdAt: string;
 }
@@ -1809,6 +1831,10 @@ export interface PayloadLockedDocument {
         value: number | EventFeedback;
       } | null)
     | ({
+        relationTo: 'campaigns';
+        value: number | Campaign;
+      } | null)
+    | ({
         relationTo: 'staffs';
         value: number | Staff;
       } | null)
@@ -2297,6 +2323,8 @@ export interface EventsSelect<T extends boolean = true> {
   department?: T;
   whatsappLink?: T;
   whatsappQrCode?: T;
+  defaultParticipants?: T;
+  actualRegistrations?: T;
   meta?:
     | T
     | {
@@ -2315,6 +2343,7 @@ export interface EventRegistrationsSelect<T extends boolean = true> {
   name?: T;
   email?: T;
   phoneNumber?: T;
+  campaign?: T;
   registeredEvents?:
     | T
     | {
@@ -2336,6 +2365,22 @@ export interface EventFeedbacksSelect<T extends boolean = true> {
   reason?: T;
   otherReason?: T;
   mentorship?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "campaigns_select".
+ */
+export interface CampaignsSelect<T extends boolean = true> {
+  name?: T;
+  platform?: T;
+  startDate?: T;
+  endDate?: T;
+  budget?: T;
+  utm?: T;
+  events?: T;
+  visitorCount?: T;
   updatedAt?: T;
   createdAt?: T;
 }

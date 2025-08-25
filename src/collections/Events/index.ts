@@ -170,6 +170,22 @@ export const Events: CollectionConfig = {
               type: "upload",
               relationTo: "media",
             },
+              {
+                name: "defaultParticipants",
+                type: "number",
+                required: false,
+                defaultValue: 100,
+                min: 0,
+                label: "Default Participants",
+              },
+              {
+                name: "actualRegistrations",
+                type: "number",
+                required: false,
+                defaultValue: 0,
+                min: 0,
+                label: "Actual Registrations",
+              },
           ]
         },
         {

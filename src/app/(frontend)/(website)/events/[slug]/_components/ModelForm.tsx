@@ -47,12 +47,23 @@ const ModelForm = ({ eventId, slug, redirect }: { eventId: number; slug: string 
 
   async function upload(data: z.infer<typeof FormSchema>) {
 
-    const uploadData = {
+    // extract utm from current URL and include if present
+    let utm: string | undefined = undefined
+    try {
+      const params = new URLSearchParams(window.location.search)
+      utm = params.get('utm') || params.get('utm_campaign') || params.get('utm_source') || undefined
+    } catch (e) {
+      // ignore in non-browser environments
+      utm = undefined
+    }
+
+    const uploadData: any = {
       name: data.name,
       email: data.email.toLowerCase(),
       phoneNumber: data.phoneNumber,
       events: eventId,
     }
+    if (utm) uploadData.utm = utm
 
     try {
       const { success, message, error } = await CreateEventRegistration(uploadData)

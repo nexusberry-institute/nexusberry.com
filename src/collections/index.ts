@@ -11,6 +11,7 @@ import { Events } from './Events'
 import { EventRegistrations } from './EventRegistrations'
 import { EventFeedbacks } from './EventFeedbacks'
 import { Staffs } from './Staffs'
+import Campaigns from './Campaigns'
 import { Messages } from './Messages'
 import { Teachers } from './Teachers'
 import { TrainingCourses } from './TrainingCourses'
@@ -44,6 +45,7 @@ const collections = [
    Events,
    EventRegistrations,
    EventFeedbacks,
+      Campaigns,
    Staffs,
    Messages,
    Teachers,
