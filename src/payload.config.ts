@@ -120,17 +120,27 @@ export default buildConfig({
   },
 
   email: nodemailerAdapter({
-    defaultFromAddress: process.env.DEFAULT_EMAIL_ADDRESS!,
+    defaultFromAddress: process.env.SMTP_USER!, // Use the same email as in auth.user
     defaultFromName: process.env.DEFAULT_EMAIL_NAME!,
-    transport: nodemailer.createTransport({
-      host: process.env.SMTP_HOST,
-      port: 587,
-      secure: false, // true for 465, false for other ports
+    transportOptions: {
+      host: process.env.SMTP_HOST!,
+      port: Number(process.env.SMTP_PORT!), // Use 587
+      secure: process.env.SMTP_PORT === "465", // true for 465, false for 587
+      requireTLS: process.env.SMTP_PORT === "587", // only for 587
       auth: {
-        user: process.env.SMTP_USER || '',
-        pass: process.env.SMTP_PASS || '',
+        user: process.env.SMTP_USER!,
+        pass: process.env.SMTP_PASS!,
       },
-    }),
+      // GoDaddy-specific TLS settings
+      tls: {
+        ciphers: "SSLv3",
+        rejectUnauthorized: false, // Allow self-signed certificates
+      },
+      // Additional options for better reliability
+      connectionTimeout: 60000, // 60 seconds
+      greetingTimeout: 30000, // 30 seconds
+      socketTimeout: 60000, // 60 seconds
+    },
   }),
 
   async onInit(payload) {
