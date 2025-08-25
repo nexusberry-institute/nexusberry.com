@@ -1,12 +1,10 @@
-//name, mobile no. , password, email, city, education, medium, course (drop number) 
 import type { CollectionConfig } from 'payload'
-
-import { admin } from '@/access/admin'
 import { checkRole } from '@/access/checkRole'
 import { authenticated } from '@/access/authenticated'
 import { generateSetPasswordEmailHTML, generateSetPasswordEmailSubject } from '@/utilities/emailTemplates'
 import { adminOrSelf, superadminOrAdminDelete } from '@/access'
 import { protectRoles } from '@/hooks/protectRoles'
+// import { admin } from '@/access/admin'
 
 
 export const Users: CollectionConfig = {
@@ -19,7 +17,7 @@ export const Users: CollectionConfig = {
     },
     verify: {
       generateEmailSubject: () => 'Nexusberry Email Verification',
-      generateEmailHTML: ({ user, token }) => `<h1>Hey! ${user.email} Verify your email</h1><p>Click <a href='http://localhost:3000/verify?token=${token}'>here</a> to verify your email.</p>`,
+      generateEmailHTML: ({ user, token }) => `<h1>Hey! ${user.email} Verify your email</h1><p>Click <a href='${process.env.NEXT_PUBLIC_SERVER_URL || ''}/verify?token=${token}'>here</a> to verify your email.</p>`,
 
     }, // Require email verification before being allowed to authenticate
     maxLoginAttempts: 5, // Automatically lock a user out after X amount of failed logins. Set to 0 to disable.
