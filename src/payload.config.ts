@@ -1,10 +1,11 @@
+import { buildConfig } from 'payload'
 // storage-adapter-import-placeholder
 import { postgresAdapter } from '@payloadcms/db-postgres'
 import { nodemailerAdapter } from '@payloadcms/email-nodemailer'
+import nodemailer from 'nodemailer'
 
 import sharp from 'sharp' // sharp-import
 import path from 'path'
-import { buildConfig } from 'payload'
 import { fileURLToPath } from 'url'
 // import { NexusBerryLogo } from '../public/placeHolders/NexusBerry_favi.jpg'
 
@@ -121,18 +122,15 @@ export default buildConfig({
   email: nodemailerAdapter({
     defaultFromAddress: process.env.DEFAULT_EMAIL_ADDRESS!,
     defaultFromName: process.env.DEFAULT_EMAIL_NAME!,
-    transportOptions: {
-      host: process.env.SMTP_HOST!,
-      port: Number(process.env.SMTP_PORT!),
-      secure: true,
+    transport: nodemailer.createTransport({
+      host: process.env.SMTP_HOST,
+      port: 587,
+      secure: false, // true for 465, false for other ports
       auth: {
-        user: process.env.SMTP_USER!,
-        pass: process.env.SMTP_PASS!,
+        user: process.env.SMTP_USER || '',
+        pass: process.env.SMTP_PASS || '',
       },
-      // Add debug logging
-      // debug: true,
-      // logger: true,
-    },
+    }),
   }),
 
   async onInit(payload) {
