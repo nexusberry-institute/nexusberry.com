@@ -183,6 +183,13 @@ export const Leads: CollectionConfig = {
           relationTo: "events",
         },
         {
+          name: "campaign",
+          type: "relationship",
+          relationTo: "campaigns",
+          required: false,
+          label: "Campaign Source",
+        },
+        {
           name: "assign_to",
           type: "relationship",
           relationTo: "staffs",

@@ -45,8 +45,7 @@ export default function Hero(props: {
     <div className="p-8 bg-primary-700 grid grid-cols-2 max-lg:grid-cols-1  ">
       <div className="text-background space-y-8 max-sm:space-y-6">
         <h2 className="text-[1.6rem] leading-5 font-light max-lg:text-center">
-          {/* {eventType ? `${eventType} - ` : ''} */}
-          MASTERCLASS
+          {eventObj?.label ?? 'MASTERCLASS'}
         </h2>
 
         <div className="relative mx-auto w-fit flex flex-col gap-2 space-y-4 text-center lg:hidden">

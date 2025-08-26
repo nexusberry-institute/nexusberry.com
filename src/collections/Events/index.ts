@@ -42,6 +42,12 @@ export const Events: CollectionConfig = {
               type: 'text',
               required: true,
             },
+            {
+              name: 'label',
+              type: 'text',
+              defaultValue: 'EVENT',
+              required: true,
+            },
             ...slugField(),
             // {
             //   name: 'eventType',
@@ -186,6 +192,18 @@ export const Events: CollectionConfig = {
                 min: 0,
                 label: "Actual Registrations",
               },
+          ]
+        },
+        {
+          label: "Event Leads",
+          fields: [
+            {
+              name: "eventLeads",
+              label: "Leads Registered for This Event",
+              type: "join",
+              collection: "leads",
+              on: "event",
+            }
           ]
         },
         {
