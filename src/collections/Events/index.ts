@@ -53,7 +53,6 @@ export const Events: CollectionConfig = {
             {
               name: 'label',
               type: 'text',
-              defaultValue: 'EVENT',
               required: true,
             },
             ...slugField(),

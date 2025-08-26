@@ -8,30 +8,82 @@ interface FormData {
   phoneNumber: string,
   name: string,
   events: number,
-  utm?: string // optional UTM/campaign code from frontend
+  utm?: string // Legacy UTM field
+  utm_source?: string
+  utm_campaign?: string
+  utm_medium?: string
+  utm_content?: string
 }
 
 export default async function CreateEventRegistration(data: FormData) {
   try {
     const payload = await getPayload({ config })
 
-    // find campaign by utm if provided
+    // find campaign by utm parameters if provided
     let campaignRecord: any = null
     try {
-      if (data.utm) {
+      if (data.utm || data.utm_source || data.utm_campaign || data.utm_medium || data.utm_content) {
+        // Try to find campaign by matching any of the UTM parameters
+        const whereConditions: any = {
+          or: []
+        }
+        
+        // Add conditions for each UTM parameter that exists
+        if (data.utm) {
+          whereConditions.or.push({ utm: { equals: data.utm } })
+        }
+        if (data.utm_source) {
+          whereConditions.or.push({ utm_source: { equals: data.utm_source } })
+        }
+        if (data.utm_campaign) {
+          whereConditions.or.push({ utm_campaign: { equals: data.utm_campaign } })
+        }
+        if (data.utm_medium) {
+          whereConditions.or.push({ utm_medium: { equals: data.utm_medium } })
+        }
+        if (data.utm_content) {
+          whereConditions.or.push({ utm_content: { equals: data.utm_content } })
+        }
+        
         const found = await payload.find({
           collection: 'campaigns',
-          where: { utm: { equals: data.utm } },
+          where: whereConditions,
           limit: 1,
           pagination: false,
         })
         campaignRecord = found?.docs?.[0] ?? null
-        // if utm was provided but no campaign exists, reject the registration
-        if (!campaignRecord) {
-          return {
-            success: false,
-            message: null,
-            error: 'Invalid campaign UTM provided.'
+        
+        // If no specific campaign found but UTM params exist, create a "General UTM" campaign
+        if (!campaignRecord && (data.utm || data.utm_source || data.utm_campaign || data.utm_medium || data.utm_content)) {
+          try {
+            // Check if "General UTM" campaign already exists
+            const generalCampaign = await payload.find({
+              collection: 'campaigns',
+              where: { name: { equals: 'General UTM Traffic' } },
+              limit: 1,
+              pagination: false,
+            })
+            
+            if (generalCampaign?.docs?.[0]) {
+              campaignRecord = generalCampaign.docs[0]
+            } else {
+              // Create "General UTM" campaign
+              campaignRecord = await payload.create({
+                collection: 'campaigns',
+                data: {
+                  name: 'General UTM Traffic',
+                  platform: 'Mixed',
+                  utm_source: data.utm_source || 'unknown',
+                  utm_campaign: data.utm_campaign || 'general',
+                  utm_medium: data.utm_medium || 'unknown',
+                  utm_content: data.utm_content || 'unknown',
+                  utm: data.utm || 'general-utm',
+                }
+              })
+            }
+          } catch (e) {
+            console.warn('Failed to create General UTM campaign:', e)
+            campaignRecord = null
           }
         }
       }

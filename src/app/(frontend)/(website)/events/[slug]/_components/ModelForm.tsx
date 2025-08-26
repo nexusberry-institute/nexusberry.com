@@ -47,14 +47,28 @@ const ModelForm = ({ eventId, slug, redirect }: { eventId: number; slug: string 
 
   async function upload(data: z.infer<typeof FormSchema>) {
 
-    // extract utm from current URL and include if present
-    let utm: string | undefined = undefined
+    // extract utm parameters from current URL and include if present
+    let utmParams: any = {}
     try {
       const params = new URLSearchParams(window.location.search)
-      utm = params.get('utm') || params.get('utm_campaign') || params.get('utm_source') || undefined
+      
+      // Extract all UTM parameters
+      const utm_source = params.get('utm_source')
+      const utm_campaign = params.get('utm_campaign') 
+      const utm_medium = params.get('utm_medium')
+      const utm_content = params.get('utm_content')
+      const utm = params.get('utm') // Legacy UTM field
+      
+      // Only include UTM params that are present
+      if (utm_source) utmParams.utm_source = utm_source
+      if (utm_campaign) utmParams.utm_campaign = utm_campaign
+      if (utm_medium) utmParams.utm_medium = utm_medium
+      if (utm_content) utmParams.utm_content = utm_content
+      if (utm) utmParams.utm = utm
+      
     } catch (e) {
       // ignore in non-browser environments
-      utm = undefined
+      utmParams = {}
     }
 
     const uploadData: any = {
@@ -62,8 +76,8 @@ const ModelForm = ({ eventId, slug, redirect }: { eventId: number; slug: string 
       email: data.email.toLowerCase(),
       phoneNumber: data.phoneNumber,
       events: eventId,
+      ...utmParams // Spread UTM parameters
     }
-    if (utm) uploadData.utm = utm
 
     try {
       const { success, message, error } = await CreateEventRegistration(uploadData)
