@@ -8,9 +8,10 @@ import { WebCourses } from './WebCourses'
 import { Instructors } from './Instructor'
 import { Departments } from './Departments'
 import { Events } from './Events'
-import { EventRegistrations } from './EventRegistrations'
+import { EventRegistrations } from './EventRegistrations' // Keeping for now but not actively used
 import { EventFeedbacks } from './EventFeedbacks'
 import { Staffs } from './Staffs'
+import Campaigns from './Campaigns'
 import { Messages } from './Messages'
 import { Teachers } from './Teachers'
 import { TrainingCourses } from './TrainingCourses'
@@ -44,6 +45,7 @@ const collections = [
    Events,
    EventRegistrations,
    EventFeedbacks,
+      Campaigns,
    Staffs,
    Messages,
    Teachers,

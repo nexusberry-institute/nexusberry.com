@@ -8,21 +8,28 @@ import { UserCheck } from 'lucide-react'
 import { EventModel } from './EventModel'
 import { Instructor } from '@/payload-types'
 
-export default function Hero({
-  title,
-  instructor,
-  startDateTime,
-  endTime,
-  eventId,
-  slug,
-}: {
-  title: string
+export default function Hero(props: {
+  // backward compatible props
+  title?: string
   instructor?: number | Instructor | null
-  startDateTime: string
+  startDateTime?: string
   endTime?: string | null
-  eventId: number
+  eventId?: number
   slug?: string | null
+  // new props for dynamic counts
+  eventData?: any[]
+  attendee?: number
+  learner?: number
 }) {
+  const { eventData, attendee, learner } = props
+  // derive values from eventData if present (server-side pass)
+  const eventObj = Array.isArray(eventData) && eventData.length > 0 ? eventData[0] : null
+  const title = props.title ?? eventObj?.title ?? 'Event'
+  const instructor = props.instructor ?? eventObj?.instructor
+  const startDateTime = props.startDateTime ?? eventObj?.startDateTime ?? new Date().toISOString()
+  const endTime = props.endTime ?? eventObj?.endTime ?? null
+  const eventId = props.eventId ?? eventObj?.id ?? 0
+  const slug = props.slug ?? eventObj?.slug ?? null
   const [isOPenModel, setIsOpenModel] = useState(false)
   const [isRegistered, setIsRegistered] = useState(false)
 
@@ -38,8 +45,7 @@ export default function Hero({
     <div className="p-8 bg-primary-700 grid grid-cols-2 max-lg:grid-cols-1  ">
       <div className="text-background space-y-8 max-sm:space-y-6">
         <h2 className="text-[1.6rem] leading-5 font-light max-lg:text-center">
-          {/* {eventType ? `${eventType} - ` : ''} */}
-          MASTERCLASS
+          {eventObj?.label ?? 'MASTERCLASS'}
         </h2>
 
         <div className="relative mx-auto w-fit flex flex-col gap-2 space-y-4 text-center lg:hidden">
@@ -122,7 +128,7 @@ export default function Hero({
         </div>
         <div className="flex gap-4 items-center max-lg:justify-center">
           <UserCheck />
-          <span className="text-lg">2,618 already registered</span>
+          <span className="text-lg">{attendee ?? 2618} already registered</span>
         </div>
       </div>
       <div className="max-lg:hidden ">
@@ -174,7 +180,7 @@ export default function Hero({
           />
         </div>
       </div>
-      {isOPenModel && <EventModel setIsOpenModel={setIsOpenModel} eventId={eventId} slug={slug} />}
+  {isOPenModel && <EventModel setIsOpenModel={setIsOpenModel} eventId={eventId} slug={slug} />}
     </div>
   )
 }

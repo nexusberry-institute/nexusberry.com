@@ -1,6 +1,8 @@
 import { slugField } from '@/fields/slug';
 import { CollectionConfig } from 'payload';
 import { revalidateEvents, revalidateDelete } from './hooks/revalidateEvents'
+import { anyone } from '@/access/anyone';
+import { authenticated } from '@/access/authenticated';
 import {
   AlignFeature,
   FixedToolbarFeature,
@@ -25,6 +27,12 @@ export const Events: CollectionConfig = {
   admin: {
     useAsTitle: 'title',
   },
+  access: {
+    create: authenticated,
+    read: anyone,
+    update: authenticated,
+    delete: authenticated,
+  },
   hooks: {
     afterChange: [revalidateEvents],
     afterDelete: [revalidateDelete],
@@ -39,6 +47,11 @@ export const Events: CollectionConfig = {
           fields: [
             {
               name: 'title',
+              type: 'text',
+              required: true,
+            },
+            {
+              name: 'label',
               type: 'text',
               required: true,
             },
@@ -170,6 +183,63 @@ export const Events: CollectionConfig = {
               type: "upload",
               relationTo: "media",
             },
+              {
+                name: "defaultParticipants",
+                type: "number",
+                required: false,
+                defaultValue: 100,
+                min: 0,
+                label: "Default Participants",
+              },
+              {
+                name: "actualRegistrations",
+                type: "number",
+                required: false,
+                defaultValue: 0,
+                min: 0,
+                label: "Actual Registrations",
+                admin: {
+                  readOnly: true,
+                  description: "Auto-calculated from leads registered for this event"
+                }
+              },
+              {
+                name: "campaignVisitors",
+                type: "number",
+                required: false,
+                defaultValue: 0,
+                min: 0,
+                label: "Campaign Conversions",
+                admin: {
+                  readOnly: true,
+                  description: "Number of registrations from campaign UTM codes for this event"
+                }
+              },
+          ]
+        },
+        {
+          label: "Event Leads",
+          fields: [
+            {
+              name: "eventLeads",
+              label: "Leads Registered for This Event",
+              type: "join",
+              collection: "leads",
+              on: "events", // Updated to match the new hasMany field
+              access: {
+                read: ({ req }) => {
+                  // Allow if user is authenticated
+                  return !!req.user
+                },
+              },
+              admin: {
+                description: "View all leads registered for this event. Use this to track attendance and export data.",
+                allowCreate: false,
+              },
+              defaultLimit: 10,
+              defaultSort: '-createdAt',
+              maxDepth: 1,
+            }
           ]
         },
         {

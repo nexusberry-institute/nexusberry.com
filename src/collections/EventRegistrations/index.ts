@@ -62,6 +62,13 @@ export const EventRegistrations: CollectionConfig = {
       required: true,
     },
     {
+      name: "campaign",
+      type: "relationship",
+      relationTo: "campaigns",
+      required: false,
+      label: "Campaign Source",
+    },
+    {
       label: "Registered Events",
       name: 'registeredEvents',
       type: "array",
