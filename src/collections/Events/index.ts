@@ -226,6 +226,12 @@ export const Events: CollectionConfig = {
               type: "join",
               collection: "leads",
               on: "events", // Updated to match the new hasMany field
+              access: {
+                read: ({ req }) => {
+                  // Allow if user is authenticated
+                  return !!req.user
+                },
+              },
               admin: {
                 description: "View all leads registered for this event. Use this to track attendance and export data.",
                 allowCreate: false,
