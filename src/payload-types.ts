@@ -114,6 +114,9 @@ export interface Config {
     departments: {
       relatedCourses: 'web-courses';
     };
+    events: {
+      eventLeads: 'leads';
+    };
     'training-courses': {
       relatedPaymentPlans: 'payment-plans';
     };
@@ -978,6 +981,7 @@ export interface Department {
 export interface Event {
   id: number;
   title: string;
+  label: string;
   slug?: string | null;
   slugLock?: boolean | null;
   image?: (number | null) | Media;
@@ -1013,7 +1017,22 @@ export interface Event {
   whatsappLink?: string | null;
   whatsappQrCode?: (number | null) | Media;
   defaultParticipants?: number | null;
+  /**
+   * Auto-calculated from leads registered for this event
+   */
   actualRegistrations?: number | null;
+  /**
+   * Number of registrations from campaign UTM codes for this event
+   */
+  campaignVisitors?: number | null;
+  /**
+   * View all leads registered for this event. Use this to track attendance and export data.
+   */
+  eventLeads?: {
+    docs?: (number | Lead)[];
+    hasNextPage?: boolean;
+    totalDocs?: number;
+  };
   meta?: {
     title?: string | null;
     /**
@@ -1027,119 +1046,135 @@ export interface Event {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "event-registrations".
+ * via the `definition` "leads".
  */
-export interface EventRegistration {
+export interface Lead {
   id: number;
   name: string;
-  email: string;
-  phoneNumber: string;
-  campaign?: (number | null) | Campaign;
-  registeredEvents: {
-    event: number | Event;
-    hasAttended?: boolean | null;
-    id?: string | null;
-  }[];
-  updatedAt: string;
-  createdAt: string;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "campaigns".
- */
-export interface Campaign {
-  id: number;
-  name: string;
-  platform?: string | null;
-  startDate?: string | null;
-  endDate?: string | null;
-  budget?: number | null;
-  utm?: string | null;
+  mobile?: string | null;
+  email?: string | null;
+  gender?: ('MALE' | 'FEMALE') | null;
+  area?: string | null;
+  city?: string | null;
+  province?: string | null;
+  country?: string | null;
+  is_online?: boolean | null;
+  is_req_hostel?: boolean | null;
+  stage?: ('NEW' | 'FOLLOW_UP' | 'CONVERTED' | 'WASTE') | null;
+  interest_level?: ('LOW' | 'MEDIUM' | 'HIGH' | 'UNKNOWN') | null;
+  education?: string | null;
+  job_info?: string | null;
+  student?: (number | null) | Student;
+  module?: (number | null) | Module;
+  department?: (number | null) | Department;
+  reminder_date?: string | null;
+  reminder_note?: string | null;
+  not_responding?: boolean | null;
   events?: (number | Event)[] | null;
-  visitorCount?: number | null;
-  updatedAt: string;
-  createdAt: string;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "event-feedbacks".
- */
-export interface EventFeedback {
-  id: number;
-  registration: number | EventRegistration;
-  event: number | Event;
-  rating: number;
-  reason?:
-    | ('topic-interest' | 'mentor-preference' | 'mentorship-program-interest' | 'field-specific-interest' | 'others')
+  campaigns?: (number | Campaign)[] | null;
+  assign_to?: (number | null) | Staff;
+  eventAttendance?:
+    | {
+        event: number | Event;
+        hasAttended?: boolean | null;
+        campaign?: (number | null) | Campaign;
+        id?: string | null;
+      }[]
     | null;
-  otherReason?: string | null;
-  mentorship?: ('yes' | 'no') | null;
+  payment_plan?: string | null;
+  source?: string | null;
+  query?: string | null;
+  lead_issue?: string | null;
+  notes?: string | null;
+  activity?:
+    | {
+        [k: string]: unknown;
+      }
+    | unknown[]
+    | string
+    | number
+    | boolean
+    | null;
+  lead_engagement?:
+    | {
+        [k: string]: unknown;
+      }
+    | unknown[]
+    | string
+    | number
+    | boolean
+    | null;
   updatedAt: string;
   createdAt: string;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "staffs".
+ * via the `definition` "students".
  */
-export interface Staff {
+export interface Student {
   id: number;
-  user: number | User;
-  fullName: string;
-  nick?: string | null;
-  dateOfBirth?: string | null;
+  user?: (number | null) | User;
+  studentEmail?: string | null;
+  studentPassword?: string | null;
+  fullName?: string | null;
   phoneNumber?: string | null;
+  gmail_username?: string | null;
+  dateOfBirth?: string | null;
+  gender?: ('male' | 'female') | null;
+  /**
+   * Highest Student Education
+   */
+  education?: string | null;
+  otp?: string | null;
+  otpVerified?: boolean | null;
+  otpGeneratedAt?: string | null;
   address?: {
-    street?: string | null;
+    homeAddress?: string | null;
     city?: string | null;
     state?: string | null;
-    zipCode?: string | null;
     country?: string | null;
   };
   profilePicture?: (number | null) | Media;
-  payMode?: ('FIX' | 'PER_ADMISSION' | 'FIX_PLUS_PER_ADMISSION') | null;
-  payPerAdmission?: number | null;
-  fixPay?: number | null;
-  note?: string | null;
-  updatedAt: string;
-  createdAt: string;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "messages".
- */
-export interface Message {
-  id: number;
-  title: string;
-  content: string;
-  type?: ('GENERAL' | 'WHATSAPP') | null;
-  hasPlaceholder?: boolean | null;
-  staffNote?: string | null;
-  updatedAt: string;
-  createdAt: string;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "teachers".
- */
-export interface Teacher {
-  id: number;
-  user: number | User;
-  fullName: string;
-  nick: string;
-  dateOfBirth?: string | null;
-  phoneNumber?: string | null;
-  address?: {
-    street?: string | null;
-    city?: string | null;
-    state?: string | null;
-    zipCode?: string | null;
-    country?: string | null;
+  studentEnrollments?: {
+    docs?: (number | Enrollment)[];
+    hasNextPage?: boolean;
+    totalDocs?: number;
   };
-  profilePicture?: (number | null) | Media;
-  payMode?: ('FIX' | 'PER_LECTURE') | null;
-  payPerLecture?: number | null;
-  fixPay?: number | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "enrollments".
+ */
+export interface Enrollment {
+  id: number;
+  student: number | Student;
+  'training-course': number | TrainingCourse;
+  slug: string;
+  batchEnrollments?:
+    | {
+        batch?: (number | null) | Batch;
+        modules?: (number | Module)[] | null;
+        mode?: ('ONLINE' | 'PHYSICAL' | 'HYBRID') | null;
+        id?: string | null;
+      }[]
+    | null;
+  selectedPaymentPlan: number | PaymentPlan;
+  discountCode?: (number | null) | DiscountCode;
+  admissionDate?: string | null;
+  admissionFee?: number | null;
+  freezeDate?: string | null;
+  unfreezeDate?: string | null;
+  completionState?: ('CONTINUE' | 'COMPLETED' | 'LEFT' | 'FREEZE') | null;
+  certificateStatus?: ('ISSUED' | 'PENDING') | null;
+  isSuspended?: boolean | null;
   note?: string | null;
+  relatedFeeReciepts?: {
+    docs?: (number | FeeReceipt)[];
+    hasNextPage?: boolean;
+    totalDocs?: number;
+  };
   updatedAt: string;
   createdAt: string;
 }
@@ -1267,72 +1302,41 @@ export interface Batch {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "enrollments".
+ * via the `definition` "teachers".
  */
-export interface Enrollment {
+export interface Teacher {
   id: number;
-  student: number | Student;
-  'training-course': number | TrainingCourse;
-  slug: string;
-  batchEnrollments?:
-    | {
-        batch?: (number | null) | Batch;
-        modules?: (number | Module)[] | null;
-        mode?: ('ONLINE' | 'PHYSICAL' | 'HYBRID') | null;
-        id?: string | null;
-      }[]
-    | null;
-  selectedPaymentPlan: number | PaymentPlan;
-  discountCode?: (number | null) | DiscountCode;
-  admissionDate?: string | null;
-  admissionFee?: number | null;
-  freezeDate?: string | null;
-  unfreezeDate?: string | null;
-  completionState?: ('CONTINUE' | 'COMPLETED' | 'LEFT' | 'FREEZE') | null;
-  certificateStatus?: ('ISSUED' | 'PENDING') | null;
-  isSuspended?: boolean | null;
-  note?: string | null;
-  relatedFeeReciepts?: {
-    docs?: (number | FeeReceipt)[];
-    hasNextPage?: boolean;
-    totalDocs?: number;
+  user: number | User;
+  fullName: string;
+  nick: string;
+  dateOfBirth?: string | null;
+  phoneNumber?: string | null;
+  address?: {
+    street?: string | null;
+    city?: string | null;
+    state?: string | null;
+    zipCode?: string | null;
+    country?: string | null;
   };
+  profilePicture?: (number | null) | Media;
+  payMode?: ('FIX' | 'PER_LECTURE') | null;
+  payPerLecture?: number | null;
+  fixPay?: number | null;
+  note?: string | null;
   updatedAt: string;
   createdAt: string;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "students".
+ * via the `definition` "time-table".
  */
-export interface Student {
+export interface TimeTable {
   id: number;
-  user?: (number | null) | User;
-  studentEmail?: string | null;
-  studentPassword?: string | null;
-  fullName?: string | null;
-  phoneNumber?: string | null;
-  gmail_username?: string | null;
-  dateOfBirth?: string | null;
-  gender?: ('male' | 'female') | null;
-  /**
-   * Highest Student Education
-   */
-  education?: string | null;
-  otp?: string | null;
-  otpVerified?: boolean | null;
-  otpGeneratedAt?: string | null;
-  address?: {
-    homeAddress?: string | null;
-    city?: string | null;
-    state?: string | null;
-    country?: string | null;
-  };
-  profilePicture?: (number | null) | Media;
-  studentEnrollments?: {
-    docs?: (number | Enrollment)[];
-    hasNextPage?: boolean;
-    totalDocs?: number;
-  };
+  batch: number | Batch;
+  day: 'MONDAY' | 'TUESDAY' | 'WEDNESDAY' | 'THURSDAY' | 'FRIDAY' | 'SATURDAY' | 'SUNDAY';
+  startTime: string;
+  endTime: string;
+  room?: string | null;
   updatedAt: string;
   createdAt: string;
 }
@@ -1438,15 +1442,100 @@ export interface FeeReceipt {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "time-table".
+ * via the `definition` "campaigns".
  */
-export interface TimeTable {
+export interface Campaign {
   id: number;
-  batch: number | Batch;
-  day: 'MONDAY' | 'TUESDAY' | 'WEDNESDAY' | 'THURSDAY' | 'FRIDAY' | 'SATURDAY' | 'SUNDAY';
-  startTime: string;
-  endTime: string;
-  room?: string | null;
+  name: string;
+  platform?: string | null;
+  startDate?: string | null;
+  endDate?: string | null;
+  budget?: number | null;
+  utm?: string | null;
+  events?: (number | Event)[] | null;
+  /**
+   * Combined registrations from all events in this campaign (auto-calculated)
+   */
+  combinedRegistrations?: number | null;
+  /**
+   * Combined conversions (registrations via UTM) from all events (auto-calculated)
+   */
+  combinedCampaignConversions?: number | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "staffs".
+ */
+export interface Staff {
+  id: number;
+  user: number | User;
+  fullName: string;
+  nick?: string | null;
+  dateOfBirth?: string | null;
+  phoneNumber?: string | null;
+  address?: {
+    street?: string | null;
+    city?: string | null;
+    state?: string | null;
+    zipCode?: string | null;
+    country?: string | null;
+  };
+  profilePicture?: (number | null) | Media;
+  payMode?: ('FIX' | 'PER_ADMISSION' | 'FIX_PLUS_PER_ADMISSION') | null;
+  payPerAdmission?: number | null;
+  fixPay?: number | null;
+  note?: string | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "event-registrations".
+ */
+export interface EventRegistration {
+  id: number;
+  name: string;
+  email: string;
+  phoneNumber: string;
+  campaign?: (number | null) | Campaign;
+  registeredEvents: {
+    event: number | Event;
+    hasAttended?: boolean | null;
+    id?: string | null;
+  }[];
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "event-feedbacks".
+ */
+export interface EventFeedback {
+  id: number;
+  registration: number | EventRegistration;
+  event: number | Event;
+  rating: number;
+  reason?:
+    | ('topic-interest' | 'mentor-preference' | 'mentorship-program-interest' | 'field-specific-interest' | 'others')
+    | null;
+  otherReason?: string | null;
+  mentorship?: ('yes' | 'no') | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "messages".
+ */
+export interface Message {
+  id: number;
+  title: string;
+  content: string;
+  type?: ('GENERAL' | 'WHATSAPP') | null;
+  hasPlaceholder?: boolean | null;
+  staffNote?: string | null;
   updatedAt: string;
   createdAt: string;
 }
@@ -1530,60 +1619,6 @@ export interface AttendanceDetail {
   medium?: ('PHYSICAL' | 'ONLINE') | null;
   enrollment: number | Enrollment;
   status?: ('PRESENT' | 'ABSENT' | 'LEAVE') | null;
-  updatedAt: string;
-  createdAt: string;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "leads".
- */
-export interface Lead {
-  id: number;
-  name: string;
-  mobile?: string | null;
-  email?: string | null;
-  gender?: ('MALE' | 'FEMALE') | null;
-  area?: string | null;
-  city?: string | null;
-  province?: string | null;
-  country?: string | null;
-  is_online?: boolean | null;
-  is_req_hostel?: boolean | null;
-  stage?: ('NEW' | 'FOLLOW_UP' | 'CONVERTED' | 'WASTE') | null;
-  interest_level?: ('LOW' | 'MEDIUM' | 'HIGH' | 'UNKNOWN') | null;
-  education?: string | null;
-  job_info?: string | null;
-  student?: (number | null) | Student;
-  module?: (number | null) | Module;
-  department?: (number | null) | Department;
-  reminder_date?: string | null;
-  reminder_note?: string | null;
-  not_responding?: boolean | null;
-  event?: (number | null) | Event;
-  assign_to?: (number | null) | Staff;
-  payment_plan?: string | null;
-  source?: string | null;
-  query?: string | null;
-  lead_issue?: string | null;
-  notes?: string | null;
-  activity?:
-    | {
-        [k: string]: unknown;
-      }
-    | unknown[]
-    | string
-    | number
-    | boolean
-    | null;
-  lead_engagement?:
-    | {
-        [k: string]: unknown;
-      }
-    | unknown[]
-    | string
-    | number
-    | boolean
-    | null;
   updatedAt: string;
   createdAt: string;
 }
@@ -2312,6 +2347,7 @@ export interface DepartmentsSelect<T extends boolean = true> {
  */
 export interface EventsSelect<T extends boolean = true> {
   title?: T;
+  label?: T;
   slug?: T;
   slugLock?: T;
   image?: T;
@@ -2325,6 +2361,8 @@ export interface EventsSelect<T extends boolean = true> {
   whatsappQrCode?: T;
   defaultParticipants?: T;
   actualRegistrations?: T;
+  campaignVisitors?: T;
+  eventLeads?: T;
   meta?:
     | T
     | {
@@ -2380,7 +2418,8 @@ export interface CampaignsSelect<T extends boolean = true> {
   budget?: T;
   utm?: T;
   events?: T;
-  visitorCount?: T;
+  combinedRegistrations?: T;
+  combinedCampaignConversions?: T;
   updatedAt?: T;
   createdAt?: T;
 }
@@ -2726,8 +2765,17 @@ export interface LeadsSelect<T extends boolean = true> {
   reminder_date?: T;
   reminder_note?: T;
   not_responding?: T;
-  event?: T;
+  events?: T;
+  campaigns?: T;
   assign_to?: T;
+  eventAttendance?:
+    | T
+    | {
+        event?: T;
+        hasAttended?: T;
+        campaign?: T;
+        id?: T;
+      };
   payment_plan?: T;
   source?: T;
   query?: T;

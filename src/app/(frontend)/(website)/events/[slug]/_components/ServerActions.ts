@@ -2,6 +2,7 @@
 
 import { getPayload } from 'payload'
 import config from '@payload-config'
+
 interface FormData {
   email: string,
   phoneNumber: string,
@@ -11,7 +12,6 @@ interface FormData {
 }
 
 export default async function CreateEventRegistration(data: FormData) {
-
   try {
     const payload = await getPayload({ config })
 
@@ -19,7 +19,7 @@ export default async function CreateEventRegistration(data: FormData) {
     let campaignRecord: any = null
     try {
       if (data.utm) {
-        const found = await (payload as any).find({
+        const found = await payload.find({
           collection: 'campaigns',
           where: { utm: { equals: data.utm } },
           limit: 1,
@@ -52,10 +52,12 @@ export default async function CreateEventRegistration(data: FormData) {
     })
 
     if (checkExistingLead.docs[0]) {
-
-      const existing = checkExistingLead.docs[0]
-      // check if this lead already has this event assigned (we'll use lead.event field if present)
-      const hasEvent = !!existing.event && ((typeof existing.event === 'object' && existing.event.id === data.events) || existing.event === data.events)
+      const existing = checkExistingLead.docs[0] as any; // Cast to any to access new fields
+      
+      // Check if this lead already has this event assigned (events is now an array)
+      const existingEvents = existing.events || [];
+      const existingEventIds = existingEvents.map((e: any) => typeof e === 'object' ? e.id : e);
+      const hasEvent = existingEventIds.includes(data.events);
 
       if (hasEvent) {
         return {
@@ -64,14 +66,19 @@ export default async function CreateEventRegistration(data: FormData) {
           error: "You have already registered for this event."
         }
       } else {
-        // update existing lead: set event relation and campaign if missing
+        // update existing lead: add new event to the events array and campaign if missing
+        const existingCampaigns = existing.campaigns || [];
         const updatePayload: any = {
-          event: data.events,
-          email: data.email,
-          name: data.name,
-          mobile: data.phoneNumber,
+          events: [...existingEventIds, data.events], // Add new event to existing events
         }
-  if (campaignRecord && !(existing as any).campaign) updatePayload.campaign = campaignRecord.id
+        
+        // Only add campaign if the lead doesn't already have it and a campaign was provided
+        if (campaignRecord) {
+          const existingCampaignIds = existingCampaigns.map((c: any) => typeof c === 'object' ? c.id : c);
+          if (!existingCampaignIds.includes(campaignRecord.id)) {
+            updatePayload.campaigns = [...existingCampaignIds, campaignRecord.id];
+          }
+        }
 
         await payload.update({
           collection: 'leads',
@@ -79,64 +86,25 @@ export default async function CreateEventRegistration(data: FormData) {
           data: updatePayload,
         })
 
-        // increment actualRegistrations for this event
-        try {
-          const ev = await (payload as any).findByID({ collection: 'events', id: data.events as any }).catch(() => null)
-          const newCount = (ev?.actualRegistrations ?? 0) + 1
-          await (payload as any).update({ collection: 'events', id: data.events as any, data: { actualRegistrations: newCount } })
-        } catch (e) {
-          console.warn('Failed to increment actualRegistrations (lead update branch)', e)
-        }
-
-        if (campaignRecord) {
-          try {
-            await (payload as any).update({ collection: 'campaigns', id: campaignRecord.id as any, data: { visitorCount: (campaignRecord.visitorCount || 0) + 1 } })
-          } catch (e) {
-            console.warn('Failed to increment campaign.visitorCount (lead update branch)', e)
-          }
-        }
-
         return { success: true, message: 'Your registration has been completed.', error: null }
       }
     }
 
     // Create new lead (attach campaign if found)
+    // The hooks in Leads collection will handle: 
+    // - Event statistics update
+    // - Campaign statistics update  
+    // - Email sending
     await payload.create({
       collection: 'leads',
       data: {
         name: data.name,
         email: data.email,
         mobile: data.phoneNumber,
-        event: data.events,
-        ...(campaignRecord ? { campaign: campaignRecord.id } : {}),
+        events: [data.events] as any, // Use array for multiple events
+        ...(campaignRecord ? { campaigns: [campaignRecord.id] as any } : {}), // Use array for multiple campaigns
       }
     })
-
-    // increment actualRegistrations for the event (create branch)
-    try {
-      const ev = await (payload as any).findByID({ collection: 'events', id: data.events as any }).catch(() => null)
-      const newCount = (ev?.actualRegistrations ?? 0) + 1
-      await (payload as any).update({
-        collection: 'events',
-        id: data.events as any,
-        data: { actualRegistrations: newCount }
-      })
-    } catch (e) {
-      console.warn('Failed to increment actualRegistrations (create branch)', e)
-    }
-
-    // increment campaign visitorCount for conversions (create branch)
-    if (campaignRecord) {
-      try {
-        await (payload as any).update({
-          collection: 'campaigns',
-          id: campaignRecord.id as any,
-          data: { visitorCount: (campaignRecord.visitorCount || 0) + 1 }
-        })
-      } catch (e) {
-        console.warn('Failed to increment campaign.visitorCount (create branch)', e)
-      }
-    }
 
     return {
       success: true,
@@ -150,5 +118,4 @@ export default async function CreateEventRegistration(data: FormData) {
       error: error instanceof Error ? error.message : error
     }
   }
-
 }

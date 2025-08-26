@@ -1,6 +1,7 @@
 // import { checkAccess } from "@/access/accessControl";
 import { anyone } from "@/access/anyone";
 import { CollectionConfig } from "payload";
+import { format } from 'date-fns';
 
 export const Leads: CollectionConfig = {
   slug: "leads",
@@ -13,6 +14,123 @@ export const Leads: CollectionConfig = {
     delete: anyone,
     read: anyone,
     update: anyone,
+  },
+  hooks: {
+    afterChange: [
+      async ({ doc, req, operation, previousDoc }) => {
+        // Send email confirmation for event registration
+        if (doc.events && Array.isArray(doc.events) && doc.events.length > 0 && doc.email && doc.name) {
+          try {
+            // Send email for the most recently added event
+            const latestEventId = doc.events[doc.events.length - 1];
+            const eventId = typeof latestEventId === 'object' ? latestEventId.id : latestEventId;
+            
+            const event = await req.payload.findByID({
+              collection: 'events',
+              id: eventId,
+            });
+
+            if (event && event.startDateTime) {
+              const formattedDate = format(new Date(event.startDateTime), 'do MMMM yyyy, EEEE');
+              const startTime = format(new Date(event.startDateTime), 'hh:mm a');
+              const endTime = event.endTime ? format(new Date(event.endTime), 'hh:mm a') : '';
+
+              await req.payload.sendEmail({
+                to: doc.email,
+                subject: 'Event Registration Confirmation',
+                html: `<div style="font-family: Arial, sans-serif; background-color: #f3f4f6; padding: 20px;">
+                  <div style="background-color: #fff; padding: 20px; border-radius: 10px; box-shadow: 0 0 10px rgba(0,0,0,0.1);">
+                    <h1>Hello, ${doc.name}</h1>
+                    <p>Thank you for registering for the event: <strong>${event.title}</strong></p>
+                    <p>📅 <strong>Date:</strong> ${formattedDate}</p>
+                    <p><strong>⏰ Time:</strong> ${startTime} ${endTime ? `- ${endTime}` : ''} IST</p>
+                    <p>We look forward to seeing you!</p>
+                  </div>
+                </div>`
+              });
+            }
+          } catch (error) {
+            console.warn('Failed to send event registration email:', error);
+          }
+        }
+
+        // Update event statistics for newly added events
+        if (doc.events && Array.isArray(doc.events)) {
+          try {
+            // Get previous events to compare
+            const previousEvents = previousDoc?.events || [];
+            const previousEventIds = previousEvents.map((e: any) => typeof e === 'object' ? e.id : e);
+            const currentEventIds = doc.events.map((e: any) => typeof e === 'object' ? e.id : e);
+            
+            // Find newly added events
+            const newEventIds = currentEventIds.filter((id: any) => !previousEventIds.includes(id));
+            
+            // Update statistics for new events
+            for (const eventId of newEventIds) {
+              try {
+                const event = await req.payload.findByID({
+                  collection: 'events',
+                  id: eventId,
+                });
+
+                if (event) {
+                  await req.payload.update({
+                    collection: 'events',
+                    id: eventId,
+                    data: {
+                      actualRegistrations: (event.actualRegistrations || 0) + 1,
+                      campaignVisitors: event.campaignVisitors || 0
+                    }
+                  });
+                }
+              } catch (error) {
+                console.warn(`Failed to update statistics for event ${eventId}:`, error);
+              }
+            }
+          } catch (error) {
+            console.warn('Failed to update event statistics:', error);
+          }
+        }
+
+        // Update campaign statistics for newly added campaigns/events
+        if (doc.campaigns && Array.isArray(doc.campaigns) && doc.events && Array.isArray(doc.events)) {
+          try {
+            // Get previous campaigns to compare
+            const previousCampaigns = previousDoc?.campaigns || [];
+            const previousCampaignIds = previousCampaigns.map((c: any) => typeof c === 'object' ? c.id : c);
+            const currentCampaignIds = doc.campaigns.map((c: any) => typeof c === 'object' ? c.id : c);
+            
+            // Find newly added campaigns
+            const newCampaignIds = currentCampaignIds.filter((id: any) => !previousCampaignIds.includes(id));
+            
+            // Update campaign visitor statistics for events
+            if (newCampaignIds.length > 0 && doc.events.length > 0) {
+              // Update the most recent event's campaign visitors count
+              const latestEventId = doc.events[doc.events.length - 1];
+              const eventId = typeof latestEventId === 'object' ? latestEventId.id : latestEventId;
+              
+              const event = await req.payload.findByID({
+                collection: 'events',
+                id: eventId,
+              });
+
+              if (event) {
+                await req.payload.update({
+                  collection: 'events',
+                  id: eventId,
+                  data: {
+                    campaignVisitors: (event.campaignVisitors || 0) + 1,
+                    actualRegistrations: event.actualRegistrations || 0
+                  }
+                });
+              }
+            }
+          } catch (error) {
+            console.warn('Failed to update campaign statistics:', error);
+          }
+        }
+      }
+    ]
   },
   fields: [
     {
@@ -178,16 +296,19 @@ export const Leads: CollectionConfig = {
       type: "row",
       fields: [
         {
-          name: "event",
+          name: "events",
           type: "relationship",
           relationTo: "events",
+          hasMany: true,
+          label: "Registered Events",
         },
         {
-          name: "campaign",
+          name: "campaigns",
           type: "relationship",
           relationTo: "campaigns",
+          hasMany: true,
           required: false,
-          label: "Campaign Source",
+          label: "Campaign Sources",
         },
         {
           name: "assign_to",
@@ -195,6 +316,38 @@ export const Leads: CollectionConfig = {
           relationTo: "staffs",
           hasMany: false
         },
+      ]
+    },
+    {
+      name: "eventAttendance",
+      type: "array",
+      label: "Event Attendance Tracking",
+      fields: [
+        {
+          type: "row",
+          fields: [
+            {
+              name: "event",
+              type: "relationship",
+              relationTo: "events",
+              required: true,
+              hasMany: false,
+            },
+            {
+              name: "hasAttended",
+              type: "checkbox",
+              defaultValue: false,
+              label: "Has Attended",
+            },
+            {
+              name: "campaign",
+              type: "relationship",
+              relationTo: "campaigns",
+              required: false,
+              label: "Registration Campaign",
+            }
+          ]
+        }
       ]
     },
     {

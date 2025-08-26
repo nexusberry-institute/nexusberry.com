@@ -1,6 +1,8 @@
 import { slugField } from '@/fields/slug';
 import { CollectionConfig } from 'payload';
 import { revalidateEvents, revalidateDelete } from './hooks/revalidateEvents'
+import { anyone } from '@/access/anyone';
+import { authenticated } from '@/access/authenticated';
 import {
   AlignFeature,
   FixedToolbarFeature,
@@ -24,6 +26,12 @@ export const Events: CollectionConfig = {
   slug: 'events',
   admin: {
     useAsTitle: 'title',
+  },
+  access: {
+    create: authenticated,
+    read: anyone,
+    update: authenticated,
+    delete: authenticated,
   },
   hooks: {
     afterChange: [revalidateEvents],
@@ -191,6 +199,22 @@ export const Events: CollectionConfig = {
                 defaultValue: 0,
                 min: 0,
                 label: "Actual Registrations",
+                admin: {
+                  readOnly: true,
+                  description: "Auto-calculated from leads registered for this event"
+                }
+              },
+              {
+                name: "campaignVisitors",
+                type: "number",
+                required: false,
+                defaultValue: 0,
+                min: 0,
+                label: "Campaign Conversions",
+                admin: {
+                  readOnly: true,
+                  description: "Number of registrations from campaign UTM codes for this event"
+                }
               },
           ]
         },
@@ -202,7 +226,14 @@ export const Events: CollectionConfig = {
               label: "Leads Registered for This Event",
               type: "join",
               collection: "leads",
-              on: "event",
+              on: "events", // Updated to match the new hasMany field
+              admin: {
+                description: "View all leads registered for this event. Use this to track attendance and export data.",
+                allowCreate: false,
+              },
+              defaultLimit: 10,
+              defaultSort: '-createdAt',
+              maxDepth: 1,
             }
           ]
         },
