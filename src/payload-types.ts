@@ -117,6 +117,9 @@ export interface Config {
     events: {
       eventLeads: 'leads';
     };
+    campaigns: {
+      campaignLeads: 'leads';
+    };
     'training-courses': {
       relatedPaymentPlans: 'payment-plans';
     };
@@ -1020,11 +1023,11 @@ export interface Event {
   /**
    * Auto-calculated from leads registered for this event
    */
-  actualRegistrations?: number | null;
+  totalRegistrations?: number | null;
   /**
    * Number of registrations from campaign UTM codes for this event
    */
-  campaignVisitors?: number | null;
+  campaignRegistrations?: number | null;
   /**
    * View all leads registered for this event. Use this to track attendance and export data.
    */
@@ -1070,9 +1073,10 @@ export interface Lead {
   reminder_date?: string | null;
   reminder_note?: string | null;
   not_responding?: boolean | null;
-  events?: (number | Event)[] | null;
-  campaigns?: (number | Campaign)[] | null;
   assign_to?: (number | null) | Staff;
+  event?: (number | null) | Event;
+  campaign?: (number | null) | Campaign;
+  has_attended?: boolean | null;
   eventAttendance?:
     | {
         event: number | Event;
@@ -1442,30 +1446,6 @@ export interface FeeReceipt {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "campaigns".
- */
-export interface Campaign {
-  id: number;
-  name: string;
-  platform?: string | null;
-  startDate?: string | null;
-  endDate?: string | null;
-  budget?: number | null;
-  utm?: string | null;
-  events?: (number | Event)[] | null;
-  /**
-   * Combined registrations from all events in this campaign (auto-calculated)
-   */
-  combinedRegistrations?: number | null;
-  /**
-   * Combined conversions (registrations via UTM) from all events (auto-calculated)
-   */
-  combinedCampaignConversions?: number | null;
-  updatedAt: string;
-  createdAt: string;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "staffs".
  */
 export interface Staff {
@@ -1487,6 +1467,49 @@ export interface Staff {
   payPerAdmission?: number | null;
   fixPay?: number | null;
   note?: string | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "campaigns".
+ */
+export interface Campaign {
+  id: number;
+  name: string;
+  platform?: string | null;
+  startDate?: string | null;
+  endDate?: string | null;
+  budget?: number | null;
+  events?: (number | Event)[] | null;
+  /**
+   * Identifies which site sent the traffic (e.g., google, facebook, newsletter)
+   */
+  utm_source?: string | null;
+  /**
+   * Identifies a specific product promotion or strategic campaign (e.g., spring_sale)
+   */
+  utm_campaign?: string | null;
+  /**
+   * Identifies what type of link was used (e.g., cpc, banner, email)
+   */
+  utm_medium?: string | null;
+  /**
+   * Identifies what specifically was clicked to bring the user (e.g., logolink, textlink)
+   */
+  utm_content?: string | null;
+  /**
+   * Legacy UTM field - kept for backward compatibility
+   */
+  utm?: string | null;
+  /**
+   * View all leads that came from this campaign. Use this to track campaign effectiveness.
+   */
+  campaignLeads?: {
+    docs?: (number | Lead)[];
+    hasNextPage?: boolean;
+    totalDocs?: number;
+  };
   updatedAt: string;
   createdAt: string;
 }
@@ -2360,8 +2383,8 @@ export interface EventsSelect<T extends boolean = true> {
   whatsappLink?: T;
   whatsappQrCode?: T;
   defaultParticipants?: T;
-  actualRegistrations?: T;
-  campaignVisitors?: T;
+  totalRegistrations?: T;
+  campaignRegistrations?: T;
   eventLeads?: T;
   meta?:
     | T
@@ -2416,10 +2439,13 @@ export interface CampaignsSelect<T extends boolean = true> {
   startDate?: T;
   endDate?: T;
   budget?: T;
-  utm?: T;
   events?: T;
-  combinedRegistrations?: T;
-  combinedCampaignConversions?: T;
+  utm_source?: T;
+  utm_campaign?: T;
+  utm_medium?: T;
+  utm_content?: T;
+  utm?: T;
+  campaignLeads?: T;
   updatedAt?: T;
   createdAt?: T;
 }
@@ -2765,9 +2791,10 @@ export interface LeadsSelect<T extends boolean = true> {
   reminder_date?: T;
   reminder_note?: T;
   not_responding?: T;
-  events?: T;
-  campaigns?: T;
   assign_to?: T;
+  event?: T;
+  campaign?: T;
+  has_attended?: T;
   eventAttendance?:
     | T
     | {

@@ -23,17 +23,16 @@ export const Leads: CollectionConfig = {
          * 1. Send confirmation email when user registers for an event
          */
         if (
-          doc.events &&
-          Array.isArray(doc.events) &&
-          doc.events.length > 0 &&
+          doc.eventAttendance &&
+          Array.isArray(doc.eventAttendance) &&
+          doc.eventAttendance.length > 0 &&
           doc.email &&
           doc.name
         ) {
           try {
             // Always pick the most recently added event
-            const latestEventId = doc.events[doc.events.length - 1];
-            const eventId =
-              typeof latestEventId === "object" ? latestEventId.id : latestEventId;
+            const latestAttendance = doc.eventAttendance[doc.eventAttendance.length - 1];
+            const eventId = typeof latestAttendance.event === "object" ? latestAttendance.event.id : latestAttendance.event;
 
             const event = await req.payload.findByID({
               collection: "events",
@@ -78,14 +77,14 @@ export const Leads: CollectionConfig = {
          * 2. Update statistics (registrations + campaign visitors)
          *    in the related event(s) when new leads are linked
          */
-        if (doc.events && Array.isArray(doc.events)) {
+        if (doc.eventAttendance && Array.isArray(doc.eventAttendance)) {
           try {
-            const previousEvents = previousDoc?.events || [];
-            const previousEventIds = previousEvents.map((e: any) =>
-              typeof e === "object" ? e.id : e
+            const previousAttendance = previousDoc?.eventAttendance || [];
+            const previousEventIds = previousAttendance.map((a: any) =>
+              typeof a.event === "object" ? a.event.id : a.event
             );
-            const currentEventIds = doc.events.map((e: any) =>
-              typeof e === "object" ? e.id : e
+            const currentEventIds = doc.eventAttendance.map((a: any) =>
+              typeof a.event === "object" ? a.event.id : a.event
             );
 
             // Find only newly-added events
@@ -101,28 +100,21 @@ export const Leads: CollectionConfig = {
                 });
 
                 if (event) {
-                  // Did this lead also get assigned to a new campaign?
-                  const prevCampaigns = previousDoc?.campaigns || [];
-                  const prevCampaignIds = prevCampaigns.map((c: any) =>
-                    typeof c === "object" ? c.id : c
-                  );
-                  const currentCampaignIds = doc.campaigns?.map((c: any) =>
-                    typeof c === "object" ? c.id : c
-                  ) || [];
+                  // Find the attendance record for this event to check if it has a campaign
+                  const attendanceRecord = doc.eventAttendance.find((a: any) => {
+                    const aEventId = typeof a.event === "object" ? a.event.id : a.event;
+                    return aEventId === eventId;
+                  });
 
-                  const newCampaignIds = currentCampaignIds.filter(
-                    (id: any) => !prevCampaignIds.includes(id)
-                  );
+                  const hasCampaign = attendanceRecord?.campaign ? 1 : 0;
 
                   // Update event stats in ONE call
                   await req.payload.update({
                     collection: "events",
                     id: eventId,
                     data: {
-                      actualRegistrations: (event.actualRegistrations || 0) + 1,
-                      campaignVisitors:
-                        (event.campaignVisitors || 0) +
-                        (newCampaignIds.length > 0 ? 1 : 0),
+                      totalRegistrations: (event.totalRegistrations || 0) + 1,
+                      campaignRegistrations: (event.campaignRegistrations || 0) + hasCampaign,
                     },
                   });
                 }
@@ -304,21 +296,6 @@ export const Leads: CollectionConfig = {
       type: "row",
       fields: [
         {
-          name: "events",
-          type: "relationship",
-          relationTo: "events",
-          hasMany: true,
-          label: "Registered Events",
-        },
-        {
-          name: "campaigns",
-          type: "relationship",
-          relationTo: "campaigns",
-          hasMany: true,
-          required: false,
-          label: "Campaign Sources",
-        },
-        {
           name: "assign_to",
           type: "relationship",
           relationTo: "staffs",
@@ -326,7 +303,7 @@ export const Leads: CollectionConfig = {
         },
       ]
     },
-    // Legacy fields for data migration (will be removed after migration)
+    // Legacy fields for backward compatibility (DO NOT USE - for data preservation only)
     {
       type: "row",
       fields: [
@@ -335,7 +312,7 @@ export const Leads: CollectionConfig = {
           type: "relationship",
           relationTo: "events",
           hasMany: false,
-          label: "Legacy Event (Migration Only)",
+          label: "Legacy Event (DEPRECATED - Use eventAttendance instead)",
           admin: {
             condition: () => false, // Hide from admin UI
           }
@@ -345,7 +322,7 @@ export const Leads: CollectionConfig = {
           type: "relationship",
           relationTo: "campaigns",
           hasMany: false,
-          label: "Legacy Campaign (Migration Only)",
+          label: "Legacy Campaign (DEPRECATED - Use eventAttendance instead)",
           admin: {
             condition: () => false, // Hide from admin UI
           }
@@ -353,7 +330,7 @@ export const Leads: CollectionConfig = {
         {
           name: "has_attended",
           type: "checkbox",
-          label: "Legacy Attendance (Migration Only)",
+          label: "Legacy Attendance (DEPRECATED - Use eventAttendance instead)",
           admin: {
             condition: () => false, // Hide from admin UI
           }

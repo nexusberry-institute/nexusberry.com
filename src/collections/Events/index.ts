@@ -192,24 +192,24 @@ export const Events: CollectionConfig = {
                 label: "Default Participants",
               },
               {
-                name: "actualRegistrations",
+                name: "totalRegistrations",
                 type: "number",
                 required: false,
                 defaultValue: 0,
                 min: 0,
-                label: "Actual Registrations",
+                label: "Total Registrations",
                 admin: {
                   readOnly: true,
                   description: "Auto-calculated from leads registered for this event"
                 }
               },
               {
-                name: "campaignVisitors",
+                name: "campaignRegistrations",
                 type: "number",
                 required: false,
                 defaultValue: 0,
                 min: 0,
-                label: "Campaign Conversions",
+                label: "Campaign Registrations",
                 admin: {
                   readOnly: true,
                   description: "Number of registrations from campaign UTM codes for this event"
@@ -225,7 +225,7 @@ export const Events: CollectionConfig = {
               label: "Leads Registered for This Event",
               type: "join",
               collection: "leads",
-              on: "events", // Updated to match the new hasMany field
+              on: "eventAttendance.event",
               access: {
                 read: ({ req }) => {
                   // Allow if user is authenticated

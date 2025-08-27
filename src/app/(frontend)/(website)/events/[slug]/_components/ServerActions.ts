@@ -104,12 +104,14 @@ export default async function CreateEventRegistration(data: FormData) {
     })
 
     if (checkExistingLead.docs[0]) {
-      const existing = checkExistingLead.docs[0] as any; // Cast to any to access new fields
+      const existing = checkExistingLead.docs[0] as any;
       
-      // Check if this lead already has this event assigned (events is now an array)
-      const existingEvents = existing.events || [];
-      const existingEventIds = existingEvents.map((e: any) => typeof e === 'object' ? e.id : e);
-      const hasEvent = existingEventIds.includes(data.events);
+      // Check if this lead already has this event in their eventAttendance array
+      const existingAttendance = existing.eventAttendance || [];
+      const hasEvent = existingAttendance.some((attendance: any) => {
+        const eventId = typeof attendance.event === 'object' ? attendance.event.id : attendance.event;
+        return eventId === data.events;
+      });
 
       if (hasEvent) {
         return {
@@ -118,43 +120,43 @@ export default async function CreateEventRegistration(data: FormData) {
           error: "You have already registered for this event."
         }
       } else {
-        // update existing lead: add new event to the events array and campaign if missing
-        const existingCampaigns = existing.campaigns || [];
-        const updatePayload: any = {
-          events: [...existingEventIds, data.events], // Add new event to existing events
-        }
-        
-        // Only add campaign if the lead doesn't already have it and a campaign was provided
-        if (campaignRecord) {
-          const existingCampaignIds = existingCampaigns.map((c: any) => typeof c === 'object' ? c.id : c);
-          if (!existingCampaignIds.includes(campaignRecord.id)) {
-            updatePayload.campaigns = [...existingCampaignIds, campaignRecord.id];
-          }
-        }
+        // Add new event to the eventAttendance array
+        const newAttendance = {
+          event: data.events,
+          hasAttended: false,
+          ...(campaignRecord ? { campaign: campaignRecord.id } : {})
+        };
 
         await payload.update({
           collection: 'leads',
           id: checkExistingLead.docs[0].id,
-          data: updatePayload,
+          data: {
+            eventAttendance: [...existingAttendance, newAttendance]
+          },
         })
 
         return { success: true, message: 'Your registration has been completed.', error: null }
       }
     }
 
-    // Create new lead (attach campaign if found)
+    // Create new lead with eventAttendance array
     // The hooks in Leads collection will handle: 
     // - Event statistics update
     // - Campaign statistics update  
     // - Email sending
+    const eventAttendanceRecord = {
+      event: data.events,
+      hasAttended: false,
+      ...(campaignRecord ? { campaign: campaignRecord.id } : {})
+    };
+
     await payload.create({
       collection: 'leads',
       data: {
         name: data.name,
         email: data.email,
         mobile: data.phoneNumber,
-        events: [data.events] as any, // Use array for multiple events
-        ...(campaignRecord ? { campaigns: [campaignRecord.id] as any } : {}), // Use array for multiple campaigns
+        eventAttendance: [eventAttendanceRecord]
       }
     })
 

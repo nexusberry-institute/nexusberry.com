@@ -10,45 +10,6 @@ const Campaigns: CollectionConfig = {
     update: authenticated,
     delete: authenticated,
   },
-  hooks: {
-    afterRead: [
-      async ({ doc, req }) => {
-        if (doc && doc.events && Array.isArray(doc.events)) {
-          try {
-            // Calculate combined statistics from all events in this campaign
-            let totalRegistrations = 0;
-            let totalCampaignConversions = 0;
-
-            for (const eventId of doc.events) {
-              try {
-                const event = await req.payload.findByID({
-                  collection: 'events',
-                  id: typeof eventId === 'object' ? eventId.id : eventId,
-                });
-
-                if (event) {
-                  totalRegistrations += event.actualRegistrations || 0;
-                  totalCampaignConversions += event.campaignVisitors || 0;
-                }
-              } catch (e) {
-                console.warn(`Failed to fetch event ${eventId}:`, e);
-              }
-            }
-
-            // Update the document with calculated values (non-persistent, just for display)
-            doc.combinedRegistrations = totalRegistrations;
-            doc.combinedCampaignConversions = totalCampaignConversions;
-          } catch (error) {
-            console.warn('Failed to calculate campaign statistics:', error);
-            // Set default values if calculation fails
-            doc.combinedRegistrations = 0;
-            doc.combinedCampaignConversions = 0;
-          }
-        }
-        return doc;
-      }
-    ]
-  },
   fields: [
     {
       type: "tabs",
@@ -88,30 +49,6 @@ const Campaigns: CollectionConfig = {
               relationTo: "events",
               hasMany: true,
               required: false,
-            },
-            {
-              name: "combinedRegistrations",
-              type: "number",
-              required: false,
-              defaultValue: 0,
-              min: 0,
-              label: "Total Event Registrations",
-              admin: {
-                readOnly: true,
-                description: "Combined registrations from all events in this campaign (auto-calculated)"
-              }
-            },
-            {
-              name: "combinedCampaignConversions",
-              type: "number",
-              required: false,
-              defaultValue: 0,
-              min: 0,
-              label: "Total Campaign Conversions",
-              admin: {
-                readOnly: true,
-                description: "Combined conversions (registrations via UTM) from all events (auto-calculated)"
-              }
             },
           ]
         },
@@ -173,7 +110,13 @@ const Campaigns: CollectionConfig = {
               label: "Leads from This Campaign",
               type: "join",
               collection: "leads",
-              on: "campaigns",
+              on: "eventAttendance.campaign",
+              access: {
+                read: ({ req }) => {
+                  // Allow if user is authenticated
+                  return !!req.user
+                },
+              },
               admin: {
                 description: "View all leads that came from this campaign. Use this to track campaign effectiveness.",
                 allowCreate: false,
