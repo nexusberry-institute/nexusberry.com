@@ -2,7 +2,6 @@ import React from 'react'
 import { useEffect } from 'react'
 
 import Hero from './_components/Hero'
-// import UTMTracker from './_components/UTMTracker'
 import CourseDetail from './_components/CourseDetail'
 import JoinUs from './_components/JoinUs'
 import CourseInfo from './_components/CourseInfo'
@@ -94,8 +93,6 @@ export default async function SlugPage({ params }: { params: Promise<{ slug: str
 
   return (
     <div className="max-w-[1600px] mx-auto bg-card">
-      {/* Track UTM on client-side */}
-      {/* <UTMTracker slug={event.slug as string} /> */}
 
       <Hero
         eventData={[event]}
