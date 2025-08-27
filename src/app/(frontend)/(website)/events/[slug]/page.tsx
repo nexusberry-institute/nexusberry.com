@@ -90,7 +90,7 @@ export default async function SlugPage({ params }: { params: Promise<{ slug: str
   }
 
   const evt: any = event
-  const participantCount = (evt.defaultParticipants || 0) + (evt.actualRegistrations || 0)
+  const participantCount = (evt.defaultParticipants || 0) + (evt.totalRegistrations || 0)
 
   return (
     <div className="max-w-[1600px] mx-auto bg-card">
