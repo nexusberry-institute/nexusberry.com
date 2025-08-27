@@ -106,7 +106,7 @@ export default async function Page({ params }: { params: Promise<{ slug: string 
             <div className="w-fit">
               {eventFeedback && (
                 <GenerateCertificate
-                  name={eventFeedback.registration instanceof Object ? eventFeedback.registration.name : "Nexusberry Student"}
+                  name={eventFeedback.lead instanceof Object ? eventFeedback.lead.name : "Nexusberry Student"}
                   title={eventFeedback.event instanceof Object ? eventFeedback.event.title : "Nexusberry Event"}
                 />
               )}

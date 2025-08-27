@@ -45,11 +45,11 @@ export const queryExistingMumber = async (userInputNumber: number, eventSlug: st
 
 interface formData {
     lead: number,
-    event: EventFeedback["event"],
+    event: number,
     rating: number;
-    reason: EventFeedback["reason"],
-    otherReason: string | undefined;
-    mentorship: EventFeedback["mentorship"],
+    reason?: "topic-interest" | "mentor-preference" | "mentorship-program-interest" | "field-specific-interest" | "others" | null;
+    otherReason?: string | null;
+    mentorship?: "yes" | "no" | null;
 }
 
 export const createFeedbacks = async (data: formData, eventSlug: string) => {

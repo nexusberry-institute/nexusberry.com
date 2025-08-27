@@ -26,7 +26,7 @@ import { useRouter } from 'next/navigation'
 import { useState } from 'react'
 import { toast } from '@/hooks/use-toast'
 import { queryExistingMumber, createFeedbacks } from './actions'
-import { EventRegistration, Event as PayloadEvent } from '@/payload-types'
+import { Lead, Event as PayloadEvent } from '@/payload-types'
 
 const ReviewForm = ({ eventSlug }: { eventSlug: string }) => {
   const router = useRouter()
@@ -65,7 +65,7 @@ const ReviewForm = ({ eventSlug }: { eventSlug: string }) => {
     )
 
   const [isNumberExist, setIsNumberExist] = useState(0)
-  const [user, setUser] = useState<EventRegistration | null | undefined>(null)
+  const [user, setUser] = useState<Lead | null | undefined>(null)
   const [isLoading, setIsLoading] = useState(false)
 
   const handlePhoneExisting = async () => {
@@ -100,21 +100,41 @@ const ReviewForm = ({ eventSlug }: { eventSlug: string }) => {
   const selectedReason = form.watch('reason')
 
   async function onSubmit(data: z.infer<typeof FormSchema>) {
-    if (!user || !user.registeredEvents[0]) {
+    if (!user || !user.eventAttendance || !user.eventAttendance.length) {
       return toast({
         variant: 'destructive',
         title: 'Varification Failed',
         description: "Please Verify your phone number to continue.",
       })
     }
+    
+    // Find the event from eventAttendance that matches the current eventSlug
+    const eventFromAttendance = user.eventAttendance?.find(eventAtt => {
+      if (typeof eventAtt.event === "number") return false;
+      return eventAtt.event.slug === eventSlug;
+    });
+    
+    // Get the event ID - either from the matched attendance or fallback to first event
+    const eventId = eventFromAttendance?.event 
+      ? (typeof eventFromAttendance.event === "number" ? eventFromAttendance.event : eventFromAttendance.event.id)
+      : (user.eventAttendance[0] && typeof user.eventAttendance[0].event === "number" 
+          ? user.eventAttendance[0].event 
+          : (typeof user.eventAttendance[0]?.event === "object" ? user.eventAttendance[0].event.id : undefined));
+    
+    if (!eventId) {
+      return toast({
+        variant: 'destructive',
+        title: 'Event Not Found',
+        description: "Could not find the event you're trying to review.",
+      })
+    }
+    
     const uploadFeedback = {
-      registration: user.id,
+      lead: user.id,
       rating: data.rating,
-      event: user.registeredEvents.map(regEvents => typeof regEvents.event === "number" ?
-        { event: regEvents.event, slug: null } : { event: regEvents.event.id, slug: regEvents.event.slug })
-        .find(event => event.slug === eventSlug)?.event || user.registeredEvents[0].event,
+      event: eventId,
       reason: data.reason,
-      otherReason: data.reason === "others" ? undefined : data.otherReason,
+      otherReason: data.reason === "others" ? data.otherReason : undefined,
       mentorship: data.mentorship,
     }
     try {

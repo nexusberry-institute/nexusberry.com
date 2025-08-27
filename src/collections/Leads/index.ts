@@ -230,15 +230,16 @@ export const Leads: CollectionConfig = {
           ]
         },
         {
-          name: "interest_level",
-          type: "select",
-          options: [
-            "LOW",
-            "MEDIUM",
-            "HIGH",
-            "UNKNOWN"
-          ]
-        },
+  name: "interest_level",
+  type: "select",
+  options: [
+    { label: "Low", value: "LOW" },
+    { label: "Medium", value: "MEDIUM" },
+    { label: "High", value: "HIGH" },
+    { label: "Unknown", value: "UNKNOWN" },
+  ],
+}
+
       ]
     },
     {
