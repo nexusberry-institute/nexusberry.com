@@ -132,6 +132,8 @@ export default async function SlugPage({ params }: { params: Promise<{ slug: str
         eventId={event.id}
         slug={event.slug}
       />
+      {/* Spacer to prevent footer overlap */}
+      <div id="show_footer"></div>
     </div>
   )
 }
