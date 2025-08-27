@@ -11,10 +11,10 @@ export const Leads: CollectionConfig = {
     group: "Marketing & Outreach",
   },
   access: {
-    create: authenticated,
-    delete: authenticated,
+    create: anyone,
+    delete: anyone,
     read: anyone,
-    update: authenticated,
+    update: anyone,
   },
   hooks: {
     afterChange: [
@@ -303,7 +303,7 @@ export const Leads: CollectionConfig = {
         },
       ]
     },
-    // Legacy fields for backward compatibility (DO NOT USE - for data preservation only)
+    // Legacy fields for data migration (will be removed after migration)
     {
       type: "row",
       fields: [
@@ -312,7 +312,7 @@ export const Leads: CollectionConfig = {
           type: "relationship",
           relationTo: "events",
           hasMany: false,
-          label: "Legacy Event (DEPRECATED - Use eventAttendance instead)",
+          label: "Legacy Event (Migration Only)",
           admin: {
             condition: () => false, // Hide from admin UI
           }
@@ -322,7 +322,7 @@ export const Leads: CollectionConfig = {
           type: "relationship",
           relationTo: "campaigns",
           hasMany: false,
-          label: "Legacy Campaign (DEPRECATED - Use eventAttendance instead)",
+          label: "Legacy Campaign (Migration Only)",
           admin: {
             condition: () => false, // Hide from admin UI
           }
@@ -330,7 +330,7 @@ export const Leads: CollectionConfig = {
         {
           name: "has_attended",
           type: "checkbox",
-          label: "Legacy Attendance (DEPRECATED - Use eventAttendance instead)",
+          label: "Legacy Attendance (Migration Only)",
           admin: {
             condition: () => false, // Hide from admin UI
           }

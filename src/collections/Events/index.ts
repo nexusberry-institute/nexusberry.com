@@ -28,10 +28,10 @@ export const Events: CollectionConfig = {
     useAsTitle: 'title',
   },
   access: {
-    create: authenticated,
+    create: anyone,
     read: anyone,
-    update: authenticated,
-    delete: authenticated,
+    update: anyone,
+    delete: anyone,
   },
   hooks: {
     afterChange: [revalidateEvents],
@@ -217,31 +217,31 @@ export const Events: CollectionConfig = {
               },
           ]
         },
-        {
-          label: "Event Leads",
-          fields: [
-            {
-              name: "eventLeads",
-              label: "Leads Registered for This Event",
-              type: "join",
-              collection: "leads",
-              on: "eventAttendance.event",
-              access: {
-                read: ({ req }) => {
-                  // Allow if user is authenticated
-                  return !!req.user
-                },
-              },
-              admin: {
-                description: "View all leads registered for this event. Use this to track attendance and export data.",
-                allowCreate: false,
-              },
-              defaultLimit: 10,
-              defaultSort: '-createdAt',
-              maxDepth: 1,
-            }
-          ]
-        },
+        // {
+        //   label: "Event Leads",
+        //   fields: [
+        //     {
+        //       name: "eventLeads",
+        //       label: "Leads Registered for This Event",
+        //       type: "join",
+        //       collection: "leads",
+        //       on: "eventAttendance.event",
+        //       access: {
+        //         read: ({ req }) => {
+        //           // Allow if user is authenticated
+        //           return !!req.user
+        //         },
+        //       },
+        //       admin: {
+        //         description: "View all leads registered for this event. Use this to track attendance and export data.",
+        //         allowCreate: false,
+        //       },
+        //       defaultLimit: 10,
+        //       defaultSort: '-createdAt',
+        //       maxDepth: 1,
+        //     }
+        //   ]
+        // },
         {
           label: "SEO",
           fields: [

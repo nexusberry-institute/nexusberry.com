@@ -6,9 +6,9 @@ export const markParticipantAttendance = async (eventId: number, applicant: any)
   try {
     const payload = await getPayload({ config })
     const { docs } = await payload.find({
-      collection: 'event-registrations',
+      collection: 'leads',
       where: {
-        phoneNumber: {
+        mobile: {
           equals: applicant.phoneNumber,
         }
       },
@@ -18,23 +18,30 @@ export const markParticipantAttendance = async (eventId: number, applicant: any)
     })
 
     if (docs[0]) {
-      const currentEventRegistration = docs[0].registeredEvents.find((regEvent) => regEvent.event === eventId);
+      const currentEventAttendance = docs[0].eventAttendance?.find((attendance) => {
+        const attendanceEventId = typeof attendance.event === 'object' ? attendance.event.id : attendance.event;
+        return attendanceEventId === eventId;
+      });
 
-      if (!currentEventRegistration) {
+      if (!currentEventAttendance) {
         return { success: false, refresh: false }  // should register first
       }
 
-      if (currentEventRegistration.hasAttended === false) {
+      if (currentEventAttendance.hasAttended === false) {
+        // Update the specific attendance record
+        const updatedAttendance = docs[0].eventAttendance?.map((attendance) => {
+          const attendanceEventId = typeof attendance.event === 'object' ? attendance.event.id : attendance.event;
+          if (attendanceEventId === eventId) {
+            return { ...attendance, hasAttended: true };
+          }
+          return attendance;
+        });
+
         await payload.update({
-          collection: 'event-registrations',
+          collection: 'leads',
           id: docs[0].id,
           data: {
-            registeredEvents: [
-              {
-                ...currentEventRegistration, hasAttended: true,
-              },
-              ...docs[0].registeredEvents.filter(regEvent => regEvent.event !== eventId)
-            ]
+            eventAttendance: updatedAttendance
           }
         })
       } //only mark once and allow to join meeting

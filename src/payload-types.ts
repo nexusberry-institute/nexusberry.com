@@ -114,12 +114,6 @@ export interface Config {
     departments: {
       relatedCourses: 'web-courses';
     };
-    events: {
-      eventLeads: 'leads';
-    };
-    campaigns: {
-      campaignLeads: 'leads';
-    };
     'training-courses': {
       relatedPaymentPlans: 'payment-plans';
     };
@@ -1028,14 +1022,6 @@ export interface Event {
    * Number of registrations from campaign UTM codes for this event
    */
   campaignRegistrations?: number | null;
-  /**
-   * View all leads registered for this event. Use this to track attendance and export data.
-   */
-  eventLeads?: {
-    docs?: (number | Lead)[];
-    hasNextPage?: boolean;
-    totalDocs?: number;
-  };
   meta?: {
     title?: string | null;
     /**
@@ -1044,6 +1030,76 @@ export interface Event {
     image?: (number | null) | Media;
     description?: string | null;
   };
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "event-registrations".
+ */
+export interface EventRegistration {
+  id: number;
+  name: string;
+  email: string;
+  phoneNumber: string;
+  campaign?: (number | null) | Campaign;
+  registeredEvents: {
+    event: number | Event;
+    hasAttended?: boolean | null;
+    id?: string | null;
+  }[];
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "campaigns".
+ */
+export interface Campaign {
+  id: number;
+  name: string;
+  platform?: string | null;
+  startDate?: string | null;
+  endDate?: string | null;
+  budget?: number | null;
+  events?: (number | Event)[] | null;
+  /**
+   * Identifies which site sent the traffic (e.g., google, facebook, newsletter)
+   */
+  utm_source?: string | null;
+  /**
+   * Identifies a specific product promotion or strategic campaign (e.g., spring_sale)
+   */
+  utm_campaign?: string | null;
+  /**
+   * Identifies what type of link was used (e.g., cpc, banner, email)
+   */
+  utm_medium?: string | null;
+  /**
+   * Identifies what specifically was clicked to bring the user (e.g., logolink, textlink)
+   */
+  utm_content?: string | null;
+  /**
+   * Legacy UTM field - kept for backward compatibility
+   */
+  utm?: string | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "event-feedbacks".
+ */
+export interface EventFeedback {
+  id: number;
+  lead: number | Lead;
+  event: number | Event;
+  rating: number;
+  reason?:
+    | ('topic-interest' | 'mentor-preference' | 'mentorship-program-interest' | 'field-specific-interest' | 'others')
+    | null;
+  otherReason?: string | null;
+  mentorship?: ('yes' | 'no') | null;
   updatedAt: string;
   createdAt: string;
 }
@@ -1467,84 +1523,6 @@ export interface Staff {
   payPerAdmission?: number | null;
   fixPay?: number | null;
   note?: string | null;
-  updatedAt: string;
-  createdAt: string;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "campaigns".
- */
-export interface Campaign {
-  id: number;
-  name: string;
-  platform?: string | null;
-  startDate?: string | null;
-  endDate?: string | null;
-  budget?: number | null;
-  events?: (number | Event)[] | null;
-  /**
-   * Identifies which site sent the traffic (e.g., google, facebook, newsletter)
-   */
-  utm_source?: string | null;
-  /**
-   * Identifies a specific product promotion or strategic campaign (e.g., spring_sale)
-   */
-  utm_campaign?: string | null;
-  /**
-   * Identifies what type of link was used (e.g., cpc, banner, email)
-   */
-  utm_medium?: string | null;
-  /**
-   * Identifies what specifically was clicked to bring the user (e.g., logolink, textlink)
-   */
-  utm_content?: string | null;
-  /**
-   * Legacy UTM field - kept for backward compatibility
-   */
-  utm?: string | null;
-  /**
-   * View all leads that came from this campaign. Use this to track campaign effectiveness.
-   */
-  campaignLeads?: {
-    docs?: (number | Lead)[];
-    hasNextPage?: boolean;
-    totalDocs?: number;
-  };
-  updatedAt: string;
-  createdAt: string;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "event-registrations".
- */
-export interface EventRegistration {
-  id: number;
-  name: string;
-  email: string;
-  phoneNumber: string;
-  campaign?: (number | null) | Campaign;
-  registeredEvents: {
-    event: number | Event;
-    hasAttended?: boolean | null;
-    id?: string | null;
-  }[];
-  updatedAt: string;
-  createdAt: string;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "event-feedbacks".
- */
-export interface EventFeedback {
-  id: number;
-  registration: number | EventRegistration;
-  event: number | Event;
-  rating: number;
-  reason?:
-    | ('topic-interest' | 'mentor-preference' | 'mentorship-program-interest' | 'field-specific-interest' | 'others')
-    | null;
-  otherReason?: string | null;
-  mentorship?: ('yes' | 'no') | null;
   updatedAt: string;
   createdAt: string;
 }
@@ -2385,7 +2363,6 @@ export interface EventsSelect<T extends boolean = true> {
   defaultParticipants?: T;
   totalRegistrations?: T;
   campaignRegistrations?: T;
-  eventLeads?: T;
   meta?:
     | T
     | {
@@ -2420,7 +2397,7 @@ export interface EventRegistrationsSelect<T extends boolean = true> {
  * via the `definition` "event-feedbacks_select".
  */
 export interface EventFeedbacksSelect<T extends boolean = true> {
-  registration?: T;
+  lead?: T;
   event?: T;
   rating?: T;
   reason?: T;
@@ -2445,7 +2422,6 @@ export interface CampaignsSelect<T extends boolean = true> {
   utm_medium?: T;
   utm_content?: T;
   utm?: T;
-  campaignLeads?: T;
   updatedAt?: T;
   createdAt?: T;
 }

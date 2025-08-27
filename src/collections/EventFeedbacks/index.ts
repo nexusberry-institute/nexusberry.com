@@ -4,10 +4,10 @@ export const EventFeedbacks: CollectionConfig = {
   slug: "event-feedbacks",
   fields: [
     {
-      name: "registration",
+      name: "lead",
       type: "relationship",
       label: "Registered Attendee",
-      relationTo: "event-registrations",
+      relationTo: "leads",
       hasMany: false,
       required: true,
     },
