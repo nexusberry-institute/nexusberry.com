@@ -19,6 +19,8 @@ import PhoneInput from 'react-phone-input-2'
 import 'react-phone-input-2/lib/style.css'
 import { useRouter } from 'next/navigation'
 import CreateEventRegistration from './ServerActions'
+import { CheckCircle, Star } from 'lucide-react'
+import React, { useState, useEffect } from 'react'
 
 
 const FormSchema = z.object({
@@ -32,8 +34,26 @@ const FormSchema = z.object({
   phoneNumber: z.string().min(10, { message: 'Phone number must be at least 10 digits.' }),
 })
 
-const ModelForm = ({ eventId, slug, redirect }: { eventId: number; slug: string | undefined | null, redirect: boolean }) => {
+const ModelForm = ({ 
+  eventId, 
+  slug, 
+  redirect, 
+  showLeftGraphic = true,
+  showSuccessState = false,
+  startDateTime,
+  endTime 
+}: { 
+  eventId: number; 
+  slug: string | undefined | null; 
+  redirect: boolean;
+  showLeftGraphic?: boolean;
+  showSuccessState?: boolean;
+  startDateTime?: string;
+  endTime?: string | null;
+}) => {
   const router = useRouter()
+  const [isRegistered, setIsRegistered] = useState(false)
+  const [userDetails, setUserDetails] = useState<any>(null)
 
   const form = useForm<z.infer<typeof FormSchema>>({
     shouldFocusError: false,
@@ -44,6 +64,17 @@ const ModelForm = ({ eventId, slug, redirect }: { eventId: number; slug: string 
       phoneNumber: '',
     },
   })
+
+  useEffect(() => {
+    if (typeof window !== 'undefined' && slug) {
+      const details = localStorage.getItem(`${slug}-registration`)
+      if (details) {
+        const parsedDetails = JSON.parse(details)
+        setUserDetails(parsedDetails)
+        setIsRegistered(true)
+      }
+    }
+  }, [slug])
 
   async function upload(data: z.infer<typeof FormSchema>) {
 
@@ -83,10 +114,16 @@ const ModelForm = ({ eventId, slug, redirect }: { eventId: number; slug: string 
       const { success, message, error } = await CreateEventRegistration(uploadData)
       if (success) {
 
-        localStorage.setItem(`${slug}-registration`, JSON.stringify({
-          name: data.name, email: data.email,
-          phoneNumber: data.phoneNumber, eventSlug: slug
-        }))
+        const registrationData = {
+          name: data.name, 
+          email: data.email,
+          phoneNumber: data.phoneNumber, 
+          eventSlug: slug
+        }
+        
+        localStorage.setItem(`${slug}-registration`, JSON.stringify(registrationData))
+        setUserDetails(registrationData)
+        setIsRegistered(true)
 
         toast({
           variant: 'success',
@@ -94,10 +131,9 @@ const ModelForm = ({ eventId, slug, redirect }: { eventId: number; slug: string 
           description: message,
         })
 
-        if (redirect) {
+        // Always redirect to registration-success for first-time registrations
+        if (redirect || !showSuccessState) {
           router.push(`/events/${slug}/registration-success`)
-        } else {
-          window.location.reload()
         }
 
       } else {
@@ -117,18 +153,94 @@ const ModelForm = ({ eventId, slug, redirect }: { eventId: number; slug: string 
     form.reset()
   }
 
+  // Success state when user is registered and showSuccessState is true
+  if (isRegistered && userDetails && showSuccessState) {
+    return (
+      <div className="bg-gradient-to-br from-green-50 to-emerald-50 border-2 border-green-200 rounded-xl p-8 text-center space-y-6">
+        {/* Success Animation/Graphic */}
+        <div className="flex justify-center">
+          <div className="relative">
+            {/* Outer circle with pulse animation */}
+            <div className="absolute inset-0 rounded-full bg-green-200 animate-ping opacity-30"></div>
+            <div className="absolute inset-2 rounded-full bg-green-300 animate-pulse opacity-40"></div>
+            
+            {/* Main success circle */}
+            <div className="relative w-24 h-24 bg-gradient-to-br from-green-400 to-emerald-500 rounded-full flex items-center justify-center shadow-lg">
+              {/* Checkmark */}
+              <svg className="w-12 h-12 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
+              </svg>
+            </div>
+          </div>
+        </div>
+        
+        <div className="space-y-3">
+          <h3 className="text-2xl font-bold text-white-700">
+            Registration Confirmed
+          </h3>
+          <p className="text-lg text-white-600 font-medium">Welcome, {userDetails.name}!</p>
+          <p className="text-gray-600">You have successfully registered for this event.</p>
+        </div>
+
+        <Button
+          onClick={() => {
+            if (slug) {
+              window.open(`/events/${slug}/live-stream`, '_blank', 'noopener,noreferrer')
+            }
+          }}
+          className="bg-primary hover:bg-primary-400 text-white w-full py-4 px-6 rounded-xl font-semibold text-lg transition-all duration-300 hover:shadow-lg transform hover:scale-105"
+        >
+          Visit Live Stream
+        </Button>
+      </div>
+    )
+  }
+
+  // Check if registration is closed
+  const isRegistrationClosed = startDateTime && startDateTime < new Date().toISOString()
+
+  if (isRegistrationClosed && showSuccessState) {
+    return (
+      <div className="bg-gray-50 border-2 border-gray-200 rounded-xl p-6 text-center space-y-4">
+        <div className="space-y-2">
+          <h3 className="text-xl font-bold text-gray-700">Registration Closed</h3>
+          <p className="text-gray-600">This event has already started or ended.</p>
+        </div>
+        
+        <div className="bg-white rounded-lg p-4 border border-gray-100">
+          <p className="text-sm text-gray-500">
+            Stay tuned for future events and opportunities!
+          </p>
+        </div>
+      </div>
+    )
+  }
+
   return (
-    <div className="grow">
+    <div className={`${showLeftGraphic ? 'grow' : 'bg-white rounded-xl p-6 shadow-lg border border-gray-100'}`}>
+      {!showLeftGraphic && !showSuccessState && (
+        <div className="text-center mb-6">
+          <h3 className="text-xl font-bold text-gray-800 mb-2 flex items-center justify-center gap-2">
+            <Star className="h-5 w-5 text-yellow-500" />
+            Join the Event
+            <Star className="h-5 w-5 text-yellow-500" />
+          </h3>
+          <p className="text-gray-600 text-sm">Secure your spot now!</p>
+        </div>
+      )}
+      
       <Form {...form}>
-        <form onSubmit={form.handleSubmit(upload)} className="space-y-6 pb-6 pl-6 max-sm:pl-0 ">
+        <form onSubmit={form.handleSubmit(upload)} className={`space-y-6 ${showLeftGraphic ? 'pb-6 pl-6 max-sm:pl-0' : ''}`}>
           <FormField
             control={form.control}
             name="name"
             render={({ field }) => (
               <FormItem>
-                <FormLabel className="text-lg max-sm:text-base">Name</FormLabel>
-                <FormControl className="text-muted-foreground h-12 max-sm:h-12 text-lg">
-                  <Input placeholder="" {...field} />
+                <FormLabel className={`${showLeftGraphic ? 'text-lg max-sm:text-base' : 'text-base font-medium text-gray-700'}`}>
+                  {showLeftGraphic ? 'Name' : 'Full Name'}
+                </FormLabel>
+                <FormControl className={`${showLeftGraphic ? 'text-muted-foreground h-12 max-sm:h-12 text-lg' : 'h-12 text-base border-gray-200 focus:border-primary focus:ring-2 focus:ring-primary/20'}`}>
+                  <Input placeholder={showLeftGraphic ? "" : "Enter your full name"} {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -139,27 +251,31 @@ const ModelForm = ({ eventId, slug, redirect }: { eventId: number; slug: string 
             name="phoneNumber"
             render={({ field }) => (
               <FormItem>
-                <FormLabel className="text-lg max-sm:text-base">Phone Number</FormLabel>
-                <FormControl className="text-muted-foreground h-12 flex items-center bg-background max-sm:h-12 text-lg">
-                  <div className='focus-within:ring-4 rounded-lg'>
+                <FormLabel className={`${showLeftGraphic ? 'text-lg max-sm:text-base' : 'text-base font-medium text-gray-700'}`}>Phone Number</FormLabel>
+                <FormControl className={`${showLeftGraphic ? 'text-muted-foreground h-12 flex items-center bg-background max-sm:h-12 text-lg' : 'h-12 text-base'}`}>
+                  <div className={`${showLeftGraphic ? 'focus-within:ring-4 rounded-lg' : 'focus-within:ring-2 focus-within:ring-primary/20 rounded-lg'}`}>
                     <PhoneInput
                       {...field}
-                      placeholder=""
+                      placeholder={showLeftGraphic ? "" : "Enter phone number"}
                       country="pk"
                       enableSearch
                       countryCodeEditable={false}
                       disableCountryGuess={true}
                       inputStyle={{
                         width: '100%',
-                        height: '50px',
-                        backgroundColor: '#f5f5f5',
+                        height: showLeftGraphic ? '50px' : '48px',
+                        backgroundColor: showLeftGraphic ? '#f5f5f5' : 'white',
                         fontSize: '1rem',
                         paddingLeft: '50px',
+                        border: showLeftGraphic ? 'none' : '1px solid #e5e7eb',
+                        borderRadius: '8px',
                       }}
                       buttonStyle={{
                         backgroundColor: 'transparent',
                         outline: 'none',
-                        borderRadius: '4px',
+                        borderRadius: showLeftGraphic ? '4px' : '8px 0 0 8px',
+                        border: showLeftGraphic ? 'none' : '1px solid #e5e7eb',
+                        borderRight: showLeftGraphic ? 'none' : 'none',
                       }}
                       containerStyle={{
                         display: 'flex'
@@ -177,9 +293,9 @@ const ModelForm = ({ eventId, slug, redirect }: { eventId: number; slug: string 
             name="email"
             render={({ field }) => (
               <FormItem>
-                <FormLabel className="text-lg max-sm:text-base">Email</FormLabel>
-                <FormControl className="text-muted-foreground h-12 max-sm:h-12 text-lg">
-                  <Input type={'email'} placeholder="" {...field} />
+                <FormLabel className={`${showLeftGraphic ? 'text-lg max-sm:text-base' : 'text-base font-medium text-gray-700'}`}>Email</FormLabel>
+                <FormControl className={`${showLeftGraphic ? 'text-muted-foreground h-12 max-sm:h-12 text-lg' : 'h-12 text-base border-gray-200 focus:border-primary focus:ring-2 focus:ring-primary/20'}`}>
+                  <Input type={'email'} placeholder={showLeftGraphic ? "" : "Enter your email"} {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -189,15 +305,22 @@ const ModelForm = ({ eventId, slug, redirect }: { eventId: number; slug: string 
           <Button
             disabled={form.formState.isSubmitting}
             type="submit"
-            className="bg-primary flex justify-center hover:bg-primary-400 text-background w-full text-xl max-sm:text-base max-sm:py-3 py-2 rounded-xl"
+            className={`${
+              showLeftGraphic 
+                ? 'bg-primary flex justify-center hover:bg-primary-400 text-background w-full text-xl max-sm:text-base max-sm:py-3 py-2 rounded-xl'
+                : 'bg-primary hover:bg-primary-400 text-white w-full h-12 text-base font-semibold rounded-xl transition-all duration-300 hover:shadow-lg'
+            }`}
           >
-            {!form.formState.isSubmitting ? (
-              'Continue'
+            {form.formState.isSubmitting ? (
+              <div className="flex items-center justify-center">
+                <svg
+                  className={`animate-spin mr-3 border-2 ${showLeftGraphic ? 'border-r-green-500 border-indigo-100' : 'border-r-white border-white/30'} h-6 w-6 rounded-full`}
+                  viewBox="0 0 12 12"
+                />
+                {showLeftGraphic ? '' : 'Registering...'}
+              </div>
             ) : (
-              <svg
-                className="animate-spin mr-3 border-2 border-r-green-500 border-indigo-100 h-6 w-6 rounded-full"
-                viewBox="0 0 12 12"
-              ></svg>
+              showLeftGraphic ? 'Continue' : 'Register for Free'
             )}
           </Button>
         </form>

@@ -2,7 +2,6 @@ import React from 'react'
 import { useEffect } from 'react'
 
 import Hero from './_components/Hero'
-// import UTMTracker from './_components/UTMTracker'
 import CourseDetail from './_components/CourseDetail'
 import JoinUs from './_components/JoinUs'
 import CourseInfo from './_components/CourseInfo'
@@ -94,8 +93,6 @@ export default async function SlugPage({ params }: { params: Promise<{ slug: str
 
   return (
     <div className="max-w-[1600px] mx-auto bg-card">
-      {/* Track UTM on client-side */}
-      {/* <UTMTracker slug={event.slug as string} /> */}
 
       <Hero
         eventData={[event]}
@@ -106,9 +103,10 @@ export default async function SlugPage({ params }: { params: Promise<{ slug: str
         <CourseDetail
           learningOutcomes={event.learningOutcomes}
           image={typeof event.image === 'object' ? event.image : undefined}
+          instructor={typeof event.instructor === 'object' ? event.instructor : undefined}
         />
       )}
-      <JoinUs
+      {/* <JoinUs
         instructor={typeof event.instructor === 'object' ? event.instructor : undefined}
         title={event.title}
         startDateTime={event.startDateTime}
@@ -116,16 +114,26 @@ export default async function SlugPage({ params }: { params: Promise<{ slug: str
         slug={event.slug}
         whatsappLink={event.whatsappLink}
         whatsappQrCode={event.whatsappQrCode}
+      /> */}
+      {/* <Review title={event.title} slug={slug} /> */}
+      <CourseInfo 
+        eventId={event.id} 
+        slug={event.slug} 
+        startDateTime={event.startDateTime}
+        eventLabel={event.label}
       />
-      <Review title={event.title} slug={slug} />
-      <CourseInfo eventId={event.id} slug={event.slug} startDateTime={event.startDateTime} />
-      <UpcomingClasses slug={slug} />
+      <UpcomingClasses 
+        slug={slug} 
+        eventLabel={event.label}
+      />
       <RegistrationFooter
         startDateTime={event.startDateTime}
         endTime={event.endTime}
         eventId={event.id}
         slug={event.slug}
       />
+      {/* Spacer to prevent footer overlap */}
+      <div id="show_footer"></div>
     </div>
   )
 }

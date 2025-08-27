@@ -1,8 +1,6 @@
 import { slugField } from '@/fields/slug';
 import { CollectionConfig } from 'payload';
 import { revalidateEvents, revalidateDelete } from './hooks/revalidateEvents'
-import { anyone } from '@/access/anyone';
-import { authenticated } from '@/access/authenticated';
 import {
   AlignFeature,
   FixedToolbarFeature,
@@ -26,12 +24,6 @@ export const Events: CollectionConfig = {
   slug: 'events',
   admin: {
     useAsTitle: 'title',
-  },
-  access: {
-    create: anyone,
-    read: anyone,
-    update: anyone,
-    delete: anyone,
   },
   hooks: {
     afterChange: [revalidateEvents],
@@ -217,31 +209,31 @@ export const Events: CollectionConfig = {
               },
           ]
         },
-        // {
-        //   label: "Event Leads",
-        //   fields: [
-        //     {
-        //       name: "eventLeads",
-        //       label: "Leads Registered for This Event",
-        //       type: "join",
-        //       collection: "leads",
-        //       on: "eventAttendance.event",
-        //       access: {
-        //         read: ({ req }) => {
-        //           // Allow if user is authenticated
-        //           return !!req.user
-        //         },
-        //       },
-        //       admin: {
-        //         description: "View all leads registered for this event. Use this to track attendance and export data.",
-        //         allowCreate: false,
-        //       },
-        //       defaultLimit: 10,
-        //       defaultSort: '-createdAt',
-        //       maxDepth: 1,
-        //     }
-        //   ]
-        // },
+        {
+          label: "Event Leads",
+          fields: [
+            {
+              name: "eventLeads",
+              label: "Leads Registered for This Event",
+              type: "join",
+              collection: "leads",
+              on: "eventAttendance.event",
+              access: {
+                read: ({ req }) => {
+                  // Allow if user is authenticated
+                  return !!req.user
+                },
+              },
+              admin: {
+                description: "View all leads registered for this event. Use this to track attendance and export data.",
+                allowCreate: false,
+              },
+              defaultLimit: 10,
+              defaultSort: '-createdAt',
+              maxDepth: 1,
+            }
+          ]
+        },
         {
           label: "SEO",
           fields: [
