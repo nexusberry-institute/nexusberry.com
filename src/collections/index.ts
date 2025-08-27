@@ -43,7 +43,7 @@ const collections = [
    WebCourses,
    Departments,
    Events,
-   EventRegistrations,
+   EventRegistrations, // Keeping for data migration compatibility
    EventFeedbacks,
       Campaigns,
    Staffs,

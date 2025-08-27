@@ -11,15 +11,15 @@ export const queryExistingMumber = async (userInputNumber: number, eventSlug: st
     try {
         const payload = await getPayload({ config: configPromise })
         const user = await payload.find({
-            collection: 'event-registrations',
+            collection: 'leads',
             limit: 4,
             depth: 3,
             pagination: false,
             where: {
-                phoneNumber: {
+                mobile: {
                     equals: userInputNumber
                 },
-                'registeredEvents.event.slug': {
+                'eventAttendance.event.slug': {
                     equals: eventSlug
                 }
             }
@@ -44,12 +44,12 @@ export const queryExistingMumber = async (userInputNumber: number, eventSlug: st
 
 
 interface formData {
-    registration: number,
-    event: EventFeedback["event"],
+    lead: number,
+    event: number,
     rating: number;
-    reason: EventFeedback["reason"],
-    otherReason: string | undefined;
-    mentorship: EventFeedback["mentorship"],
+    reason?: "topic-interest" | "mentor-preference" | "mentorship-program-interest" | "field-specific-interest" | "others" | null;
+    otherReason?: string | null;
+    mentorship?: "yes" | "no" | null;
 }
 
 export const createFeedbacks = async (data: formData, eventSlug: string) => {
@@ -62,8 +62,8 @@ export const createFeedbacks = async (data: formData, eventSlug: string) => {
             depth: 2,
             pagination: false,
             where: {
-                registration: {
-                    equals: data.registration
+                lead: {
+                    equals: data.lead
                 },
                 'event.slug': {
                     equals: eventSlug
