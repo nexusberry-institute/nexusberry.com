@@ -1,6 +1,4 @@
 // import { checkAccess } from "@/access/accessControl";
-import { authenticated } from "@/access/authenticated";
-import { anyone } from "@/access/anyone";
 import { CollectionConfig } from "payload";
 import { format } from 'date-fns';
 
@@ -9,12 +7,6 @@ export const Leads: CollectionConfig = {
   admin: {
     useAsTitle: "mobile",
     group: "Marketing & Outreach",
-  },
-  access: {
-    create: anyone,
-    delete: anyone,
-    read: anyone,
-    update: anyone,
   },
   hooks: {
     afterChange: [

@@ -1,15 +1,8 @@
 import { CollectionConfig } from "payload";
-import { anyone } from '@/access/anyone';
 
 const Campaigns: CollectionConfig = {
   slug: "campaigns",
   admin: { useAsTitle: "name" },
-  access: {
-    create: anyone,
-    read: anyone,
-    update: anyone,
-    delete: anyone,
-  },
   fields: [
     {
       type: "tabs",
@@ -102,31 +95,31 @@ const Campaigns: CollectionConfig = {
             },
           ]
         },
-        // {
-        //   label: "Campaign Leads",
-        //   fields: [
-        //     {
-        //       name: "campaignLeads",
-        //       label: "Leads from This Campaign",
-        //       type: "join",
-        //       collection: "leads",
-        //       on: "eventAttendance.campaign",
-        //       access: {
-        //         read: ({ req }) => {
-        //           // Allow if user is authenticated
-        //           return !!req.user
-        //         },
-        //       },
-        //       admin: {
-        //         description: "View all leads that came from this campaign. Use this to track campaign effectiveness.",
-        //         allowCreate: false,
-        //       },
-        //       defaultLimit: 10,
-        //       defaultSort: '-createdAt',
-        //       maxDepth: 1,
-        //     }
-        //   ]
-        // }
+        {
+          label: "Campaign Leads",
+          fields: [
+            {
+              name: "campaignLeads",
+              label: "Leads from This Campaign",
+              type: "join",
+              collection: "leads",
+              on: "eventAttendance.campaign",
+              access: {
+                read: ({ req }) => {
+                  // Allow if user is authenticated
+                  return !!req.user
+                },
+              },
+              admin: {
+                description: "View all leads that came from this campaign. Use this to track campaign effectiveness.",
+                allowCreate: false,
+              },
+              defaultLimit: 10,
+              defaultSort: '-createdAt',
+              maxDepth: 1,
+            }
+          ]
+        }
       ]
     }
   ],
