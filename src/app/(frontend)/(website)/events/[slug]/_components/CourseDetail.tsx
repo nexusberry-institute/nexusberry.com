@@ -90,7 +90,7 @@ export default function CourseDetail({
       
       <div className='flex flex-col lg:flex-row gap-6 lg:gap-8'>
         {/* Left side - Instructor card (35% width on desktop) */}
-        <div className='w-full lg:w-[35%] order-2 lg:order-1 flex justify-center'>
+        <div className='w-full lg:w-[35%] order-1 lg:order-1 flex justify-center'>
           <div className="relative mx-auto w-fit flex flex-col items-center gap-3 md:gap-4 text-center">
             <div className="w-36 md:w-40 lg:w-44 rounded-full bg-muted aspect-square overflow-hidden relative">
               <Image
@@ -139,7 +139,7 @@ export default function CourseDetail({
         </div>
 
         {/* Right side - Learning outcomes container (65% width on desktop) */}
-        <div className='w-full lg:w-[65%] order-1 lg:order-2 flex'>
+        <div className='w-full lg:w-[65%] order-2 lg:order-2 flex'>
           {learningItems.length > 0 ? (
             <div className="relative bg-card border border-border rounded-2xl p-6 md:p-8 lg:p-10 shadow-lg w-full">
               {/* Vertical dashed divider - hidden on mobile */}

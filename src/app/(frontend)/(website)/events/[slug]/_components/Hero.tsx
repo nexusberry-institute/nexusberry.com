@@ -49,52 +49,6 @@ export default function Hero(props: {
           {eventObj?.label ?? 'MASTERCLASS'}
         </h2>
 
-        <div className="relative mx-auto w-fit flex flex-col gap-2 space-y-4 text-center lg:hidden">
-          <div className="w-36 md:w-40 rounded-full bg-muted mx-auto  aspect-square overflow-hidden relative ">
-            <Image
-              src={
-                typeof instructor === 'number'
-                  ? '/nexusberryLogo.png'
-                  : typeof instructor?.profileImage === 'object'
-                    ? (instructor.profileImage.url ?? '/nexusberryLogo.png')
-                    : '/nexusberryLogo.png'
-              }
-              alt={
-                typeof instructor === 'number'
-                  ? 'Nexusberry Instructor'
-                  : typeof instructor?.profileImage === 'object'
-                    ? (instructor.profileImage.alt ?? 'Nexusberry Instructor')
-                    : 'Nexusberry Instructor'
-              }
-              className="object-cover"
-              fill
-              sizes="(max-width: 768px) 144px, 160px"
-              priority
-            />
-          </div>
-
-          <div>
-            <h2 className="font-bold">
-              {instructor && typeof instructor === 'object' && instructor.name
-                ? instructor.name
-                : 'Nexusberry Trainer'}
-            </h2>
-            <div>
-              <span>
-                {instructor && typeof instructor === 'object' && instructor.experience
-                  ? `${instructor.experience}+ Years of Professional Experience`
-                  : '18+ Years of Professional Experience'}
-              </span>
-            </div>
-          </div>
-          <Image
-            src={ourMentor}
-            alt="our mentor"
-            className="absolute top-0 -left-12"
-            sizes="107px"
-          />
-        </div>
-
         <h1 className="font-semibold text-xl md:text-4xl max-lg:text-center ">{title}</h1>
         <TimeSlote startDateTime={startDateTime} endTime={endTime} />
 
@@ -108,6 +62,32 @@ export default function Hero(props: {
             <UserCheck />
             <span className="text-lg">{attendee ?? 2618} already registered</span>
           </div>
+        </div>
+
+        {/* Mobile Registration Button */}
+        <div className="lg:hidden pt-4">
+          {isRegistered ? (
+            <Button
+              onClick={() => {
+                if (slug) {
+                  window.open(`/events/${slug}/live-stream`, '_blank', 'noopener,noreferrer')
+                }
+              }}
+              className="w-full bg-primary-400 hover:bg-primary-400 font-bold py-6 rounded-xl hover:shadow-[4px_3px_0px_rgba(181,20,36,0.9)] duration-300 text-background"
+            >
+              Visit Live Stream
+            </Button>
+          ) : (
+            <Button
+              onClick={() => setIsOpenModel(true)}
+              disabled={new Date(startDateTime) < new Date()}
+              className="w-full bg-primary-400 hover:bg-primary-400 font-bold py-6 rounded-xl hover:shadow-[4px_3px_0px_rgba(181,20,36,0.9)] duration-300 text-background"
+            >
+              {new Date(startDateTime) < new Date()
+                ? 'Registrations Closed'
+                : 'Register for free!!'}
+            </Button>
+          )}
         </div>
       </div>
       <div className="max-lg:hidden flex items-center justify-center">
