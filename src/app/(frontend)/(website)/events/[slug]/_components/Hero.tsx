@@ -50,7 +50,7 @@ export default function Hero(props: {
         </h2>
 
         <div className="relative mx-auto w-fit flex flex-col gap-2 space-y-4 text-center lg:hidden">
-          <div className="w-32 rounded-full bg-muted mx-auto  aspect-square overflow-hidden relative ">
+          <div className="w-36 md:w-40 rounded-full bg-muted mx-auto  aspect-square overflow-hidden relative ">
             <Image
               src={
                 typeof instructor === 'number'
@@ -68,7 +68,7 @@ export default function Hero(props: {
               }
               className="object-cover"
               fill
-              sizes="288px"
+              sizes="(max-width: 768px) 144px, 160px"
               priority
             />
           </div>

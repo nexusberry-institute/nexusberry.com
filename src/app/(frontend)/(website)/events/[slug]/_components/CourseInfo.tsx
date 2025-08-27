@@ -8,7 +8,17 @@ import { EventModel } from './EventModel'
 import { masterClassBenefits } from '@/app/(frontend)/(website)/_constants/data'
 
 
-export default function CourseInfo({ eventId, slug, startDateTime }: { eventId: number, slug: string | null | undefined, startDateTime: string }) {
+export default function CourseInfo({ 
+  eventId, 
+  slug, 
+  startDateTime, 
+  eventLabel 
+}: { 
+  eventId: number, 
+  slug: string | null | undefined, 
+  startDateTime: string,
+  eventLabel?: string 
+}) {
   const [isOPenModel, setIsOpenModel] = useState(false)
   const [isRegistered, setIsRegistered] = useState(false)
 
@@ -30,7 +40,7 @@ export default function CourseInfo({ eventId, slug, startDateTime }: { eventId: 
         <div className="container relative flex justify-end p-4 max-xl:hidden">
           <div className='absolute inset-0'>
             <div className="h-[calc(100vh-5rem)] left-0 top-4 sticky flex flex-col w-1/2 pl-16 justify-center space-y-4 max-xl:py-10 max-lg:px-2 max-xl:space-y-8">
-              <h3 className="text-5xl font-semibold max-xs:text-2xl xl:leading-[4rem] leading-[4rem] max-sm:leading-[3rem]  ">Why Join NexusBerry <br />Masterclasses?</h3>
+              <h3 className="text-5xl font-semibold max-xs:text-2xl xl:leading-[4rem] leading-[4rem] max-sm:leading-[3rem]  ">Why Join NexusBerry <br />{eventLabel || 'MASTERCLASS'}?</h3>
               <p className="xl:text-justify text-center text-sm  max-xl:w-[70%] max-xl:mx-auto">
                 Engage in unique learning opportunities from industry leaders through simple, accessible
                 sessions designed to empower your career. Learn through practical experiences that
@@ -82,7 +92,7 @@ export default function CourseInfo({ eventId, slug, startDateTime }: { eventId: 
         </div>
         <div className='container xl:hidden'>
           <div className="pl-16 mx-auto text-center py-10 max-lg:px-2 space-y-8 max-sm:space-y-4">
-            <h3 className="font-semibold text-center text-[clamp(1.5rem,5vw,3rem)] leading-[clamp(2rem,6vw,4rem)]">Why Join NexusBerry Masterclasses?</h3>
+            <h3 className="font-semibold text-center text-[clamp(1.5rem,5vw,3rem)] leading-[clamp(2rem,6vw,4rem)]">Why Join NexusBerry {eventLabel || 'MASTERCLASS'}?</h3>
             <p className="text-center text-sm w-[70%] mx-auto">
               Engage in unique learning opportunities from industry leaders through simple, accessible
               sessions designed to empower your career. Learn through practical experiences that

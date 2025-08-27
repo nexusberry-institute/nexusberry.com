@@ -103,9 +103,10 @@ export default async function SlugPage({ params }: { params: Promise<{ slug: str
         <CourseDetail
           learningOutcomes={event.learningOutcomes}
           image={typeof event.image === 'object' ? event.image : undefined}
+          instructor={typeof event.instructor === 'object' ? event.instructor : undefined}
         />
       )}
-      <JoinUs
+      {/* <JoinUs
         instructor={typeof event.instructor === 'object' ? event.instructor : undefined}
         title={event.title}
         startDateTime={event.startDateTime}
@@ -113,10 +114,18 @@ export default async function SlugPage({ params }: { params: Promise<{ slug: str
         slug={event.slug}
         whatsappLink={event.whatsappLink}
         whatsappQrCode={event.whatsappQrCode}
+      /> */}
+      {/* <Review title={event.title} slug={slug} /> */}
+      <CourseInfo 
+        eventId={event.id} 
+        slug={event.slug} 
+        startDateTime={event.startDateTime}
+        eventLabel={event.label}
       />
-      <Review title={event.title} slug={slug} />
-      <CourseInfo eventId={event.id} slug={event.slug} startDateTime={event.startDateTime} />
-      <UpcomingClasses slug={slug} />
+      <UpcomingClasses 
+        slug={slug} 
+        eventLabel={event.label}
+      />
       <RegistrationFooter
         startDateTime={event.startDateTime}
         endTime={event.endTime}
