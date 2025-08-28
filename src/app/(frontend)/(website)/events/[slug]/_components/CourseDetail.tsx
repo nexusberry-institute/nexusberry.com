@@ -78,7 +78,7 @@ export default function CourseDetail({
     return textItems
   }
 
-  const learningItems = extractTextFromRichText(learningOutcomes).slice(0, 4)
+  const learningItems = extractTextFromRichText(learningOutcomes).slice(2, 6) // Skip first 2 items (title and intro), take next 4
 
   return (
     <div className='mx-4 md:mx-8 lg:mx-10 mt-12 md:mt-16 lg:mt-20'>
