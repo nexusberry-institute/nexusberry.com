@@ -19,9 +19,10 @@ export default function RegistrationFooter({
   slug: string | null | undefined
   eventId: number
 }) {
-  const [showFooter, setShowFooter] = useState(false)
+  const [showFooter, setShowFooter] = useState(true)
   const [isOPenModel, setIsOpenModel] = useState(false)
   const [isRegistered, setIsRegistered] = useState(false)
+  const [lastScrollY, setLastScrollY] = useState(0)
 
   useEffect(() => {
     if (typeof window !== 'undefined' && slug) {
@@ -33,18 +34,32 @@ export default function RegistrationFooter({
 
   useEffect(() => {
     const handleScroll = () => {
+      const currentScrollY = window.scrollY
       const element = document.getElementById('show_footer')
+      
       if (element) {
         const position = element.getBoundingClientRect()
-        setShowFooter(position.top + 50 <= window.innerHeight)
+        const isNearBottom = position.top <= window.innerHeight + 100
+        
+        // Show footer if:
+        // 1. User is scrolling up, OR
+        // 2. User is near the bottom of the page (where show_footer element is visible)
+        if (currentScrollY < lastScrollY || isNearBottom) {
+          setShowFooter(true)
+        } else if (currentScrollY > lastScrollY && currentScrollY > 100) {
+          // Hide footer when scrolling down and not at top
+          setShowFooter(false)
+        }
       }
+      
+      setLastScrollY(currentScrollY)
     }
 
-    window.addEventListener('scroll', handleScroll)
+    window.addEventListener('scroll', handleScroll, { passive: true })
     handleScroll() // Check initial position
 
     return () => window.removeEventListener('scroll', handleScroll)
-  }, [])
+  }, [lastScrollY])
 
   const timeLeft = CountdownTimer({ date: startDateTime })
 
@@ -52,7 +67,7 @@ export default function RegistrationFooter({
     <>
       <div
         id="footer"
-        className={`flex justify-between items-center bg-primary-700 px-4 py-6 max-sm:py-4 sticky bottom-0 max-lg:flex-col max-lg:gap-4  duration-300 ${showFooter ? '' : 'translate-y-32'}`}
+        className={`flex justify-between items-center bg-primary-700 px-4 py-6 max-sm:py-4 sticky bottom-0 max-lg:flex-col max-lg:gap-4 transition-transform duration-300 ${showFooter ? 'translate-y-0' : 'translate-y-full'}`}
       >
         <div className="flex gap-8 items-center ">
           <div className="flex font-bold gap-4 p-4 ring-1 bg-background text-foreground ring-foreground justify-center items-center w-[30rem] rounded-full  shadow-[5px_5px_0px_rgba(181,20,36,0.9)] hover:shadow-none duration-300 max-lg:hidden">
