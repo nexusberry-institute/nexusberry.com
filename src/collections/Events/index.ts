@@ -233,6 +233,11 @@ export const Events: CollectionConfig = {
               admin: {
                 description: "View all leads registered for this event. Use this to track attendance and export data.",
                 allowCreate: false,
+                  components: {
+                    Field: {
+                      path: "@/components/JoinFields/EventLeadsAttendanceStatus",
+                    }
+                  },
               },
               defaultLimit: 10,
               defaultSort: '-createdAt',
