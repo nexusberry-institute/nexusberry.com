@@ -135,7 +135,7 @@ export default async function CreateEventRegistration(data: FormData) {
           },
         })
 
-        return { success: true, message: 'Your registration has been completed.', error: null }
+        return { success: true, message: 'Your registration has been completed.', error: null, redirectTo: '/registration-success' }
       }
     }
 
@@ -163,7 +163,8 @@ export default async function CreateEventRegistration(data: FormData) {
     return {
       success: true,
       message: "Your registration has been completed.",
-      error: null
+      error: null,
+      redirectTo: '/registration-success'
     }
   } catch (error) {
     return {

@@ -29,6 +29,14 @@ const Campaigns: CollectionConfig = {
               required: false,
             },
             {
+              name: "detail",
+              type: "textarea",
+              required: false,
+              admin: {
+                description: "Detailed description of the campaign",
+              },
+            },
+            {
               name: "startDate",
               type: "date",
               required: false,
