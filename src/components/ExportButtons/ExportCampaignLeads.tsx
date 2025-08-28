@@ -227,37 +227,37 @@ export function ExportCampaignLeads(props?: BeforeDocumentControlsClientProps) {
         className="flex items-center gap-2 px-4 py-2 bg-purple-600 text-white rounded cursor-pointer hover:bg-purple-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
       >
         <ArrowDownToLineIcon className="w-4 h-4" />
-        {isLoading ? "Exporting..." : "Export Campaign Data"}
+        {isLoading ? "Exporting..." : `Export: ${campaignId}`}
         <ChevronDownIcon className="w-4 h-4" />
       </button>
 
       {showDropdown && !isLoading && (
-        <div className="absolute top-full left-0 mt-1 bg-white border border-gray-200 rounded shadow-lg z-50 min-w-[220px]">
+        <div className="absolute top-full left-0 mt-1 bg-gray-900 text-white border border-gray-700 rounded shadow-lg z-50 min-w-[220px]">
           <button
             type="button"
             onClick={handleExportCampaignSummary}
-            className="w-full text-left px-4 py-2 hover:bg-gray-100 transition-colors border-b border-gray-100 font-medium text-purple-700"
+            className="w-full text-left px-4 py-2 hover:bg-gray-800 transition-colors border-b border-gray-700 font-medium"
           >
             Campaign Summary
           </button>
           <button
             type="button"
             onClick={() => handleExportLeads('all')}
-            className="w-full text-left px-4 py-2 hover:bg-gray-100 transition-colors border-b border-gray-100"
+            className="w-full text-left px-4 py-2 hover:bg-gray-800 transition-colors border-b border-gray-700"
           >
             All Campaign Leads
           </button>
           <button
             type="button"
             onClick={() => handleExportLeads('attended')}
-            className="w-full text-left px-4 py-2 hover:bg-gray-100 transition-colors border-b border-gray-100"
+            className="w-full text-left px-4 py-2 hover:bg-gray-800 transition-colors border-b border-gray-700"
           >
             Attended Events
           </button>
           <button
             type="button"
             onClick={() => handleExportLeads('not_attended')}
-            className="w-full text-left px-4 py-2 hover:bg-gray-100 transition-colors"
+            className="w-full text-left px-4 py-2 hover:bg-gray-800 transition-colors"
           >
             Did Not Attend
           </button>
