@@ -18,12 +18,18 @@ import {
   OverviewField,
   PreviewField,
 } from '@payloadcms/plugin-seo/fields'
+import { ExportEventLeads } from "@/components/ExportButtons/ExportEventLeads";
 
 
 export const Events: CollectionConfig = {
   slug: 'events',
   admin: {
     useAsTitle: 'title',
+    components: {
+      edit: {
+        beforeDocumentControls: [ExportEventLeads as any],
+      },
+    }
   },
   hooks: {
     afterChange: [revalidateEvents],
@@ -227,6 +233,11 @@ export const Events: CollectionConfig = {
               admin: {
                 description: "View all leads registered for this event. Use this to track attendance and export data.",
                 allowCreate: false,
+                  components: {
+                    Field: {
+                      path: "@/components/JoinFields/EventLeadsAttendanceStatus",
+                    }
+                  },
               },
               defaultLimit: 10,
               defaultSort: '-createdAt',

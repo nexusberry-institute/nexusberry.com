@@ -1,8 +1,16 @@
 import { CollectionConfig } from "payload";
+import { ExportCampaignLeads } from "@/components/ExportButtons/ExportCampaignLeads";
 
 const Campaigns: CollectionConfig = {
   slug: "campaigns",
-  admin: { useAsTitle: "name" },
+  admin: { 
+    useAsTitle: "name",
+    components: {
+      edit: {
+        beforeDocumentControls: [ExportCampaignLeads as any],
+      },
+    }
+  },
   fields: [
     {
       type: "tabs",
