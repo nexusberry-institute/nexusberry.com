@@ -1075,6 +1075,13 @@ export interface Lead {
   event?: (number | null) | Event;
   campaign?: (number | null) | Campaign;
   has_attended?: boolean | null;
+  courseDemoBookings?:
+    | {
+        course: number | CoursesCollection;
+        bookedAt: string;
+        id?: string | null;
+      }[]
+    | null;
   eventAttendance?:
     | {
         event: number | Event;
@@ -1513,6 +1520,39 @@ export interface Campaign {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "courses-collection".
+ */
+export interface CoursesCollection {
+  id: number;
+  /**
+   * Higher numbers appear first
+   */
+  sortOrder?: number | null;
+  title: string;
+  content: {
+    root: {
+      type: string;
+      children: {
+        type: string;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  };
+  contentPosition?: ('left' | 'right') | null;
+  linkLabel: string;
+  linkUrl: string;
+  courseCard: (number | WebCourse)[];
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "event-feedbacks".
  */
 export interface EventFeedback {
@@ -1648,39 +1688,6 @@ export interface Sop {
     };
     [k: string]: unknown;
   };
-  updatedAt: string;
-  createdAt: string;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "courses-collection".
- */
-export interface CoursesCollection {
-  id: number;
-  /**
-   * Higher numbers appear first
-   */
-  sortOrder?: number | null;
-  title: string;
-  content: {
-    root: {
-      type: string;
-      children: {
-        type: string;
-        version: number;
-        [k: string]: unknown;
-      }[];
-      direction: ('ltr' | 'rtl') | null;
-      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
-      indent: number;
-      version: number;
-    };
-    [k: string]: unknown;
-  };
-  contentPosition?: ('left' | 'right') | null;
-  linkLabel: string;
-  linkUrl: string;
-  courseCard: (number | WebCourse)[];
   updatedAt: string;
   createdAt: string;
 }
@@ -2752,6 +2759,13 @@ export interface LeadsSelect<T extends boolean = true> {
   event?: T;
   campaign?: T;
   has_attended?: T;
+  courseDemoBookings?:
+    | T
+    | {
+        course?: T;
+        bookedAt?: T;
+        id?: T;
+      };
   eventAttendance?:
     | T
     | {

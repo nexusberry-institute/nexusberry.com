@@ -1,5 +1,6 @@
 'use client'
 import React from 'react'
+import CreateCourseDemoBooking from './ServerActions'
 import {
     Form,
     FormItem,
@@ -29,6 +30,9 @@ const FormSchema = z.object({
     }).regex(/^\d+$/, {
         message: "Mobile number should contain only digits"
     }),
+    email: z.string().email({
+        message: "Please enter a valid email address."
+    }),
     occupation: z.string().min(1, {
         message: "Please select an occupation"
     }),
@@ -57,6 +61,7 @@ const RegistrationForm = ({
         defaultValues: {
             fullName: "",
             mobile: "",
+            email: "",
             occupation: "",
             education: "",
             policy: true,
@@ -65,54 +70,42 @@ const RegistrationForm = ({
     })
 
     async function onSubmit(data: z.infer<typeof FormSchema>) {
-        // console.log('Form submission started with data:', data)
-
         try {
-            const res = await fetch('/api/leads', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    name: data.fullName,
-                    mobile: data.mobile,
-                    education: data.education,
-                    job_info: data.occupation,
-                    notes: `Agreed to policy: ${data.policy}, Whatsapp updates: ${data.whatsapp}`
-                })
-            })
+            const response = await CreateCourseDemoBooking({
+                name: data.fullName,
+                mobile: data.mobile,
+                email: data.email,
+                education: data.education,
+                job_info: data.occupation,
+                notes: `Agreed to policy: ${data.policy}, Whatsapp updates: ${data.whatsapp}`,
+                courseSlug: slug || ""
+            });
 
-            // console.log('API response status:', res.status)
-
-            if (!res.ok) {
-                const errorData = await res.text()
-                console.error('API Error:', errorData)
-                throw new Error(`API Error: ${res.status}`)
+            if (response.success) {
+                toast({
+                    title: 'Thank you for registering!',
+                    description: response.message || 'Your information has been received successfully.',
+                    variant: 'success',
+                    duration: 1000,
+                });
+                form.reset();
+                if (redirect && slug) {
+                    router.push(`/course/${slug}/success-book-free-demo`);
+                }
+            } else {
+                toast({
+                    title: 'Already Registered',
+                    description: response.error || 'You have already booked a demo for this course.',
+                    variant: 'destructive',
+                });
             }
-
-            const response = await res.json()
-            // console.log('API Response:', response)
-
-            toast({
-                title: 'Thank you for registering!',
-                description: 'Your information has been received successfully.',
-                variant: 'success',
-                duration: 1000,
-            })
-
-            // Clear form first
-            form.reset()
-
-            if (redirect && slug) {
-                // Success page redirect k bajay query param use karein
-                router.push(`/course/${slug}/success-book-free-demo`);
-            }
-
         } catch (err) {
-            console.error('Form submission error:', err)
+            console.error('Form submission error:', err);
             toast({
                 title: 'Submission failed',
                 description: 'Please try again later.',
                 variant: 'destructive',
-            })
+            });
         }
     }
 
@@ -146,6 +139,23 @@ const RegistrationForm = ({
                                 <Input
                                     placeholder="Enter your mobile number"
                                     type="tel"
+                                    {...field}
+                                />
+                            </FormControl>
+                            <FormMessage />
+                        </FormItem>
+                    )}
+                />
+                <FormField
+                    control={form.control}
+                    name="email"
+                    render={({ field }) => (
+                        <FormItem>
+                            <FormLabel className='text-lg max-sm:text-base'>Email Address*</FormLabel>
+                            <FormControl className='text-white h-16 max-sm:h-12 text-lg'>
+                                <Input
+                                    placeholder="Enter your email address"
+                                    type="email"
                                     {...field}
                                 />
                             </FormControl>
