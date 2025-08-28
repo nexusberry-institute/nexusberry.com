@@ -1,9 +1,29 @@
 
+import React, { useEffect, useState } from "react";
+
 const EventLeadsAttendanceStatus: React.FC<{ value: any[] }> = ({ value }) => {
+  const [loading, setLoading] = useState(true);
   // Get eventId from URL
   const eventId = typeof window !== "undefined" ? window.location.pathname.split("/").pop() : "";
 
-  if (!Array.isArray(value)) return null;
+  useEffect(() => {
+    // Simulate loading for UX, or set to false if value is present
+    if (Array.isArray(value)) {
+      setLoading(false);
+    }
+  }, [value]);
+
+  if (loading) {
+    return (
+      <div className="py-6 text-center text-gray-400 animate-pulse">
+        Loading leads...
+      </div>
+    );
+  }
+
+  if (!Array.isArray(value) || value.length === 0) {
+    return <div className="py-6 text-center text-gray-400">No leads found.</div>;
+  }
 
   return (
     <div>
