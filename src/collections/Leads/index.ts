@@ -331,6 +331,31 @@ export const Leads: CollectionConfig = {
       ]
     },
     {
+      name: "courseDemoBookings",
+      type: "array",
+      label: "Course Demo Bookings",
+      fields: [
+        {
+          type: "row",
+          fields: [
+            {
+              name: "course",
+              type: "relationship",
+              relationTo: "courses-collection",
+              required: true,
+              hasMany: false,
+            },
+            {
+              name: "bookedAt",
+              type: "date",
+              required: true,
+              label: "Booked At",
+            }
+          ]
+        }
+      ]
+    },
+    {
       name: "eventAttendance",
       type: "array",
       label: "Event Attendance Tracking",
