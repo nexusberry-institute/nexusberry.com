@@ -111,7 +111,7 @@ const ModelForm = ({
     }
 
     try {
-      const { success, message, error } = await CreateEventRegistration(uploadData)
+      const { success, message, error, redirectTo } = await CreateEventRegistration(uploadData)
       if (success) {
 
         const registrationData = {
@@ -131,9 +131,10 @@ const ModelForm = ({
           description: message,
         })
 
-        // Always redirect to registration-success for first-time registrations
+        // Redirect based on server response or fallback to default
         if (redirect || !showSuccessState) {
-          router.push(`/events/${slug}/registration-success`)
+          const redirectUrl = redirectTo ? `/events/${slug}${redirectTo}` : `/events/${slug}/registration-success`
+          router.push(redirectUrl)
         }
 
       } else {
