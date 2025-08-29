@@ -224,24 +224,13 @@ export const Events: CollectionConfig = {
               type: "join",
               collection: "leads",
               on: "eventAttendance.event",
-              access: {
-                read: ({ req }) => {
-                  // Allow if user is authenticated
-                  return !!req.user
-                },
-              },
               admin: {
                 description: "View all leads registered for this event. Use this to track attendance and export data.",
                 allowCreate: false,
-                  components: {
-                    Field: {
-                      path: "@/components/JoinFields/EventLeadsAttendanceStatus",
-                    }
-                  },
               },
               defaultLimit: 10,
               defaultSort: '-createdAt',
-              maxDepth: 1,
+              maxDepth: 2,
             }
           ]
         },
