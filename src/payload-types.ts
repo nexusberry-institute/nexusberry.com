@@ -1483,6 +1483,10 @@ export interface Campaign {
   id: number;
   name: string;
   platform?: string | null;
+  /**
+   * Detailed description of the campaign
+   */
+  detail?: string | null;
   startDate?: string | null;
   endDate?: string | null;
   budget?: number | null;
@@ -2400,6 +2404,7 @@ export interface EventFeedbacksSelect<T extends boolean = true> {
 export interface CampaignsSelect<T extends boolean = true> {
   name?: T;
   platform?: T;
+  detail?: T;
   startDate?: T;
   endDate?: T;
   budget?: T;

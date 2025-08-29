@@ -10,7 +10,9 @@ export function ExportEventLeads(props?: BeforeDocumentControlsClientProps) {
 
   useEffect(() => {
     const path = window.location.pathname
-    const id = path.split("/").pop() || ""
+    const pathParts = path.split("/")
+    const id = pathParts[pathParts.length - 1] || ""
+    console.log("Event ID extracted from URL:", id) // Debug log
     setEventId(id)
   }, [])
 
@@ -33,9 +35,14 @@ export function ExportEventLeads(props?: BeforeDocumentControlsClientProps) {
       '"Name","Phone","Email","Gender","City","Province","Country","Has Attended","Registration Date"',
     ]
 
+    console.log("Processing leads data:", { leadsCount: leads.length, attendanceFilter, eventId })
+
+    // Since we already fetched leads filtered by event, we don't need to filter by event again
+    // We only need to filter by attendance status
     const filteredLeads = leads.filter((lead) => {
       if (!lead.eventAttendance || !Array.isArray(lead.eventAttendance)) return false
 
+      // Find the attendance record for this specific event
       const eventAttendance = lead.eventAttendance.find((attendance: any) => {
         const attendanceEventId =
           typeof attendance.event === "object" ? attendance.event.id : attendance.event
@@ -44,10 +51,13 @@ export function ExportEventLeads(props?: BeforeDocumentControlsClientProps) {
 
       if (!eventAttendance) return false
 
+      // Apply attendance filter
       if (attendanceFilter === "attended") return eventAttendance.hasAttended === true
       if (attendanceFilter === "not_attended") return eventAttendance.hasAttended !== true
-      return true
+      return true // for "all"
     })
+
+    console.log("Filtered leads:", { filteredCount: filteredLeads.length, originalCount: leads.length })
 
     filteredLeads.forEach((lead) => {
       const name = lead.name || ""
@@ -68,12 +78,19 @@ export function ExportEventLeads(props?: BeforeDocumentControlsClientProps) {
         ? new Date(lead.createdAt).toLocaleDateString()
         : ""
 
-      const safe = (val: string) => (val ? `"${val.replace(/"/g, '""')}"` : "")
+      // Use safer CSV escaping like in batches
+      const safeName = name ? `"${name.replace(/"/g, '""')}"` : '""'
+      const safePhone = phone ? `"${phone.replace(/"/g, '""')}"` : '""'
+      const safeEmail = email ? `"${email.replace(/"/g, '""')}"` : '""'
+      const safeGender = gender ? `"${gender.replace(/"/g, '""')}"` : '""'
+      const safeCity = city ? `"${city.replace(/"/g, '""')}"` : '""'
+      const safeProvince = province ? `"${province.replace(/"/g, '""')}"` : '""'
+      const safeCountry = country ? `"${country.replace(/"/g, '""')}"` : '""'
+      const safeAttended = `"${hasAttended}"`
+      const safeRegDate = `"${registrationDate}"`
 
       csvRows.push(
-        `${safe(name)},${safe(phone)},${safe(email)},${safe(gender)},${safe(
-          city
-        )},${safe(province)},${safe(country)},"${hasAttended}","${registrationDate}"`
+        `${safeName},${safePhone},${safeEmail},${safeGender},${safeCity},${safeProvince},${safeCountry},${safeAttended},${safeRegDate}`
       )
     })
 
@@ -85,6 +102,7 @@ export function ExportEventLeads(props?: BeforeDocumentControlsClientProps) {
     setShowDropdown(false)
 
     try {
+      // Fixed API call structure to match the working batches pattern
       const res = await fetch(
         `/api/leads?where[eventAttendance.event][equals]=${eventId}&depth=2&limit=0`,
         {
@@ -92,17 +110,29 @@ export function ExportEventLeads(props?: BeforeDocumentControlsClientProps) {
         }
       )
 
-      if (!res.ok) throw new Error("Failed to fetch leads")
+      if (!res.ok) {
+        console.error("Failed to fetch leads - Status:", res.status, res.statusText)
+        throw new Error(`Failed to fetch leads: ${res.status} ${res.statusText}`)
+      }
 
       const data = await res.json()
+      console.log("Fetched leads data:", data) // Debug log
+      
       if (!data.docs || data.docs.length === 0) {
         alert("No leads found for this event.")
         return
       }
 
+      // Get event details for filename
       const eventRes = await fetch(`/api/events/${eventId}`, {
         credentials: "include",
       })
+      
+      if (!eventRes.ok) {
+        console.error("Failed to fetch event - Status:", eventRes.status, eventRes.statusText)
+        throw new Error(`Failed to fetch event: ${eventRes.status} ${eventRes.statusText}`)
+      }
+      
       const eventData = await eventRes.json()
       const eventTitle = eventData.title || "event"
 
@@ -131,7 +161,7 @@ export function ExportEventLeads(props?: BeforeDocumentControlsClientProps) {
       downloadCSV(filename, csvRows)
     } catch (err) {
       console.error("Export error:", err)
-      alert("Something went wrong while exporting leads. Please try again.")
+      alert(`Export failed: ${err instanceof Error ? err.message : 'Unknown error'}. Please try again.`)
     } finally {
       setIsLoading(false)
     }

@@ -10,7 +10,9 @@ export function ExportCampaignLeads(props?: BeforeDocumentControlsClientProps) {
 
   useEffect(() => {
     const path = window.location.pathname
-    const id = path.split("/").pop() || ""
+    const pathParts = path.split("/")
+    const id = pathParts[pathParts.length - 1] || ""
+    console.log("Campaign ID extracted from URL:", id) // Debug log
     setCampaignId(id)
   }, [])
 
@@ -34,7 +36,8 @@ export function ExportCampaignLeads(props?: BeforeDocumentControlsClientProps) {
       
       // Check if any event attendance has this campaign
       const campaignAttendance = lead.eventAttendance.find((attendance: any) => {
-        const attendanceCampaignId = typeof attendance.campaign === "object" ? attendance.campaign.id : attendance.campaign
+        if (!attendance.campaign) return false
+        const attendanceCampaignId = typeof attendance.campaign === "object" ? attendance.campaign?.id : attendance.campaign
         return attendanceCampaignId === campaignId
       })
       
@@ -56,7 +59,8 @@ export function ExportCampaignLeads(props?: BeforeDocumentControlsClientProps) {
       
       // Find attendance record for this campaign
       const campaignAttendance = lead.eventAttendance?.find((attendance: any) => {
-        const attendanceCampaignId = typeof attendance.campaign === "object" ? attendance.campaign.id : attendance.campaign
+        if (!attendance.campaign) return false
+        const attendanceCampaignId = typeof attendance.campaign === "object" ? attendance.campaign?.id : attendance.campaign
         return attendanceCampaignId === campaignId
       })
       
@@ -72,20 +76,20 @@ export function ExportCampaignLeads(props?: BeforeDocumentControlsClientProps) {
       const utmCampaign = campaign && typeof campaign === "object" ? campaign.utm_campaign || "" : ""
       const utmMedium = campaign && typeof campaign === "object" ? campaign.utm_medium || "" : ""
 
-      // Escape quotes in CSV fields
-      const safeName = name ? `"${name.replace(/"/g, '""')}"` : ""
-      const safePhone = phone ? `"${phone.replace(/"/g, '""')}"` : ""
-      const safeEmail = email ? `"${email.replace(/"/g, '""')}"` : ""
-      const safeGender = gender ? `"${gender.replace(/"/g, '""')}"` : ""
-      const safeCity = city ? `"${city.replace(/"/g, '""')}"` : ""
-      const safeProvince = province ? `"${province.replace(/"/g, '""')}"` : ""
-      const safeCountry = country ? `"${country.replace(/"/g, '""')}"` : ""
-      const safeEvent = eventName ? `"${eventName.replace(/"/g, '""')}"` : ""
+      // Escape quotes in CSV fields - use consistent pattern like events
+      const safeName = name ? `"${name.replace(/"/g, '""')}"` : '""'
+      const safePhone = phone ? `"${phone.replace(/"/g, '""')}"` : '""'
+      const safeEmail = email ? `"${email.replace(/"/g, '""')}"` : '""'
+      const safeGender = gender ? `"${gender.replace(/"/g, '""')}"` : '""'
+      const safeCity = city ? `"${city.replace(/"/g, '""')}"` : '""'
+      const safeProvince = province ? `"${province.replace(/"/g, '""')}"` : '""'
+      const safeCountry = country ? `"${country.replace(/"/g, '""')}"` : '""'
+      const safeEvent = eventName ? `"${eventName.replace(/"/g, '""')}"` : '""'
       const safeAttended = `"${hasAttended}"`
       const safeRegDate = `"${registrationDate}"`
-      const safeUtmSource = utmSource ? `"${utmSource.replace(/"/g, '""')}"` : ""
-      const safeUtmCampaign = utmCampaign ? `"${utmCampaign.replace(/"/g, '""')}"` : ""
-      const safeUtmMedium = utmMedium ? `"${utmMedium.replace(/"/g, '""')}"` : ""
+      const safeUtmSource = utmSource ? `"${utmSource.replace(/"/g, '""')}"` : '""'
+      const safeUtmCampaign = utmCampaign ? `"${utmCampaign.replace(/"/g, '""')}"` : '""'
+      const safeUtmMedium = utmMedium ? `"${utmMedium.replace(/"/g, '""')}"` : '""'
 
       csvRows.push(`${safeName},${safePhone},${safeEmail},${safeGender},${safeCity},${safeProvince},${safeCountry},${safeEvent},${safeAttended},${safeRegDate},${safeUtmSource},${safeUtmCampaign},${safeUtmMedium}`)
     })
@@ -98,7 +102,7 @@ export function ExportCampaignLeads(props?: BeforeDocumentControlsClientProps) {
     setShowDropdown(false)
 
     try {
-      // Fetch leads that came from this campaign
+      // Fetch leads that came from this campaign - fixed API structure
       const res = await fetch(
         `/api/leads?where[eventAttendance.campaign][equals]=${campaignId}&depth=3&limit=0`,
         {
@@ -106,9 +110,13 @@ export function ExportCampaignLeads(props?: BeforeDocumentControlsClientProps) {
         }
       )
 
-      if (!res.ok) throw new Error("Failed to fetch leads")
+      if (!res.ok) {
+        console.error("Failed to fetch leads - Status:", res.status, res.statusText)
+        throw new Error(`Failed to fetch leads: ${res.status} ${res.statusText}`)
+      }
 
       const data = await res.json()
+      console.log("Fetched campaign leads data:", data) // Debug log
 
       if (!data.docs || data.docs.length === 0) {
         alert("No leads found for this campaign.")
@@ -119,6 +127,12 @@ export function ExportCampaignLeads(props?: BeforeDocumentControlsClientProps) {
       const campaignRes = await fetch(`/api/campaigns/${campaignId}`, {
         credentials: "include",
       })
+      
+      if (!campaignRes.ok) {
+        console.error("Failed to fetch campaign - Status:", campaignRes.status, campaignRes.statusText)
+        throw new Error(`Failed to fetch campaign: ${campaignRes.status} ${campaignRes.statusText}`)
+      }
+      
       const campaignData = await campaignRes.json()
       const campaignName = campaignData.name || "campaign"
 
@@ -142,7 +156,7 @@ export function ExportCampaignLeads(props?: BeforeDocumentControlsClientProps) {
       downloadCSV(filename, csvRows)
     } catch (err) {
       console.error("Export error:", err)
-      alert("Something went wrong while exporting leads. Please try again.")
+      alert(`Export failed: ${err instanceof Error ? err.message : 'Unknown error'}. Please try again.`)
     } finally {
       setIsLoading(false)
     }
@@ -166,12 +180,20 @@ export function ExportCampaignLeads(props?: BeforeDocumentControlsClientProps) {
           credentials: "include",
         }
       )
+      
+      if (!leadsRes.ok) {
+        console.error("Failed to fetch campaign leads - Status:", leadsRes.status, leadsRes.statusText)
+        throw new Error(`Failed to fetch campaign leads: ${leadsRes.status} ${leadsRes.statusText}`)
+      }
+      
       const leadsData = await leadsRes.json()
+      console.log("Fetched leads for campaign summary:", leadsData) // Debug log
 
       const totalLeads = leadsData.docs?.length || 0
       const attendedCount = leadsData.docs?.filter((lead: any) => 
         lead.eventAttendance?.some((attendance: any) => {
-          const attendanceCampaignId = typeof attendance.campaign === "object" ? attendance.campaign.id : attendance.campaign
+          if (!attendance.campaign) return false
+          const attendanceCampaignId = typeof attendance.campaign === "object" ? attendance.campaign?.id : attendance.campaign
           return attendanceCampaignId === campaignId && attendance.hasAttended === true
         })
       ).length || 0
@@ -212,7 +234,7 @@ export function ExportCampaignLeads(props?: BeforeDocumentControlsClientProps) {
       downloadCSV(filename, csvRows)
     } catch (err) {
       console.error("Export error:", err)
-      alert("Something went wrong while exporting campaign summary. Please try again.")
+      alert(`Export failed: ${err instanceof Error ? err.message : 'Unknown error'}. Please try again.`)
     } finally {
       setIsLoading(false)
     }

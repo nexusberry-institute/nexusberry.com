@@ -120,12 +120,6 @@ const Campaigns: CollectionConfig = {
               type: "join",
               collection: "leads",
               on: "eventAttendance.campaign",
-              access: {
-                read: ({ req }) => {
-                  // Allow if user is authenticated
-                  return !!req.user
-                },
-              },
               admin: {
                 description: "View all leads that came from this campaign. Use this to track campaign effectiveness.",
                 allowCreate: false,
