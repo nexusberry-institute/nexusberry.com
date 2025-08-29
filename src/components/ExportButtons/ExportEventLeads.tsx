@@ -46,7 +46,7 @@ export function ExportEventLeads(props?: BeforeDocumentControlsClientProps) {
       const eventAttendance = lead.eventAttendance.find((attendance: any) => {
         const attendanceEventId =
           typeof attendance.event === "object" ? attendance.event.id : attendance.event
-        return attendanceEventId === eventId
+        return String(attendanceEventId) === eventId
       })
 
       if (!eventAttendance) return false
@@ -71,7 +71,7 @@ export function ExportEventLeads(props?: BeforeDocumentControlsClientProps) {
       const eventAttendance = lead.eventAttendance?.find((attendance: any) => {
         const attendanceEventId =
           typeof attendance.event === "object" ? attendance.event.id : attendance.event
-        return attendanceEventId === eventId
+        return String(attendanceEventId) === eventId
       })
       const hasAttended = eventAttendance?.hasAttended ? "Yes" : "No"
       const registrationDate = lead.createdAt
@@ -104,7 +104,7 @@ export function ExportEventLeads(props?: BeforeDocumentControlsClientProps) {
     try {
       // Fixed API call structure to match the working batches pattern
       const res = await fetch(
-        `/api/leads?where[eventAttendance.event][equals]=${eventId}&depth=2&limit=0`,
+        `/api/leads?where[eventAttendance][event][equals]=${eventId}&depth=2&limit=0`,
         {
           credentials: "include",
         }

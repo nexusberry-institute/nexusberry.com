@@ -38,7 +38,7 @@ export function ExportCampaignLeads(props?: BeforeDocumentControlsClientProps) {
       const campaignAttendance = lead.eventAttendance.find((attendance: any) => {
         if (!attendance.campaign) return false
         const attendanceCampaignId = typeof attendance.campaign === "object" ? attendance.campaign?.id : attendance.campaign
-        return attendanceCampaignId === campaignId
+        return String(attendanceCampaignId) === campaignId
       })
       
       if (!campaignAttendance) return false
@@ -61,7 +61,7 @@ export function ExportCampaignLeads(props?: BeforeDocumentControlsClientProps) {
       const campaignAttendance = lead.eventAttendance?.find((attendance: any) => {
         if (!attendance.campaign) return false
         const attendanceCampaignId = typeof attendance.campaign === "object" ? attendance.campaign?.id : attendance.campaign
-        return attendanceCampaignId === campaignId
+        return String(attendanceCampaignId) === campaignId
       })
       
       const eventName = campaignAttendance?.event && typeof campaignAttendance.event === "object" 
@@ -104,7 +104,7 @@ export function ExportCampaignLeads(props?: BeforeDocumentControlsClientProps) {
     try {
       // Fetch leads that came from this campaign - fixed API structure
       const res = await fetch(
-        `/api/leads?where[eventAttendance.campaign][equals]=${campaignId}&depth=3&limit=0`,
+        `/api/leads?where[eventAttendance][campaign][equals]=${campaignId}&depth=3&limit=0`,
         {
           credentials: "include",
         }
@@ -175,7 +175,7 @@ export function ExportCampaignLeads(props?: BeforeDocumentControlsClientProps) {
 
       // Get leads for this campaign
       const leadsRes = await fetch(
-        `/api/leads?where[eventAttendance.campaign][equals]=${campaignId}&depth=3&limit=0`,
+        `/api/leads?where[eventAttendance][campaign][equals]=${campaignId}&depth=3&limit=0`,
         {
           credentials: "include",
         }
@@ -194,7 +194,7 @@ export function ExportCampaignLeads(props?: BeforeDocumentControlsClientProps) {
         lead.eventAttendance?.some((attendance: any) => {
           if (!attendance.campaign) return false
           const attendanceCampaignId = typeof attendance.campaign === "object" ? attendance.campaign?.id : attendance.campaign
-          return attendanceCampaignId === campaignId && attendance.hasAttended === true
+          return String(attendanceCampaignId) === campaignId && attendance.hasAttended === true
         })
       ).length || 0
 
