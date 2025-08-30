@@ -54,6 +54,7 @@ const ModelForm = ({
   const router = useRouter()
   const [isRegistered, setIsRegistered] = useState(false)
   const [userDetails, setUserDetails] = useState<any>(null)
+  const [phoneValue, setPhoneValue] = useState('')
 
   const form = useForm<z.infer<typeof FormSchema>>({
     shouldFocusError: false,
@@ -72,9 +73,19 @@ const ModelForm = ({
         const parsedDetails = JSON.parse(details)
         setUserDetails(parsedDetails)
         setIsRegistered(true)
+      } else {
+        // Reset states when no registration found
+        setIsRegistered(false)
+        setUserDetails(null)
+        setPhoneValue('')
+        form.reset({
+          name: '',
+          email: '',
+          phoneNumber: '',
+        })
       }
     }
-  }, [slug])
+  }, [slug, form])
 
   async function upload(data: z.infer<typeof FormSchema>) {
 
@@ -118,7 +129,8 @@ const ModelForm = ({
           name: data.name, 
           email: data.email,
           phoneNumber: data.phoneNumber, 
-          eventSlug: slug
+          eventSlug: slug,
+          eventId: eventId
         }
         
         localStorage.setItem(`${slug}-registration`, JSON.stringify(registrationData))
@@ -131,8 +143,8 @@ const ModelForm = ({
           description: message,
         })
 
-        // Redirect based on server response or fallback to default
-        if (redirect || !showSuccessState) {
+        // Always redirect to success page when registration is successful
+        if (redirect) {
           const redirectUrl = redirectTo ? `/events/${slug}${redirectTo}` : `/events/${slug}/registration-success`
           router.push(redirectUrl)
         }
@@ -152,6 +164,7 @@ const ModelForm = ({
       })
     }
     form.reset()
+    setPhoneValue('')
   }
 
   // Success state when user is registered and showSuccessState is true
@@ -186,7 +199,7 @@ const ModelForm = ({
         <Button
           onClick={() => {
             if (slug) {
-              window.open(`/events/${slug}/live-stream`, '_blank', 'noopener,noreferrer')
+              router.push(`/events/${slug}/live-stream`)
             }
           }}
           className="bg-primary hover:bg-primary-400 text-white w-full py-4 px-6 rounded-xl font-semibold text-lg transition-all duration-300 hover:shadow-lg transform hover:scale-105"
@@ -256,12 +269,17 @@ const ModelForm = ({
                 <FormControl className={`${showLeftGraphic ? 'text-muted-foreground h-12 flex items-center bg-background max-sm:h-12 text-lg' : 'h-12 text-base'}`}>
                   <div className={`${showLeftGraphic ? 'focus-within:ring-4 rounded-lg' : 'focus-within:ring-2 focus-within:ring-primary/20 rounded-lg'}`}>
                     <PhoneInput
-                      {...field}
+                      value={phoneValue || field.value}
+                      onChange={(value) => {
+                        setPhoneValue(value)
+                        field.onChange(value)
+                      }}
                       placeholder={showLeftGraphic ? "" : "Enter phone number"}
                       country="pk"
                       enableSearch
                       countryCodeEditable={false}
                       disableCountryGuess={true}
+                      key={`phone-${isRegistered}-${slug}`}
                       inputStyle={{
                         width: '100%',
                         height: showLeftGraphic ? '50px' : '48px',

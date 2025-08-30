@@ -41,13 +41,14 @@ export default function RegistrationFooter({
         const position = element.getBoundingClientRect()
         const isNearBottom = position.top <= window.innerHeight + 100
         
-        // Show footer if:
-        // 1. User is scrolling up, OR
-        // 2. User is near the bottom of the page (where show_footer element is visible)
-        if (currentScrollY < lastScrollY || isNearBottom) {
+        // Always show footer when near the bottom, otherwise follow scroll direction
+        if (isNearBottom) {
           setShowFooter(true)
-        } else if (currentScrollY > lastScrollY && currentScrollY > 100) {
-          // Hide footer when scrolling down and not at top
+        } else if (currentScrollY < lastScrollY) {
+          // Show when scrolling up
+          setShowFooter(true)
+        } else if (currentScrollY > lastScrollY && currentScrollY > 200) {
+          // Hide when scrolling down (but not too aggressively)
           setShowFooter(false)
         }
       }
@@ -67,7 +68,7 @@ export default function RegistrationFooter({
     <>
       <div
         id="footer"
-        className={`flex justify-between items-center bg-primary-700 px-4 py-6 max-sm:py-4 sticky bottom-0 max-lg:flex-col max-lg:gap-4 transition-transform duration-300 ${showFooter ? 'translate-y-0' : 'translate-y-full'}`}
+        className={`fixed bottom-0 left-0 right-0 z-50 flex justify-between items-center bg-primary-700 px-4 py-6 max-sm:py-4 max-lg:flex-col max-lg:gap-4 transition-transform duration-300 ${showFooter ? 'translate-y-0' : 'translate-y-full'}`}
       >
         <div className="flex gap-8 items-center ">
           <div className="flex font-bold gap-4 p-4 ring-1 bg-background text-foreground ring-foreground justify-center items-center w-[30rem] rounded-full  shadow-[5px_5px_0px_rgba(181,20,36,0.9)] hover:shadow-none duration-300 max-lg:hidden">
@@ -110,27 +111,24 @@ export default function RegistrationFooter({
             <span>:</span>
             <div className="flex flex-col gap-1 items-center">
               <div>{timeLeft.minutes}</div>
-              <div className="text-sm font-semibold">Minuts</div>
+              <div className="text-sm font-semibold">Minutes</div>
             </div>
             <span>:</span>
             <div className="flex flex-col gap-1 items-center">
               <div>{timeLeft.seconds}</div>
-              <div className="text-sm font-semibold">seconds</div>
+              <div className="text-sm font-semibold">Seconds</div>
             </div>
           </div>
         </div>
         {/* Registration / Live stream button */}
         {isRegistered ? (
-          <Button
-            onClick={() => {
-              if (slug) {
-                window.open(`/events/${slug}/live-stream`, '_blank', 'noopener,noreferrer')
-              }
-            }}
-            className="bg-primary-400 w-fit max-lg:mx-auto hover:bg-primary-400 font-bold py-6 rounded-xl hover:shadow-[4px_3px_0px_rgba(181,20,36,0.9)] duration-300"
-          >
-            Visit Live Stream
-          </Button>
+          <Link href={`/events/${slug}/live-stream`}>
+            <Button
+              className="bg-primary-400 w-fit max-lg:mx-auto hover:bg-primary-400 font-bold py-6 rounded-xl hover:shadow-[4px_3px_0px_rgba(181,20,36,0.9)] duration-300"
+            >
+              Visit Live Stream
+            </Button>
+          </Link>
         ) : (
           <Button
             onClick={() => setIsOpenModel(true)}

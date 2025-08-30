@@ -6,6 +6,7 @@ import Link from 'next/link'
 import { Button } from '@/components/ui/button'
 import { EventModel } from './EventModel'
 import { masterClassBenefits } from '@/app/(frontend)/(website)/_constants/data'
+import { useRouter } from 'next/navigation'
 
 
 export default function CourseInfo({ 
@@ -21,6 +22,7 @@ export default function CourseInfo({
 }) {
   const [isOPenModel, setIsOpenModel] = useState(false)
   const [isRegistered, setIsRegistered] = useState(false)
+  const router = useRouter()
 
   useEffect(() => {
     if (typeof window !== 'undefined' && slug) {
@@ -40,7 +42,7 @@ export default function CourseInfo({
         <div className="container relative flex justify-end p-4 max-xl:hidden">
           <div className='absolute inset-0'>
             <div className="h-[calc(100vh-5rem)] left-0 top-4 sticky flex flex-col w-1/2 pl-16 justify-center space-y-4 max-xl:py-10 max-lg:px-2 max-xl:space-y-8">
-              <h3 className="text-5xl font-semibold max-xs:text-2xl xl:leading-[4rem] leading-[4rem] max-sm:leading-[3rem]  ">Why Join NexusBerry <br />{eventLabel || 'MASTERCLASS'}?</h3>
+              <h3 className="text-5xl font-semibold max-xs:text-2xl xl:leading-[4rem] leading-[4rem] max-sm:leading-[3rem]  ">Why Join NexusBerry <br />Events?</h3>
               <p className="xl:text-justify text-center text-sm  max-xl:w-[70%] max-xl:mx-auto">
                 Engage in unique learning opportunities from industry leaders through simple, accessible
                 sessions designed to empower your career. Learn through practical experiences that
@@ -51,10 +53,10 @@ export default function CourseInfo({
           {isRegistered ? (
             <Button
               onClick={() => {
-  if (slug) {
-    window.open(`/events/${slug}/live-stream`, '_blank', 'noopener,noreferrer')
-  }
-}}
+              if (slug) {
+                router.push(`/events/${slug}/live-stream`)
+              }
+            }}
               className="bg-primary-400 w-fit max-lg:mx-auto hover:bg-primary-400 font-bold py-6 rounded-xl hover:shadow-[4px_3px_0px_rgba(181,20,36,0.9)] duration-300"
             >
               Visit Live Stream
@@ -99,9 +101,29 @@ export default function CourseInfo({
               transform theory into real-world skills in just a few hours! Discover the joy of mastering
               new tools and concepts that could launch your next career leap!
             </p>
-            <Button onClick={() => setIsOpenModel(true)} className="bg-primary-400  w-fit hover:bg-primary-400 font-bold p-8 max-sm:p-4 max-sm:rounded-lg rounded-xl hover:shadow-[4px_4px_0px_rgba(181,20,36,0.9)] duration-300">
-              Register for free!!
-            </Button>
+            {/* Mobile Registration / Live stream button */}
+            {isRegistered ? (
+              <Button
+                onClick={() => {
+                  if (slug) {
+                    router.push(`/events/${slug}/live-stream`)
+                  }
+                }}
+                className="bg-primary-400 w-fit hover:bg-primary-400 font-bold p-8 max-sm:p-4 max-sm:rounded-lg rounded-xl hover:shadow-[4px_4px_0px_rgba(181,20,36,0.9)] duration-300"
+              >
+                Visit Live Stream
+              </Button>
+            ) : (
+              <Button
+                onClick={() => setIsOpenModel(true)}
+                disabled={startDateTime < new Date().toISOString()}
+                className="bg-primary-400 w-fit hover:bg-primary-400 font-bold p-8 max-sm:p-4 max-sm:rounded-lg rounded-xl hover:shadow-[4px_4px_0px_rgba(181,20,36,0.9)] duration-300"
+              >
+                {startDateTime < new Date().toISOString()
+                  ? 'Registrations Closed'
+                  : 'Register for free!!'}
+              </Button>
+            )}
           </div>
           <ul className="flex flex-row gap-8 scrollbar-none overflow-auto px-8 pb-8">
             {
