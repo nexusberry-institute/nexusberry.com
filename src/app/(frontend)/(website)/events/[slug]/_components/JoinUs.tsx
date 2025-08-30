@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
+import { useRouter } from 'next/navigation'
 
 import { whtsppIcon } from '@/app/(frontend)/(website)/_assets/images'
 import { Button } from '@/components/ui/button'
@@ -32,6 +33,7 @@ export default function JoinUs({
   const timeLeft = CountdownTimer({ date: startDateTime })
   const [isOpenModel, setIsOpenModel] = useState(false)
   const [isRegistered, setIsRegistered] = useState(false)
+  const router = useRouter()
 
   useEffect(() => {
     if (typeof window !== 'undefined' && slug) {
@@ -127,7 +129,7 @@ export default function JoinUs({
             <Button
               onClick={() => {
   if (slug) {
-    window.open(`/events/${slug}/live-stream`, '_blank', 'noopener,noreferrer')
+    router.push(`/events/${slug}/live-stream`)
   }
 }}
               className="bg-primary-400 w-fit max-lg:mx-auto hover:bg-primary-400 font-bold py-6 rounded-xl hover:shadow-[4px_3px_0px_rgba(181,20,36,0.9)] duration-300"
@@ -185,7 +187,7 @@ export default function JoinUs({
             aria-label="whatsapp"
             className="text-primary-400 text-sm font-semibold text-nowrap text-center"
             target="_blank"
-            rel="noopener noreferrer"
+            rel="noopener n eferrer"
           >
             Join from PC instead
           </Link>

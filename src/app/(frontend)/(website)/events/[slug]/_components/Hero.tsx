@@ -8,6 +8,7 @@ import { UserCheck } from 'lucide-react'
 import { EventModel } from './EventModel'
 import { Instructor } from '@/payload-types'
 import ModelForm from './ModelForm'
+import { useRouter } from 'next/navigation'
 
 export default function Hero(props: {
   // backward compatible props
@@ -33,6 +34,7 @@ export default function Hero(props: {
   const slug = props.slug ?? eventObj?.slug ?? null
   const [isOPenModel, setIsOpenModel] = useState(false)
   const [isRegistered, setIsRegistered] = useState(false)
+  const router = useRouter()
 
   React.useEffect(() => {
     if (typeof window !== 'undefined' && slug) {
@@ -46,7 +48,7 @@ export default function Hero(props: {
     <div className="p-8 bg-primary-700 grid grid-cols-2 max-lg:grid-cols-1  ">
       <div className="text-background space-y-8 max-sm:space-y-6">
         <h2 className="text-[1.6rem] leading-5 font-light max-lg:text-center">
-          {eventObj?.label ?? 'MASTERCLASS'}
+          Event
         </h2>
 
         <h1 className="font-semibold text-xl md:text-4xl max-lg:text-center ">{title}</h1>
@@ -70,7 +72,7 @@ export default function Hero(props: {
             <Button
               onClick={() => {
                 if (slug) {
-                  window.open(`/events/${slug}/live-stream`, '_blank', 'noopener,noreferrer')
+                  router.push(`/events/${slug}/live-stream`)
                 }
               }}
               className="w-full bg-primary-400 hover:bg-primary-400 font-bold py-6 rounded-xl hover:shadow-[4px_3px_0px_rgba(181,20,36,0.9)] duration-300 text-background"
@@ -95,7 +97,7 @@ export default function Hero(props: {
           <ModelForm 
             eventId={eventId} 
             slug={slug} 
-            redirect={false} 
+            redirect={true} 
             showLeftGraphic={false}
             showSuccessState={true}
             startDateTime={startDateTime}

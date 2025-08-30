@@ -987,6 +987,10 @@ export interface Event {
   slugLock?: boolean | null;
   image?: (number | null) | Media;
   /**
+   * Uncheck to hide this event from the website
+   */
+  showInUI?: boolean | null;
+  /**
    * Link to the live stream event
    */
   liveStreamLink?: string | null;
@@ -2361,6 +2365,7 @@ export interface EventsSelect<T extends boolean = true> {
   slug?: T;
   slugLock?: T;
   image?: T;
+  showInUI?: T;
   liveStreamLink?: T;
   startDateTime?: T;
   endTime?: T;

@@ -25,7 +25,10 @@ const queryEvents = unstable_cache(async () => {
     where: {
       startDateTime: {
         greater_than_equal: new Date().toISOString(),
-      }
+      },
+      showInUI: {
+        equals: true,
+      },
     }
   })
 
