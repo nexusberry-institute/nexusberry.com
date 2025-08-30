@@ -65,6 +65,16 @@ export const Events: CollectionConfig = {
               relationTo: 'media',
             },
             {
+              name: 'showInUI',
+              type: 'checkbox',
+              label: 'Show in UI',
+              defaultValue: true,
+              admin: {
+                position: 'sidebar',
+                description: 'Uncheck to hide this event from the website',
+              },
+            },
+            {
               name: 'liveStreamLink',
               type: 'text',
               label: 'Live Stream Link',

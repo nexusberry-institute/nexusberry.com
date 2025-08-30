@@ -15,6 +15,11 @@ export async function generateStaticParams() {
     select: {
       slug: true,
     },
+    where: {
+      showInUI: {
+        equals: true,
+      },
+    },
   })
   const params = events.docs.map(({ slug }) => {
     return { slug }
@@ -31,6 +36,9 @@ const queryEventbySlug = async (slug: string) => {
     where: {
       slug: {
         equals: slug,
+      },
+      showInUI: {
+        equals: true,
       },
     },
   })

@@ -30,6 +30,9 @@ export async function generateStaticParams() {
       startDateTime: {
         greater_than_equal: new Date().toISOString(), // Only future events
       },
+      showInUI: {
+        equals: true,
+      },
     },
   })
   const params = events.docs.map(({ slug }) => {
@@ -236,6 +239,9 @@ const queryEventsBySlug = cache(async ({ slug }: { slug: string }) => {
       where: {
         slug: {
           equals: slug,
+        },
+        showInUI: {
+          equals: true,
         },
       },
     })

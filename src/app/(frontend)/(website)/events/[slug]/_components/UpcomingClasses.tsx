@@ -30,6 +30,9 @@ export const queryEvents = unstable_cache(
         startDateTime: {
           greater_than_equal: new Date(),
         },
+        showInUI: {
+          equals: true,
+        },
       },
     })
     return events.docs || null
