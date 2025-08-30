@@ -28,7 +28,7 @@ async function testSMTP() {
 
     const mailOptions = {
       from: `admin@nexusberry.com`,
-      to: "muhammadjehanzaib2021@gmail.com",
+      to: "rana.ajmal@gmail.com",
       subject: "SMTP Test",
       text: "If you see this, SMTP is working 🎉",
     };

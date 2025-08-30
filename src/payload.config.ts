@@ -98,6 +98,10 @@ export default buildConfig({
   db: postgresAdapter({
     pool: {
       connectionString: process.env.DATABASE_URI || '',
+      max: 8, // Use 10 out of your 15 available connections in supabase nano tier
+      min: 2, // Keep 2 connections always ready
+      idleTimeoutMillis: 30000,
+      connectionTimeoutMillis: 2000,
     },
   }),
   collections,
@@ -124,17 +128,11 @@ export default buildConfig({
     defaultFromName: process.env.DEFAULT_EMAIL_NAME!,
     transportOptions: {
       host: process.env.SMTP_HOST!,
-      port: Number(process.env.SMTP_PORT!), // Use 587
-      secure: process.env.SMTP_PORT === "465", // true for 465, false for 587
-      requireTLS: process.env.SMTP_PORT === "587", // only for 587
+      port: Number(process.env.SMTP_PORT!),
+      secure: true, // true for 465, false for other
       auth: {
         user: process.env.SMTP_USER!,
         pass: process.env.SMTP_PASS!,
-      },
-      // GoDaddy-specific TLS settings
-      tls: {
-        ciphers: "SSLv3",
-        rejectUnauthorized: false, // Allow self-signed certificates
       },
       // Additional options for better reliability
       connectionTimeout: 60000, // 60 seconds
