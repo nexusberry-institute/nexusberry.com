@@ -1,13 +1,14 @@
+import type React from "react"
 import Script from "next/script"
-import Header from './_components/Header'
-import Footer from './_components/Footer'
+import Header from "./_components/Header"
+import Footer from "./_components/Footer"
 
 export default async function Layout({ children }: { children: React.ReactNode }) {
-  const isProduction = process.env.NODE_ENV === "production"
+  const gtmId = process.env.NEXT_PUBLIC_GTM_ID
 
   return (
     <>
-      {isProduction && (
+      {gtmId && (
         <>
           {/* Start Google Tag Manager*/}
           <Script
@@ -19,13 +20,13 @@ export default async function Layout({ children }: { children: React.ReactNode }
               new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
               j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
               'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
-              })(window,document,'script','dataLayer','GTM-NRCLDWRV');
+              })(window,document,'script','dataLayer','${gtmId}');
             `,
             }}
           />
           <noscript>
             <iframe
-              src="https://www.googletagmanager.com/ns.html?id=GTM-NRCLDWRV"
+              src={`https://www.googletagmanager.com/ns.html?id=${gtmId}`}
               height="0"
               width="0"
               style={{ display: "none", visibility: "hidden" }}
