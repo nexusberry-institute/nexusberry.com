@@ -1,28 +1,11 @@
+import Link from "next/link"
 import { getPayload } from "payload"
 import configPromise from "@/payload.config"
 import ErrorCard from "../../../_components/ErrorCard"
-import Link from "next/link"
 import RetriveUserRegistration from "./_components/RetriveUserRegistration"
 
-export async function generateStaticParams() {
-  const payload = await getPayload({ config: configPromise })
-  const events = await payload.find({
-    collection: 'events',
-    limit: 100,
-    depth: 2,
-    select: {
-      slug: true,
-    },
-    where: {
-      showInUI: {
-        equals: true,
-      },
-    },
-  })
-  const params = events.docs.map(({ slug }) => {
-    return { slug }
-  })
-  return params
+export const metadata = {
+  robots: 'noindex, nofollow'
 }
 
 export default async function Page({ params }: {

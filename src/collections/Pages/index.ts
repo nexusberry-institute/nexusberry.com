@@ -29,6 +29,11 @@ export const Pages: CollectionConfig<'pages'> = {
     read: anyone,
     update: authenticated,
   },
+  hooks: {
+    afterChange: [revalidatePage],
+    beforeChange: [populatePublishedAt],
+    afterDelete: [revalidateDelete],
+  },
   // This config controls what's populated by default when a page is referenced
   // https://payloadcms.com/docs/queries/select#defaultpopulate-collection-config-property
   // Type safe if the collection slug generic is passed to `CollectionConfig` - `CollectionConfig<'pages'>
@@ -122,11 +127,6 @@ export const Pages: CollectionConfig<'pages'> = {
     },
     ...slugField(),
   ],
-  hooks: {
-    afterChange: [revalidatePage],
-    beforeChange: [populatePublishedAt],
-    afterDelete: [revalidateDelete],
-  },
   versions: {
     drafts: true,
   },

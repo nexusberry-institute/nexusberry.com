@@ -1,27 +1,10 @@
 import React from 'react'
-import ReviewForm from './_components/ReviewForm'
-import ReviewHaader from './_components/ReviewHaader'
-
+import Link from "next/link"
 import { getPayload } from "payload"
 import config from "@payload-config"
+import ReviewForm from './_components/ReviewForm'
+import ReviewHaader from './_components/ReviewHaader'
 import ErrorCard from "@/app/(frontend)/(website)/_components/ErrorCard"
-import Link from "next/link"
-
-export async function generateStaticParams() {
-  const payload = await getPayload({ config })
-  const events = await payload.find({
-    collection: 'events',
-    limit: 100,
-    depth: 2,
-    select: {
-      slug: true,
-    },
-  })
-  const params = events.docs.map(({ slug }) => {
-    return { slug }
-  })
-  return params
-}
 
 const queryEventBySlug = async (slug: string) => {
   const payload = await getPayload({ config })
@@ -40,6 +23,10 @@ const queryEventBySlug = async (slug: string) => {
     },
   })
   return response.docs[0] || undefined
+}
+
+export const metadata = {
+  robots: 'noindex, nofollow'
 }
 
 export default async function Page({ params }: { params: Promise<{ slug: string }> }) {

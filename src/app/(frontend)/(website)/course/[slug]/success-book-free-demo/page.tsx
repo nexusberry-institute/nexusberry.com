@@ -1,4 +1,3 @@
-import { Suspense } from 'react';
 import Link from 'next/link';
 import { getSettings } from '@/lib/getSettings';
 
@@ -7,9 +6,7 @@ interface PageProps {
 }
 
 export default async function SuccessBookFreeDemoPage({ params }: PageProps) {
-    // Extract the slug from params
     const { slug } = await params
-    // Fetch settings from your lib
     const settings = await getSettings();
 
     return (
@@ -102,4 +99,3 @@ export default async function SuccessBookFreeDemoPage({ params }: PageProps) {
         </div>
     );
 }
-

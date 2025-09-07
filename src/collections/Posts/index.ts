@@ -9,7 +9,7 @@ import {
   lexicalEditor,
 } from '@payloadcms/richtext-lexical'
 
-import { authenticated } from '../../access/authenticated'
+// import { authenticated } from '../../access/authenticated'
 import { Banner } from '../../blocks/Banner/config'
 import { Code } from '../../blocks/Code/config'
 import { MediaBlock } from '../../blocks/MediaBlock/config'
@@ -34,6 +34,11 @@ export const Posts: CollectionConfig<'posts'> = {
     delete: anyone,
     read: anyone,
     update: anyone,
+  },
+  hooks: {
+    afterChange: [revalidatePost],
+    afterRead: [populateAuthors],
+    afterDelete: [revalidateDelete],
   },
   // This config controls what's populated by default when a post is referenced
   // https://payloadcms.com/docs/queries/select#defaultpopulate-collection-config-property
@@ -219,11 +224,6 @@ export const Posts: CollectionConfig<'posts'> = {
     },
     ...slugField(),
   ],
-  hooks: {
-    afterChange: [revalidatePost],
-    afterRead: [populateAuthors],
-    afterDelete: [revalidateDelete],
-  },
   versions: {
     drafts: true,
   }

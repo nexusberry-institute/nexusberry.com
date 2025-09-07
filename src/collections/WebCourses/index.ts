@@ -11,12 +11,8 @@ export const WebCourses: CollectionConfig = {
     listSearchableFields: ["title", "slug"],
   },
   hooks: {
-    afterChange: [
-      revalidateCourses
-    ],
-    afterDelete: [
-      revalidateDelete
-    ]
+    afterChange: [revalidateCourses],
+    afterDelete: [revalidateDelete]
   },
   fields: [
     {
@@ -239,12 +235,6 @@ export const WebCourses: CollectionConfig = {
                     description: 'The canonical URL for this page. Leave blank to use the default URL.',
                     placeholder: 'https://yoursite.com/courses/course-slug',
                   },
-                  // validate: (val : '') => {
-                  //   if (val && !/^https?:\/\//.test(val)) {
-                  //     return 'Must be a valid URL starting with http:// or https://';
-                  //   }
-                  //   return true;
-                  // }
                 },
                 {
                   name: 'keywords',

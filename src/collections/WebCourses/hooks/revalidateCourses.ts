@@ -1,7 +1,5 @@
 import type { CollectionAfterChangeHook, CollectionAfterDeleteHook } from 'payload'
-
-import { revalidatePath, revalidateTag } from 'next/cache'
-
+import { revalidatePath } from 'next/cache'
 import type { WebCourse } from '../../../payload-types'
 
 export const revalidateCourses: CollectionAfterChangeHook<WebCourse> = ({
@@ -10,22 +8,20 @@ export const revalidateCourses: CollectionAfterChangeHook<WebCourse> = ({
 }) => {
   if (!context.disableRevalidate) {
     const path = `/course/${doc.slug}`
-
-    payload.logger.info(`Revalidating post at path: ${path}`)
-
+    payload.logger.info(`Revalidating web-course: ${path}`)
     revalidatePath(path)
-    // revalidateTag('courses-sitemap')
   }
   return doc
 }
 
-export const revalidateDelete: CollectionAfterDeleteHook<WebCourse> = ({ doc, req: { context } }) => {
+export const revalidateDelete: CollectionAfterDeleteHook<WebCourse> = ({
+  doc,
+  req: { payload, context }
+}) => {
   if (!context.disableRevalidate) {
     const path = `/course/${doc?.slug}`
-
+    payload.logger.info(`Revalidating web-course: ${path}`)
     revalidatePath(path)
-    // revalidateTag('courses-sitemap')
   }
-
   return doc
 }

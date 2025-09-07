@@ -9,7 +9,6 @@ import Link from 'next/link'
 import ErrorCard from '../../../_components/ErrorCard'
 
 const queryFeedbacks = async (slug: string) => {
-
   const payload = await getPayload({ config: configPromise })
   const feedback = await payload.find({
     collection: 'event-feedbacks',
@@ -26,26 +25,13 @@ const queryFeedbacks = async (slug: string) => {
   return feedback.docs[0] || null
 }
 
-export async function generateStaticParams() {
-  const payload = await getPayload({ config: configPromise })
-  const events = await payload.find({
-    collection: 'events',
-    limit: 100,
-    depth: 2,
-    select: {
-      slug: true,
-    },
-  })
-  const params = events.docs.map(({ slug }) => {
-    return { slug }
-  })
-  return params
+export const metadata = {
+  robots: 'noindex, nofollow'
 }
 
 export default async function Page({ params }: { params: Promise<{ slug: string }> }) {
   try {
     const { slug } = await params
-
     const eventFeedback = await queryFeedbacks(slug)
 
     if (!eventFeedback) {
