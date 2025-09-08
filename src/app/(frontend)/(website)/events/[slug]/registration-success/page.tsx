@@ -1,31 +1,10 @@
+import Link from "next/link"
+import { getPayload } from 'payload'
+import configPromise from '@payload-config'
 import JoinUs from "./_components/JoinUs";
 import WhatsppCommunity from "./_components/WhatsppCommunity";
 import Success from './_components/Success'
-import { getPayload } from 'payload'
-import Link from "next/link"
-import configPromise from '@payload-config'
 import ErrorCard from "../../../_components/ErrorCard";
-
-export async function generateStaticParams() {
-  const payload = await getPayload({ config: configPromise })
-  const events = await payload.find({
-    collection: 'events',
-    limit: 100,
-    depth: 2,
-    select: {
-      slug: true,
-    },
-    where: {
-      showInUI: {
-        equals: true,
-      },
-    },
-  })
-  const params = events.docs.map(({ slug }) => {
-    return { slug }
-  })
-  return params
-}
 
 const queryEventbySlug = async (slug: string) => {
   const payload = await getPayload({ config: configPromise })
@@ -43,6 +22,10 @@ const queryEventbySlug = async (slug: string) => {
     },
   })
   return response.docs[0] || undefined
+}
+
+export const metadata = {
+  robots: 'noindex, nofollow'
 }
 
 export default async function RegistrationSuccessPage({ params }: { params: Promise<{ slug: string }> }) {

@@ -54,11 +54,6 @@ export const Events: CollectionConfig = {
               required: true,
             },
             ...slugField(),
-            // {
-            //   name: 'eventType',
-            //   type: 'text',
-            //   required: true,
-            // },
             {
               name: 'image',
               type: 'upload',
@@ -134,10 +129,8 @@ export const Events: CollectionConfig = {
                       if (combinedEndDateTime < startDateTime) {
                         combinedEndDateTime.setDate(combinedEndDateTime.getDate() + 1);
                       }
-
                       // Update the endTime with the combined date-time
                       data.endTime = combinedEndDateTime;
-
                     }
                   }
                 ]
@@ -191,38 +184,38 @@ export const Events: CollectionConfig = {
               type: "upload",
               relationTo: "media",
             },
-              {
-                name: "defaultParticipants",
-                type: "number",
-                required: false,
-                defaultValue: 100,
-                min: 0,
-                label: "Default Participants",
-              },
-              {
-                name: "totalRegistrations",
-                type: "number",
-                required: false,
-                defaultValue: 0,
-                min: 0,
-                label: "Total Registrations",
-                admin: {
-                  readOnly: true,
-                  description: "Auto-calculated from leads registered for this event"
-                }
-              },
-              {
-                name: "campaignRegistrations",
-                type: "number",
-                required: false,
-                defaultValue: 0,
-                min: 0,
-                label: "Campaign Registrations",
-                admin: {
-                  readOnly: true,
-                  description: "Number of registrations from campaign UTM codes for this event"
-                }
-              },
+            {
+              name: "defaultParticipants",
+              type: "number",
+              required: false,
+              defaultValue: 100,
+              min: 0,
+              label: "Default Participants",
+            },
+            {
+              name: "totalRegistrations",
+              type: "number",
+              required: false,
+              defaultValue: 0,
+              min: 0,
+              label: "Total Registrations",
+              admin: {
+                readOnly: true,
+                description: "Auto-calculated from leads registered for this event"
+              }
+            },
+            {
+              name: "campaignRegistrations",
+              type: "number",
+              required: false,
+              defaultValue: 0,
+              min: 0,
+              label: "Campaign Registrations",
+              admin: {
+                readOnly: true,
+                description: "Number of registrations from campaign UTM codes for this event"
+              }
+            },
           ]
         },
         {
