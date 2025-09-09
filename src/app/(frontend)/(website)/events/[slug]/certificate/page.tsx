@@ -1,4 +1,3 @@
-'use server'
 import Image from 'next/image'
 import logo from '@/app/(frontend)/(website)/_assets/logo/reverse-logo.png'
 import { getPayload } from 'payload'
