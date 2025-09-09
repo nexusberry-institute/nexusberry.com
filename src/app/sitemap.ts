@@ -132,7 +132,7 @@ const getPagesSitemap = async (payload: any, SITE_URL: string) => {
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const payload = await getPayload({ config })
-  const SITE_URL = process.env.NEXT_PUBLIC_SERVER_URL || 'https://www.nexusberry.com'
+  const SITE_URL = process.env.NEXT_PUBLIC_SERVER_URL || ''
 
   const coursesSitemap = await getCoursesSitemap(payload, SITE_URL)
   const eventsSitemap = await getEventsSitemap(payload, SITE_URL)
