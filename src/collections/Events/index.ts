@@ -32,7 +32,7 @@ export const Events: CollectionConfig = {
     }
   },
   hooks: {
-    afterChange: [revalidateEvents],
+    // afterChange: [revalidateEvents],
     afterDelete: [revalidateDelete],
 
   },
