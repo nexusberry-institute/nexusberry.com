@@ -19,7 +19,11 @@ const nextConfig = {
   },
   reactStrictMode: true,
   redirects,
-
+  logging: {
+    fetches: {
+      fullUrl: true
+    }
+  },
   eslint: {
     ignoreDuringBuilds: true,
   },

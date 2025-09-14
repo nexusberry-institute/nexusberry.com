@@ -98,10 +98,10 @@ export default buildConfig({
   db: postgresAdapter({
     pool: {
       connectionString: process.env.DATABASE_URI || '',
-      max: 8, // Use 10 out of your 15 available connections in supabase nano tier
-      min: 2, // Keep 2 connections always ready
-      idleTimeoutMillis: 30000,
-      connectionTimeoutMillis: 2000,
+      // max: 8, // Use 10 out of your 15 available connections in supabase nano tier
+      // min: 2, // Keep 2 connections always ready
+      // idleTimeoutMillis: 30000,
+      // connectionTimeoutMillis: 2000,
     },
   }),
   collections,
