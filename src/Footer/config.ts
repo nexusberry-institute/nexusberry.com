@@ -75,7 +75,7 @@ export const Footer: GlobalConfig = {
     }
   ],
   hooks: {
-    afterChange: [revalidateFooter],
+    // afterChange: [revalidateFooter],
   },
 }
 

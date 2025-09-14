@@ -41,7 +41,7 @@ export async function generateStaticParams() {
   return params
 }
 
-export const revalidate = 86400 // Revelidate every 24 hours (1 day). So that ended events are not shown.
+// export const revalidate = 86400 // Revelidate every 24 hours (1 day). So that ended events are not shown.
 
 export default async function SlugPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params
@@ -119,14 +119,14 @@ export default async function SlugPage({ params }: { params: Promise<{ slug: str
         whatsappQrCode={event.whatsappQrCode}
       /> */}
       {/* <Review title={event.title} slug={slug} /> */}
-      <CourseInfo 
-        eventId={event.id} 
-        slug={event.slug} 
+      <CourseInfo
+        eventId={event.id}
+        slug={event.slug}
         startDateTime={event.startDateTime}
         eventLabel={event.label}
       />
-      <UpcomingClasses 
-        slug={slug} 
+      <UpcomingClasses
+        slug={slug}
         eventLabel={event.label}
       />
       <RegistrationFooter
@@ -195,13 +195,13 @@ export async function generateMetadata({
         ? (event?.meta as any).keywords
         : [(event?.meta as any).keywords]
       : [
-          'events',
-          'event registration',
-          'nexusberry events',
-          'upcoming events',
-          'Nexusberry Institute',
-          'Lahore',
-        ], // 👈 default keywords for events
+        'events',
+        'event registration',
+        'nexusberry events',
+        'upcoming events',
+        'Nexusberry Institute',
+        'Lahore',
+      ], // 👈 default keywords for events
 
     alternates: {
       canonical: `https://www.nexusberry.com/events/${slug}`,

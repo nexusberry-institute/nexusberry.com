@@ -36,7 +36,7 @@ export const Posts: CollectionConfig<'posts'> = {
     update: anyone,
   },
   hooks: {
-    afterChange: [revalidatePost],
+    // afterChange: [revalidatePost],
     afterRead: [populateAuthors],
     afterDelete: [revalidateDelete],
   },

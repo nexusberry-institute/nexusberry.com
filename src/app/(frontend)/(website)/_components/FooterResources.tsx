@@ -26,7 +26,10 @@ const queryDepartments = unstable_cache(async () => {
 
   })
   return departments.docs;
-}, [], { tags: ["departments", "courses"], revalidate: 60 })
+}, [], {
+  tags: ["departments", "courses"]
+  // , revalidate: 60 
+})
 
 
 

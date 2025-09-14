@@ -3,7 +3,11 @@ import * as qs from "qs-esm";
 const getCertificatesApi = async () => {
   try {
     const url = makeUrl();
-    const response = await fetch(url, { next: { revalidate: 10 } });
+    const response = await fetch(url, {
+      next: {
+        // revalidate: 10
+      }
+    });
 
     if (!response.ok) {
       throw new Error("Failed to fetch products");

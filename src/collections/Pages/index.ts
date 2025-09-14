@@ -30,7 +30,7 @@ export const Pages: CollectionConfig<'pages'> = {
     update: authenticated,
   },
   hooks: {
-    afterChange: [revalidatePage],
+    // afterChange: [revalidatePage],
     beforeChange: [populatePublishedAt],
     afterDelete: [revalidateDelete],
   },
