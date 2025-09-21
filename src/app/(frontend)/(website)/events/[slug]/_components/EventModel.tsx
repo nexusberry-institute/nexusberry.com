@@ -2,8 +2,8 @@
 import Image from 'next/image'
 import { register } from '@/app/(frontend)/(website)/_assets/images'
 
-import ModelForm from './ModelForm'
 import { X } from 'lucide-react'
+import EventRegistrationForm from './EventRegistrationForm'
 
 export function EventModel({ setIsOpenModel, eventId, slug, redirect = true }: {
   eventId: number,
@@ -37,7 +37,7 @@ export function EventModel({ setIsOpenModel, eventId, slug, redirect = true }: {
               <X size={18} />
             </button>
           </div>
-          <ModelForm eventId={eventId} slug={slug} redirect={redirect} />
+          <EventRegistrationForm eventId={eventId} slug={slug} redirect={redirect} />
         </div>
 
       </div>

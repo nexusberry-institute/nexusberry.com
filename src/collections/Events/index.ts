@@ -33,7 +33,7 @@ export const Events: CollectionConfig = {
   },
   hooks: {
     // afterChange: [revalidateEvents],
-    afterDelete: [revalidateDelete],
+    // afterDelete: [revalidateDelete],
 
   },
   fields: [
@@ -53,7 +53,11 @@ export const Events: CollectionConfig = {
               type: 'text',
               required: true,
             },
-            ...slugField(),
+            ...slugField('title', {
+              slugOverrides: {
+                required: true
+              }
+            }),
             {
               name: 'image',
               type: 'upload',

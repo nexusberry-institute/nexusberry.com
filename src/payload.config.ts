@@ -96,6 +96,7 @@ export default buildConfig({
   editor: defaultLexical,
   // endpoints: [googleCallbackEndPoint],
   db: postgresAdapter({
+    push: false,
     pool: {
       connectionString: process.env.DATABASE_URI || '',
       // max: 8, // Use 10 out of your 15 available connections in supabase nano tier

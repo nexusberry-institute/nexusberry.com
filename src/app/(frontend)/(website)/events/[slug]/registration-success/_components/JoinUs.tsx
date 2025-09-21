@@ -53,7 +53,7 @@ export default function JoinUs({
             <div className="bg-green-500 rounded-full h-fit   w-fit p-1  ">
               <Check strokeWidth={4} size={16} className="stroke-card" />
             </div>
-            <h2 className="font-semibold">Hurray! Your registration for the event has been done</h2>
+            <h2 className="font-semibold">You're in! Registration has been done!</h2>
           </div>
           <p className="text-2xl   font-semibold max-lg:text-center">
             If you are passionate about building a career in This can be your chance!
@@ -90,15 +90,15 @@ export default function JoinUs({
                 const location = encodeURIComponent('Online')
                 const start = startDateTime
                   ? new Date(startDateTime)
-                      .toISOString()
-                      .replace(/[-:]|\.\d{3}/g, '')
-                      .slice(0, 15)
+                    .toISOString()
+                    .replace(/[-:]|\.\d{3}/g, '')
+                    .slice(0, 15)
                   : ''
                 const end = endTime
                   ? new Date(endTime)
-                      .toISOString()
-                      .replace(/[-:]|\.\d{3}/g, '')
-                      .slice(0, 15)
+                    .toISOString()
+                    .replace(/[-:]|\.\d{3}/g, '')
+                    .slice(0, 15)
                   : ''
                 const calendarUrl = `https://www.google.com/calendar/render?action=TEMPLATE&text=${eventTitle}&details=${details}&location=${location}&dates=${start}/${end}`
                 window.open(calendarUrl, '_blank')
@@ -111,11 +111,10 @@ export default function JoinUs({
               <a
                 href={
                   typeof window !== 'undefined'
-                    ? `/events/${
-                        typeof instructor === 'object' && instructor && 'slug' in instructor
-                          ? instructor.slug
-                          : ''
-                      }/live-stream`
+                    ? `/events/${typeof instructor === 'object' && instructor && 'slug' in instructor
+                      ? instructor.slug
+                      : ''
+                    }/live-stream`
                     : '#'
                 }
                 className="bg-[#1557FF] hover:bg-[#003ccd] text-white font-bold py-3 px-6 rounded-lg w-full flex items-center justify-center gap-2 mt-2"

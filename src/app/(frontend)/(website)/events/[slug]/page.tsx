@@ -1,5 +1,4 @@
-import React from 'react'
-import { useEffect } from 'react'
+import React, { Suspense } from 'react'
 
 import Hero from './_components/Hero'
 import CourseDetail from './_components/CourseDetail'
@@ -16,40 +15,41 @@ import { Metadata } from 'next'
 import Link from 'next/link'
 import ErrorCard from '../../_components/ErrorCard'
 import { Media } from '@/payload-types'
+import { unstable_cache } from 'next/cache'
+import { EventsGridSkeleton } from '../_components/EventListSkeleton'
 
-export async function generateStaticParams() {
-  const payload = await getPayload({ config: configPromise })
-  const events = await payload.find({
-    collection: 'events',
-    limit: 100,
-    depth: 2,
-    select: {
-      slug: true,
-    },
-    where: {
-      startDateTime: {
-        greater_than_equal: new Date().toISOString(), // Only future events
-      },
-      showInUI: {
-        equals: true,
-      },
-    },
-  })
-  const params = events.docs.map(({ slug }) => {
-    return { slug }
-  })
-  return params
-}
+// export async function generateStaticParams() {
+//   const payload = await getPayload({ config: configPromise })
+//   const events = await payload.find({
+//     collection: 'events',
+//     limit: 100,
+//     depth: 2,
+//     select: {
+//       slug: true,
+//     },
+//     where: {
+//       startDateTime: {
+//         greater_than_equal: new Date().toISOString(), // Only future events
+//       },
+//       showInUI: {
+//         equals: true,
+//       },
+//     },
+//   })
+//   const params = events.docs.map(({ slug }) => {
+//     return { slug }
+//   })
+//   return params
+// }
 
 // export const revalidate = 86400 // Revelidate every 24 hours (1 day). So that ended events are not shown.
 
 export default async function SlugPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params
-  const { event, error } = await queryEventsBySlug({ slug })
-
-  if (error) {
-    return <ErrorCard error={error} />
-  }
+  const { event } = await queryEventsBySlug(slug)
+  // if (error) {
+  //   return <ErrorCard error={error} />
+  // }
 
   if (!event) {
     return (
@@ -91,16 +91,11 @@ export default async function SlugPage({ params }: { params: Promise<{ slug: str
     )
   }
 
-  const evt: any = event
-  const participantCount = (evt.defaultParticipants || 0) + (evt.totalRegistrations || 0)
 
   return (
     <div className="max-w-[1600px] mx-auto bg-card">
-
       <Hero
-        eventData={[event]}
-        attendee={participantCount}
-        learner={evt.completedByLearners || 0}
+        event={event}
       />
       {event.learningOutcomes && (
         <CourseDetail
@@ -125,10 +120,12 @@ export default async function SlugPage({ params }: { params: Promise<{ slug: str
         startDateTime={event.startDateTime}
         eventLabel={event.label}
       />
-      <UpcomingClasses
-        slug={slug}
-        eventLabel={event.label}
-      />
+      <Suspense fallback={<EventsGridSkeleton count={3} />}>
+        <UpcomingClasses
+          slug={slug}
+          eventLabel={event.label}
+        />
+      </Suspense>
       <RegistrationFooter
         startDateTime={event.startDateTime}
         endTime={event.endTime}
@@ -147,12 +144,12 @@ export async function generateMetadata({
   params: Promise<{ slug: string }>
 }): Promise<Metadata> {
   const { slug = '' } = await paramsPromise
-  const { event } = await queryEventsBySlug({ slug })
+  const { event } = await queryEventsBySlug(slug)
   const getImageURL = (image?: number | string | Media | null): string => {
     if (image && typeof image === 'object' && 'url' in image && image.url) {
       return image.url
     }
-    return 'https://www.nexusberry.com/og-image.jpg'
+    return 'https://www.nexusberry.com/nexusberry-logo.png'
   }
   if (!event) {
     return {
@@ -187,9 +184,9 @@ export async function generateMetadata({
   }
   return {
     title: event.meta?.title
-      ? `${event.meta.title} | Nexusberry Institute`
-      : 'Event | Nexusberry Institute',
-    description: event.meta?.description || 'Join our upcoming event at Nexusberry Institute.',
+      ? `${event.meta.title}`
+      : 'Educational Event | NexusBerry Training & Solutions',
+    description: event.meta?.description || 'Join our upcoming event at Nexusberry Training & Solutions.',
     keywords: (event?.meta as any)?.keywords
       ? Array.isArray((event?.meta as any).keywords)
         ? (event?.meta as any).keywords
@@ -199,59 +196,81 @@ export async function generateMetadata({
         'event registration',
         'nexusberry events',
         'upcoming events',
-        'Nexusberry Institute',
-        'Lahore',
+        'Nexusberry Institute Event',
+        'Event in Lahore',
       ], // 👈 default keywords for events
 
     alternates: {
       canonical: `https://www.nexusberry.com/events/${slug}`,
     },
     openGraph: {
-      title: event.meta?.title || 'Event',
-      description: event.meta?.description || 'Join our upcoming event at Nexusberry Institute.',
+      title: event.meta?.title
+        ? `${event.meta.title}`
+        : 'Educational Event | NexusBerry Training & Solutions',
+      description: event.meta?.description ||
+        'Join our expert-led educational event at NexusBerry Training & Solutions. Available in Lahore, Pakistan and online. Register now to enhance your skills.',
       url: `https://www.nexusberry.com/events/${slug}`,
-      siteName: 'Nexusberry Institute',
+      siteName: 'NexusBerry Training & Solutions',
       images: [
         {
-          url: getImageURL(event.meta?.image), // ab TS ko pata hai ye string hi hoga
+          url: getImageURL(event.meta?.image) || 'https://www.nexusberry.com/nexusberry-logo.png',
           width: 1200,
           height: 630,
-          alt: event.meta?.title || 'Event',
+          alt: event.meta?.title
+            ? `${event.meta.title} - NexusBerry Event`
+            : 'NexusBerry Educational Event - Lahore, Pakistan',
         },
       ],
       locale: 'en_US',
-      type: 'article',
+      type: 'website',
     },
     twitter: {
       card: 'summary_large_image',
+      site: '@nexusberry',
       creator: '@nexusberry',
+      title: event.meta?.title
+        ? `${event.meta.title}`
+        : 'Educational Event - NexusBerry Training & Solutions',
+      description: event.meta?.description ||
+        'Join our educational event at NexusBerry Training & Solutions. Register now!',
+      images: [getImageURL(event.meta?.image) || 'https://www.nexusberry.com/nexusberry-logo.png'],
     },
+    category: 'Education',
+    classification: 'Educational Event',
+    authors: [{ name: 'NexusBerry Training & Solutions' }],
+    publisher: 'NexusBerry Training & Solutions',
   }
 }
 
-const queryEventsBySlug = cache(async ({ slug }: { slug: string }) => {
-  try {
-    const payload = await getPayload({ config: configPromise })
-    const result = await payload.find({
-      collection: 'events',
-      limit: 1,
-      pagination: false,
-      where: {
-        slug: {
-          equals: slug,
+const queryEventsBySlug = async (slug: string) => {
+  const api = unstable_cache(
+    async () => {
+      const payload = await getPayload({ config: configPromise })
+      const result = await payload.find({
+        collection: 'events',
+        limit: 1,
+        pagination: false,
+        where: {
+          slug: {
+            equals: slug,
+          },
+          showInUI: {
+            equals: true,
+          },
         },
-        showInUI: {
-          equals: true,
+        select: {
+          eventLeads: false
         },
-      },
-    })
-    return {
-      event: result.docs?.[0],
+      })
+      return {
+        event: result.docs?.[0],
+      }
+    },
+    [`events-by-slug`, slug],
+    {
+      tags: ["events-details", `event-${slug}`]
     }
-  } catch (error) {
-    return {
-      event: null,
-      error,
-    }
-  }
-})
+  )
+
+  return await api();
+}

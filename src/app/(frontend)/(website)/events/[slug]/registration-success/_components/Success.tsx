@@ -1,20 +1,25 @@
 "use client"
 
 import { Check } from 'lucide-react'
+import { useSearchParams } from 'next/navigation';
 import React, { useEffect } from 'react'
 
-export default function Success({ slug }: { slug: string }) {
-
+export default function Success({ slug, eventId }: { slug: string, eventId: number }) {
   const [applicant, setApplicant] = React.useState<{ name: string }>({ name: "Participant" });
+  const searchParams = useSearchParams();
 
   useEffect(() => {
     try {
       const storedData = localStorage.getItem(`${slug}-registration`);
-      setApplicant(storedData ? JSON.parse(storedData) : { name: "Participant" })
+      const name = searchParams.get("name")
+      setApplicant(storedData ? JSON.parse(storedData) : { name: searchParams.get("name") || "Participant" })
+      if (!storedData && name) {
+        localStorage.setItem(`${slug}-registration`, JSON.stringify({ name, eventId }));
+      };
     } catch (error) {
       console.error("Error parsing registration data:", error);
     }
-  }, [])
+  }, [slug])
 
   return (
     <div

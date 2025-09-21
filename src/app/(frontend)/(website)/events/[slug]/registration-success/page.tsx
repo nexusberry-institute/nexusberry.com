@@ -20,6 +20,15 @@ const queryEventbySlug = async (slug: string) => {
         equals: true,
       },
     },
+    select: {
+      slug: true,
+      instructor: true,
+      startDateTime: true,
+      endTime: true,
+      title: true,
+      whatsappLink: true,
+      whatsappQrCode: true
+    }
   })
   return response.docs[0] || undefined
 }
@@ -64,7 +73,7 @@ export default async function RegistrationSuccessPage({ params }: { params: Prom
 
     return (
       <>
-        <Success slug={slug} />
+        <Success slug={event.slug as string} eventId={event.id} />
         <JoinUs instructor={event.instructor} startDateTime={event.startDateTime} endTime={event.endTime} title={event.title} />
         <WhatsppCommunity whatsappLink={event.whatsappLink} whatsappQrCode={event.whatsappQrCode} />
       </>
