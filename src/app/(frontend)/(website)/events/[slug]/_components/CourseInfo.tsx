@@ -1,43 +1,23 @@
-'use client'
-import React, { useState, useEffect } from 'react'
 import { placeholderImg } from '@/app/(frontend)/(website)/_assets/images'
 import Image from 'next/image'
-import Link from 'next/link'
-import { Button } from '@/components/ui/button'
-import { EventModel } from './EventModel'
 import { masterClassBenefits } from '@/app/(frontend)/(website)/_constants/data'
-import { useRouter } from 'next/navigation'
+import RegistrationButton from './RegistrationButton'
 
 
-export default function CourseInfo({ 
-  eventId, 
-  slug, 
-  startDateTime, 
-  eventLabel 
-}: { 
-  eventId: number, 
-  slug: string | null | undefined, 
+export default function CourseInfo({
+  eventId,
+  slug,
+  startDateTime,
+  eventLabel
+}: {
+  eventId: number,
+  slug: string | null | undefined,
   startDateTime: string,
-  eventLabel?: string 
+  eventLabel?: string
 }) {
-  const [isOPenModel, setIsOpenModel] = useState(false)
-  const [isRegistered, setIsRegistered] = useState(false)
-  const router = useRouter()
-
-  useEffect(() => {
-    if (typeof window !== 'undefined' && slug) {
-      const userDetails = localStorage.getItem(`${slug}-registration`)
-      console.log('Fetched userDetails from localStorage for slug:', slug, userDetails)
-      setIsRegistered(!!userDetails)
-    }
-  }, [slug])
 
   return (
     <>
-      {
-        isOPenModel &&
-        <EventModel setIsOpenModel={setIsOpenModel} eventId={eventId} slug={slug} />
-      }
       <section className='bg-primary-50 mt-16'>
         <div className="container relative flex justify-end p-4 max-xl:hidden">
           <div className='absolute inset-0'>
@@ -49,29 +29,8 @@ export default function CourseInfo({
                 transform theory into real-world skills in just a few hours! Discover the joy of mastering
                 new tools and concepts that could launch your next career leap!
               </p>
-              {/* Registration / Live stream button */}
-          {isRegistered ? (
-            <Button
-              onClick={() => {
-              if (slug) {
-                router.push(`/events/${slug}/live-stream`)
-              }
-            }}
-              className="bg-primary-400 w-fit max-lg:mx-auto hover:bg-primary-400 font-bold py-6 rounded-xl hover:shadow-[4px_3px_0px_rgba(181,20,36,0.9)] duration-300"
-            >
-              Visit Live Stream
-            </Button>
-          ) : (
-            <Button
-              onClick={() => setIsOpenModel(true)}
-              disabled={startDateTime < new Date().toISOString()}
-              className="bg-primary-400 w-fit max-lg:mx-auto hover:bg-primary-400 font-bold py-6 rounded-xl hover:shadow-[4px_3px_0px_rgba(181,20,36,0.9)] duration-300"
-            >
-              {startDateTime < new Date().toISOString()
-                ? 'Registrations Closed'
-                : 'Register for free!!'}
-            </Button>
-          )}
+              {/* Web Registration / Live stream button */}
+              <RegistrationButton slug={slug as string} startDateTime={startDateTime} />
             </div>
           </div>
           <ul className="flex flex-col max-xl:flex-row gap-48 relative pt-[calc(50%-26rem)] pb-[calc(50%-30rem)] pr-16">
@@ -102,28 +61,7 @@ export default function CourseInfo({
               new tools and concepts that could launch your next career leap!
             </p>
             {/* Mobile Registration / Live stream button */}
-            {isRegistered ? (
-              <Button
-                onClick={() => {
-                  if (slug) {
-                    router.push(`/events/${slug}/live-stream`)
-                  }
-                }}
-                className="bg-primary-400 w-fit hover:bg-primary-400 font-bold p-8 max-sm:p-4 max-sm:rounded-lg rounded-xl hover:shadow-[4px_4px_0px_rgba(181,20,36,0.9)] duration-300"
-              >
-                Visit Live Stream
-              </Button>
-            ) : (
-              <Button
-                onClick={() => setIsOpenModel(true)}
-                disabled={startDateTime < new Date().toISOString()}
-                className="bg-primary-400 w-fit hover:bg-primary-400 font-bold p-8 max-sm:p-4 max-sm:rounded-lg rounded-xl hover:shadow-[4px_4px_0px_rgba(181,20,36,0.9)] duration-300"
-              >
-                {startDateTime < new Date().toISOString()
-                  ? 'Registrations Closed'
-                  : 'Register for free!!'}
-              </Button>
-            )}
+            <RegistrationButton slug={slug as string} startDateTime={startDateTime} />
           </div>
           <ul className="flex flex-row gap-8 scrollbar-none overflow-auto px-8 pb-8">
             {

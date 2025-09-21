@@ -983,7 +983,7 @@ export interface Event {
   id: number;
   title: string;
   label: string;
-  slug?: string | null;
+  slug: string;
   slugLock?: boolean | null;
   image?: (number | null) | Media;
   /**
@@ -1076,9 +1076,6 @@ export interface Lead {
   reminder_note?: string | null;
   not_responding?: boolean | null;
   assign_to?: (number | null) | Staff;
-  event?: (number | null) | Event;
-  campaign?: (number | null) | Campaign;
-  has_attended?: boolean | null;
   courseDemoBookings?:
     | {
         course: number | CoursesCollection;
@@ -1089,8 +1086,10 @@ export interface Lead {
   eventAttendance?:
     | {
         event: number | Event;
-        hasAttended?: boolean | null;
         campaign?: (number | null) | Campaign;
+        source?: string | null;
+        registeredAt?: string | null;
+        hasAttended?: boolean | null;
         id?: string | null;
       }[]
     | null;
@@ -1481,6 +1480,39 @@ export interface Staff {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "courses-collection".
+ */
+export interface CoursesCollection {
+  id: number;
+  /**
+   * Higher numbers appear first
+   */
+  sortOrder?: number | null;
+  title: string;
+  content: {
+    root: {
+      type: string;
+      children: {
+        type: string;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  };
+  contentPosition?: ('left' | 'right') | null;
+  linkLabel: string;
+  linkUrl: string;
+  courseCard: (number | WebCourse)[];
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "campaigns".
  */
 export interface Campaign {
@@ -1523,39 +1555,6 @@ export interface Campaign {
     hasNextPage?: boolean;
     totalDocs?: number;
   };
-  updatedAt: string;
-  createdAt: string;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "courses-collection".
- */
-export interface CoursesCollection {
-  id: number;
-  /**
-   * Higher numbers appear first
-   */
-  sortOrder?: number | null;
-  title: string;
-  content: {
-    root: {
-      type: string;
-      children: {
-        type: string;
-        version: number;
-        [k: string]: unknown;
-      }[];
-      direction: ('ltr' | 'rtl') | null;
-      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
-      indent: number;
-      version: number;
-    };
-    [k: string]: unknown;
-  };
-  contentPosition?: ('left' | 'right') | null;
-  linkLabel: string;
-  linkUrl: string;
-  courseCard: (number | WebCourse)[];
   updatedAt: string;
   createdAt: string;
 }
@@ -2766,9 +2765,6 @@ export interface LeadsSelect<T extends boolean = true> {
   reminder_note?: T;
   not_responding?: T;
   assign_to?: T;
-  event?: T;
-  campaign?: T;
-  has_attended?: T;
   courseDemoBookings?:
     | T
     | {
@@ -2780,8 +2776,10 @@ export interface LeadsSelect<T extends boolean = true> {
     | T
     | {
         event?: T;
-        hasAttended?: T;
         campaign?: T;
+        source?: T;
+        registeredAt?: T;
+        hasAttended?: T;
         id?: T;
       };
   payment_plan?: T;

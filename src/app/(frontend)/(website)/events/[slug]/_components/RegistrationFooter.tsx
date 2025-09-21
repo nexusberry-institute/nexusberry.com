@@ -7,6 +7,7 @@ import Link from 'next/link'
 import { format } from 'date-fns'
 import { CountdownTimer } from '@/components/CountDownTimer'
 import { EventModel } from './EventModel'
+import RegistrationButton from './RegistrationButton'
 
 export default function RegistrationFooter({
   startDateTime,
@@ -20,27 +21,18 @@ export default function RegistrationFooter({
   eventId: number
 }) {
   const [showFooter, setShowFooter] = useState(true)
-  const [isOPenModel, setIsOpenModel] = useState(false)
-  const [isRegistered, setIsRegistered] = useState(false)
   const [lastScrollY, setLastScrollY] = useState(0)
 
-  useEffect(() => {
-    if (typeof window !== 'undefined' && slug) {
-      const userDetails = localStorage.getItem(`${slug}-registration`)
-      console.log('Fetched userDetails from localStorage for slug:', slug, userDetails)
-      setIsRegistered(!!userDetails)
-    }
-  }, [slug])
 
   useEffect(() => {
     const handleScroll = () => {
       const currentScrollY = window.scrollY
       const element = document.getElementById('show_footer')
-      
+
       if (element) {
         const position = element.getBoundingClientRect()
         const isNearBottom = position.top <= window.innerHeight + 100
-        
+
         // Always show footer when near the bottom, otherwise follow scroll direction
         if (isNearBottom) {
           setShowFooter(true)
@@ -52,7 +44,7 @@ export default function RegistrationFooter({
           setShowFooter(false)
         }
       }
-      
+
       setLastScrollY(currentScrollY)
     }
 
@@ -121,27 +113,11 @@ export default function RegistrationFooter({
           </div>
         </div>
         {/* Registration / Live stream button */}
-        {isRegistered ? (
-          <Link href={`/events/${slug}/live-stream`}>
-            <Button
-              className="bg-primary-400 w-fit max-lg:mx-auto hover:bg-primary-400 font-bold py-6 rounded-xl hover:shadow-[4px_3px_0px_rgba(181,20,36,0.9)] duration-300"
-            >
-              Visit Live Stream
-            </Button>
-          </Link>
-        ) : (
-          <Button
-            onClick={() => setIsOpenModel(true)}
-            disabled={startDateTime < new Date().toISOString()}
-            className="bg-primary-400 w-fit max-lg:mx-auto hover:bg-primary-400 font-bold py-6 rounded-xl hover:shadow-[4px_3px_0px_rgba(181,20,36,0.9)] duration-300"
-          >
-            {startDateTime < new Date().toISOString()
-              ? 'Registrations Closed'
-              : 'Register for free!!'}
-          </Button>
-        )}
+        <RegistrationButton
+          slug={slug as string}
+          startDateTime={startDateTime}
+        />
       </div>
-      {isOPenModel && <EventModel setIsOpenModel={setIsOpenModel} eventId={eventId} slug={slug} />}
     </>
   )
 }

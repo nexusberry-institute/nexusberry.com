@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { Suspense } from 'react'
 import Hero from './_components/Hero'
 import EventCart from './_components/EventCart'
 import WhatsppCommunity from './_components/WhatsppCommunity'
@@ -8,8 +8,62 @@ import { getPayload } from 'payload'
 import configPromise from '@payload-config'
 import { unstable_cache } from 'next/cache'
 import type { Metadata } from 'next/types'
-import ErrorCard from '../_components/ErrorCard'
+import { EventsGridSkeleton } from './_components/EventListSkeleton'
 
+
+export function generateMetadata(): Metadata {
+  return {
+    title: "NexusBerry Events | Workshops in Lahore, Pakistan & Online",
+    description:
+      "Explore upcoming NexusBerry events, workshops, and training sessions at our Lahore campus in Pakistan and online. Join expert-led coaching programs, enhance your skills, and register today.",
+    keywords: [
+      "NexusBerry events",
+      "NexusBerry Lahore events",
+      "events in Lahore Pakistan",
+      "workshops in Lahore",
+      "training sessions Lahore Pakistan",
+      "coaching institute Lahore",
+      "upcoming events in Lahore",
+      "student workshops Pakistan",
+      "skill development Lahore Pakistan",
+      "online coaching events",
+      "NexusBerry online workshops",
+      "Pakistan seminars and webinars",
+    ],
+    alternates: {
+      canonical: "https://www.nexusberry.com/events",
+    },
+    openGraph: {
+      title: "NexusBerry Events | Lahore, Pakistan & Online",
+      description:
+        "Join NexusBerry Training Institute’s events, workshops, and training programs. Available onsite at our Lahore campus and online for learners across Pakistan. Register now.",
+      url: "https://www.nexusberry.com/events",
+      siteName: "NexusBerry Training & Solutions",
+      images: [
+        {
+          url: "https://www.nexusberry.com/nexusberry-logo.png",
+          width: 1200,
+          height: 630,
+          alt: "NexusBerry Events - Lahore, Pakistan & Online",
+        },
+      ],
+      locale: "en_US",
+      type: "website",
+    },
+    twitter: {
+      card: "summary_large_image",
+      creator: "@nexusberry",
+      title: "NexusBerry Events – Lahore & Online",
+      description:
+        "Stay updated with NexusBerry Training Institute’s upcoming events, workshops, and coaching sessions. Attend onsite in Lahore, Pakistan or join online from anywhere.",
+      images: ["https://www.nexusberry.com/nexusberry-logo.png"],
+    },
+    category: "Education",
+    classification: "Educational Events",
+    authors: [{ name: "NexusBerry Training & Solutions" }],
+    publisher: "NexusBerry Training & Solutions",
+  }
+}
 
 const queryEvents = unstable_cache(async () => {
   const payload = await getPayload({ config: configPromise })
@@ -18,77 +72,26 @@ const queryEvents = unstable_cache(async () => {
     slug: 'global-event-data',
   })
 
-  const events = await payload.find({
-    collection: 'events',
-    limit: 100,
-    pagination: false,
-    where: {
-      startDateTime: {
-        greater_than_equal: new Date().toISOString(),
-      },
-      showInUI: {
-        equals: true,
-      },
-    }
-  })
-
-  return {
-    globalEventData,
-    events: events.docs
-  }
+  return globalEventData;
 },
-  ["events", "global-event-data"],
+  ["global-event-data"],
   {
-    tags: ["events", "global-event-data"]
+    tags: ["global-event-data"]
   }
 )
 
 export default async function Page() {
-  try {
-    const { events, globalEventData } = await queryEvents()
-    return (
-      <>
-        <Hero eventData={events} attendee={globalEventData.totalAttendees} learner={globalEventData.completedByLearners} />
-        <EventCart eventsData={events} />
-        <WhatsppCommunity whatsappLink={globalEventData.whatsappCommunity} whatsappQrCode={globalEventData.whatsappQR} />
-        <JoinUs />
-        <LearnerFeedback />
-      </>
-    )
+  const globalEventData = await queryEvents();
 
-  } catch (error) {
-    return <ErrorCard error={error} />
-  }
-}
-
-
-export function generateMetadata(): Metadata {
-  return {
-    title: `Events`,
-    description: "This is events page that all events show here you can register from here",
-    keywords: ["events", "event registration", "nexusberry events", "upcoming events"], // ✅ keywords
-    alternates: {
-      canonical: "https://www.nexusberry.com/events", // ✅ canonical URL
-    },
-    openGraph: {
-      title: 'Events',
-      description: 'Events - This is events page here you can register from here',
-      url: 'https://www.nexusberry.com/',
-      siteName: 'Events',
-      images: [
-        {
-          url: 'https://www.nexusberry.com/og-image.jpg',
-          width: 1200,
-          height: 630,
-          alt: 'Events',
-        },
-      ],
-      locale: 'en_US',
-      type: 'website',
-    },
-    twitter: {
-      card: 'summary_large_image',
-      creator: '@nexusberry',
-    },
-  }
+  return (
+    <>
+      <Hero eventData={[]} attendee={globalEventData.totalAttendees} learner={globalEventData.completedByLearners} />
+      <Suspense fallback={<EventsGridSkeleton count={6} />}>
+        <EventCart />
+      </Suspense>
+      <WhatsppCommunity whatsappLink={globalEventData.whatsappCommunity} whatsappQrCode={globalEventData.whatsappQR} />
+      <JoinUs />
+      <LearnerFeedback />
+    </>
+  )
 }

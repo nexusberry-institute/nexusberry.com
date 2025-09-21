@@ -32,7 +32,7 @@ export default function Hero({ eventData, attendee, learner }: {
             </div>
 
             <div className='flex flex-col py-4 px-4 rounded-xl xl:px-2 xl:py-4 gap-1 text-foreground justify-center items-center tracking-widest bg-secondary-300'>
-              <h2 className='font-bold text-lg lg:text-2xl'>{learner || 42521}</h2>
+              <h2 className='font-bold text-lg lg:text-2xl'>{learner || 20136}</h2>
               <span className='text-xs lg:text-sm'>Completed By Learner</span>
             </div>
           </div>
