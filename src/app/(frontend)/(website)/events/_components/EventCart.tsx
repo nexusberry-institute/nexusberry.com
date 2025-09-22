@@ -50,7 +50,7 @@ const getEventsList = async ({
 
 export default async function EventCart() {
   const events = await getEventsList({});
-
+  console.log("events: ", events);
   // // Error state
   // if (status === 'error') {
   //   return <Error message={error?.message} />;

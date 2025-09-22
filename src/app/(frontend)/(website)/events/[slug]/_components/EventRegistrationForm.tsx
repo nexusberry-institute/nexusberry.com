@@ -80,7 +80,6 @@ const EventRegistrationForm = ({
     startTransition(async () => {
       try {
         const { success, error } = await CreateEventRegistration(baseData)
-        console.log("success, error: ", success, error);
 
         if (error?.type === "validation") {
           if (error.email) setError("email", { type: "manual", message: error.email })
@@ -89,7 +88,6 @@ const EventRegistrationForm = ({
         };
 
         if (error?.type === "api") {
-          console.log("message: ", error.message);
           toast({
             variant: 'destructive',
             title: 'Something Went Wrong',
@@ -100,11 +98,12 @@ const EventRegistrationForm = ({
 
         const queryParams = new URLSearchParams({
           name: baseData.name,
+          email: baseData.email,
+          phoneNumber: baseData.phoneNumber
         }).toString();
 
         router.push(`/events/${slug}/registration-success?${queryParams}`)
       } catch (error) {
-        console.log("errorInClientCatch: ", error);
         toast({
           variant: 'destructive',
           title: 'Something Went Wrong',

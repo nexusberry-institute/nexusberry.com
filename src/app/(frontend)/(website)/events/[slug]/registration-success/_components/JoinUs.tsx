@@ -10,11 +10,13 @@ export default function JoinUs({
   startDateTime,
   endTime,
   title,
+  slug
 }: {
   instructor?: Instructor | number | null
   startDateTime: string
-  endTime?: string | null
+  endTime: string | null | undefined
   title?: string | null
+  slug: string
 }) {
   const timeLeft = CountdownTimer({ date: startDateTime })
 
@@ -88,19 +90,18 @@ export default function JoinUs({
                   'Join the live Masterclass - upgrade your skills and shape your future.',
                 )
                 const location = encodeURIComponent('Online')
-                const start = startDateTime
-                  ? new Date(startDateTime)
+                const formatDateForGoogle = (dateString: string | null) => {
+                  if (!dateString) return ''
+                  return new Date(dateString)
                     .toISOString()
-                    .replace(/[-:]|\.\d{3}/g, '')
-                    .slice(0, 15)
-                  : ''
-                const end = endTime
-                  ? new Date(endTime)
-                    .toISOString()
-                    .replace(/[-:]|\.\d{3}/g, '')
-                    .slice(0, 15)
-                  : ''
-                const calendarUrl = `https://www.google.com/calendar/render?action=TEMPLATE&text=${eventTitle}&details=${details}&location=${location}&dates=${start}/${end}`
+                    .replace(/[-:]/g, '')
+                    .replace(/\.\d{3}/, '')
+                }
+
+                const start = formatDateForGoogle(startDateTime)
+                const end = formatDateForGoogle(endTime ?? null)
+
+                const calendarUrl = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${eventTitle}&details=${details}&location=${location}&dates=${start}/${end}`
                 window.open(calendarUrl, '_blank')
               }}
             >
@@ -109,14 +110,7 @@ export default function JoinUs({
             {/* Show Join Now if event has started */}
             {startDateTime && new Date(startDateTime) <= new Date() && (
               <a
-                href={
-                  typeof window !== 'undefined'
-                    ? `/events/${typeof instructor === 'object' && instructor && 'slug' in instructor
-                      ? instructor.slug
-                      : ''
-                    }/live-stream`
-                    : '#'
-                }
+                href={`/events/${slug}/live-stream`}
                 className="bg-[#1557FF] hover:bg-[#003ccd] text-white font-bold py-3 px-6 rounded-lg w-full flex items-center justify-center gap-2 mt-2"
                 target="_blank"
                 rel="noopener noreferrer"

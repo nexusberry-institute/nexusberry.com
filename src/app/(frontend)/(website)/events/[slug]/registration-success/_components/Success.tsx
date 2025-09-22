@@ -5,16 +5,28 @@ import { useSearchParams } from 'next/navigation';
 import React, { useEffect } from 'react'
 
 export default function Success({ slug, eventId }: { slug: string, eventId: number }) {
-  const [applicant, setApplicant] = React.useState<{ name: string }>({ name: "Participant" });
+  const [applicant, setApplicant] = React.useState<{
+    name: string,
+    email: string | null,
+    phoneNumber: string | null
+  }>({ name: "Participant", email: null, phoneNumber: null });
   const searchParams = useSearchParams();
 
   useEffect(() => {
     try {
       const storedData = localStorage.getItem(`${slug}-registration`);
-      const name = searchParams.get("name")
-      setApplicant(storedData ? JSON.parse(storedData) : { name: searchParams.get("name") || "Participant" })
-      if (!storedData && name) {
-        localStorage.setItem(`${slug}-registration`, JSON.stringify({ name, eventId }));
+      if (storedData) {
+        setApplicant(JSON.parse(storedData))
+        return;
+      }
+      const data = {
+        name: searchParams.get("name") || "Applicant",
+        email: searchParams.get("email"),
+        phoneNumber: searchParams.get("phoneNumber")
+      }
+      setApplicant(data)
+      if (!storedData && data.name && data.email && data.phoneNumber) {
+        localStorage.setItem(`${slug}-registration`, JSON.stringify({ eventId, ...data }));
       };
     } catch (error) {
       console.error("Error parsing registration data:", error);

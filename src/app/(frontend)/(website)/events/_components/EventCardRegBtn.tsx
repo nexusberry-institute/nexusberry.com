@@ -31,7 +31,7 @@ const EventCardRegBtn = ({
         return <AddToGoogleCalender
             title={title}
             startDateTime={startDateTime}
-            endTime={endTime}
+            endTime={endTime ?? null}
         />
 
     return (
@@ -54,7 +54,7 @@ const EventCardRegBtn = ({
 const AddToGoogleCalender = ({
     title, startDateTime, endTime
 }: {
-    title: string, startDateTime: string, endTime: string | null | undefined
+    title: string, startDateTime: string, endTime: string | null
 }) => {
     return (
         <Button
@@ -65,19 +65,18 @@ const AddToGoogleCalender = ({
                     'Join the live Masterclass - upgrade your skills and shape your future.',
                 )
                 const location = encodeURIComponent('Online')
-                const start = startDateTime
-                    ? new Date(startDateTime)
+                const formatDateForGoogle = (dateString: string | null) => {
+                    if (!dateString) return ''
+                    return new Date(dateString)
                         .toISOString()
-                        .replace(/[-:]|\.\d{3}/g, '')
-                        .slice(0, 15)
-                    : ''
-                const end = endTime
-                    ? new Date(endTime)
-                        .toISOString()
-                        .replace(/[-:]|\.\d{3}/g, '')
-                        .slice(0, 15)
-                    : ''
-                const calendarUrl = `https://www.google.com/calendar/render?action=TEMPLATE&text=${eventTitle}&details=${details}&location=${location}&dates=${start}/${end}`
+                        .replace(/[-:]/g, '')
+                        .replace(/\.\d{3}/, '')
+                }
+
+                const start = formatDateForGoogle(startDateTime)
+                const end = formatDateForGoogle(endTime)
+
+                const calendarUrl = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${eventTitle}&details=${details}&location=${location}&dates=${start}/${end}`
                 window.open(calendarUrl, '_blank')
             }}
         >
