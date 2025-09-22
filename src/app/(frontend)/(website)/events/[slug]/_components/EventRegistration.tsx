@@ -15,12 +15,10 @@ const EventRegistration = ({
     endTime: string | null
 }) => {
     const [registeredUser, setRegisteredUser] = useState(null);
-    console.log("registeredUser: ", registeredUser);
 
     useEffect(() => {
         if (typeof window !== 'undefined' && slug) {
             const userDetails = localStorage.getItem(`${slug}-registration`)
-            console.log('Fetched userDetails from localStorage for slug:', slug, userDetails)
             setRegisteredUser(JSON.parse(userDetails as any))
         }
     }, [slug])

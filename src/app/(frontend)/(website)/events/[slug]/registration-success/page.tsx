@@ -74,7 +74,7 @@ export default async function RegistrationSuccessPage({ params }: { params: Prom
     return (
       <>
         <Success slug={event.slug as string} eventId={event.id} />
-        <JoinUs instructor={event.instructor} startDateTime={event.startDateTime} endTime={event.endTime} title={event.title} />
+        <JoinUs instructor={event.instructor} startDateTime={event.startDateTime} endTime={event.endTime} title={event.title} slug={event.slug as string} />
         <WhatsppCommunity whatsappLink={event.whatsappLink} whatsappQrCode={event.whatsappQrCode} />
       </>
     )

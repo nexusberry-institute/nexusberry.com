@@ -12,7 +12,6 @@ const RegistrationButton = ({ slug, startDateTime }: { slug: string, startDateTi
     useEffect(() => {
         if (typeof window !== 'undefined' && slug) {
             const userDetails = localStorage.getItem(`${slug}-registration`)
-            console.log('Fetched userDetails from localStorage for slug:', slug, userDetails)
             setRegisteredUser(userDetails as any)
         }
     }, [slug])

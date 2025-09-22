@@ -71,6 +71,7 @@ const queryEvents = async (slug: string) => {
           equals: true,
         },
       },
+      sort: 'startDateTime'
     })
     return events.docs || []
   } catch (error) {

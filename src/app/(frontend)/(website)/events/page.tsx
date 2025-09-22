@@ -10,6 +10,7 @@ import { unstable_cache } from 'next/cache'
 import type { Metadata } from 'next/types'
 import { EventsGridSkeleton } from './_components/EventListSkeleton'
 
+export const dynamic = 'force-dynamic';
 
 export function generateMetadata(): Metadata {
   return {
