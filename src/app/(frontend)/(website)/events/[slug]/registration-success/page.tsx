@@ -2,9 +2,10 @@ import Link from "next/link"
 import { getPayload } from 'payload'
 import configPromise from '@payload-config'
 import JoinUs from "./_components/JoinUs";
-import WhatsppCommunity from "./_components/WhatsppCommunity";
 import Success from './_components/Success'
 import ErrorCard from "../../../_components/ErrorCard";
+import { Media } from "@/payload-types";
+import WhatsppCommunity from "./_components/WhatsppCommunity";
 
 const queryEventbySlug = async (slug: string) => {
   const payload = await getPayload({ config: configPromise })
@@ -75,7 +76,10 @@ export default async function RegistrationSuccessPage({ params }: { params: Prom
       <>
         <Success slug={event.slug as string} eventId={event.id} />
         <JoinUs instructor={event.instructor} startDateTime={event.startDateTime} endTime={event.endTime} title={event.title} slug={event.slug as string} />
-        <WhatsppCommunity whatsappLink={event.whatsappLink} whatsappQrCode={event.whatsappQrCode} />
+        <WhatsppCommunity
+          whatsappLink={event.whatsappLink ?? null}
+          whatsappQrCode={event.whatsappQrCode as Media | null}
+        />
       </>
     )
   } catch (error) {

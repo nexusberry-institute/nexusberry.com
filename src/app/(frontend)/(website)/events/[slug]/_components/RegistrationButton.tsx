@@ -4,21 +4,28 @@ import { Button } from '@/components/ui/button';
 import { useRouter } from 'next/navigation';
 import React, { useEffect, useState } from 'react'
 
-const RegistrationButton = ({ slug, startDateTime }: { slug: string, startDateTime: string }) => {
+const RegistrationButton = ({
+    eventId,
+    slug,
+    startDateTime
+}: {
+    eventId: number,
+    slug: string,
+    startDateTime: string
+}) => {
     const [registeredUser, setRegisteredUser] = useState(null);
 
     const router = useRouter();
 
     useEffect(() => {
-        if (typeof window !== 'undefined' && slug) {
-            const userDetails = localStorage.getItem(`${slug}-registration`)
+        if (typeof window !== 'undefined') {
+            const userDetails = localStorage.getItem(`${eventId}-registration`)
             setRegisteredUser(userDetails as any)
         }
-    }, [slug])
+    }, [eventId])
 
     if (registeredUser) {
         return (
-
             <Button
                 onClick={() => {
                     if (slug) {

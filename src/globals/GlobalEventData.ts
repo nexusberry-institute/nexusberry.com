@@ -27,7 +27,7 @@ export const GlobalEventData: GlobalConfig = {
       label: "WhatsApp QR Code",
       type: "upload",
       relationTo: "media",
-      required: true,
+      // required: true,
     },
     {
       name: "totalAttendees",

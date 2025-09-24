@@ -9,6 +9,7 @@ import configPromise from '@payload-config'
 import { unstable_cache } from 'next/cache'
 import type { Metadata } from 'next/types'
 import { EventsGridSkeleton } from './_components/EventListSkeleton'
+import { Media } from '@/payload-types'
 
 export const dynamic = 'force-dynamic';
 
@@ -71,6 +72,7 @@ const queryEvents = unstable_cache(async () => {
 
   const globalEventData = await payload.findGlobal({
     slug: 'global-event-data',
+    depth: 1
   })
 
   return globalEventData;
@@ -90,7 +92,10 @@ export default async function Page() {
       <Suspense fallback={<EventsGridSkeleton count={6} />}>
         <EventCart />
       </Suspense>
-      <WhatsppCommunity whatsappLink={globalEventData.whatsappCommunity} whatsappQrCode={globalEventData.whatsappQR} />
+      <WhatsppCommunity
+        whatsappLink={globalEventData.whatsappCommunity}
+        whatsappQrCode={globalEventData.whatsappQR as Media | null}
+      />
       <JoinUs />
       <LearnerFeedback />
     </>

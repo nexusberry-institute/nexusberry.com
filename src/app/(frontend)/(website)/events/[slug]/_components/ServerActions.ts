@@ -210,7 +210,7 @@ export default async function CreateEventRegistration(data: FormData) {
       if (alreadyRegistered) {
         return {
           success: true,
-          error: null
+          error: null,
         }
       }
 

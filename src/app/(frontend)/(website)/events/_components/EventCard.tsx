@@ -59,6 +59,7 @@ const EventCard = ({ event }: { event: Event }) => {
                 </div>
 
                 <EventCardRegBtn
+                    eventId={event.id}
                     title={event.title}
                     slug={event.slug as string}
                     startDateTime={event.startDateTime}

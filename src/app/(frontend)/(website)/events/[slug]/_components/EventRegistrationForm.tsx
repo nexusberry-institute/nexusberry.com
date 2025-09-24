@@ -21,6 +21,7 @@ import { useRouter, useSearchParams } from 'next/navigation'
 import CreateEventRegistration from './ServerActions'
 import { Star } from 'lucide-react'
 import React, { useState, useTransition } from 'react'
+import clsx from 'clsx'
 
 
 const FormSchema = z.object({
@@ -74,12 +75,14 @@ const EventRegistrationForm = ({
       email: data.email.toLowerCase(),
       phoneNumber: data.phoneNumber,
       eventId,
-      campaignId: Number(searchParams.get("camp")) || null
     };
 
     startTransition(async () => {
       try {
-        const { success, error } = await CreateEventRegistration(baseData)
+        const { error } = await CreateEventRegistration({
+          ...baseData,
+          campaignId: Number(searchParams.get("camp")) || null
+        })
 
         if (error?.type === "validation") {
           if (error.email) setError("email", { type: "manual", message: error.email })
@@ -96,13 +99,14 @@ const EventRegistrationForm = ({
           return;
         };
 
-        const queryParams = new URLSearchParams({
-          name: baseData.name,
-          email: baseData.email,
-          phoneNumber: baseData.phoneNumber
-        }).toString();
+        // const queryParams = new URLSearchParams({
+        //   name: baseData.name,
+        //   email: baseData.email,
+        //   phoneNumber: baseData.phoneNumber
+        // }).toString();
+        localStorage.setItem(`${eventId}-registration`, JSON.stringify(baseData));
 
-        router.push(`/events/${slug}/registration-success?${queryParams}`)
+        router.push(`/events/${slug}/registration-success`)
       } catch (error) {
         toast({
           variant: 'destructive',
@@ -130,7 +134,7 @@ const EventRegistrationForm = ({
 
       <Form {...form}>
         <form onSubmit={handleSubmit(upload)} className={`space-y-6 ${showLeftGraphic ? 'pb-6 pl-6 max-sm:pl-0' : ''}`}>
-          <fieldset disabled={isLoading} className='space-y-6'>
+          <div className={clsx('space-y-6')}>
             <FormField
               control={control}
               name="name"
@@ -139,8 +143,16 @@ const EventRegistrationForm = ({
                   <FormLabel className={`${showLeftGraphic ? 'text-lg max-sm:text-base' : 'text-base font-medium text-gray-700'}`}>
                     {showLeftGraphic ? 'Name' : 'Full Name'}
                   </FormLabel>
-                  <FormControl className={`${showLeftGraphic ? 'text-muted-foreground h-12 max-sm:h-12 text-lg' : 'h-12 text-base border-gray-200 focus:border-primary focus:ring-2 focus:ring-primary/20'}`}>
-                    <Input placeholder={showLeftGraphic ? "" : "Enter your full name"} {...field} />
+                  <FormControl
+                    className={clsx(
+                      "h-12 text-base border-gray-200 focus:border-primary focus:ring-2 focus:ring-primary/20 "
+                    )}
+                  >
+                    <Input
+                      placeholder={showLeftGraphic ? "" : "Enter your full name"}
+                      {...field}
+                      disabled={isLoading}
+                    />
                   </FormControl>
                   <FormMessage aria-live='polite' />
                 </FormItem>
@@ -155,6 +167,7 @@ const EventRegistrationForm = ({
                   <FormControl className={`${showLeftGraphic ? 'text-muted-foreground h-12 flex items-center bg-background max-sm:h-12 text-lg' : 'h-12 text-base'}`}>
                     <div className={`${showLeftGraphic ? 'focus-within:ring-4 rounded-lg' : 'focus-within:ring-2 focus-within:ring-primary/20 rounded-lg'}`}>
                       <PhoneInput
+                        disabled={isLoading}
                         value={field.value}
                         onChange={field.onChange}
                         placeholder={showLeftGraphic ? "" : "Enter phone number"}
@@ -197,8 +210,16 @@ const EventRegistrationForm = ({
               render={({ field }) => (
                 <FormItem>
                   <FormLabel className={`${showLeftGraphic ? 'text-lg max-sm:text-base' : 'text-base font-medium text-gray-700'}`}>Email</FormLabel>
-                  <FormControl className={`${showLeftGraphic ? 'text-muted-foreground h-12 max-sm:h-12 text-lg' : 'h-12 text-base border-gray-200 focus:border-primary focus:ring-2 focus:ring-primary/20'}`}>
-                    <Input type={'email'} placeholder={showLeftGraphic ? "" : "Enter your email"} {...field} />
+                  <FormControl
+                    className={clsx(
+                      "h-12 text-base border-gray-200 focus:border-primary focus:ring-2 focus:ring-primary/20")}
+                  >
+                    <Input
+                      type={'email'}
+                      placeholder={showLeftGraphic ? "" : "Enter your email"}
+                      disabled={isLoading}
+                      {...field}
+                    />
                   </FormControl>
                   <FormMessage aria-live='polite' />
                 </FormItem>
@@ -225,7 +246,7 @@ const EventRegistrationForm = ({
                 showLeftGraphic ? 'Continue' : 'Register for Free'
               )}
             </Button>
-          </fieldset>
+          </div>
         </form>
       </Form>
     </div>
