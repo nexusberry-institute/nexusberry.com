@@ -126,12 +126,12 @@ export default async function SlugPage({ params }: { params: Promise<{ slug: str
           eventLabel={event.label}
         />
       </Suspense>
-      <RegistrationFooter
+      {/* <RegistrationFooter
         startDateTime={event.startDateTime}
         endTime={event.endTime}
         eventId={event.id}
         slug={event.slug}
-      />
+      /> */}
       {/* Spacer to prevent footer overlap */}
       <div id="show_footer"></div>
     </div>

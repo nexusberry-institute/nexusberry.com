@@ -10,28 +10,17 @@ export default function Success({ slug, eventId }: { slug: string, eventId: numb
     email: string | null,
     phoneNumber: string | null
   }>({ name: "Participant", email: null, phoneNumber: null });
-  const searchParams = useSearchParams();
 
   useEffect(() => {
     try {
-      const storedData = localStorage.getItem(`${slug}-registration`);
+      const storedData = localStorage.getItem(`${eventId}-registration`);
       if (storedData) {
         setApplicant(JSON.parse(storedData))
-        return;
       }
-      const data = {
-        name: searchParams.get("name") || "Applicant",
-        email: searchParams.get("email"),
-        phoneNumber: searchParams.get("phoneNumber")
-      }
-      setApplicant(data)
-      if (!storedData && data.name && data.email && data.phoneNumber) {
-        localStorage.setItem(`${slug}-registration`, JSON.stringify({ eventId, ...data }));
-      };
     } catch (error) {
       console.error("Error parsing registration data:", error);
     }
-  }, [slug])
+  }, [eventId])
 
   return (
     <div

@@ -4,7 +4,14 @@ import React from 'react'
 import { Media } from '@/payload-types'
 
 
-export default function WhatsppCommunity({ whatsappLink, whatsappQrCode }: { whatsappLink?: string | null, whatsappQrCode?: Media | number | null }) {
+export default function WhatsppCommunity({
+  whatsappLink,
+  whatsappQrCode
+}: {
+  whatsappLink: string | null,
+  whatsappQrCode: Media | null
+}) {
+  if (!whatsappLink) return null;
 
 
   return (
@@ -14,9 +21,9 @@ export default function WhatsppCommunity({ whatsappLink, whatsappQrCode }: { wha
           <div className="space-y-2 max-lg:text-center">
             <h1 className="font-semibold text-2xl">Join NexusBerry WhatsApp Community</h1>
             <p className="text-lg">to get regular updates on Masterclasses </p>
-            <Link href={`${whatsappLink || "#"}`} aria-label="whatsapp community Link" className="text-primary-400 text-lg font-semibold text-nowrap hidden max-lg:block py-4">
-              Join from PC instead
-            </Link>
+            <a href={`${whatsappLink || "#"}`} aria-label="whatsapp community Link" className="text-primary-400 text-lg font-semibold text-nowrap hidden max-lg:block py-4">
+              Join WhatsApp Group
+            </a>
           </div>
           <div className="lg:flex   w-full   max-lg:text-center  space-y-4">
             <div className='space-y-1'>
@@ -43,20 +50,20 @@ export default function WhatsppCommunity({ whatsappLink, whatsappQrCode }: { wha
         <div className="flex flex-col gap-2 pt-4 max-lg:hidden">
           <div className="w-full aspect-[1/1] relative rounded-lg ring-1 ring-green-400">
             <Image
-              src={typeof whatsappQrCode === "object" ? whatsappQrCode?.url || '/brokenImage.png' : '/brokenImage.png'}
-              alt={typeof whatsappQrCode === "object" ? whatsappQrCode?.alt || 'WhatsApp Qr Code' : 'WhatsApp Qr Code'}
+              src={whatsappQrCode?.url || '/brokenImage.png'}
+              alt={whatsappQrCode?.alt || 'WhatsApp Qr Code'}
               className="rounded-lg object-center object-cover aspect-auto" sizes='148px'
               fill loading='lazy'
             />
           </div>
-          <Link
+          <a
             href={whatsappLink || "#"}
             aria-label="whatsApp Community Link"
             target='_blank'
             className="text-primary-400 text-sm font-semibold text-nowrap"
           >
-            Join from PC instead
-          </Link>
+            Join WhatsApp Group
+          </a>
         </div>
       </div>
     </div>

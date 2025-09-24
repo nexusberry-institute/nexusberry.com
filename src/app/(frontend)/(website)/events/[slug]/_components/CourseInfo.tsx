@@ -30,7 +30,11 @@ export default function CourseInfo({
                 new tools and concepts that could launch your next career leap!
               </p>
               {/* Web Registration / Live stream button */}
-              <RegistrationButton slug={slug as string} startDateTime={startDateTime} />
+              <RegistrationButton
+                eventId={eventId}
+                slug={slug as string}
+                startDateTime={startDateTime}
+              />
             </div>
           </div>
           <ul className="flex flex-col max-xl:flex-row gap-48 relative pt-[calc(50%-26rem)] pb-[calc(50%-30rem)] pr-16">
@@ -61,7 +65,11 @@ export default function CourseInfo({
               new tools and concepts that could launch your next career leap!
             </p>
             {/* Mobile Registration / Live stream button */}
-            <RegistrationButton slug={slug as string} startDateTime={startDateTime} />
+            <RegistrationButton
+              eventId={eventId}
+              slug={slug as string}
+              startDateTime={startDateTime}
+            />
           </div>
           <ul className="flex flex-row gap-8 scrollbar-none overflow-auto px-8 pb-8">
             {

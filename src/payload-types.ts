@@ -3190,7 +3190,7 @@ export interface Footer {
 export interface GlobalEventDatum {
   id: number;
   whatsappCommunity: string;
-  whatsappQR: number | Media;
+  whatsappQR?: (number | null) | Media;
   totalAttendees: number;
   completedByLearners: number;
   updatedAt?: string | null;

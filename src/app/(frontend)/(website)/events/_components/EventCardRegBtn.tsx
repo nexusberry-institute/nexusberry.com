@@ -6,11 +6,13 @@ import Link from 'next/link'
 import React, { useEffect, useState } from 'react'
 
 const EventCardRegBtn = ({
+    eventId,
     title,
     slug,
     startDateTime,
     endTime
 }: {
+    eventId: number,
     title: string,
     slug: string,
     startDateTime: string,
@@ -19,13 +21,13 @@ const EventCardRegBtn = ({
     const [registeredUser, setRegisteredUser] = useState(null);
 
     useEffect(() => {
-        if (typeof window !== 'undefined' && slug) {
-            const userDetails = localStorage.getItem(`${slug}-registration`)
+        if (typeof window !== 'undefined') {
+            const userDetails = localStorage.getItem(`${eventId}-registration`)
             if (userDetails) {
                 setRegisteredUser(JSON.parse(userDetails as any))
             }
         }
-    }, [slug])
+    }, [eventId])
 
     if (registeredUser)
         return <AddToGoogleCalender

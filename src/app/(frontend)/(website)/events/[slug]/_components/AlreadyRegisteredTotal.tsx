@@ -2,36 +2,26 @@ import React from 'react'
 import { getPayload } from 'payload'
 import configPromise from '@payload-config'
 
-const queryEventsBySlug = async ({ slug }: { slug: string }) => {
+const queryEventById = async ({ id }: { id: number }) => {
     try {
         const payload = await getPayload({ config: configPromise })
-        const result = await payload.find({
+        const result = await payload.findByID({
+            id,
             collection: 'events',
-            limit: 1,
-            pagination: false,
-            where: {
-                slug: {
-                    equals: slug,
-                },
-                showInUI: {
-                    equals: true,
-                },
-            },
             select: {
                 defaultParticipants: true,
                 totalRegistrations: true,
             }
         })
-        return {
-            event: result.docs?.[0],
-        }
+        return result
     } catch (error) {
-        return { event: undefined }
+        return undefined
     }
 }
 
-const AlreadyRegisteredTotal = async ({ slug }: { slug: string }) => {
-    const { event: eventWithAttendee } = await queryEventsBySlug({ slug });
+const AlreadyRegisteredTotal = async ({ id }: { id: number }) => {
+    const eventWithAttendee = await queryEventById({ id });
+    console.log("eventWithAttendee: ", eventWithAttendee);
     const participantCount = (eventWithAttendee?.defaultParticipants || 0) + (eventWithAttendee?.totalRegistrations || 0)
 
     return (
