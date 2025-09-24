@@ -7,7 +7,7 @@ import Link from 'next/link'
 import { format } from 'date-fns'
 import { CountdownTimer } from '@/components/CountDownTimer'
 import { EventModel } from './EventModel'
-import RegistrationButton from './RegistrationButton'
+// import RegistrationButton from './RegistrationButton'
 
 export default function RegistrationFooter({
   startDateTime,
@@ -113,10 +113,10 @@ export default function RegistrationFooter({
           </div>
         </div>
         {/* Registration / Live stream button */}
-        <RegistrationButton
+        {/* <RegistrationButton
           slug={slug as string}
           startDateTime={startDateTime}
-        />
+        /> */}
       </div>
     </>
   )
