@@ -991,6 +991,10 @@ export interface Event {
    */
   showInUI?: boolean | null;
   /**
+   * Uncheck if there is no certificate for this event
+   */
+  hasCertificate?: boolean | null;
+  /**
    * Link to the live stream event
    */
   liveStreamLink?: string | null;
@@ -2365,6 +2369,7 @@ export interface EventsSelect<T extends boolean = true> {
   slugLock?: T;
   image?: T;
   showInUI?: T;
+  hasCertificate?: T;
   liveStreamLink?: T;
   startDateTime?: T;
   endTime?: T;

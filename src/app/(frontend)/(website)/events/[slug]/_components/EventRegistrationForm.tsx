@@ -94,19 +94,13 @@ const EventRegistrationForm = ({
           toast({
             variant: 'destructive',
             title: 'Something Went Wrong',
-            description: error.message + "Please Try Again.",
+            description: error.message + " " + "Please Try Again.",
           })
           return;
         };
 
-        // const queryParams = new URLSearchParams({
-        //   name: baseData.name,
-        //   email: baseData.email,
-        //   phoneNumber: baseData.phoneNumber
-        // }).toString();
         localStorage.setItem(`${eventId}-registration`, JSON.stringify(baseData));
-
-        router.push(`/events/${slug}/registration-success`)
+        router.push(`/events/${slug}/success`)
       } catch (error) {
         toast({
           variant: 'destructive',

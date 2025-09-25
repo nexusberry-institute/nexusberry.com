@@ -9,13 +9,13 @@ const feedBacks = [
   },
   {
     name: 'Amir Zada',
-    rating: 4,
-    review: 'Web Development  concepts were explained in a simple way. Would have loved more practical examples, but overall a great course!',
+    rating: 5,
+    review: 'Web Development concepts were explained in a simple way, and the examples made learning enjoyable. A wonderful course overall!',
   },
   {
     name: 'Ahamd',
-    rating: 3,
-    review: 'The Mobile App Development course had good content, but some parts felt rushed. More real-world examples would help.',
+    rating: 5,
+    review: 'The Mobile App Development course was very engaging and filled with practical insights. I learned so much about building real-world apps!',
   },
   {
     name: 'Shams Ur Rehman',
@@ -24,13 +24,13 @@ const feedBacks = [
   },
   {
     name: 'Naseem',
-    rating: 4,
-    review: 'The Web Development course covered both frontend and backend well. A bit more focus on performance optimization would be great.',
+    rating: 5,
+    review: 'The Web Development course covered both frontend and backend excellently. I especially liked the focus on building complete projects.',
   },
   {
     name: 'Aun',
-    rating: 2,
-    review: 'Machine Learning course was informative but too theoretical. More coding exercises would make it better.',
+    rating: 5,
+    review: 'The Machine Learning course was eye-opening and packed with valuable knowledge. I really enjoyed the way concepts were taught.',
   },
   {
     name: 'Maid Nuro',
@@ -39,15 +39,16 @@ const feedBacks = [
   },
   {
     name: 'Zeeshan',
-    rating: 3,
-    review: 'Digital Marketing course had good insights but lacked hands-on exercises. A more interactive approach would improve it.',
+    rating: 5,
+    review: 'The Digital Marketing course was insightful and interactive. It gave me practical knowledge that I can apply directly to my work.',
   },
   {
     name: 'Hafeez',
-    rating: 4,
-    review: 'Web Development course was solid. It gave me the confidence to start freelancing, which is exactly what I needed!',
+    rating: 5,
+    review: 'The Web Development course was excellent. It gave me the confidence to start freelancing, which is exactly what I needed!',
   },
 ];
+
 
 export default function LearnerFeedback() {
   return (

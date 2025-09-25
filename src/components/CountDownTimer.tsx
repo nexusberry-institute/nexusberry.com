@@ -20,10 +20,10 @@ export const CountdownTimer = ({ date }: CountdownTimerProps) => {
   })
 
   useEffect(() => {
-    const targetDate = new Date(date).getTime()
     const interval = setInterval(() => {
-      const now = new Date().getTime()
-      const distance = targetDate - now
+      const now = new Date() // Current UTC time
+      const eventDate = new Date(date) // Event UTC time from database
+      const distance = eventDate.getTime() - now.getTime()
 
       if (distance < 0) {
         setTimeLeft({

@@ -4,6 +4,7 @@ import { format } from 'date-fns'
 import { Check, Calendar, Clock } from 'lucide-react'
 import { CountdownTimer } from '@/components/CountDownTimer'
 import { Instructor } from '@/payload-types'
+import { formatEventTimeRange, formatPakistanTime } from '@/app/(frontend)/(website)/_lib/utils/date'
 
 export default function JoinUs({
   instructor,
@@ -63,17 +64,14 @@ export default function JoinUs({
           <div className="flex gap-4">
             <div className="flex  items-center gap-2 max-lg:justify-center">
               <Calendar size={18} className="inline" />
-              <span>{format(new Date(startDateTime), 'MMMM dd, yyyy')}</span>
+              <span>{formatPakistanTime(startDateTime, 'MMMM dd, yyyy')}</span>
             </div>
-            {startDateTime ? (
-              <div className="flex  items-center gap-2 max-lg:justify-center">
-                <Clock size={18} className="inline" />
-                <span>
-                  {format(new Date(startDateTime), 'h:mm a')}{' '}
-                  {endTime ? `- ${format(new Date(endTime), 'h:mm a')}` : ''}
-                </span>
-              </div>
-            ) : null}
+            <div className="flex  items-center gap-2 max-lg:justify-center">
+              <Clock size={18} className="inline" />
+              <span>
+                {formatEventTimeRange(startDateTime, endTime)}
+              </span>
+            </div>
           </div>
         </div>
         <div className="flex flex-col justify-center space-y-6 max-lg:items-center">
@@ -90,25 +88,25 @@ export default function JoinUs({
                   'Join the live Masterclass - upgrade your skills and shape your future.',
                 )
                 const location = encodeURIComponent('Online')
-                const formatDateForGoogle = (dateString: string | null) => {
-                  if (!dateString) return ''
-                  return new Date(dateString)
-                    .toISOString()
-                    .replace(/[-:]/g, '')
-                    .replace(/\.\d{3}/, '')
-                }
+                const formatDateForGooglePakistan = (utcDateString: string | null): string => {
+                  if (!utcDateString) return '';
 
-                const start = formatDateForGoogle(startDateTime)
-                const end = formatDateForGoogle(endTime ?? null)
+                  // Convert UTC date to Pakistan time and format for Google Calendar
+                  const pakistanDateTime = formatPakistanTime(utcDateString, "yyyyMMdd'T'HHmmss");
+                  return pakistanDateTime;
+                };
 
-                const calendarUrl = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${eventTitle}&details=${details}&location=${location}&dates=${start}/${end}`
+                const start = formatDateForGooglePakistan(startDateTime)
+                const end = formatDateForGooglePakistan(endTime ?? null)
+
+                const calendarUrl = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${eventTitle}&details=${details}&location=${location}&dates=${start}/${end}&ctz=Asia/Karachi`
                 window.open(calendarUrl, '_blank')
               }}
             >
               Add to Google Calendar
             </button>
             {/* Show Join Now if event has started */}
-            {startDateTime && new Date(startDateTime) <= new Date() && (
+            {/* {startDateTime && new Date(startDateTime) <= new Date() && (
               <a
                 href={`/events/${slug}/live-stream`}
                 className="bg-[#1557FF] hover:bg-[#003ccd] text-white font-bold py-3 px-6 rounded-lg w-full flex items-center justify-center gap-2 mt-2"
@@ -117,7 +115,7 @@ export default function JoinUs({
               >
                 Join Now
               </a>
-            )}
+            )} */}
           </div>
           <h2 className="text-center text-2xl font-bold">Event start soon</h2>
           <div className="flex gap-4 text-sm font-semibold ">

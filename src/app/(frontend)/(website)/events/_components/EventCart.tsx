@@ -4,6 +4,7 @@ import { Event } from '@/payload-types'
 import EventCard from './EventCard'
 import { getPayload } from 'payload'
 import config from "@/payload.config";
+import { getCurrentPakistanTime } from '../../_lib/utils/date';
 
 const getEventsList = async ({
   selectedDepartment = 'all',
@@ -41,7 +42,14 @@ const getEventsList = async ({
     where: whereClause,
     sort: 'startDateTime', // Sort by start date
     select: {
-      eventLeads: false
+      title: true,
+      label: true,
+      slug: true,
+      image: true,
+      startDateTime: true,
+      endTime: true,
+      updatedAt: true,
+      createdAt: true
     }
   });
 

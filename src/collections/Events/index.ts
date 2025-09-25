@@ -74,6 +74,16 @@ export const Events: CollectionConfig = {
               },
             },
             {
+              name: 'hasCertificate',
+              type: 'checkbox',
+              label: 'Has Certificate',
+              defaultValue: true,
+              admin: {
+                position: 'sidebar',
+                description: 'Uncheck if there is no certificate for this event',
+              },
+            },
+            {
               name: 'liveStreamLink',
               type: 'text',
               label: 'Live Stream Link',
