@@ -4,6 +4,7 @@ import { Button } from '@/components/ui/button'
 import { Calendar } from 'lucide-react';
 import Link from 'next/link'
 import React, { useEffect, useState } from 'react'
+import { formatPakistanTime } from '../../_lib/utils/date';
 
 const EventCardRegBtn = ({
     eventId,
@@ -67,18 +68,19 @@ const AddToGoogleCalender = ({
                     'Join the live Masterclass - upgrade your skills and shape your future.',
                 )
                 const location = encodeURIComponent('Online')
-                const formatDateForGoogle = (dateString: string | null) => {
-                    if (!dateString) return ''
-                    return new Date(dateString)
-                        .toISOString()
-                        .replace(/[-:]/g, '')
-                        .replace(/\.\d{3}/, '')
-                }
 
-                const start = formatDateForGoogle(startDateTime)
-                const end = formatDateForGoogle(endTime)
+                const formatDateForGooglePakistan = (utcDateString: string | null): string => {
+                    if (!utcDateString) return '';
 
-                const calendarUrl = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${eventTitle}&details=${details}&location=${location}&dates=${start}/${end}`
+                    // Convert UTC date to Pakistan time and format for Google Calendar
+                    const pakistanDateTime = formatPakistanTime(utcDateString, "yyyyMMdd'T'HHmmss");
+                    return pakistanDateTime;
+                };
+
+                const start = formatDateForGooglePakistan(startDateTime)
+                const end = formatDateForGooglePakistan(endTime)
+
+                const calendarUrl = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${eventTitle}&details=${details}&location=${location}&dates=${start}/${end}&ctz=Asia/Karachi`
                 window.open(calendarUrl, '_blank')
             }}
         >

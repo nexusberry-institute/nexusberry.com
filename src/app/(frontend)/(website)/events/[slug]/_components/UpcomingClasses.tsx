@@ -109,7 +109,7 @@ export default async function UpcomingClasses({
           Upcoming Events
         </h2>
         <Link href="/events" className="inline-block text-sm text-primary-400 font-bold">
-          See all the Events
+          See all
           <ChevronRight className="inline-block stroke-primary-400" size={18} />
         </Link>
       </div>

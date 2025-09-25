@@ -4,7 +4,7 @@ import { Check } from 'lucide-react'
 import { useSearchParams } from 'next/navigation';
 import React, { useEffect } from 'react'
 
-export default function Success({ slug, eventId }: { slug: string, eventId: number }) {
+export default function Success({ eventId, slug }: { slug: string, eventId: number }) {
   const [applicant, setApplicant] = React.useState<{
     name: string,
     email: string | null,

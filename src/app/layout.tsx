@@ -1,11 +1,16 @@
-import ToastMessage from "@/app/(frontend)/(auth)/_components/ToastMessage";
+// import ToastMessage from "@/app/(frontend)/(auth)/_components/ToastMessage";
 
 export default async function Layout({ children }: { children: React.ReactNode }) {
 
   return (
     <>
-      <ToastMessage />
+      {/* <html lang="en">
+        <body>
+          <main> */}
       {children}
+      {/* </main>
+        </body>
+      </html> */}
     </>
   )
 }

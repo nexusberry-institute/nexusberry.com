@@ -26,15 +26,23 @@ const RegistrationButton = ({
 
     if (registeredUser) {
         return (
+            // <Button
+            //     onClick={() => {
+            //         if (slug) {
+            //             router.push(`/events/${slug}/live-stream`)
+            //         }
+            //     }}
+            //     className="bg-primary-400 w-fit max-lg:mx-auto hover:bg-primary-400 font-bold py-6 rounded-xl hover:shadow-[4px_3px_0px_rgba(181,20,36,0.9)] duration-300"
+            // >
+            //     Visit Live Stream
+            // </Button>
             <Button
                 onClick={() => {
-                    if (slug) {
-                        router.push(`/events/${slug}/live-stream`)
-                    }
+                    router.push(`/events/${slug}/success`)
                 }}
                 className="bg-primary-400 w-fit max-lg:mx-auto hover:bg-primary-400 font-bold py-6 rounded-xl hover:shadow-[4px_3px_0px_rgba(181,20,36,0.9)] duration-300"
             >
-                Visit Live Stream
+                View Details
             </Button>
         )
     }

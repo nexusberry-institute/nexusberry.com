@@ -3,10 +3,9 @@ import Image from 'next/image'
 import React from 'react'
 import { imageSizes } from '@/app/(frontend)/(website)/_lib/ImageSizes'
 import Link from 'next/link';
-import { Button } from '@/components/ui/button';
 import { Calendar, Clock } from 'lucide-react'
-import { format } from 'date-fns'
 import EventCardRegBtn from './EventCardRegBtn';
+import { formatEventDateShort, formatEventTimeRange } from '../../_lib/utils/date';
 
 
 
@@ -46,14 +45,13 @@ const EventCard = ({ event }: { event: Event }) => {
                 <div className="space-y-3">
                     <div className="flex  items-center gap-2">
                         <Calendar size={18} className="inline" />
-                        <span className="text-sm">{format(new Date(event.startDateTime), 'MMMM dd, yyyy')}</span>
+                        <span className="text-sm">{formatEventDateShort(event.startDateTime)}</span>
                     </div>
 
                     <div className="flex  items-center gap-2">
                         <Clock size={18} className="inline" />
                         <span className="text-sm">
-                            {format(new Date(event.startDateTime), 'h:mm a')}{' '}
-                            {event.endTime ? `- ${format(new Date(event.endTime), 'h:mm a')}` : ''}
+                            {formatEventTimeRange(event.startDateTime, event.endTime)}
                         </span>
                     </div>
                 </div>

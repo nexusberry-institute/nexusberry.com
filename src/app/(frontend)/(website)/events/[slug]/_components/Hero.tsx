@@ -8,13 +8,12 @@ import EventRegistration from './EventRegistration'
 import AlreadyRegisteredTotal from './AlreadyRegisteredTotal'
 
 
-
 export default async function Hero({
   event,
 }: {
   event: Event
 }) {
-  const startDateTime = event.startDateTime || new Date().toISOString()
+  const startDateTime = event.startDateTime
   const endTime = event.endTime || null
 
 
@@ -33,10 +32,14 @@ export default async function Hero({
 
         {/* Certificate and Participants in horizontal line */}
         <div className="flex gap-6 items-center max-lg:justify-center max-lg:flex-col max-lg:gap-4">
-          <div className="flex gap-2 items-center">
-            <Image src={Certificate} alt="certificate" sizes="28px" />
-            <span className="text-lg">Certificate Included</span>
-          </div>
+          {event.hasCertificate ?
+            <div className="flex gap-2 items-center">
+              <Image src={Certificate} alt="certificate" sizes="28px" />
+              <span className="text-lg">Certificate Included</span>
+            </div>
+            :
+            null
+          }
           <div className="flex gap-2 items-center">
             <UserCheck />
             <AlreadyRegisteredTotal id={event.id} />

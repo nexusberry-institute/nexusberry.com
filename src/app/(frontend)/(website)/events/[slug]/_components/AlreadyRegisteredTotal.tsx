@@ -21,7 +21,7 @@ const queryEventById = async ({ id }: { id: number }) => {
 
 const AlreadyRegisteredTotal = async ({ id }: { id: number }) => {
     const eventWithAttendee = await queryEventById({ id });
-    console.log("eventWithAttendee: ", eventWithAttendee);
+    // console.log("eventWithAttendee: ", eventWithAttendee);
     const participantCount = (eventWithAttendee?.defaultParticipants || 0) + (eventWithAttendee?.totalRegistrations || 0)
 
     return (

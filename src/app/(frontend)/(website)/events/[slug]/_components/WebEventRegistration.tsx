@@ -21,7 +21,7 @@ const WebEventRegistration = ({
         return <RegisteredSuccessfully registeredUser={registeredUser} slug={slug} />
     };
 
-    if (startDateTime && startDateTime < new Date().toISOString()) {
+    if (startDateTime < new Date().toISOString()) {
         return <RegistrationClosed />;
     }
 
@@ -70,7 +70,7 @@ const RegisteredSuccessfully = ({ registeredUser, slug }: { registeredUser: any,
                 <p className="text-gray-600">You have successfully registered for this event.</p>
             </div>
 
-            <Button
+            {/* <Button
                 onClick={() => {
                     if (slug) {
                         router.push(`/events/${slug}/live-stream`)
@@ -80,6 +80,14 @@ const RegisteredSuccessfully = ({ registeredUser, slug }: { registeredUser: any,
                 className="bg-primary hover:bg-primary-400 text-white w-full h-12 text-base font-semibold rounded-xl transition-all duration-300 hover:shadow-lg transform hover:scale-105"
             >
                 Visit Live Stream
+            </Button> */}
+            <Button
+                onClick={() => {
+                    router.push(`/events/${slug}/success`)
+                }}
+                className="bg-primary hover:bg-primary-400 text-white w-full h-12 text-base font-semibold rounded-xl transition-all duration-300 hover:shadow-lg transform hover:scale-105"
+            >
+                View Details
             </Button>
         </div>
     )

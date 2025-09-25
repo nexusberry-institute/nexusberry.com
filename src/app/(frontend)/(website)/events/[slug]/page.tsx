@@ -1,19 +1,12 @@
 import React, { Suspense } from 'react'
-
 import Hero from './_components/Hero'
 import CourseDetail from './_components/CourseDetail'
-import JoinUs from './_components/JoinUs'
 import CourseInfo from './_components/CourseInfo'
 import UpcomingClasses from './_components/UpcomingClasses'
-import RegistrationFooter from './_components/RegistrationFooter'
-import Review from './_components/Review'
 import { getPayload } from 'payload'
 import configPromise from '@payload-config'
-import { cache } from 'react'
-import { generateMeta } from '@/utilities/generateMeta'
 import { Metadata } from 'next'
 import Link from 'next/link'
-import ErrorCard from '../../_components/ErrorCard'
 import { Media } from '@/payload-types'
 import { unstable_cache } from 'next/cache'
 import { EventsGridSkeleton } from '../_components/EventListSkeleton'
@@ -47,6 +40,7 @@ import { EventsGridSkeleton } from '../_components/EventListSkeleton'
 export default async function SlugPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params
   const { event } = await queryEventsBySlug(slug)
+  console.log("event: ", event);
   // if (error) {
   //   return <ErrorCard error={error} />
   // }
