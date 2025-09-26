@@ -10,7 +10,7 @@ export default function robots(): MetadataRoute.Robots {
       allow: '/',
       disallow: ['/admin/', '/api/', '/_next/',
         '/account/', '/accounts/', '/cms/', '/lms/', '/coursework/', '/reports/',
-        '/login/', '/logout/', 'register', '/recover-password/', "reset-password", 'set-password'
+        '/login/', '/logout/', '/register', '/recover-password/', "/reset-password", '/set-password'
       ],
     },
     sitemap: `${baseUrl}/sitemap.xml`,
