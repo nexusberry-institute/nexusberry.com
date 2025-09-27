@@ -1,6 +1,6 @@
-// import { checkAccess } from "@/access/accessControl";
 import { CollectionConfig } from "payload";
-import { format } from 'date-fns';
+// import { checkAccess } from "@/access/accessControl";
+// import { format } from 'date-fns';
 
 export const Leads: CollectionConfig = {
   slug: "leads",

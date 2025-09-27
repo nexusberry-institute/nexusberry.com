@@ -10,8 +10,8 @@ export async function GET(request: NextRequest) {
         console.log('🧪 Testing direct email send...');
 
         const result = await payload.sendEmail({
-            to: 'shaukat.jassme786@gmail.com',
-            from: process.env.DEFAULT_EMAIL_ADDRESS || 'shaukat.jassme1231@gmail.com',
+            to: 'rana.ajmal@gmail.com',
+            from: process.env.DEFAULT_EMAIL_ADDRESS || 'rana.ajmal@gmail.com',
             subject: 'Direct Test Email',
             html: '<h1>This is a direct test email</h1><p>If you receive this, email is working!</p>'
         });
