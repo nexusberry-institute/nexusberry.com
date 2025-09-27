@@ -1,6 +1,7 @@
 // Add this file to your Payload project and import the exported hooks into your collections.
 // Hooks call your Next.js API: /api/track
 
+// import type { CollectionAfterChangeHook } from 'payload';
 import type { TrackPayload } from "@/app/api/track/route";
 
 /**
@@ -24,7 +25,7 @@ async function postTrack(payload: TrackPayload) {
 }
 
 // Form submitted: fire on create (server-only)
-export const onFormSubmitted =
+export const trackFormSubmission =
   () =>
     async ({ operation, doc }: any) => {
       if (operation !== "create") return
@@ -47,7 +48,7 @@ export const onFormSubmitted =
     }
 
 // Interested: fire when status flips to "interested"
-export const onInterested =
+export const trackInterested =
   () =>
     async ({ operation, doc, previousDoc }: any) => {
       if (operation !== "update") return
@@ -74,7 +75,7 @@ export const onInterested =
     }
 
 // Event attended: fire when attended becomes true
-export const onEventAttended =
+export const trackEventAttended =
   () =>
     async ({ operation, doc, previousDoc }: any) => {
       if (operation !== "update") return
@@ -98,7 +99,7 @@ export const onEventAttended =
     }
 
 // Admission: fire when admitted becomes true
-export const onAdmission =
+export const trackAdmission =
   () =>
     async ({ operation, doc, previousDoc }: any) => {
       if (operation !== "update") return
