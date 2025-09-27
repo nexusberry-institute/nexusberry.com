@@ -1,7 +1,7 @@
 import { CollectionConfig } from "payload";
 // import { checkAccess } from "@/access/accessControl";
 // import { format } from 'date-fns';
-// import { trackFormSubmission, trackEventAttendance } from '@/hooks/trackingHooks';
+import { trackFormSubmission, trackEventAttendance } from '@/hooks/marketing/trackingHooks';
 
 export const Leads: CollectionConfig = {
   slug: "leads",
@@ -11,7 +11,7 @@ export const Leads: CollectionConfig = {
   },
   hooks: {
     afterChange: [
-      // trackFormSubmission,
+      trackFormSubmission,
       async ({ doc, req, operation, previousDoc }) => {
         /**
          * 1. Send confirmation email when user registers for an event

@@ -1,7 +1,7 @@
 // PayloadCMS Integration (if using PayloadCMS for form handling)
 // payload/hooks/trackingHooks.ts
 import { trackingService } from '@/lib/marketing/tracking-service';
-import type { CollectionAfterChangeHook } from 'payload/types';
+import type { CollectionAfterChangeHook } from 'payload';
 
 // Hook for tracking form submissions in PayloadCMS
 export const trackFormSubmission: CollectionAfterChangeHook = async ({
@@ -25,14 +25,14 @@ export const trackFormSubmission: CollectionAfterChangeHook = async ({
           lastName: doc.lastName,
           phone: doc.phone,
           ...clientInfo,
-          fbp: req.cookies._fbp,
-          fbc: req.cookies._fbc
+          fbp: req.cookies?._fbp,
+          fbc: req.cookies?._fbc
         },
         {
           form_type: doc.formType || collection.slug,
           page_url: doc.sourceUrl || req.get('Referer')
         },
-        req.cookies._ga || req.cookies['_ga_' + process.env.GA4_MEASUREMENT_ID?.replace('G-', '')]
+        req.cookies?._ga || req.cookies['_ga_' + process.env.GA4_MEASUREMENT_ID?.replace('G-', '')]
       );
     } catch (error) {
       console.error('PayloadCMS tracking hook error:', error);
@@ -59,15 +59,15 @@ export const trackEventAttendance: CollectionAfterChangeHook = async ({
         {
           email: doc.email,
           ...clientInfo,
-          fbp: req.cookies._fbp,
-          fbc: req.cookies._fbc
+          fbp: req.cookies?._fbp,
+          fbc: req.cookies?._fbc
         },
         {
           event_name: doc.eventName,
           event_date: doc.eventDate,
           page_url: req.get('Referer')
         },
-        req.cookies._ga
+        req.cookies?._ga
       );
     } catch (error) {
       console.error('PayloadCMS event tracking hook error:', error);
@@ -94,8 +94,8 @@ export const trackAdmission: CollectionAfterChangeHook = async ({
         {
           email: doc.email,
           ...clientInfo,
-          fbp: req.cookies._fbp,
-          fbc: req.cookies._fbc
+          fbp: req.cookies?._fbp,
+          fbc: req.cookies?._fbc
         },
         {
           admission_type: doc.admissionType,
@@ -103,7 +103,7 @@ export const trackAdmission: CollectionAfterChangeHook = async ({
           currency: doc.currency || 'USD',
           page_url: req.get('Referer')
         },
-        req.cookies._ga
+        req.cookies?._ga
       );
     } catch (error) {
       console.error('PayloadCMS admission tracking hook error:', error);
