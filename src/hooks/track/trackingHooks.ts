@@ -1,13 +1,12 @@
-// Add this file to your Payload project and import the exported hooks into your collections.
-// Hooks call your Next.js API: /api/track
+// import these hooks into payload collections.
+// Hooks call Next.js API: /api/track
 
-// import type { CollectionAfterChangeHook } from 'payload';
 import type { TrackPayload } from "@/app/api/track/route";
+import type { CollectionAfterChangeHook } from 'payload';
+import type { FieldHook } from 'payload'
 
-// ENV REQUIREMENTS (Client + Server): NEXT_PUBLIC_SERVER_URL
 const TRACK_ENDPOINT = `${process.env.NEXT_PUBLIC_SERVER_URL}/api/track`;
-
-const metaTestEventCode = 'TEST13541'
+const metaTestEventCode = undefined
 
 async function postTrack(payload: TrackPayload) {
   try {
@@ -18,118 +17,124 @@ async function postTrack(payload: TrackPayload) {
     })
   } catch (_e) {
     // Intentionally swallow to avoid blocking CMS operations
-    console.error('Tracking Hook error: ', _e);
   }
 }
 
-// Form submitted: fire on create (server-only)
-export const trackFormSubmission =
-  () =>
-    async ({ operation, doc }: any) => {
-      if (operation !== "create") return
-      await postTrack({
-        eventName: "lead",
-        eventSourceUrl: process.env.NEXT_PUBLIC_SERVER_URL,
-        actionSource: "system_generated",
-        campaignId: doc?.campaignId,
-        user: {
-          fullName: doc?.name,
-          phone: doc?.mobile,
-          email: doc?.email,
-          city: doc?.city,
-          state: doc?.province,
-          country: doc?.country,
-          externalId: doc?.id ? String(doc.id) : undefined,
-        },
-        customData: { leadId: doc?.id },
-        metaTestEventCode: metaTestEventCode
-      })
-    }
+// Leads Collection: Form submitted: fire on create
+export const trackLeadSubmission: CollectionAfterChangeHook =
+  async ({ operation, doc }) => {
+    if (operation !== "create") return
+    await postTrack({
+      eventName: "lead",
+      eventSourceUrl: process.env.NEXT_PUBLIC_SERVER_URL,
+      actionSource: "system_generated",
+      campaignId: doc?.campaignId,
+      user: {
+        fullName: doc?.name,
+        phone: doc?.mobile,
+        email: doc?.email,
+        city: doc?.city,
+        state: doc?.province,
+        country: doc?.country,
+        externalId: doc?.id ? String(doc.id) : undefined,
+      },
+      customData: { leadId: doc?.id },
+      ...(metaTestEventCode ? { metaTestEventCode } : {}),
+    })
+  }
 
-// Interested: fire when status flips to "interested"
-export const trackInterested =
-  () =>
-    async ({ operation, doc, previousDoc }: any) => {
-      if (operation !== "update") return
-      const prev = previousDoc?.status
-      const curr = doc?.status
-      if (prev === curr) return
-      if (String(curr).toLowerCase() !== "interested") return
-      await postTrack({
-        eventName: "interested",
-        eventSourceUrl: process.env.NEXT_PUBLIC_SERVER_URL,
-        actionSource: "system_generated",
-        campaignId: doc?.campaignId,
-        user: {
-          fullName: doc?.name,
-          phone: doc?.mobile,
-          email: doc?.email,
-          city: doc?.city,
-          state: doc?.province,
-          country: doc?.country,
-          externalId: doc?.id ? String(doc.id) : undefined,
-        },
-        customData: { leadId: doc?.id },
-        metaTestEventCode: metaTestEventCode
-      })
-    }
+// Leads Collection: Interested: fire when status first time  flips to LOW, MEDIUM or HIGHS
+// FIELD interest_level = "LOW" | "MEDIUM" | "HIGH" | "UNKNOWN" (optional)
+export const trackInterestedLead: FieldHook =
+  async ({ value, previousValue, operation, originalDoc: doc }) => {
+    if (
+      operation !== "update" ||
+      !value ||
+      value === "UNKNOWN" ||
+      value === previousValue ||
+      previousValue === "LOW" ||
+      previousValue === "MEGIUM" ||
+      previousValue === "HIGH"
+    ) return
 
-// Event attended: fire when attended becomes true
-export const trackEventAttended =
-  () =>
-    async ({ operation, doc, previousDoc }: any) => {
-      if (operation !== "update") return
-      if (previousDoc?.attended === true || doc?.attended !== true) return
-      await postTrack({
-        eventName: "event_attended",
-        eventSourceUrl: process.env.NEXT_PUBLIC_SERVER_URL,
-        actionSource: "system_generated",
-        campaignId: doc?.campaignId,
-        user: {
-          fullName: doc?.name,
-          phone: doc?.mobile,
-          email: doc?.email,
-          city: doc?.city,
-          state: doc?.province,
-          country: doc?.country,
-          externalId: doc?.id ? String(doc.id) : undefined,
-        },
-        customData: { eventId: doc?.eventId, registrationId: doc?.id },
-        metaTestEventCode: metaTestEventCode
-      })
-    }
+    await postTrack({
+      eventName: "interested",
+      eventSourceUrl: process.env.NEXT_PUBLIC_SERVER_URL,
+      actionSource: "system_generated",
+      campaignId: doc?.campaignId,
+      user: {
+        fullName: doc?.name,
+        phone: doc?.mobile,
+        email: doc?.email,
+        city: doc?.city,
+        state: doc?.province,
+        country: doc?.country,
+        externalId: doc?.id ? String(doc.id) : undefined,
+      },
+      customData: { leadId: doc?.id },
+      ...(metaTestEventCode ? { metaTestEventCode } : {}),
+    })
+  }
 
-// Admission: fire when admitted becomes true
-export const trackAdmission =
-  () =>
-    async ({ operation, doc, previousDoc }: any) => {
-      if (operation !== "update") return
-      if (previousDoc?.admitted === true || doc?.admitted !== true) return
-      await postTrack({
-        eventName: "purchase",
-        eventSourceUrl: process.env.NEXT_PUBLIC_SERVER_URL,
-        actionSource: "system_generated",
-        campaignId: doc?.campaignId,
-        user: {
-          fullName: doc?.name,
-          phone: doc?.mobile,
-          email: doc?.email,
-          city: doc?.city,
-          state: doc?.province,
-          country: doc?.country,
-          externalId: doc?.id ? String(doc.id) : undefined,
-        },
-        customData: {
-          applicationId: doc?.id,
-          value: 50,
-          currency: 'USD',
-        },
-        metaTestEventCode: metaTestEventCode
-      })
-    }
+// Leads Collection: Event attended: fire when attended becomes true
+// FIELD eventAttendance is a array of event object
+export const trackLeadEventAttendance: FieldHook =
+  async ({ value, previousValue, operation, originalDoc: doc }) => {
+    if (operation !== "update") return
+    if (!value) return
+    if (!Array.isArray(value)) return
+    if (value?.every(event => event?.hasAttended === false)) return;
+    const newlyAttendedEvent = value?.find((currentEvent, index) =>
+      currentEvent?.hasAttended === true &&
+      previousValue?.[index]?.hasAttended === false
+    ) || null;
+    if (!newlyAttendedEvent) return
 
+    await postTrack({
+      eventName: "event_attended",
+      eventSourceUrl: process.env.NEXT_PUBLIC_SERVER_URL,
+      actionSource: "system_generated",
+      campaignId: doc?.campaignId,
+      user: {
+        fullName: doc?.name,
+        phone: doc?.mobile,
+        email: doc?.email,
+        city: doc?.city,
+        state: doc?.province,
+        country: doc?.country,
+        externalId: doc?.id ? String(doc.id) : undefined,
+      },
+      customData: { eventId: doc?.eventId, registrationId: doc?.id },
+      ...(metaTestEventCode ? { metaTestEventCode } : {}),
+    })
+  }
 
-
+// Students Collection: Admission: fire when new record created
+export const trackNewStudentAdmission: CollectionAfterChangeHook =
+  async ({ operation, doc }) => {
+    if (operation !== "create") return
+    await postTrack({
+      eventName: "purchase",
+      eventSourceUrl: process.env.NEXT_PUBLIC_SERVER_URL,
+      actionSource: "system_generated",
+      campaignId: doc?.campaignId,
+      user: {
+        fullName: doc?.name,
+        phone: doc?.mobile,
+        email: doc?.email,
+        city: doc?.city,
+        state: doc?.province,
+        country: doc?.country,
+        externalId: doc?.id ? String(doc.id) : undefined,
+      },
+      customData: {
+        applicationId: doc?.id,
+        value: 50,
+        currency: 'USD',
+      },
+      ...(metaTestEventCode ? { metaTestEventCode } : {}),
+    })
+  }
 
 // claude.ai
 // // PayloadCMS Integration (if using PayloadCMS for form handling)
@@ -138,7 +143,7 @@ export const trackAdmission =
 // import type { CollectionAfterChangeHook } from 'payload';
 
 // // Hook for tracking form submissions in PayloadCMS
-// export const trackFormSubmission: CollectionAfterChangeHook = async ({
+// export const trackLeadSubmission: CollectionAfterChangeHook = async ({
 //   doc,
 //   req,
 //   operation,
@@ -210,7 +215,7 @@ export const trackAdmission =
 // };
 
 // // Hook for tracking admissions
-// export const trackAdmission: CollectionAfterChangeHook = async ({
+// export const trackNewStudentAdmission: CollectionAfterChangeHook = async ({
 //   doc,
 //   req,
 //   operation,

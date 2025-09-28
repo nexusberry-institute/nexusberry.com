@@ -2,10 +2,9 @@ import { CollectionConfig } from "payload";
 // import { checkAccess } from "@/access/accessControl";
 // import { format } from 'date-fns';
 import {
-  trackFormSubmission,
-  trackEventAttended,
-  trackInterested,
-  trackAdmission
+  trackLeadSubmission,
+  trackLeadEventAttendance,
+  trackInterestedLead,
 } from "@/hooks/track/trackingHooks";
 
 export const Leads: CollectionConfig = {
@@ -16,7 +15,7 @@ export const Leads: CollectionConfig = {
   },
   hooks: {
     afterChange: [
-      trackFormSubmission(),
+      trackLeadSubmission,
       async ({ doc, req, operation, previousDoc }) => {
         /**
          * 1. Send confirmation email when user registers for an event
@@ -238,7 +237,7 @@ export const Leads: CollectionConfig = {
             { label: "Unknown", value: "UNKNOWN" },
           ],
           hooks: {
-            afterChange: [trackInterested()]
+            afterChange: [trackInterestedLead]
           }
         }
       ]
@@ -407,7 +406,7 @@ export const Leads: CollectionConfig = {
           defaultValue: false,
           label: "Has Attended",
           hooks: {
-            afterChange: [trackEventAttended()]
+            afterChange: [trackLeadEventAttendance]
           }
         }
       ]
