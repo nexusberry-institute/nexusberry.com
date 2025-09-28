@@ -7,6 +7,8 @@ import type { TrackPayload } from "@/app/api/track/route";
 // ENV REQUIREMENTS (Client + Server): NEXT_PUBLIC_SERVER_URL
 const TRACK_ENDPOINT = `${process.env.NEXT_PUBLIC_SERVER_URL}/api/track`;
 
+const metaTestEventCode = 'TEST13541'
+
 async function postTrack(payload: TrackPayload) {
   try {
     await fetch(TRACK_ENDPOINT, {
@@ -40,7 +42,7 @@ export const trackFormSubmission =
           externalId: doc?.id ? String(doc.id) : undefined,
         },
         customData: { leadId: doc?.id },
-        metaTestEventCode: 'TEST13541'
+        metaTestEventCode: metaTestEventCode
       })
     }
 
@@ -68,7 +70,7 @@ export const trackInterested =
           externalId: doc?.id ? String(doc.id) : undefined,
         },
         customData: { leadId: doc?.id },
-        metaTestEventCode: 'TEST13541'
+        metaTestEventCode: metaTestEventCode
       })
     }
 
@@ -93,7 +95,7 @@ export const trackEventAttended =
           externalId: doc?.id ? String(doc.id) : undefined,
         },
         customData: { eventId: doc?.eventId, registrationId: doc?.id },
-        metaTestEventCode: 'TEST13541'
+        metaTestEventCode: metaTestEventCode
       })
     }
 
@@ -122,7 +124,7 @@ export const trackAdmission =
           value: 50,
           currency: 'USD',
         },
-        metaTestEventCode: 'TEST13541'
+        metaTestEventCode: metaTestEventCode
       })
     }
 
