@@ -406,7 +406,7 @@ export const Leads: CollectionConfig = {
           defaultValue: false,
           label: "Has Attended",
           hooks: {
-            afterChange: [trackLeadEventAttendance()]
+            afterChange: [trackLeadEventAttendance]
           }
         }
       ]

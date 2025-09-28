@@ -6,7 +6,7 @@ import type { CollectionAfterChangeHook } from 'payload';
 import type { FieldHook } from 'payload'
 
 const TRACK_ENDPOINT = `${process.env.NEXT_PUBLIC_SERVER_URL}/api/track`;
-// const metaTestEventCode = 'TEST13541'
+const metaTestEventCode = undefined
 
 async function postTrack(payload: TrackPayload) {
   try {
