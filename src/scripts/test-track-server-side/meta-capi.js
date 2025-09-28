@@ -19,13 +19,17 @@ import { randomUUID } from "crypto"
 
 const DOMAIN = "https://www.nexusberry.com"
 const TEST_EVENT_CODE = "TEST13541"
+// const eventName = "lead"
+// const eventName = "interested"
+// const eventName = "event_attended",
+// const eventName = "purchase"
 
 async function main() {
   const url = `${DOMAIN.replace(/\/$/, "")}/api/track`
 
   // Payload mirrors your cURL example
   const payload = {
-    eventName: "form_submitted",
+    eventName: eventName,
     campaignId: "CAMP-123",
     eventId: "evt-abc-001" || `evt-${randomUUID()}`, // keep your fixed ID; change if you want unique IDs
     eventSourceUrl: `${DOMAIN.replace(/\/$/, "")}/lead-form`,
@@ -42,6 +46,8 @@ async function main() {
     customData: {
       lead_source: "website",
       product: "Workshop",
+      value: 50,
+      currency: 'USD',
     },
     metaTestEventCode: TEST_EVENT_CODE,
   }

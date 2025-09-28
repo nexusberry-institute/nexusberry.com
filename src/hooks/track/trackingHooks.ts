@@ -7,6 +7,8 @@ import type { TrackPayload } from "@/app/api/track/route";
 // ENV REQUIREMENTS (Client + Server): NEXT_PUBLIC_SERVER_URL
 const TRACK_ENDPOINT = `${process.env.NEXT_PUBLIC_SERVER_URL}/api/track`;
 
+const metaTestEventCode = 'TEST13541'
+
 async function postTrack(payload: TrackPayload) {
   try {
     await fetch(TRACK_ENDPOINT, {
@@ -29,6 +31,7 @@ export const trackFormSubmission =
         eventName: "lead",
         eventSourceUrl: process.env.NEXT_PUBLIC_SERVER_URL,
         actionSource: "system_generated",
+        campaignId: doc?.campaignId,
         user: {
           fullName: doc?.name,
           phone: doc?.mobile,
@@ -38,8 +41,8 @@ export const trackFormSubmission =
           country: doc?.country,
           externalId: doc?.id ? String(doc.id) : undefined,
         },
-        campaignId: doc?.campaignId,
         customData: { leadId: doc?.id },
+        metaTestEventCode: metaTestEventCode
       })
     }
 
@@ -56,6 +59,7 @@ export const trackInterested =
         eventName: "interested",
         eventSourceUrl: process.env.NEXT_PUBLIC_SERVER_URL,
         actionSource: "system_generated",
+        campaignId: doc?.campaignId,
         user: {
           fullName: doc?.name,
           phone: doc?.mobile,
@@ -65,8 +69,8 @@ export const trackInterested =
           country: doc?.country,
           externalId: doc?.id ? String(doc.id) : undefined,
         },
-        campaignId: doc?.campaignId,
         customData: { leadId: doc?.id },
+        metaTestEventCode: metaTestEventCode
       })
     }
 
@@ -80,6 +84,7 @@ export const trackEventAttended =
         eventName: "event_attended",
         eventSourceUrl: process.env.NEXT_PUBLIC_SERVER_URL,
         actionSource: "system_generated",
+        campaignId: doc?.campaignId,
         user: {
           fullName: doc?.name,
           phone: doc?.mobile,
@@ -89,8 +94,8 @@ export const trackEventAttended =
           country: doc?.country,
           externalId: doc?.id ? String(doc.id) : undefined,
         },
-        campaignId: doc?.campaignId,
         customData: { eventId: doc?.eventId, registrationId: doc?.id },
+        metaTestEventCode: metaTestEventCode
       })
     }
 
@@ -119,6 +124,7 @@ export const trackAdmission =
           value: 50,
           currency: 'USD',
         },
+        metaTestEventCode: metaTestEventCode
       })
     }
 
