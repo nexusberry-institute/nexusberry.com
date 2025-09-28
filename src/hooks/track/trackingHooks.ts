@@ -4,11 +4,7 @@
 // import type { CollectionAfterChangeHook } from 'payload';
 import type { TrackPayload } from "@/app/api/track/route";
 
-/**
- * ENV REQUIREMENTS (Client + Server):
- * - NEXT_PUBLIC_SERVER_URL
- */
-
+// ENV REQUIREMENTS (Client + Server): NEXT_PUBLIC_SERVER_URL
 const TRACK_ENDPOINT = `${process.env.NEXT_PUBLIC_SERVER_URL}/api/track`;
 
 async function postTrack(payload: TrackPayload) {
@@ -30,7 +26,7 @@ export const trackFormSubmission =
     async ({ operation, doc }: any) => {
       if (operation !== "create") return
       await postTrack({
-        eventName: "form_submitted",
+        eventName: "lead",
         eventSourceUrl: process.env.NEXT_PUBLIC_SERVER_URL,
         actionSource: "system_generated",
         user: {
@@ -105,9 +101,10 @@ export const trackAdmission =
       if (operation !== "update") return
       if (previousDoc?.admitted === true || doc?.admitted !== true) return
       await postTrack({
-        eventName: "admission",
+        eventName: "purchase",
         eventSourceUrl: process.env.NEXT_PUBLIC_SERVER_URL,
         actionSource: "system_generated",
+        campaignId: doc?.campaignId,
         user: {
           fullName: doc?.name,
           phone: doc?.mobile,
@@ -117,12 +114,10 @@ export const trackAdmission =
           country: doc?.country,
           externalId: doc?.id ? String(doc.id) : undefined,
         },
-        campaignId: doc?.campaignId,
         customData: {
-          applicationId: doc?.id
-          // value: value,
-          // currency: currency || 'USD',
-          // page_url
+          applicationId: doc?.id,
+          value: 50,
+          currency: 'USD',
         },
       })
     }

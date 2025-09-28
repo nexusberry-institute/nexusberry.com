@@ -12,7 +12,7 @@ import crypto from "crypto"
  * - GA4_API_SECRET
  */
 
-type EventName = "page_view" | "form_submitted" | "interested" | "event_attended" | "admission" | string
+type EventName = "page_view" | "lead" | "interested" | "event_attended" | "purchase" | string
 type ActionSource = 'website' | 'whatsapp' | 'sms' | 'phone_call' | 'fbchat' | 'physical_store' | 'system_generated' | 'email' | 'app' | 'other' | string
 
 export type TrackPayload = {
@@ -58,19 +58,20 @@ function splitFullName(fullName?: string) {
   return { fn: parts.slice(0, -1).join(" "), ln: parts[parts.length - 1] }
 }
 
+// Specifications for Meta Pixel standard events
+// https://business.facebook.com/business/help/402791146561655?id=1205376682832142
 function toMetaEventName(name: TrackPayload["eventName"]): string {
   switch (name) {
     case "page_view":
-      return "PageView"
-    case "form_submitted":
-      // Could also map to "Lead" depending on your setup
-      return "FormSubmitted"
+      return "PageView" // standard event
+    case "lead":
+      return "Lead"  // standard event
     case "interested":
       return "Interested"
     case "event_attended":
       return "EventAttended"
-    case "admission":
-      return "Admission"
+    case "purchase":
+      return "Purchase"  // standard event
     default:
       return String(name)
   }
