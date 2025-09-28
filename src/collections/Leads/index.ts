@@ -5,7 +5,6 @@ import {
   trackFormSubmission,
   trackEventAttended,
   trackInterested,
-  trackAdmission
 } from "@/hooks/track/trackingHooks";
 
 export const Leads: CollectionConfig = {

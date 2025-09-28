@@ -3,8 +3,7 @@ import { CollectionConfig, PayloadRequest, CustomComponent } from 'payload'
 import { checkAndCreateUser } from '@/hooks/checkAndCreateUser'
 import { CSVExportButton } from '@/components/CSVExportButton'
 // import type { NextApiRequest, NextApiResponse } from 'next'
-// import { trackAdmission } from '@/hooks/marketing/trackingHooks';
-
+import { trackAdmission } from "@/hooks/track/trackingHooks";
 
 export const Students: CollectionConfig = {
   slug: "students",
@@ -18,11 +17,7 @@ export const Students: CollectionConfig = {
     }
   },
   hooks: {
-    beforeChange: [checkAndCreateUser],
-    afterChange: [
-      // trackAdmission // claude
-
-    ]
+    beforeChange: [checkAndCreateUser, trackAdmission()],
   },
 
   access: {

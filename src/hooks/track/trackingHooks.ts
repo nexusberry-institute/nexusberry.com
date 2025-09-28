@@ -22,7 +22,7 @@ async function postTrack(payload: TrackPayload) {
   }
 }
 
-// Form submitted: fire on create (server-only)
+// Leads Collection: Form submitted: fire on create
 export const trackFormSubmission =
   () =>
     async ({ operation, doc }: any) => {
@@ -46,15 +46,20 @@ export const trackFormSubmission =
       })
     }
 
-// Interested: fire when status flips to "interested"
+// Leads Collection: Interested: fire when status first time  flips to LOW, MEDIUM or HIGHS
 export const trackInterested =
   () =>
     async ({ operation, doc, previousDoc }: any) => {
       if (operation !== "update") return
-      const prev = previousDoc?.status
-      const curr = doc?.status
-      if (prev === curr) return
-      if (String(curr).toLowerCase() !== "interested") return
+      if (!doc.interest_level) return
+      if (doc.interest_level?.toUpperCase() == "UNKNOWN") return
+      if (previousDoc.interest_level === doc.interest_level) return
+      if (
+        previousDoc.interest_level?.toUpperCase() === "LOW" ||
+        previousDoc.interest_level?.toUpperCase() === "MEGIUM" ||
+        previousDoc.interest_level?.toUpperCase() === "HIGH"
+      ) return
+
       await postTrack({
         eventName: "interested",
         eventSourceUrl: process.env.NEXT_PUBLIC_SERVER_URL,
@@ -74,12 +79,18 @@ export const trackInterested =
       })
     }
 
-// Event attended: fire when attended becomes true
+// Leads Collection: Event attended: fire when attended becomes true
 export const trackEventAttended =
   () =>
     async ({ operation, doc, previousDoc }: any) => {
       if (operation !== "update") return
-      if (previousDoc?.attended === true || doc?.attended !== true) return
+      if (doc.eventAttendance?.every(event => event?.hasAttended === false)) return;
+      const newlyAttendedEvent = doc.eventAttendance?.find((currentEvent, index) =>
+        currentEvent?.hasAttended === true &&
+        previousDoc.eventAttendance?.[index]?.hasAttended === false
+      ) || null;
+      if (!newlyAttendedEvent) return
+
       await postTrack({
         eventName: "event_attended",
         eventSourceUrl: process.env.NEXT_PUBLIC_SERVER_URL,
@@ -99,12 +110,11 @@ export const trackEventAttended =
       })
     }
 
-// Admission: fire when admitted becomes true
+// Students Collection: Admission: fire when new record created
 export const trackAdmission =
   () =>
     async ({ operation, doc, previousDoc }: any) => {
-      if (operation !== "update") return
-      if (previousDoc?.admitted === true || doc?.admitted !== true) return
+      if (operation !== "create") return
       await postTrack({
         eventName: "purchase",
         eventSourceUrl: process.env.NEXT_PUBLIC_SERVER_URL,
@@ -127,9 +137,6 @@ export const trackAdmission =
         metaTestEventCode: metaTestEventCode
       })
     }
-
-
-
 
 // claude.ai
 // // PayloadCMS Integration (if using PayloadCMS for form handling)
