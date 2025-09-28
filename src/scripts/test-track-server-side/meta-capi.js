@@ -21,8 +21,8 @@ const DOMAIN = "https://www.nexusberry.com"
 const TEST_EVENT_CODE = "TEST13541"
 // const eventName = "lead"
 // const eventName = "interested"
-// const eventName = "event_attended",
-// const eventName = "purchase"
+// const eventName = "event_attended"
+const eventName = "purchase"
 
 async function main() {
   const url = `${DOMAIN.replace(/\/$/, "")}/api/track`
