@@ -17,7 +17,7 @@ export const Leads: CollectionConfig = {
   hooks: {
     afterChange: [
       trackLeadSubmission,
-      updateCounters
+      updateCounters,
       // emailOnEventRegistration,
     ],
   },
