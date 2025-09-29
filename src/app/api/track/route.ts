@@ -1,4 +1,5 @@
 // Location: src/app/api/track/route.ts, EndPoint: /api/track
+// https://developers.facebook.com/docs/marketing-api/conversions-api
 
 import { cookies, headers } from "next/headers"
 import { NextResponse } from "next/server"
@@ -15,6 +16,7 @@ import crypto from "crypto"
 type EventName = "page_view" | "lead" | "interested" | "event_attended" | "purchase" | string
 type ActionSource = 'website' | 'whatsapp' | 'sms' | 'phone_call' | 'fbchat' | 'physical_store' | 'system_generated' | 'email' | 'app' | 'other' | string
 
+// https://developers.facebook.com/docs/marketing-api/conversions-api/parameters
 export type TrackPayload = {
   eventName: EventName
   campaignId?: string
@@ -22,12 +24,12 @@ export type TrackPayload = {
   eventSourceUrl?: string
   actionSource?: ActionSource
   user?: {
-    fullName?: string
-    phone?: string
-    email?: string
-    city?: string
-    state?: string
-    country?: string
+    fullName?: string // meta fn, ln
+    phone?: string  // meta ph
+    email?: string // meta em
+    city?: string // meta ct
+    state?: string // meta st
+    country?: string // meta country
     externalId?: string
     clientId?: string
   }
