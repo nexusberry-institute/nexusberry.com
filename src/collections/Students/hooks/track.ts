@@ -39,7 +39,7 @@ export const trackNewStudentAdmission: CollectionAfterChangeHook =
       },
       customData: {
         applicationId: doc?.id,
-        value: 50,
+        value: 50.00,
         currency: 'USD',
       },
       ...(metaTestEventCode ? { metaTestEventCode } : {}),
