@@ -57,6 +57,7 @@ const queryEvents = async (slug: string) => {
         startDateTime: true,
         endTime: true,
         label: true,
+        hasCertificate: true,
         updatedAt: true,
         createdAt: true
       },

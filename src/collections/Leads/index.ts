@@ -341,9 +341,13 @@ export const Leads: CollectionConfig = {
             {
               name: "course",
               type: "relationship",
-              relationTo: "courses-collection",
+              relationTo: "web-courses",
               required: true,
               hasMany: false,
+              admin: {
+                allowCreate: false,
+                allowEdit: false
+              }
             },
             {
               name: "bookedAt",

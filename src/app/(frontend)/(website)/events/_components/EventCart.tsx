@@ -22,6 +22,9 @@ const getEventsList = async ({
     startDateTime: {
       greater_than_equal: new Date().toISOString(),
     },
+    // endTime: {
+    //   greater_than: new Date(),
+    // },
     showInUI: {
       equals: true,
     },
@@ -48,6 +51,7 @@ const getEventsList = async ({
       image: true,
       startDateTime: true,
       endTime: true,
+      hasCertificate: true,
       updatedAt: true,
       createdAt: true
     }

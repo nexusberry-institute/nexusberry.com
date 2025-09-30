@@ -5,6 +5,11 @@ interface PageProps {
     params: Promise<{ slug: string }>
 }
 
+export const metadata = {
+    robots: 'noindex, nofollow'
+}
+
+
 export default async function SuccessBookFreeDemoPage({ params }: PageProps) {
     const { slug } = await params
     const settings = await getSettings();

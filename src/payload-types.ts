@@ -110,6 +110,9 @@ export interface Config {
     'payload-migrations': PayloadMigration;
   };
   collectionsJoins: {
+    'web-courses': {
+      events: 'events';
+    };
     departments: {
       relatedCourses: 'web-courses';
     };
@@ -916,6 +919,14 @@ export interface WebCourse {
         id?: string | null;
       }[]
     | null;
+  /**
+   * See all events that include this course
+   */
+  events?: {
+    docs?: (number | Event)[];
+    hasNextPage?: boolean;
+    totalDocs?: number;
+  };
   meta?: {
     title?: string | null;
     /**
@@ -993,7 +1004,7 @@ export interface Event {
   /**
    * Uncheck if there is no certificate for this event
    */
-  hasCertificate?: boolean | null;
+  hasCertificate: boolean;
   /**
    * Link to the live stream event
    */
@@ -1006,6 +1017,7 @@ export interface Event {
    * Select the end time of the event (optional). Default is 2 hours after the start time.
    */
   endTime?: string | null;
+  courses?: (number | WebCourse)[] | null;
   learningOutcomes?: {
     root: {
       type: string;
@@ -1082,7 +1094,7 @@ export interface Lead {
   assign_to?: (number | null) | Staff;
   courseDemoBookings?:
     | {
-        course: number | CoursesCollection;
+        course: number | WebCourse;
         bookedAt: string;
         id?: string | null;
       }[]
@@ -1484,39 +1496,6 @@ export interface Staff {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "courses-collection".
- */
-export interface CoursesCollection {
-  id: number;
-  /**
-   * Higher numbers appear first
-   */
-  sortOrder?: number | null;
-  title: string;
-  content: {
-    root: {
-      type: string;
-      children: {
-        type: string;
-        version: number;
-        [k: string]: unknown;
-      }[];
-      direction: ('ltr' | 'rtl') | null;
-      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
-      indent: number;
-      version: number;
-    };
-    [k: string]: unknown;
-  };
-  contentPosition?: ('left' | 'right') | null;
-  linkLabel: string;
-  linkUrl: string;
-  courseCard: (number | WebCourse)[];
-  updatedAt: string;
-  createdAt: string;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "campaigns".
  */
 export interface Campaign {
@@ -1699,6 +1678,39 @@ export interface Sop {
     };
     [k: string]: unknown;
   };
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "courses-collection".
+ */
+export interface CoursesCollection {
+  id: number;
+  /**
+   * Higher numbers appear first
+   */
+  sortOrder?: number | null;
+  title: string;
+  content: {
+    root: {
+      type: string;
+      children: {
+        type: string;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  };
+  contentPosition?: ('left' | 'right') | null;
+  linkLabel: string;
+  linkUrl: string;
+  courseCard: (number | WebCourse)[];
   updatedAt: string;
   createdAt: string;
 }
@@ -2323,6 +2335,7 @@ export interface WebCoursesSelect<T extends boolean = true> {
         answer?: T;
         id?: T;
       };
+  events?: T;
   meta?:
     | T
     | {
@@ -2373,6 +2386,7 @@ export interface EventsSelect<T extends boolean = true> {
   liveStreamLink?: T;
   startDateTime?: T;
   endTime?: T;
+  courses?: T;
   learningOutcomes?: T;
   instructor?: T;
   department?: T;
