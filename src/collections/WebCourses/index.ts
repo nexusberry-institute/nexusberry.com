@@ -28,7 +28,9 @@ export const WebCourses: CollectionConfig = {
             },
             ...slugField("title", {
               slugOverrides: {
-                required: true
+                required: true,
+                // unique: true,
+                // index: true
               }
             }),
             {
@@ -202,6 +204,25 @@ export const WebCourses: CollectionConfig = {
                 }
               ]
             }
+          ]
+        },
+        {
+          label: 'Events',
+          fields: [
+            {
+              name: 'events',
+              label: 'Events',
+              type: 'join',
+              collection: 'events',
+              on: 'courses',
+              admin: {
+                allowCreate: false,
+                description: "See all events that include this course",
+              },
+              defaultLimit: 10,
+              defaultSort: '-createdAt',
+              maxDepth: 2,
+            },
           ]
         },
         {

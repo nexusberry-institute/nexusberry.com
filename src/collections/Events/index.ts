@@ -55,7 +55,9 @@ export const Events: CollectionConfig = {
             },
             ...slugField('title', {
               slugOverrides: {
-                required: true
+                required: true,
+                // index: true,
+                // unique: true
               }
             }),
             {
@@ -78,6 +80,7 @@ export const Events: CollectionConfig = {
               type: 'checkbox',
               label: 'Has Certificate',
               defaultValue: true,
+              required: true,
               admin: {
                 position: 'sidebar',
                 description: 'Uncheck if there is no certificate for this event',
@@ -156,6 +159,17 @@ export const Events: CollectionConfig = {
                   displayFormat: 'h:mm a',
                 },
                 description: 'Select the end time of the event (optional). Default is 2 hours after the start time.'
+              }
+            },
+            {
+              name: "courses",
+              label: "Courses",
+              type: "relationship",
+              relationTo: "web-courses",
+              hasMany: true,
+              admin: {
+                allowCreate: false,
+                allowEdit: false
               }
             },
             {

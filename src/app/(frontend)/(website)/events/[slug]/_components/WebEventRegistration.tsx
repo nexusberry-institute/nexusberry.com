@@ -25,6 +25,10 @@ const WebEventRegistration = ({
         return <RegistrationClosed />;
     }
 
+    // if (endTime && endTime < new Date().toISOString()) {
+    //     return <RegistrationClosed />;
+    // }
+
     return (
         <>
             <EventRegistrationForm

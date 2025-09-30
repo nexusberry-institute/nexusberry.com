@@ -1,5 +1,6 @@
-'use client'
-import React from 'react'
+'use client';
+
+import React, { useTransition } from 'react'
 import CreateCourseDemoBooking from './ServerActions'
 import {
     Form,
@@ -19,14 +20,14 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Checkbox } from '@/components/ui/checkbox'
 import { occupationOptions } from '@/app/(frontend)/(website)/_constants/data'
 import { educationOptions } from '@/app/(frontend)/(website)/_constants/data'
-import { useRouter } from 'next/navigation'
+import { useRouter } from 'next/navigation';
 
 const FormSchema = z.object({
-    fullName: z.string().min(2, {
-        message: "Name must be at least 2 characters.",
+    fullName: z.string().min(6, {
+        message: "Name must be at least 6 characters.",
     }),
-    mobile: z.string().min(10, {
-        message: "Mobile number must be at least 10 digits",
+    mobile: z.string().min(11, {
+        message: "Please enter a valid mobile number",
     }).regex(/^\d+$/, {
         message: "Mobile number should contain only digits"
     }),
@@ -46,14 +47,13 @@ const FormSchema = z.object({
 })
 
 const RegistrationForm = ({
+    courseId,
     slug,
-    redirect
 }: {
-
-    slug: string | undefined | null;
-
-    redirect: boolean
+    courseId: number
+    slug: string
 }) => {
+    const [isPending, startTransition] = useTransition();
     const router = useRouter()
 
     const form = useForm<z.infer<typeof FormSchema>>({
@@ -69,45 +69,42 @@ const RegistrationForm = ({
         },
     })
 
-    async function onSubmit(data: z.infer<typeof FormSchema>) {
-        try {
-            const response = await CreateCourseDemoBooking({
-                name: data.fullName,
-                mobile: data.mobile,
-                email: data.email,
-                education: data.education,
-                job_info: data.occupation,
-                notes: `Agreed to policy: ${data.policy}, Whatsapp updates: ${data.whatsapp}`,
-                courseSlug: slug || ""
-            });
-
-            if (response.success) {
-                toast({
-                    title: 'Thank you for registering!',
-                    description: response.message || 'Your information has been received successfully.',
-                    variant: 'success',
-                    duration: 1000,
+    const onSubmit = async (data: z.infer<typeof FormSchema>) => {
+        startTransition(async () => {
+            try {
+                const response = await CreateCourseDemoBooking({
+                    name: data.fullName,
+                    mobile: data.mobile,
+                    email: data.email,
+                    education: data.education,
+                    job_info: data.occupation,
+                    notes: `Agreed to policy: ${data.policy}, Whatsapp updates: ${data.whatsapp}`,
+                    courseSlug: slug,
+                    courseId
                 });
-                form.reset();
-                if (redirect && slug) {
-                    router.push(`/course/${slug}/success-book-free-demo`);
+
+                if (!response.success) {
+                    toast({
+                        title: 'Submission failed',
+                        description: response.error || 'An Unknown Error Occured, Please Try Again.',
+                        variant: 'destructive',
+                    });
+                    return
                 }
-            } else {
+
+                router.push(`/course/${slug}/success`);
+            } catch (err) {
+                console.error('Form submission error:', err);
                 toast({
-                    title: 'Already Registered',
-                    description: response.error || 'You have already booked a demo for this course.',
+                    title: 'Submission failed',
+                    description: 'Please try again later.',
                     variant: 'destructive',
                 });
             }
-        } catch (err) {
-            console.error('Form submission error:', err);
-            toast({
-                title: 'Submission failed',
-                description: 'Please try again later.',
-                variant: 'destructive',
-            });
-        }
+        });
     }
+
+    const isLoading = form.formState.isSubmitting || isPending;
 
     return (
         <Form {...form}>
@@ -121,7 +118,7 @@ const RegistrationForm = ({
                     render={({ field }) => (
                         <FormItem>
                             <FormLabel className='text-lg max-sm:text-base'>Your name*</FormLabel>
-                            <FormControl className='text-white h-16 max-sm:h-12 text-lg'>
+                            <FormControl className='rounded-lg placeholder:text-white h-16 max-sm:h-12 text-lg'>
                                 <Input placeholder="Enter your full name" {...field} />
                             </FormControl>
                             <FormMessage />
@@ -135,7 +132,7 @@ const RegistrationForm = ({
                     render={({ field }) => (
                         <FormItem>
                             <FormLabel className='text-lg max-sm:text-base'>Mobile Number*</FormLabel>
-                            <FormControl className='text-white h-16 max-sm:h-12 text-lg'>
+                            <FormControl className='rounded-lg placeholder:text-white h-16 max-sm:h-12 text-lg'>
                                 <Input
                                     placeholder="Enter your mobile number"
                                     type="tel"
@@ -152,7 +149,7 @@ const RegistrationForm = ({
                     render={({ field }) => (
                         <FormItem>
                             <FormLabel className='text-lg max-sm:text-base'>Email Address*</FormLabel>
-                            <FormControl className='text-white h-16 max-sm:h-12 text-lg'>
+                            <FormControl className='rounded-lg placeholder:text-white h-16 max-sm:h-12 text-lg'>
                                 <Input
                                     placeholder="Enter your email address"
                                     type="email"
@@ -171,9 +168,9 @@ const RegistrationForm = ({
                         <FormItem>
                             <FormLabel className='text-lg max-sm:text-base'>Occupation*</FormLabel>
                             <Select onValueChange={field.onChange} value={field.value}>
-                                <FormControl className='text-muted-foreground h-16 max-sm:h-12 text-lg'>
-                                    <SelectTrigger aria-label="Select Occupation">
-                                        <SelectValue placeholder="Select Occupation" />
+                                <FormControl className='bg-muted-foreground h-16 max-sm:h-12 text-lg'>
+                                    <SelectTrigger aria-label="Select occupation">
+                                        <SelectValue placeholder="Select occupation" />
                                     </SelectTrigger>
                                 </FormControl>
                                 <SelectContent>
@@ -196,9 +193,9 @@ const RegistrationForm = ({
                         <FormItem>
                             <FormLabel className='text-lg max-sm:text-base'>Highest Education*</FormLabel>
                             <Select onValueChange={field.onChange} value={field.value}>
-                                <FormControl className='text-muted-foreground h-16 max-sm:h-12 text-lg'>
-                                    <SelectTrigger aria-label="Select Education">
-                                        <SelectValue placeholder="Select Education Level" />
+                                <FormControl className='bg-muted-foreground h-16 max-sm:h-12 text-lg'>
+                                    <SelectTrigger aria-label="Select education">
+                                        <SelectValue placeholder="Select education level" />
                                     </SelectTrigger>
                                 </FormControl>
                                 <SelectContent>
@@ -257,14 +254,12 @@ const RegistrationForm = ({
                     )}
                 />
 
-
-
                 <Button
-                    disabled={form.formState.isSubmitting}
+                    disabled={isLoading}
                     type="submit"
                     className="bg-secondary hover:bg-secondary-400 text-background w-full text-xl max-sm:text-base max-sm:py-3 py-5 rounded-xl flex justify-center"
                 >
-                    {!form.formState.isSubmitting ? (
+                    {!isLoading ? (
                         'Book Free Demo'
                     ) : (
                         <svg
