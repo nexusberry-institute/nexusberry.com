@@ -84,6 +84,24 @@ export const Leads: CollectionConfig = {
       type: "row",
       fields: [
         {
+          name: "source",
+          type: "text",
+        },
+        {
+          name: 'metaFormId',
+          type: 'text',
+        },
+        {
+          name: 'metaLeadId',
+          type: 'text',
+          unique: true,
+        },
+      ]
+    },
+    {
+      type: "row",
+      fields: [
+        {
           name: "is_online",
           type: "checkbox",
         },
@@ -274,10 +292,6 @@ export const Leads: CollectionConfig = {
     },
     {
       name: "payment_plan",
-      type: "text",
-    },
-    {
-      name: "source",
       type: "text",
     },
     {
