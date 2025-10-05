@@ -1079,6 +1079,9 @@ export interface Lead {
   city?: string | null;
   province?: string | null;
   country?: string | null;
+  source?: string | null;
+  metaFormId?: string | null;
+  metaLeadId?: string | null;
   is_online?: boolean | null;
   is_req_hostel?: boolean | null;
   stage?: ('NEW' | 'FOLLOW_UP' | 'CONVERTED' | 'WASTE') | null;
@@ -1110,7 +1113,6 @@ export interface Lead {
       }[]
     | null;
   payment_plan?: string | null;
-  source?: string | null;
   query?: string | null;
   lead_issue?: string | null;
   notes?: string | null;
@@ -2771,6 +2773,9 @@ export interface LeadsSelect<T extends boolean = true> {
   city?: T;
   province?: T;
   country?: T;
+  source?: T;
+  metaFormId?: T;
+  metaLeadId?: T;
   is_online?: T;
   is_req_hostel?: T;
   stage?: T;
@@ -2802,7 +2807,6 @@ export interface LeadsSelect<T extends boolean = true> {
         id?: T;
       };
   payment_plan?: T;
-  source?: T;
   query?: T;
   lead_issue?: T;
   notes?: T;
