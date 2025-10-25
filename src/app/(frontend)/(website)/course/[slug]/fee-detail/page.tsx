@@ -3,7 +3,7 @@ import FeeCard from './_components/FeeCard'
 import NextBatch from './_components/NextBatch'
 import TimeSlot from './_components/TimeSlot'
 
-const page = () => {
+const Page = () => {
   return (
     <div className='p-4 mx-auto text-center space-y-8 max-md:space-y-6 max-sm:space-y-4'>
       <NextBatch />
@@ -18,4 +18,4 @@ const page = () => {
   )
 }
 
-export default page
+export default Page

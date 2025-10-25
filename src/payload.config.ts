@@ -94,9 +94,11 @@ export default buildConfig({
   },
   // This config helps us configure global or default features that the other editors can inherit
   editor: defaultLexical,
-  // endpoints: [googleCallbackEndPoint],
+  // endpoints: [
+  //   // googleCallbackEndPoint,
+  // ],
   db: postgresAdapter({
-    push: false,
+    // push: false,
     pool: {
       connectionString: process.env.DATABASE_URI || '',
       // max: 8, // Use 10 out of your 15 available connections in supabase nano tier
@@ -124,23 +126,23 @@ export default buildConfig({
     outputFile: path.resolve(dirname, 'payload-types.ts'),
   },
 
-  email: nodemailerAdapter({
-    defaultFromAddress: process.env.SMTP_USER!, // Use the same email as in auth.user
-    defaultFromName: process.env.DEFAULT_EMAIL_NAME!,
-    transportOptions: {
-      host: process.env.SMTP_HOST!,
-      port: Number(process.env.SMTP_PORT!),
-      secure: true, // true for 465, false for other
-      auth: {
-        user: process.env.SMTP_USER!,
-        pass: process.env.SMTP_PASS!,
-      },
-      // Additional options for better reliability
-      connectionTimeout: 60000, // 60 seconds
-      greetingTimeout: 30000, // 30 seconds
-      socketTimeout: 60000, // 60 seconds
-    },
-  }),
+  // email: nodemailerAdapter({
+  //   defaultFromAddress: process.env.SMTP_USER!, // Use the same email as in auth.user
+  //   defaultFromName: process.env.DEFAULT_EMAIL_NAME!,
+  //   transportOptions: {
+  //     host: process.env.SMTP_HOST!,
+  //     port: Number(process.env.SMTP_PORT!),
+  //     secure: true, // true for 465, false for other
+  //     auth: {
+  //       user: process.env.SMTP_USER!,
+  //       pass: process.env.SMTP_PASS!,
+  //     },
+  //     // Additional options for better reliability
+  //     connectionTimeout: 60000, // 60 seconds
+  //     greetingTimeout: 30000, // 30 seconds
+  //     socketTimeout: 60000, // 60 seconds
+  //   },
+  // }),
 
   async onInit(payload) {
     const existingUsers = await payload.find({

@@ -34,6 +34,7 @@ import { ContactMessages } from './ContactMessages'
 import { Inquiries } from './InquiriesForm'
 import { Employees } from './Employees'
 import { ClassRecords } from './ClassRecords'
+import { PlatformRedirects } from './PlatformRedirects'
 
 const collections = [
    Users, Media, Pages,
@@ -45,7 +46,7 @@ const collections = [
    Events,
    // EventRegistrations, // Keeping for data migration compatibility
    EventFeedbacks,
-      Campaigns,
+   Campaigns,
    Staffs,
    Messages,
    Teachers,
@@ -68,7 +69,8 @@ const collections = [
    ContactMessages,
    Inquiries,
    Employees,
-   ClassRecords
+   ClassRecords,
+   PlatformRedirects
 ];
 export default collections;
 

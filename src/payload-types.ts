@@ -101,6 +101,7 @@ export interface Config {
     inquiries: Inquiry;
     'classes-employee': ClassesEmployee;
     'class-records': ClassRecord;
+    'platform-redirects': PlatformRedirect;
     redirects: Redirect;
     forms: Form;
     'form-submissions': FormSubmission;
@@ -174,6 +175,7 @@ export interface Config {
     inquiries: InquiriesSelect<false> | InquiriesSelect<true>;
     'classes-employee': ClassesEmployeeSelect<false> | ClassesEmployeeSelect<true>;
     'class-records': ClassRecordsSelect<false> | ClassRecordsSelect<true>;
+    'platform-redirects': PlatformRedirectsSelect<false> | PlatformRedirectsSelect<true>;
     redirects: RedirectsSelect<false> | RedirectsSelect<true>;
     forms: FormsSelect<false> | FormsSelect<true>;
     'form-submissions': FormSubmissionsSelect<false> | FormSubmissionsSelect<true>;
@@ -1769,6 +1771,36 @@ export interface ClassRecord {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "platform-redirects".
+ */
+export interface PlatformRedirect {
+  id: number;
+  title: string;
+  /**
+   * Example: "python-demo" will create https://nexusberry.com/go/python-demo
+   */
+  slug: string;
+  /**
+   * Select the destination platform for this redirect.
+   */
+  platform: 'youtube' | 'instagram' | 'facebook' | 'linkedin' | 'website' | 'other';
+  /**
+   * Paste the exact destination URL here.
+   */
+  targetUrl: string;
+  utm_source?: string | null;
+  utm_medium?: string | null;
+  utm_campaign?: string | null;
+  /**
+   * Automatically counts each time this redirect is visited.
+   */
+  clicks?: number | null;
+  description?: string | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "redirects".
  */
 export interface Redirect {
@@ -1991,6 +2023,10 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'class-records';
         value: number | ClassRecord;
+      } | null)
+    | ({
+        relationTo: 'platform-redirects';
+        value: number | PlatformRedirect;
       } | null)
     | ({
         relationTo: 'redirects';
@@ -2885,6 +2921,23 @@ export interface ClassRecordsSelect<T extends boolean = true> {
   employee?: T;
   date?: T;
   notes?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "platform-redirects_select".
+ */
+export interface PlatformRedirectsSelect<T extends boolean = true> {
+  title?: T;
+  slug?: T;
+  platform?: T;
+  targetUrl?: T;
+  utm_source?: T;
+  utm_medium?: T;
+  utm_campaign?: T;
+  clicks?: T;
+  description?: T;
   updatedAt?: T;
   createdAt?: T;
 }

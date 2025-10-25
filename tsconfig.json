@@ -1,10 +1,8 @@
 {
   "compilerOptions": {
-    /* Strictness */
     "strict": true,
     "noUncheckedIndexedAccess": true,
     "noImplicitOverride": true,
-    
     "baseUrl": ".",
     "esModuleInterop": true,
     "target": "ES2022",
@@ -39,12 +37,6 @@
       ],
       "@/*": [
         "./src/*"
-      ],
-      "@cms/*": [
-        "./src/app/(frontend)/(auth)/cms/*"
-      ],
-      "@accounts/*":[
-        "./src/app/(frontend)/(auth)/accounts/*" 
       ]
     }
   },
@@ -56,6 +48,7 @@
     "next.config.js",
   ],
   "exclude": [
-    "node_modules"
+    "node_modules",
+    "public"
   ]
 }

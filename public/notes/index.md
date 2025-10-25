@@ -1,0 +1,1 @@
+    "dev": "cross-env NODE_OPTIONS=--no-deprecation next dev",
