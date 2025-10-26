@@ -29,28 +29,32 @@ export default buildConfig({
     //   // image: Users.user-photo.url,
     //   size: 'md',
     // },
-    theme: 'dark',
+    // theme: 'dark',
     meta: {
-      description: 'This is a custom Hello description',
+      titleSuffix: ' | NexusBerry Training & Solutions',
+      description: 'NexusBerry Training & Solutions offers practical courses in AI, Data Science, Full Stack Development, Creative Design, and Digital Marketing.',
       icons: [
         {
           type: 'image/jpg',
           rel: 'icon',
-          url: '/icons/favi.jpg',
+          url: '/logos/favi.jpg', // public folder
         },
       ],
       openGraph: {
-        description: 'This is a custom OG description',
+        title: 'NexusBerry Training & Solutions',
+        description: 'Join NexusBerry Training & Solutions to master AI, Data Science, Full Stack Development, Creative Design, and Digital Marketing with hands-on, industry-focused training.',
+        url: 'https://www.nexusberry.com',
+        siteName: 'NexusBerry Training & Solutions',
         images: [
           {
-            height: 600,
-            url: '/website-template-OG.webp',
-            width: 800,
+            url: "/logos/logo-blue.png", // public folder
+            width: 1200,
+            height: 630,
+            alt: 'NexusBerry Training & Solutions Courses',
           },
         ],
-        title: 'This is a custom OG title',
-      },
-      titleSuffix: '- Nexusberry',
+        type: 'website',
+      }
     },
     components: {
       graphics: {

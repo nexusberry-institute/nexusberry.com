@@ -17,6 +17,7 @@ async function postTrack(payload: TrackPayload) {
     })
   } catch (_e) {
     // Intentionally swallow to avoid blocking CMS operations
+    console.log(_e)
   }
 }
 

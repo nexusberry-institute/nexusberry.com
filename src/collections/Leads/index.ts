@@ -1,6 +1,6 @@
 import { CollectionConfig } from "payload";
 // import { checkAccess } from "@/access/accessControl";
-import { emailOnEventRegistration } from './hooks/email'
+// import { emailOnEventRegistration } from './hooks/email'
 import { updateCounters } from './hooks/counters'
 import {
   trackLeadSubmission,
