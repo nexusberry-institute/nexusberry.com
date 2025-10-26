@@ -261,7 +261,7 @@ const CertificateApplicationForm = () => {
                 variant: 'success',
             });
             setTimeout(() => {
-                router.push(result.redirect || '/forms/success-thank-you-page');
+                router.push(result.redirect || '/forms/success');
             }, 1500);
         } catch (err) {
             setStatus('error');

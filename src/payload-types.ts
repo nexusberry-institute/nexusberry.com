@@ -801,6 +801,8 @@ export interface Form {
       }[]
     | null;
   slug: string;
+  status: 'Close Done' | 'Close Rejected' | 'Pending';
+  staffNotes?: string | null;
   updatedAt: string;
   createdAt: string;
 }
@@ -3102,6 +3104,8 @@ export interface FormsSelect<T extends boolean = true> {
         id?: T;
       };
   slug?: T;
+  status?: T;
+  staffNotes?: T;
   updatedAt?: T;
   createdAt?: T;
 }

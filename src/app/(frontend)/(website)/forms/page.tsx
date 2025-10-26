@@ -13,7 +13,7 @@ const FormsPage = () => {
             title: "Certificate Application",
             description: "Apply for official certificates and documentation with our streamlined application process.",
             icon: <Award className="h-8 w-8 text-blue-600" />,
-            route: "/forms/certificate-application-form",
+            route: "/forms/certificate",
             buttonText: "Apply Now",
             category: "Official Documents",
         },

@@ -1,8 +1,8 @@
 import { buildConfig } from 'payload'
 // storage-adapter-import-placeholder
 import { postgresAdapter } from '@payloadcms/db-postgres'
-import { nodemailerAdapter } from '@payloadcms/email-nodemailer'
-import nodemailer from 'nodemailer'
+// import { nodemailerAdapter } from '@payloadcms/email-nodemailer'
+// import nodemailer from 'nodemailer'
 
 import sharp from 'sharp' // sharp-import
 import path from 'path'

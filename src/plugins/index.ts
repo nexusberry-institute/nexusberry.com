@@ -85,8 +85,6 @@ export const plugins: Plugin[] = [
       }
     ]
   }),
-
-
   formBuilderPlugin({
     fields: {
       text: true,
@@ -112,12 +110,12 @@ export const plugins: Plugin[] = [
     // 👇 Customize the admin group for sidebar label
     formOverrides: {
       admin: {
-        group: 'Student Form',
+        group: 'All Forms',
       },
       slug: 'forms',
       labels: {
-        singular: 'Certificate Form',
-        plural: 'Certificate Forms',
+        singular: 'Form Design',
+        plural: 'Form Designs',
       },
 
       // ✅ Correct way to override fields
@@ -144,18 +142,42 @@ export const plugins: Plugin[] = [
               },
             ],
           },
-        }
+        },
+        {
+          name: 'status',
+          label: 'Status',
+          type: 'select',
+          options: [
+            'Close Done',
+            'Close Rejected',
+            'Pending'
+          ],
+          defaultValue: 'Pending',
+          required: true,
+          admin: {
+            position: 'sidebar',
+          },
+        },
+        {
+          name: 'staffNotes',
+          label: 'Staff Notes',
+          type: 'textarea',
+          admin: {
+            position: 'sidebar',
+          },
+        },
+
       ],
     },
     // ✅ Overrides for the Form Submissions collection
     formSubmissionOverrides: {
       admin: {
-        group: 'Student Form',
+        group: 'All Forms',
       },
       slug: 'form-submissions',
       labels: {
-        singular: 'Submission',
-        plural: 'Submissions',
+        singular: 'Form Submission',
+        plural: 'Form Submissions',
       },
     },
 
@@ -163,7 +185,6 @@ export const plugins: Plugin[] = [
 
 
   }),
-
   searchPlugin({
     collections: ['posts'],
     beforeSync: beforeSyncWithSearch,

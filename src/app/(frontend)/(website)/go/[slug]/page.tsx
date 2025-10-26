@@ -4,6 +4,9 @@ import { useEffect, useState } from 'react';
 import Image from 'next/image';
 import { useParams, useSearchParams } from "next/navigation"
 
+// 1. inc pending
+// 2. send custome event to GTM pending with tracking params
+
 export default function GoRedirectPage() {
     const params = useParams()
     const searchParams = useSearchParams()
