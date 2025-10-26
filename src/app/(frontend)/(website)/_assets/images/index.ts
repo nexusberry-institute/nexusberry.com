@@ -31,7 +31,6 @@ import heroCourse2 from './heroCourse2.webp'
 import bgImg from './bg-img.webp'
 
 import eventsBanner from './eventBanner.svg'
-import data from './data.webp'
 import master3 from './master3.webp'
 import masterNew from './masterNew.webp'
 import masterclass from './masterclass.webp'
@@ -90,7 +89,7 @@ export {
   nextjs, PhpLaravel, python, react, reactNative, seo,
   social_media, social, unity_game, webdesigning, wordpress, power_bi,
   RanaAjmal, thambnail, HeroBgTmg, beginer,
-  eventsBanner, data, master3, masterNew, masterclass,
+  eventsBanner, master3, masterNew, masterclass,
   scan, learning, Certificate, mentor, mentor2,
   ourMentor, dataVisual, whtsppIcon, register, nexusBerryImg,
   MearnHomeImg, MLHomeImg, FlutterHomeImg, Map, twitter, facebook, instagram, youtube,
