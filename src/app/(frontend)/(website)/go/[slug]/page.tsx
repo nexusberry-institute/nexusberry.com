@@ -1,11 +1,22 @@
 'use client';
+// Channel ID = UCj4JDbUvE2FvOhX2r3a2AKg
+
+// https://developers.google.com/youtube/youtube_subscribe_button
+// guidelines:
+// The button must be fully and clearly visible.
+// You may not offer or promote prizes or rewards to your visitors for clicking on the button.
+// You may not use the button to track any user data, including the user's actions or browsing activity.
+// code:
+// <script src="https://apis.google.com/js/platform.js"></script>
+// <div class="g-ytsubscribe" data-channelid="UCj4JDbUvE2FvOhX2r3a2AKg" data-layout="full" data-count="hidden"></div> 
+
+// 1. inc pending
+// 2. send custome event to GTM pending with tracking params
+
 
 import { useEffect, useState } from 'react';
 import Image from 'next/image';
 import { useParams, useSearchParams } from "next/navigation"
-
-// 1. inc pending
-// 2. send custome event to GTM pending with tracking params
 
 export default function GoRedirectPage() {
     const params = useParams()
@@ -47,9 +58,9 @@ export default function GoRedirectPage() {
                 // await fetch(`/api/increment-clicks?slug=${slug}`, { method: 'POST' });
 
                 // Delay for UX and prevent back navigation loops
-                setTimeout(() => {
-                    window.location.replace(url.toString());
-                }, 1800);
+                // setTimeout(() => {
+                //     window.location.replace(url.toString());
+                // }, 1800);
             } catch (err) {
                 console.error('Redirect fetch failed:', err);
                 setError(true);
@@ -96,6 +107,11 @@ export default function GoRedirectPage() {
                     </a>
                 </noscript>
             )}
+
+            <h3>🎓 Learn With Us on YouTube</h3>
+            <p>Watch free tutorials, live sessions, and project breakdowns from our 25+ years of teaching experience.</p>
+            <div className="g-ytsubscribe" data-channelid="UCj4JDbUvE2FvOhX2r3a2AKg" data-layout="full" data-count="hidden"></div>
+
         </div>
     );
 }
