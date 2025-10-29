@@ -14,8 +14,7 @@
 
 // Repeat with eventName set to interested, event_attended, admission. Keep the same eventId if you want to test deduplication across multiple transports; otherwise, use unique IDs per logical event.
 
-
-import { randomUUID } from "crypto"
+import { randomUUID } from "node:crypto"
 
 const DOMAIN = "https://www.nexusberry.com"
 const TEST_EVENT_CODE = "TEST13541"

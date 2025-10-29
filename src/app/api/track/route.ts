@@ -3,7 +3,8 @@
 
 // import { cookies, headers } from "next/headers"
 // import { NextResponse } from "next/server"
-// import crypto from "crypto"
+// import crypto from "node:crypto"
+
 
 // /**
 //  * ENV REQUIREMENTS (Server-only):
@@ -273,7 +274,7 @@
 
 import { cookies, headers } from "next/headers"
 import { NextResponse } from "next/server"
-import crypto from "crypto"
+import crypto from "node:crypto"
 
 /**
  * ENV REQUIREMENTS (Server-only):

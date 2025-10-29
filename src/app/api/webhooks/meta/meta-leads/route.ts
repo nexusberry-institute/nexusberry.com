@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { createHmac } from 'crypto'
 import { getPayload } from 'payload'
 import config from '@payload-config'
+import { createHmac } from "node:crypto"
 
 export async function GET(request: NextRequest) {
     const searchParams = request.nextUrl.searchParams

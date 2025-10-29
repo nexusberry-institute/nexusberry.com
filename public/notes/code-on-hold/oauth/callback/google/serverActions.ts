@@ -1,9 +1,9 @@
 import payload, { getCookieExpiration, getFieldsToSign, getPayload } from "payload"
 import configPromise from "@payload-config"
 import { Media, User } from "@/payload-types"
-import { randomBytes } from "node:crypto"
 import { cookies } from "next/headers"
 import { SignJWT } from "jose"
+import { randomBytes } from "node:crypto"
 
 export type UserProps = {
   id: string

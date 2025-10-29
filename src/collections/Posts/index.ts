@@ -9,7 +9,8 @@ import {
   lexicalEditor,
 } from '@payloadcms/richtext-lexical'
 
-// import { authenticated } from '../../access/authenticated'
+import { authenticated } from '../../access/authenticated'
+import { authenticatedOrPublished } from '../../access/authenticatedOrPublished'
 import { Banner } from '../../blocks/Banner/config'
 import { Code } from '../../blocks/Code/config'
 import { MediaBlock } from '../../blocks/MediaBlock/config'
@@ -24,21 +25,15 @@ import {
   OverviewField,
   PreviewField,
 } from '@payloadcms/plugin-seo/fields'
-import { slugField } from '@/fields/slug'
-import { anyone } from '@/access/anyone'
+import { slugField } from 'payload'
 
 export const Posts: CollectionConfig<'posts'> = {
   slug: 'posts',
   access: {
-    create: anyone,
-    delete: anyone,
-    read: anyone,
-    update: anyone,
-  },
-  hooks: {
-    // afterChange: [revalidatePost],
-    afterRead: [populateAuthors],
-    afterDelete: [revalidateDelete],
+    create: authenticated,
+    delete: authenticated,
+    read: authenticatedOrPublished,
+    update: authenticated,
   },
   // This config controls what's populated by default when a post is referenced
   // https://payloadcms.com/docs/queries/select#defaultpopulate-collection-config-property
@@ -55,19 +50,16 @@ export const Posts: CollectionConfig<'posts'> = {
   admin: {
     defaultColumns: ['title', 'slug', 'updatedAt'],
     livePreview: {
-      url: ({ data, req }) => {
-        const path = generatePreviewPath({
-          slug: typeof data?.slug === 'string' ? data.slug : '',
+      url: ({ data, req }) =>
+        generatePreviewPath({
+          slug: data?.slug,
           collection: 'posts',
           req,
-        })
-
-        return path
-      },
+        }),
     },
     preview: (data, { req }) =>
       generatePreviewPath({
-        slug: typeof data?.slug === 'string' ? data.slug : '',
+        slug: data?.slug as string,
         collection: 'posts',
         req,
       }),
@@ -222,9 +214,24 @@ export const Posts: CollectionConfig<'posts'> = {
         },
       ],
     },
-    ...slugField(),
+    slugField(),
   ],
+  hooks: {
+    afterChange: [revalidatePost],
+    afterRead: [populateAuthors],
+    afterDelete: [revalidateDelete],
+  },
   versions: {
-    drafts: true,
-  }
+    drafts: true
+  },
 }
+
+// versions: {
+//     drafts: {
+//       autosave: {
+//         interval: 100, // We set this interval for optimal live preview
+//       },
+//       schedulePublish: true,
+//     },
+//     maxPerDoc: 50,
+//   },
