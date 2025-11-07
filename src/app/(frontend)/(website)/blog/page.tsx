@@ -9,7 +9,7 @@ import React from 'react'
 // import PageClient from './page.client'
 
 
-export const dynamic = 'force-static'
+// export const dynamic = 'force-static'
 // export const revalidate = 600
 // export const dynamic = 'force-dynamic'
 
@@ -18,6 +18,7 @@ export default async function Page() {
 
   const posts = await payload.find({
     collection: 'posts',
+    draft: false,
     depth: 1,
     limit: 12,
     overrideAccess: false,
