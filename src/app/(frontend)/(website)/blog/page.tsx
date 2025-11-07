@@ -6,10 +6,12 @@ import { Pagination } from '@/components/Pagination'
 import configPromise from '@payload-config'
 import { getPayload } from 'payload'
 import React from 'react'
-import PageClient from './page.client'
+// import PageClient from './page.client'
+
 
 export const dynamic = 'force-static'
 // export const revalidate = 600
+// export const dynamic = 'force-dynamic'
 
 export default async function Page() {
   const payload = await getPayload({ config: configPromise })
@@ -29,7 +31,7 @@ export default async function Page() {
 
   return (
     <div className="container py-24 px-5">
-      <PageClient />
+      {/* <PageClient /> */}
       <div className="prose  max-w-none">
         <h1>NexusBerry Blog</h1>
       </div>
@@ -56,6 +58,6 @@ export default async function Page() {
 
 export function generateMetadata(): Metadata {
   return {
-    title: `NexusBerry Posts`,
+    title: `NexusBerry Blog Posts`,
   }
 }
