@@ -28,7 +28,7 @@ export default async function Page({ params: paramsPromise }: Args) {
   const posts = await payload.find({
     collection: 'posts',
     depth: 1,
-    limit: 12,
+    limit: 24,
     page: sanitizedPageNumber,
     overrideAccess: false,
   })
