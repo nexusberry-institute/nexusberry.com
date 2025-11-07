@@ -1,5 +1,4 @@
 import type { Metadata } from 'next/types'
-
 import { CollectionArchive } from '@/components/CollectionArchive'
 import { PageRange } from '@/components/PageRange'
 import { Pagination } from '@/components/Pagination'
@@ -7,7 +6,6 @@ import configPromise from '@payload-config'
 import { getPayload } from 'payload'
 import React from 'react'
 // import PageClient from './page.client'
-
 
 // export const dynamic = 'force-static'
 // export const revalidate = 600
@@ -20,7 +18,7 @@ export default async function Page() {
     collection: 'posts',
     draft: false,
     depth: 1,
-    limit: 12,
+    limit: 24,
     overrideAccess: false,
     select: {
       title: true,
@@ -41,7 +39,7 @@ export default async function Page() {
         <PageRange
           collection="posts"
           currentPage={posts.page}
-          limit={12}
+          limit={24}
           totalDocs={posts.totalDocs}
         />
       </div>
