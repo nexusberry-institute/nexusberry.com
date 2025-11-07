@@ -6,7 +6,7 @@ export const Modules: CollectionConfig = {
   slug: "modules",
   admin: {
     useAsTitle: "title",
-    group: "Academic Structure"
+    group: "Classwork"
   },
   access: {
     // create: checkAccess('modules', 'create'),

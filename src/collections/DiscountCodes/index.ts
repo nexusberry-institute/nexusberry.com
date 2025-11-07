@@ -21,7 +21,6 @@ export const DiscountCodes: CollectionConfig = {
   admin: {
     useAsTitle: "code",
     description: "Manage discount codes for training courses",
-    group: "Academic Structure"
   },
   hooks: {
     beforeChange: [

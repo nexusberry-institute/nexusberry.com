@@ -6,7 +6,7 @@ export const Inquiries: CollectionConfig = {
     admin: {
         useAsTitle: 'name',
         defaultColumns: ['name', 'email', 'contact', 'subject'],
-        group: 'Student Form',
+        group: 'All Forms',
     },
     access: {
         read: () => true, // Optional: Allow public read

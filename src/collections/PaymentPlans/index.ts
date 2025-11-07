@@ -4,7 +4,6 @@ export const PaymentPlans: CollectionConfig = {
   slug: "payment-plans",
   admin: {
     useAsTitle: "name",
-    group: "Academic Structure"
   },
   hooks: {
     beforeChange: [

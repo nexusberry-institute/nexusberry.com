@@ -17,7 +17,7 @@ export const Coursework: CollectionConfig = {
   slug: "coursework",
   admin: {
     useAsTitle: "topic",
-    group: "Course Work",
+    group: "Classwork",
     defaultColumns: ['id', 'slug', 'module', 'topic', 'topicGroup', 'parts', 'createdAt'],
   },
   fields: [

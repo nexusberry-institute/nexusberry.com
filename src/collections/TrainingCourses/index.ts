@@ -6,7 +6,7 @@ export const TrainingCourses: CollectionConfig = {
   slug: "training-courses",
   admin: {
     useAsTitle: "title",
-    group: "Academic Structure"
+    group: "Classwork"
   },
   access: {
     // create: checkAccess('courses', 'create'),

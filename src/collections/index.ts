@@ -78,7 +78,7 @@ export default collections;
 //remainings => roles, rolepermissions, Events,
 
 // Groups
-// Academic Structure
+// Academic Content
 //   Departments, Courses, Modules, Batches,
 // People Management
 // Users, Roles, Students, Teachers, Staffs,
