@@ -20,8 +20,6 @@ export const Card: React.FC<{
 }> = (props) => {
   const { card, link } = useClickableCard({})
   const { className, doc, relationTo, showCategories, title: titleFromProps } = props
-  console.log("relationTo: ", relationTo);
-
   const { slug, categories, meta, title } = doc || {}
   const { description, image: metaImage } = meta || {}
 
@@ -50,11 +48,8 @@ export const Card: React.FC<{
                 {categories?.map((category, index) => {
                   if (typeof category === 'object') {
                     const { title: titleFromCategory } = category
-
                     const categoryTitle = titleFromCategory || 'Untitled category'
-
                     const isLast = index === categories.length - 1
-
                     return (
                       <Fragment key={index}>
                         {categoryTitle}
