@@ -1,54 +1,45 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
-import { MapPin, Clock, Users, Palette, TrendingUp } from "lucide-react"
+import { MapPin, Clock, Palette, TrendingUp } from "lucide-react"
+// import { Users } from "lucide-react"
 
 const jobs = [
   {
     id: 1,
-    title: "Customer Service Representative (CSR)",
-    department: "Admissions",
+    slug: "creative-content-artist-job",
+    title: "Creative Content Artist",
+    department: "Creative Design",
     type: "Full-time",
-    location: "Office",
+    location: "Johar Town, Lahore (Onsite)",
     description:
-      "Handle training course admissions, assist prospective students with inquiries, and provide excellent customer service throughout the enrollment process.",
+      "We are looking for a Creative Artist who can bring our brand to life across social media, YouTube, and our website. The ideal candidate is passionate about visual storytelling, video editing, and social media trends — someone who can turn ideas into engaging digital content.",
     requirements: [
-      "Excellent communication skills",
-      "Customer service experience preferred",
-      "Strong organizational abilities",
-      "Proficiency in basic computer applications",
-    ],
-    icon: Users,
-  },
-  {
-    id: 2,
-    title: "Creative Artist",
-    department: "Marketing",
-    type: "Full-time",
-    location: "Hybrid",
-    description:
-      "Manage social media presence, create engaging content, and handle video/photo editing for our training programs and brand promotion.",
-    requirements: [
-      "Proficiency in design software (Adobe Creative Suite)",
-      "Social media management experience",
-      "Video editing skills",
-      "Creative mindset with attention to detail",
+      "1+ year of experience in content creation or video editing.",
+      "Produce eye-catching image and video content for social media, YouTube, and the website.",
+      "Edit and enhance videos, reels, and promotional materials.",
+      "Manage and post content across social media platforms.",
+      "Stay updated with the latest trends in digital content creation.",
+      "Salary: PKR 40,000 - 50,000.",
     ],
     icon: Palette,
   },
   {
-    id: 3,
+    id: 2,
+    slug: "digital-marketing-job",
     title: "Digital Marketing Executive",
     department: "Marketing",
     type: "Full-time",
-    location: "Office",
+    location: "Johar Town, Lahore (Onsite)",
     description:
       "Develop and execute digital marketing strategies, manage online campaigns, and drive enrollment for our training courses through various digital channels.",
     requirements: [
-      "Digital marketing experience (2+ years)",
+      "1+ year of experience in content creation or video editing.",
       "Knowledge of SEO, SEM, and social media advertising",
       "Analytics and reporting skills",
       "Understanding of lead generation strategies",
+      "Ability to run successful paid Ad compaign on meta and google platforms",
+      "Salary: PKR 40,000 - 50,000.",
     ],
     icon: TrendingUp,
   },
