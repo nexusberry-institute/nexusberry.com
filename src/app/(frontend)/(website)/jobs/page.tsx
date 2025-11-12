@@ -250,7 +250,7 @@ export default function JobsPage() {
                       </div>
                       <div>
                         <CardTitle className="text-2xl sm:text-3xl text-foreground">{job.title}</CardTitle>
-                        <Badge variant="secondary" className="mt-2">
+                        <Badge variant="secondary" className="mt-2 text-white">
                           {job.department}
                         </Badge>
                       </div>
