@@ -102,6 +102,7 @@ export interface Config {
     'classes-employee': ClassesEmployee;
     'class-records': ClassRecord;
     'platform-redirects': PlatformRedirect;
+    topics: Topic;
     redirects: Redirect;
     forms: Form;
     'form-submissions': FormSubmission;
@@ -176,6 +177,7 @@ export interface Config {
     'classes-employee': ClassesEmployeeSelect<false> | ClassesEmployeeSelect<true>;
     'class-records': ClassRecordsSelect<false> | ClassRecordsSelect<true>;
     'platform-redirects': PlatformRedirectsSelect<false> | PlatformRedirectsSelect<true>;
+    topics: TopicsSelect<false> | TopicsSelect<true>;
     redirects: RedirectsSelect<false> | RedirectsSelect<true>;
     forms: FormsSelect<false> | FormsSelect<true>;
     'form-submissions': FormSubmissionsSelect<false> | FormSubmissionsSelect<true>;
@@ -1806,6 +1808,17 @@ export interface PlatformRedirect {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "topics".
+ */
+export interface Topic {
+  id: number;
+  title: string;
+  modules?: (number | null) | Module;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "redirects".
  */
 export interface Redirect {
@@ -2032,6 +2045,10 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'platform-redirects';
         value: number | PlatformRedirect;
+      } | null)
+    | ({
+        relationTo: 'topics';
+        value: number | Topic;
       } | null)
     | ({
         relationTo: 'redirects';
@@ -2943,6 +2960,16 @@ export interface PlatformRedirectsSelect<T extends boolean = true> {
   utm_campaign?: T;
   clicks?: T;
   description?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "topics_select".
+ */
+export interface TopicsSelect<T extends boolean = true> {
+  title?: T;
+  modules?: T;
   updatedAt?: T;
   createdAt?: T;
 }
