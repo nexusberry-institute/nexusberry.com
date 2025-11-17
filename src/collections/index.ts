@@ -35,6 +35,7 @@ import { Inquiries } from './InquiriesForm'
 import { Employees } from './Employees'
 import { ClassRecords } from './ClassRecords'
 import { PlatformRedirects } from './PlatformRedirects'
+import { Topics } from './Topics';
 
 const collections = [
    Users, Media, Pages,
@@ -70,7 +71,8 @@ const collections = [
    Inquiries,
    Employees,
    ClassRecords,
-   PlatformRedirects
+   PlatformRedirects,
+   Topics
 ];
 export default collections;
 
