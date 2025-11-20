@@ -9,6 +9,8 @@ import View1 from './style-1/view1'
 // import View2 from './style-2/view2'
 // import View3 from './style-3/view3'
 
+export const revalidate = 60 * 60 * 24; // (24 hours)
+
 export async function generateStaticParams() {
   const payload = await getPayload({ config: configPromise })
   const courses = await payload.find({

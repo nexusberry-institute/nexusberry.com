@@ -15,6 +15,8 @@ import { generateMeta } from '@/utilities/generateMeta'
 import { LivePreviewListener } from '@/components/LivePreviewListener'
 // import PageClient from './page.client'
 
+export const revalidate = 60 * 60 * 24; // (24 hours)
+
 export async function generateStaticParams() {
   const payload = await getPayload({ config: configPromise })
   const posts = await payload.find({

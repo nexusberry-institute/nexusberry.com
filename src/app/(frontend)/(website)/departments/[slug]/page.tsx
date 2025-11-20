@@ -7,6 +7,8 @@ import React, { cache } from 'react'
 import { generateMeta } from '@/utilities/generateMeta'
 import ErrorCard from '../../_components/ErrorCard'
 
+export const revalidate = 60 * 60 * 24; // (24 hours)
+
 export async function generateStaticParams() {
   const payload = await getPayload({ config: configPromise })
   const departments = await payload.find({

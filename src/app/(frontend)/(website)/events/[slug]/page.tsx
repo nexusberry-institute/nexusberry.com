@@ -11,6 +11,8 @@ import { Media } from '@/payload-types'
 import { unstable_cache } from 'next/cache'
 import { EventsGridSkeleton } from '../_components/EventListSkeleton'
 
+// export const revalidate = 60 * 60 * 24; // (24 hours)
+
 // export async function generateStaticParams() {
 //   const payload = await getPayload({ config: configPromise })
 //   const events = await payload.find({
@@ -35,7 +37,7 @@ import { EventsGridSkeleton } from '../_components/EventListSkeleton'
 //   return params
 // }
 
-// export const revalidate = 86400 // Revelidate every 24 hours (1 day). So that ended events are not shown.
+export const dynamic = 'force-dynamic';
 
 export default async function SlugPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params
