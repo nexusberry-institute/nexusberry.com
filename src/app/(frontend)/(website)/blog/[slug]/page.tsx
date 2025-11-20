@@ -15,27 +15,30 @@ import { generateMeta } from '@/utilities/generateMeta'
 import { LivePreviewListener } from '@/components/LivePreviewListener'
 // import PageClient from './page.client'
 
+// export const dynamic = 'force-dynamic'
+
+export const dynamic = 'force-static'
 export const revalidate = 60 * 60 * 24; // (24 hours)
 
-export async function generateStaticParams() {
-  const payload = await getPayload({ config: configPromise })
-  const posts = await payload.find({
-    collection: 'posts',
-    draft: false,
-    limit: 24,
-    overrideAccess: false,
-    pagination: false,
-    select: {
-      slug: true,
-    },
-  })
+// export async function generateStaticParams() {
+//   const payload = await getPayload({ config: configPromise })
+//   const posts = await payload.find({
+//     collection: 'posts',
+//     draft: false,
+//     limit: 24,
+//     overrideAccess: false,
+//     pagination: false,
+//     select: {
+//       slug: true,
+//     },
+//   })
 
-  const params = posts.docs.map(({ slug }) => {
-    return { slug }
-  })
+//   const params = posts.docs.map(({ slug }) => {
+//     return { slug }
+//   })
 
-  return params
-}
+//   return params
+// }
 
 type Args = {
   params: Promise<{

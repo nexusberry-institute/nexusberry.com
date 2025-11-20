@@ -9,26 +9,28 @@ import React from 'react'
 import { notFound } from 'next/navigation'
 // import PageClient from './page.client'
 
+// export const dynamic = 'force-dynamic'
+
+export const dynamic = 'force-static'
 export const revalidate = 60 * 60 * 24; // (24 hours)
 
+// export async function generateStaticParams() {
+//   const payload = await getPayload({ config: configPromise })
+//   const { totalDocs } = await payload.count({
+//     collection: 'posts',
+//     overrideAccess: false,
+//   })
 
-export async function generateStaticParams() {
-  const payload = await getPayload({ config: configPromise })
-  const { totalDocs } = await payload.count({
-    collection: 'posts',
-    overrideAccess: false,
-  })
+//   const totalPages = Math.ceil(totalDocs / 10)
 
-  const totalPages = Math.ceil(totalDocs / 10)
+//   const pages: { pageNumber: string }[] = []
 
-  const pages: { pageNumber: string }[] = []
+//   for (let i = 1; i <= totalPages; i++) {
+//     pages.push({ pageNumber: String(i) })
+//   }
 
-  for (let i = 1; i <= totalPages; i++) {
-    pages.push({ pageNumber: String(i) })
-  }
-
-  return pages
-}
+//   return pages
+// }
 
 
 type Args = {

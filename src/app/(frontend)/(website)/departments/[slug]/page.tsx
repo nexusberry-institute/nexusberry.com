@@ -7,24 +7,27 @@ import React, { cache } from 'react'
 import { generateMeta } from '@/utilities/generateMeta'
 import ErrorCard from '../../_components/ErrorCard'
 
+// export const dynamic = 'force-dynamic'
+
+export const dynamic = 'force-static'
 export const revalidate = 60 * 60 * 24; // (24 hours)
 
-export async function generateStaticParams() {
-  const payload = await getPayload({ config: configPromise })
-  const departments = await payload.find({
-    collection: 'departments',
-    limit: 250,
-    depth: 4,
-    select: {
-      slug: true,
-    },
-  })
+// export async function generateStaticParams() {
+//   const payload = await getPayload({ config: configPromise })
+//   const departments = await payload.find({
+//     collection: 'departments',
+//     limit: 250,
+//     depth: 4,
+//     select: {
+//       slug: true,
+//     },
+//   })
 
-  const params = departments.docs.map(({ slug }) => {
-    return { slug }
-  })
+//   const params = departments.docs.map(({ slug }) => {
+//     return { slug }
+//   })
 
-  return params
+//   return params
 }
 
 export default async function page({ params }: { params: Promise<{ slug: string }> }) {

@@ -11,6 +11,9 @@ import { Media } from '@/payload-types'
 import { unstable_cache } from 'next/cache'
 import { EventsGridSkeleton } from '../_components/EventListSkeleton'
 
+export const dynamic = 'force-dynamic'
+
+// export const dynamic = 'force-static'
 // export const revalidate = 60 * 60 * 24; // (24 hours)
 
 // export async function generateStaticParams() {
@@ -36,8 +39,6 @@ import { EventsGridSkeleton } from '../_components/EventListSkeleton'
 //   })
 //   return params
 // }
-
-export const dynamic = 'force-dynamic';
 
 export default async function SlugPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params

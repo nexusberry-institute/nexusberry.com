@@ -9,24 +9,27 @@ import View1 from './style-1/view1'
 // import View2 from './style-2/view2'
 // import View3 from './style-3/view3'
 
+// export const dynamic = 'force-dynamic'
+
+export const dynamic = 'force-static'
 export const revalidate = 60 * 60 * 24; // (24 hours)
 
-export async function generateStaticParams() {
-  const payload = await getPayload({ config: configPromise })
-  const courses = await payload.find({
-    collection: 'web-courses',
-    limit: 1000,
-    pagination: false,
-    select: {
-      slug: true,
-    },
-  })
+// export async function generateStaticParams() {
+//   const payload = await getPayload({ config: configPromise })
+//   const courses = await payload.find({
+//     collection: 'web-courses',
+//     limit: 1000,
+//     pagination: false,
+//     select: {
+//       slug: true,
+//     },
+//   })
 
-  const params = courses.docs.map(({ slug }) => {
-    return { slug }
-  })
-  return params
-}
+//   const params = courses.docs.map(({ slug }) => {
+//     return { slug }
+//   })
+//   return params
+// }
 
 type Props = {
   params: Promise<{
