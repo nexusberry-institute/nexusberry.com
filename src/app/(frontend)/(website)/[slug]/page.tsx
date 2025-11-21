@@ -12,10 +12,7 @@ import { RenderHero } from '@/heros/RenderHero'
 import { generateMeta } from '@/utilities/generateMeta'
 import { LivePreviewListener } from '@/components/LivePreviewListener'
 
-// export const dynamic = 'force-dynamic'
-
-export const dynamic = 'force-static'
-export const revalidate = 60 * 60 * 24; // (24 hours)
+export const revalidate = 86400 // 24 hours in seconds
 
 // export async function generateStaticParams() {
 //   const payload = await getPayload({ config: configPromise })
