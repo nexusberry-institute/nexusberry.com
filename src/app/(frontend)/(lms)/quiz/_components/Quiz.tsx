@@ -63,7 +63,7 @@ const Quiz: React.FC = () => {
           <div className="mb-4">
             <span className="text-lg font-semibold">Question {currentQuestion + 1}</span>/{quizData.length}
           </div>
-          <h2 className="text-xl font-bold mb-4">{quizData[currentQuestion]?.text}</h2>
+          <h2 className="text-xl font-bold mb-4 whitespace-pre-wrap">{quizData[currentQuestion]?.text}</h2>
           <div className="space-y-2">
             {quizData[currentQuestion]?.options.map((option, index) => (
               <button
