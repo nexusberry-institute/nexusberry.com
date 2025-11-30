@@ -21,6 +21,7 @@ export const QuizQuestions: CollectionConfig = {
     // options: array of text
     // type: MCQ, SHORT_ANSWER, default MCQ
     // tags: text many
+    // explanation: textarea
 
     // correctAnswer: array index as number 
     {

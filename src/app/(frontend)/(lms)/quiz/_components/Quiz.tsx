@@ -29,7 +29,7 @@ const Quiz: React.FC = () => {
       } else {
         setShowScore(true);
       }
-    }, 1500);
+    }, 2000);
   };
 
   const resetQuiz = () => {
@@ -42,7 +42,7 @@ const Quiz: React.FC = () => {
 
   if (!quizData.length)
     return "No questions loaded"
-  
+
   return (
     <div className="max-w-lg mx-auto mt-8 p-6 bg-white rounded-lg shadow-md">
       {showScore ? (
@@ -71,18 +71,25 @@ const Quiz: React.FC = () => {
                 onClick={() => handleAnswerClick(index)}
                 disabled={answered}
                 className={`w-full text-left p-3 rounded ${answered
-                    ? index === quizData[currentQuestion]?.correctAnswer
-                      ? 'bg-green-200'
-                      : index === selectedAnswer
-                        ? 'bg-red-200'
-                        : 'bg-gray-100'
-                    : 'bg-gray-100 hover:bg-gray-200'
+                  ? index === quizData[currentQuestion]?.correctAnswer
+                    ? 'bg-green-200'
+                    : index === selectedAnswer
+                      ? 'bg-red-200'
+                      : 'bg-gray-100'
+                  : 'bg-gray-100 hover:bg-gray-200'
                   } transition-colors ${answered && 'cursor-default'}`}
               >
                 {option}
               </button>
             ))}
           </div>
+
+          {answered && (
+            <>
+              <h2 className="mt-4 text-lg font-semibold">Explnation:</h2>
+              <div>{quizData[currentQuestion]?.explanation}</div>
+            </>
+          )}
         </>
       )}
     </div>
