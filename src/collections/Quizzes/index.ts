@@ -14,10 +14,11 @@ export const Quizzes: CollectionConfig = {
       required: true,
     },
     // questions relation to quizQuestions
-    // techStack: text many programming language, framework, 
-    // type: MCQ, theory, mix
-    // tags: text many (difficulty level, length)
-    // relation with module, module topics, lecture, lectureTopic
+    //  
+    // type: MCQ, SHORT_ANSWER, MIX
+    // tags: text many (difficulty level, length, techStack: programming language, framework)
+    // relation with module, module topics, lecture
+    // publish draft system
     {
       name: "modules",
       type: "relationship",
