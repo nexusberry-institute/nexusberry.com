@@ -4,8 +4,8 @@ import { CollectionConfig } from 'payload';
 export const Lectures: CollectionConfig = {
   slug: 'lectures',
   admin: {
-    useAsTitle: 'topic',
-    group: "Academic Operations",
+    useAsTitle: 'title',
+    group: "Classwork",
   },
   access: {
     // create: checkAccess('lectures', 'create'),
@@ -15,7 +15,7 @@ export const Lectures: CollectionConfig = {
   },
   fields: [
     {
-      name: "topic",
+      name: "title",
       type: "text",
       required: true,
     },

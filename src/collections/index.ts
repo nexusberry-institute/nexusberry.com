@@ -35,7 +35,9 @@ import { Inquiries } from './InquiriesForm'
 import { Employees } from './Employees'
 import { ClassRecords } from './ClassRecords'
 import { PlatformRedirects } from './PlatformRedirects'
-import { Topics } from './Topics';
+import { ModuleTopics } from './ModuleTopics';
+import Quizzes from './Quizzes'
+import QuizQuestions from './QuizQuestions'
 
 const collections = [
    Users, Media, Pages,
@@ -44,21 +46,20 @@ const collections = [
    Instructors,
    WebCourses,
    Departments,
+
    Events,
-   // EventRegistrations, // Keeping for data migration compatibility
    EventFeedbacks,
+   // EventRegistrations, // Keeping for data migration compatibility
    Campaigns,
+
    Staffs,
    Messages,
    Teachers,
    TrainingCourses,
    PaymentPlans, //payment plan for training courses
    DiscountCodes, //discount Code for payment plans
-   Modules,
-   Lectures,
    Batches,
    TimeTable,
-   Coursework,
    Students,
    Enrollments,
    FeeReceipts,
@@ -72,7 +73,13 @@ const collections = [
    Employees,
    ClassRecords,
    PlatformRedirects,
-   Topics
+   // Classwork
+   Coursework,
+   Modules,
+   ModuleTopics,
+   Lectures,
+   Quizzes,
+   QuizQuestions,
 ];
 export default collections;
 

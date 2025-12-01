@@ -1,7 +1,7 @@
 import { CollectionConfig } from 'payload'
 
-export const Topics: CollectionConfig = {
-  slug: 'topics',
+export const ModuleTopics: CollectionConfig = {
+  slug: 'module-topics',
   admin: {
     group: "Classwork",
     useAsTitle: 'title',
@@ -21,6 +21,6 @@ export const Topics: CollectionConfig = {
   ],
 }
 
-export default Topics
+export default ModuleTopics;
 
 

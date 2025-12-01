@@ -4,38 +4,72 @@ export const QuizQuestions: CollectionConfig = {
   slug: 'quiz-questions',
   admin: {
     group: "Classwork",
-    useAsTitle: 'title',
+    // useAsTitle: 'title',
   },
   fields: [
     {
-      name: 'title',
-      type: 'text',
-      required: true,
-    },
-    {
       name: 'text',
-      type: "text",
+      type: "textarea",
       required: true
     },
-
-    // options: array of text
-    // type: MCQ, SHORT_ANSWER, default MCQ
-    // tags: text many
-    // explanation: textarea
-
-    // correctAnswer: array index as number 
+    {
+      name: 'options',
+      type: "array",
+      required: true,
+      maxRows: 4,
+      fields: [
+        {
+          name: 'option',
+          type: 'text'
+        }
+      ],
+      admin: {
+        isSortable: false
+      }
+    },
     {
       name: 'correctAnswer',
-      type: "text",
+      type: "number", // index in options
       required: true
+    },
+    {
+      name: 'explanation',
+      type: "textarea",
+    },
+    {
+      name: 'tags',
+      type: "text",
+      hasMany: true
     },
     // relation with module, topic, lecture, lectureTopic
     {
-      name: "modules",
+      name: "module",
       type: "relationship",
       relationTo: "modules",
     },
+    {
+      name: "moduleTopic",
+      type: "relationship",
+      relationTo: "module-topics",
+    },
+    {
+      name: "lecture",
+      type: "relationship",
+      relationTo: "lectures",
+    },
+
   ],
 }
 
 export default QuizQuestions;
+
+// {
+//   name: 'type',
+//   type: 'select',
+//   options: [
+//     'MCQ',
+//     'SHORT_ANSWER',
+//     'MIX'
+//   ],
+//   defaultValue: 'MCQ'
+// },
