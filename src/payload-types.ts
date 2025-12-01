@@ -103,6 +103,7 @@ export interface Config {
     modules: Module;
     'module-topics': ModuleTopic;
     lectures: Lecture;
+    assignments: Assignment;
     quizzes: Quiz;
     'quiz-questions': QuizQuestion;
     redirects: Redirect;
@@ -181,6 +182,7 @@ export interface Config {
     modules: ModulesSelect<false> | ModulesSelect<true>;
     'module-topics': ModuleTopicsSelect<false> | ModuleTopicsSelect<true>;
     lectures: LecturesSelect<false> | LecturesSelect<true>;
+    assignments: AssignmentsSelect<false> | AssignmentsSelect<true>;
     quizzes: QuizzesSelect<false> | QuizzesSelect<true>;
     'quiz-questions': QuizQuestionsSelect<false> | QuizQuestionsSelect<true>;
     redirects: RedirectsSelect<false> | RedirectsSelect<true>;
@@ -1825,17 +1827,63 @@ export interface ModuleTopic {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "assignments".
+ */
+export interface Assignment {
+  id: number;
+  status?: boolean | null;
+  'Basic Info': {
+    title: string;
+    files?: (number | Media)[] | null;
+    tags?: string[] | null;
+    module?: (number | null) | Module;
+    moduleTopic?: (number | null) | ModuleTopic;
+    lecture?: (number | null) | Lecture;
+  };
+  Questions?: {
+    questions?:
+      | {
+          question?: {
+            root: {
+              type: string;
+              children: {
+                type: any;
+                version: number;
+                [k: string]: unknown;
+              }[];
+              direction: ('ltr' | 'rtl') | null;
+              format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+              indent: number;
+              version: number;
+            };
+            [k: string]: unknown;
+          } | null;
+          id?: string | null;
+        }[]
+      | null;
+  };
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "quizzes".
  */
 export interface Quiz {
   id: number;
-  slug: string;
-  title: string;
-  questions?: (number | QuizQuestion)[] | null;
-  module?: (number | null) | Module;
-  moduleTopic?: (number | null) | ModuleTopic;
-  lecture?: (number | null) | Lecture;
   status?: boolean | null;
+  slug: string;
+  'Basic Info': {
+    title: string;
+    thumbnail?: (number | null) | Media;
+    tags?: string[] | null;
+    module?: (number | null) | Module;
+    moduleTopic?: (number | null) | ModuleTopic;
+    lecture?: (number | null) | Lecture;
+  };
+  Questions?: {
+    questions?: (number | QuizQuestion)[] | null;
+  };
   updatedAt: string;
   createdAt: string;
 }
@@ -2108,6 +2156,10 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'lectures';
         value: number | Lecture;
+      } | null)
+    | ({
+        relationTo: 'assignments';
+        value: number | Assignment;
       } | null)
     | ({
         relationTo: 'quizzes';
@@ -3042,16 +3094,55 @@ export interface LecturesSelect<T extends boolean = true> {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "assignments_select".
+ */
+export interface AssignmentsSelect<T extends boolean = true> {
+  status?: T;
+  'Basic Info'?:
+    | T
+    | {
+        title?: T;
+        files?: T;
+        tags?: T;
+        module?: T;
+        moduleTopic?: T;
+        lecture?: T;
+      };
+  Questions?:
+    | T
+    | {
+        questions?:
+          | T
+          | {
+              question?: T;
+              id?: T;
+            };
+      };
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "quizzes_select".
  */
 export interface QuizzesSelect<T extends boolean = true> {
-  slug?: T;
-  title?: T;
-  questions?: T;
-  module?: T;
-  moduleTopic?: T;
-  lecture?: T;
   status?: T;
+  slug?: T;
+  'Basic Info'?:
+    | T
+    | {
+        title?: T;
+        thumbnail?: T;
+        tags?: T;
+        module?: T;
+        moduleTopic?: T;
+        lecture?: T;
+      };
+  Questions?:
+    | T
+    | {
+        questions?: T;
+      };
   updatedAt?: T;
   createdAt?: T;
 }
