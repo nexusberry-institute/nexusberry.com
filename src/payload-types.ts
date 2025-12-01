@@ -84,11 +84,8 @@ export interface Config {
     'training-courses': TrainingCourse;
     'payment-plans': PaymentPlan;
     'discount-codes': DiscountCode;
-    modules: Module;
-    lectures: Lecture;
     batches: Batch;
     'time-table': TimeTable;
-    coursework: Coursework;
     students: Student;
     enrollments: Enrollment;
     'fee-receipts': FeeReceipt;
@@ -102,7 +99,12 @@ export interface Config {
     'classes-employee': ClassesEmployee;
     'class-records': ClassRecord;
     'platform-redirects': PlatformRedirect;
-    topics: Topic;
+    coursework: Coursework;
+    modules: Module;
+    'module-topics': ModuleTopic;
+    lectures: Lecture;
+    quizzes: Quiz;
+    'quiz-questions': QuizQuestion;
     redirects: Redirect;
     forms: Form;
     'form-submissions': FormSubmission;
@@ -160,11 +162,8 @@ export interface Config {
     'training-courses': TrainingCoursesSelect<false> | TrainingCoursesSelect<true>;
     'payment-plans': PaymentPlansSelect<false> | PaymentPlansSelect<true>;
     'discount-codes': DiscountCodesSelect<false> | DiscountCodesSelect<true>;
-    modules: ModulesSelect<false> | ModulesSelect<true>;
-    lectures: LecturesSelect<false> | LecturesSelect<true>;
     batches: BatchesSelect<false> | BatchesSelect<true>;
     'time-table': TimeTableSelect<false> | TimeTableSelect<true>;
-    coursework: CourseworkSelect<false> | CourseworkSelect<true>;
     students: StudentsSelect<false> | StudentsSelect<true>;
     enrollments: EnrollmentsSelect<false> | EnrollmentsSelect<true>;
     'fee-receipts': FeeReceiptsSelect<false> | FeeReceiptsSelect<true>;
@@ -178,7 +177,12 @@ export interface Config {
     'classes-employee': ClassesEmployeeSelect<false> | ClassesEmployeeSelect<true>;
     'class-records': ClassRecordsSelect<false> | ClassRecordsSelect<true>;
     'platform-redirects': PlatformRedirectsSelect<false> | PlatformRedirectsSelect<true>;
-    topics: TopicsSelect<false> | TopicsSelect<true>;
+    coursework: CourseworkSelect<false> | CourseworkSelect<true>;
+    modules: ModulesSelect<false> | ModulesSelect<true>;
+    'module-topics': ModuleTopicsSelect<false> | ModuleTopicsSelect<true>;
+    lectures: LecturesSelect<false> | LecturesSelect<true>;
+    quizzes: QuizzesSelect<false> | QuizzesSelect<true>;
+    'quiz-questions': QuizQuestionsSelect<false> | QuizQuestionsSelect<true>;
     redirects: RedirectsSelect<false> | RedirectsSelect<true>;
     forms: FormsSelect<false> | FormsSelect<true>;
     'form-submissions': FormSubmissionsSelect<false> | FormSubmissionsSelect<true>;
@@ -1265,7 +1269,7 @@ export interface Module {
  */
 export interface Lecture {
   id: number;
-  topic: string;
+  title: string;
   module?: (number | null) | Module;
   batches?: (number | Batch)[] | null;
   teacher?: (number | null) | Teacher;
@@ -1587,36 +1591,6 @@ export interface Message {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "coursework".
- */
-export interface Coursework {
-  id: number;
-  slug?: string | null;
-  slugLock?: boolean | null;
-  module: number | Module;
-  topicGroup?: string | null;
-  topic: string;
-  parts?: (number | null) | Coursework;
-  content: {
-    root: {
-      type: string;
-      children: {
-        type: any;
-        version: number;
-        [k: string]: unknown;
-      }[];
-      direction: ('ltr' | 'rtl') | null;
-      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
-      indent: number;
-      version: number;
-    };
-    [k: string]: unknown;
-  };
-  updatedAt: string;
-  createdAt: string;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "attendance".
  */
 export interface Attendance {
@@ -1810,12 +1784,78 @@ export interface PlatformRedirect {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "topics".
+ * via the `definition` "coursework".
  */
-export interface Topic {
+export interface Coursework {
+  id: number;
+  slug?: string | null;
+  slugLock?: boolean | null;
+  module: number | Module;
+  topicGroup?: string | null;
+  topic: string;
+  parts?: (number | null) | Coursework;
+  content: {
+    root: {
+      type: string;
+      children: {
+        type: any;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  };
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "module-topics".
+ */
+export interface ModuleTopic {
   id: number;
   title: string;
   modules?: (number | null) | Module;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "quizzes".
+ */
+export interface Quiz {
+  id: number;
+  slug: string;
+  title: string;
+  questions?: (number | QuizQuestion)[] | null;
+  module?: (number | null) | Module;
+  moduleTopic?: (number | null) | ModuleTopic;
+  lecture?: (number | null) | Lecture;
+  status?: boolean | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "quiz-questions".
+ */
+export interface QuizQuestion {
+  id: number;
+  text: string;
+  options: {
+    option?: string | null;
+    id?: string | null;
+  }[];
+  correctAnswer: number;
+  explanation?: string | null;
+  tags?: string[] | null;
+  module?: (number | null) | Module;
+  moduleTopic?: (number | null) | ModuleTopic;
+  lecture?: (number | null) | Lecture;
   updatedAt: string;
   createdAt: string;
 }
@@ -1994,24 +2034,12 @@ export interface PayloadLockedDocument {
         value: number | DiscountCode;
       } | null)
     | ({
-        relationTo: 'modules';
-        value: number | Module;
-      } | null)
-    | ({
-        relationTo: 'lectures';
-        value: number | Lecture;
-      } | null)
-    | ({
         relationTo: 'batches';
         value: number | Batch;
       } | null)
     | ({
         relationTo: 'time-table';
         value: number | TimeTable;
-      } | null)
-    | ({
-        relationTo: 'coursework';
-        value: number | Coursework;
       } | null)
     | ({
         relationTo: 'students';
@@ -2066,8 +2094,28 @@ export interface PayloadLockedDocument {
         value: number | PlatformRedirect;
       } | null)
     | ({
-        relationTo: 'topics';
-        value: number | Topic;
+        relationTo: 'coursework';
+        value: number | Coursework;
+      } | null)
+    | ({
+        relationTo: 'modules';
+        value: number | Module;
+      } | null)
+    | ({
+        relationTo: 'module-topics';
+        value: number | ModuleTopic;
+      } | null)
+    | ({
+        relationTo: 'lectures';
+        value: number | Lecture;
+      } | null)
+    | ({
+        relationTo: 'quizzes';
+        value: number | Quiz;
+      } | null)
+    | ({
+        relationTo: 'quiz-questions';
+        value: number | QuizQuestion;
       } | null)
     | ({
         relationTo: 'redirects';
@@ -2645,38 +2693,6 @@ export interface DiscountCodesSelect<T extends boolean = true> {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "modules_select".
- */
-export interface ModulesSelect<T extends boolean = true> {
-  title?: T;
-  slug?: T;
-  slugLock?: T;
-  nick?: T;
-  lectures?: T;
-  description?: T;
-  updatedAt?: T;
-  createdAt?: T;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "lectures_select".
- */
-export interface LecturesSelect<T extends boolean = true> {
-  topic?: T;
-  module?: T;
-  batches?: T;
-  teacher?: T;
-  slug?: T;
-  videoUrl?: T;
-  notes?: T;
-  files?: T;
-  rating?: T;
-  qa?: T;
-  updatedAt?: T;
-  createdAt?: T;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "batches_select".
  */
 export interface BatchesSelect<T extends boolean = true> {
@@ -2708,21 +2724,6 @@ export interface TimeTableSelect<T extends boolean = true> {
   startTime?: T;
   endTime?: T;
   room?: T;
-  updatedAt?: T;
-  createdAt?: T;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "coursework_select".
- */
-export interface CourseworkSelect<T extends boolean = true> {
-  slug?: T;
-  slugLock?: T;
-  module?: T;
-  topicGroup?: T;
-  topic?: T;
-  parts?: T;
-  content?: T;
   updatedAt?: T;
   createdAt?: T;
 }
@@ -2984,11 +2985,94 @@ export interface PlatformRedirectsSelect<T extends boolean = true> {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "topics_select".
+ * via the `definition` "coursework_select".
  */
-export interface TopicsSelect<T extends boolean = true> {
+export interface CourseworkSelect<T extends boolean = true> {
+  slug?: T;
+  slugLock?: T;
+  module?: T;
+  topicGroup?: T;
+  topic?: T;
+  parts?: T;
+  content?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "modules_select".
+ */
+export interface ModulesSelect<T extends boolean = true> {
+  title?: T;
+  slug?: T;
+  slugLock?: T;
+  nick?: T;
+  lectures?: T;
+  description?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "module-topics_select".
+ */
+export interface ModuleTopicsSelect<T extends boolean = true> {
   title?: T;
   modules?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "lectures_select".
+ */
+export interface LecturesSelect<T extends boolean = true> {
+  title?: T;
+  module?: T;
+  batches?: T;
+  teacher?: T;
+  slug?: T;
+  videoUrl?: T;
+  notes?: T;
+  files?: T;
+  rating?: T;
+  qa?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "quizzes_select".
+ */
+export interface QuizzesSelect<T extends boolean = true> {
+  slug?: T;
+  title?: T;
+  questions?: T;
+  module?: T;
+  moduleTopic?: T;
+  lecture?: T;
+  status?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "quiz-questions_select".
+ */
+export interface QuizQuestionsSelect<T extends boolean = true> {
+  text?: T;
+  options?:
+    | T
+    | {
+        option?: T;
+        id?: T;
+      };
+  correctAnswer?: T;
+  explanation?: T;
+  tags?: T;
+  module?: T;
+  moduleTopic?: T;
+  lecture?: T;
   updatedAt?: T;
   createdAt?: T;
 }

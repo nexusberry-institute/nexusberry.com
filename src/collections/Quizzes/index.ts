@@ -1,3 +1,4 @@
+import { Checkbox } from './../../blocks/Form/Checkbox/index';
 import { draftMode } from 'next/headers';
 import { CollectionConfig } from 'payload'
 
@@ -45,11 +46,15 @@ export const Quizzes: CollectionConfig = {
       type: "relationship",
       relationTo: "lectures",
     },
-    // publish draft system
-  ],
-  versions: {
-    drafts: true
-  },
+    {
+      name: 'status',
+      type: 'checkbox',
+      defaultValue: false,
+      admin: {
+        position: 'sidebar'
+      }
+    }
+  ]
 }
 
 export default Quizzes;
