@@ -17,7 +17,7 @@ const getCoursesSitemap = async (payload: any, SITE_URL: string) => {
 
   const dateFallback = new Date().toISOString()
 
-  const sitemap = results.docs
+  const sitemap = results.docs && results.docs?.length
     ? results.docs
       .filter((course: any) => Boolean(course?.slug))
       .map((course: any) => ({
@@ -46,7 +46,7 @@ const getEventsSitemap = async (payload: any, SITE_URL: string) => {
 
   const dateFallback = new Date().toISOString()
 
-  const sitemap = results.docs
+  const sitemap = results.docs && results.docs?.length
     ? results.docs
       .filter((event: any) => Boolean(event?.slug))
       .map((event: any) => ({
@@ -81,7 +81,7 @@ const getBlogSitemap = async (payload: any, SITE_URL: string) => {
 
   const dateFallback = new Date().toISOString()
 
-  const sitemap = results.docs
+  const sitemap = results.docs && results.docs?.length
     ? results.docs
       .filter((post: any) => Boolean(post?.slug))
       .map((post: any) => ({
@@ -116,7 +116,7 @@ const getPagesSitemap = async (payload: any, SITE_URL: string) => {
 
   const dateFallback = new Date().toISOString()
 
-  const sitemap = results.docs
+  const sitemap = results.docs && results.docs?.length
     ? results.docs
       .filter((page: any) => Boolean(page?.slug))
       .map((page: any) => ({
