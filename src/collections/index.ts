@@ -36,8 +36,9 @@ import { Employees } from './Employees'
 import { ClassRecords } from './ClassRecords'
 import { PlatformRedirects } from './PlatformRedirects'
 import { ModuleTopics } from './ModuleTopics';
-import Quizzes from './Quizzes'
-import QuizQuestions from './QuizQuestions'
+import { Quizzes } from './Quizzes'
+import { QuizQuestions } from './QuizQuestions'
+import { Assignments } from './Assignments'
 
 const collections = [
    Users, Media, Pages,
@@ -78,6 +79,7 @@ const collections = [
    Modules,
    ModuleTopics,
    Lectures,
+   Assignments,
    Quizzes,
    QuizQuestions,
 ];

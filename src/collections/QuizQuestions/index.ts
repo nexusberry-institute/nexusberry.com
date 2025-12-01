@@ -4,7 +4,6 @@ export const QuizQuestions: CollectionConfig = {
   slug: 'quiz-questions',
   admin: {
     group: "Classwork",
-    // useAsTitle: 'title',
   },
   fields: [
     {
@@ -39,29 +38,38 @@ export const QuizQuestions: CollectionConfig = {
     {
       name: 'tags',
       type: "text",
-      hasMany: true
+      hasMany: true,
+      admin: {
+        position: 'sidebar'
+      }
     },
-    // relation with module, topic, lecture, lectureTopic
     {
       name: "module",
       type: "relationship",
       relationTo: "modules",
+      admin: {
+        position: 'sidebar'
+      }
     },
     {
       name: "moduleTopic",
       type: "relationship",
       relationTo: "module-topics",
+      admin: {
+        position: 'sidebar'
+      }
     },
     {
       name: "lecture",
       type: "relationship",
       relationTo: "lectures",
+      admin: {
+        position: 'sidebar'
+      }
     },
-
   ],
 }
 
-export default QuizQuestions;
 
 // {
 //   name: 'type',

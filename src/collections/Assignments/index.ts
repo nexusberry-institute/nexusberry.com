@@ -1,7 +1,7 @@
 import { CollectionConfig } from 'payload'
 
-export const Quizzes: CollectionConfig = {
-  slug: 'quizzes',
+export const Assignments: CollectionConfig = {
+  slug: 'assignments',
   admin: {
     group: "Classwork",
     useAsTitle: 'title',
@@ -11,15 +11,6 @@ export const Quizzes: CollectionConfig = {
       name: 'status',
       type: 'checkbox',
       defaultValue: false,
-      admin: {
-        position: 'sidebar'
-      }
-    },
-    {
-      name: 'slug',
-      type: 'text',
-      required: true,
-      unique: true,
       admin: {
         position: 'sidebar'
       }
@@ -36,9 +27,10 @@ export const Quizzes: CollectionConfig = {
               required: true,
             },
             {
-              name: 'thumbnail',
+              name: 'files',
               type: 'upload',
-              relationTo: 'media'
+              relationTo: 'media',
+              hasMany: true
             },
             {
               name: 'tags',
@@ -67,9 +59,13 @@ export const Quizzes: CollectionConfig = {
           fields: [
             {
               name: 'questions',
-              type: 'relationship',
-              relationTo: 'quiz-questions',
-              hasMany: true
+              type: 'array',
+              fields: [
+                {
+                  name: 'question',
+                  type: 'richText'
+                }
+              ]
             },
           ]
         },
@@ -77,5 +73,3 @@ export const Quizzes: CollectionConfig = {
     },
   ]
 }
-
-// type: MCQ, SHORT_ANSWER, MIX
