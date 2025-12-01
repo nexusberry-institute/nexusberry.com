@@ -4,7 +4,6 @@ export const Assignments: CollectionConfig = {
   slug: 'assignments',
   admin: {
     group: "Classwork",
-    useAsTitle: 'title',
   },
   fields: [
     {
