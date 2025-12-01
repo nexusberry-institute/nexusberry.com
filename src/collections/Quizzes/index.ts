@@ -4,7 +4,6 @@ export const Quizzes: CollectionConfig = {
   slug: 'quizzes',
   admin: {
     group: "Classwork",
-    useAsTitle: 'title',
   },
   fields: [
     {
