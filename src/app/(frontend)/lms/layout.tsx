@@ -10,6 +10,10 @@ import React from 'react'
 // }
 
 export default async function LMSLayout({ children }: { children: React.ReactNode }) {
-    return { children }
+    return (
+        <>
+            {children}
+        </>
+    )
 }
 
