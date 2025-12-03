@@ -63,7 +63,7 @@ Add these to the **Vars** section in the v0 sidebar:
 | Variable | Description |
 |----------|-------------|
 | `AUTH_SECRET` | Generate with `npx auth secret` |
-| `GOOGLE_CLIENT_ID` | From Google Cloud Console |
+| `NEXT_PUBLIC_GOOGLE_CLIENT_ID` | From Google Cloud Console |
 | `GOOGLE_CLIENT_SECRET` | From Google Cloud Console |
 | `PAYLOAD_API_URL` | Your PayloadCMS URL (e.g., `https://your-payload.com`) |
 | `PAYLOAD_API_KEY` | PayloadCMS API key with user permissions |
