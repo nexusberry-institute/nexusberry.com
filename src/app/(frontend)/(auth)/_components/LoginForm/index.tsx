@@ -76,7 +76,7 @@ export const LoginForm: React.FC = () => {
 
   const handleGoogleLogin = useCallback(async () => {
     const params = new URLSearchParams({
-      client_id: process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID!, // ✅ Must be defined
+      client_id: process.env.GOOGLE_CLIENT_ID!,
       redirect_uri: `${process.env.NEXT_PUBLIC_SERVER_URL}/oauth/callback/google`,
       response_type: "code",
       scope: "openid email profile",

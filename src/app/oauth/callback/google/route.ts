@@ -22,7 +22,7 @@ export async function GET(req: NextRequest) {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        client_id: process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID,
+        client_id: process.env.GOOGLE_CLIENT_ID,
         client_secret: process.env.GOOGLE_CLIENT_SECRET,
         code,
         grant_type: "authorization_code",
