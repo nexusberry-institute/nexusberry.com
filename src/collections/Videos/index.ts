@@ -6,6 +6,7 @@ export const Videos: CollectionConfig = {
   admin: {
     useAsTitle: 'title',
     description: 'Manage the videos',
+    group: "Classwork",
   },
   access: {
     read: () => true,
