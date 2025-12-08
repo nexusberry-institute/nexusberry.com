@@ -106,6 +106,7 @@ export interface Config {
     assignments: Assignment;
     quizzes: Quiz;
     'quiz-questions': QuizQuestion;
+    videos: Video;
     redirects: Redirect;
     forms: Form;
     'form-submissions': FormSubmission;
@@ -185,6 +186,7 @@ export interface Config {
     assignments: AssignmentsSelect<false> | AssignmentsSelect<true>;
     quizzes: QuizzesSelect<false> | QuizzesSelect<true>;
     'quiz-questions': QuizQuestionsSelect<false> | QuizQuestionsSelect<true>;
+    videos: VideosSelect<false> | VideosSelect<true>;
     redirects: RedirectsSelect<false> | RedirectsSelect<true>;
     forms: FormsSelect<false> | FormsSelect<true>;
     'form-submissions': FormSubmissionsSelect<false> | FormSubmissionsSelect<true>;
@@ -197,6 +199,7 @@ export interface Config {
   db: {
     defaultIDType: number;
   };
+  fallbackLocale: null;
   globals: {
     header: Header;
     footer: Footer;
@@ -1908,6 +1911,63 @@ export interface QuizQuestion {
   createdAt: string;
 }
 /**
+ * Manage the videos
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "videos".
+ */
+export interface Video {
+  id: number;
+  title: string;
+  videoUrl: string;
+  poster?: (number | null) | Media;
+  notes?: {
+    root: {
+      type: string;
+      children: {
+        type: any;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  } | null;
+  assignment?: {
+    root: {
+      type: string;
+      children: {
+        type: any;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  } | null;
+  qa?:
+    | {
+        question?: string | null;
+        answer?: string | null;
+        timestamp?: string | null;
+        id?: string | null;
+      }[]
+    | null;
+  /**
+   * When enabled, the slug will auto-generate from the title field on save and autosave.
+   */
+  generateSlug?: boolean | null;
+  slug: string;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "redirects".
  */
@@ -2168,6 +2228,10 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'quiz-questions';
         value: number | QuizQuestion;
+      } | null)
+    | ({
+        relationTo: 'videos';
+        value: number | Video;
       } | null)
     | ({
         relationTo: 'redirects';
@@ -3164,6 +3228,29 @@ export interface QuizQuestionsSelect<T extends boolean = true> {
   module?: T;
   moduleTopic?: T;
   lecture?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "videos_select".
+ */
+export interface VideosSelect<T extends boolean = true> {
+  title?: T;
+  videoUrl?: T;
+  poster?: T;
+  notes?: T;
+  assignment?: T;
+  qa?:
+    | T
+    | {
+        question?: T;
+        answer?: T;
+        timestamp?: T;
+        id?: T;
+      };
+  generateSlug?: T;
+  slug?: T;
   updatedAt?: T;
   createdAt?: T;
 }

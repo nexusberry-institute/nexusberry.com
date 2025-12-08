@@ -39,6 +39,7 @@ import { ModuleTopics } from './ModuleTopics';
 import { Quizzes } from './Quizzes'
 import { QuizQuestions } from './QuizQuestions'
 import { Assignments } from './Assignments'
+import { Videos } from './Videos'
 
 const collections = [
    Users, Media, Pages,
@@ -82,6 +83,7 @@ const collections = [
    Assignments,
    Quizzes,
    QuizQuestions,
+   Videos
 ];
 export default collections;
 
