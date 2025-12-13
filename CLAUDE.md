@@ -64,6 +64,13 @@ pnpm reinstall        # Clean reinstall (removes node_modules + lockfile)
 
 ## Architecture
 
+### next.config.js:
+  - Integrates PayloadCMS with Next.js via withPayload()
+  - Optimizes production (removes console logs)
+  - Enables image optimization for remote URLs
+  - Custom webpack config for TypeScript support
+  - Lenient build process (ignores ESLint errors)
+
 ### Next.js App Router Structure
 
 The app follows a grouped route structure:
@@ -94,6 +101,13 @@ src/app/
 **Location:** `src/payload.config.ts`
 
 **Key Concepts:**
+- Single source of truth for PayloadCMS behavior
+- Defines admin panel, database, collections, security, uploads
+- Auto-creates superadmin on first run
+- TypeScript types auto-generated from this config
+- Email currently disabled but configured
+
+**Key Notes:**
 1. **Collections (43+):** Data models defined in `src/collections/`. See `src/collections/index.ts` for full list.
 2. **Globals:** Site-wide settings in `src/globals/`
 3. **Blocks:** Reusable content blocks in `src/blocks/` (Banner, CTA, Content, Media, Code, etc.)
@@ -104,11 +118,6 @@ src/app/
    - `formBuilderPlugin`: Dynamic form builder with submissions
    - `searchPlugin`: Full-text search on posts
    - `s3Storage`: Supabase storage integration (endpoint in .env)
-
-**Default User on Init:**
-- Email: admin@nexusberry.com
-- Password: 12345678
-- Role: superadmin
 
 ### Access Control System
 
