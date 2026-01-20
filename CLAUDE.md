@@ -305,3 +305,124 @@ pool: {
 - Email: `pnpm test:email`
 - Environment: `pnpm test:env`
 - Scripts located in `scripts/` directory
+
+## Local Development Workflow
+
+### Dual Environment Architecture
+
+The project uses two separate environments:
+
+| Environment | Database | File Storage | Config File |
+|-------------|----------|--------------|-------------|
+| **Local Dev** | Docker PostgreSQL (localhost:5432) | `public/media/` (local) | `.env.local` |
+| **Production** | Supabase PostgreSQL | Supabase S3 | `.env` |
+
+**How it works:** Next.js automatically loads `.env.local` with higher priority than `.env`. When running `pnpm dev`, local config is used. In CI/CD (where `.env.local` doesn't exist), production `.env` is used.
+
+### Key Environment Variable: PAYLOAD_LOCAL_STORAGE
+
+```env
+# .env.local (local development)
+PAYLOAD_LOCAL_STORAGE=true   # Uses public/media/ for uploads
+
+# .env (production)
+PAYLOAD_LOCAL_STORAGE=false  # Uses Supabase S3 storage
+```
+
+The S3 storage plugin is conditionally loaded in `src/plugins/index.ts` based on this variable.
+
+### Docker Commands
+
+```bash
+pnpm docker:up      # Start local PostgreSQL container
+pnpm docker:down    # Stop container (data persists)
+pnpm docker:reset   # Wipe database and restart (destructive!)
+pnpm dev:setup      # Start Docker + dev server in one command
+```
+
+### Local Development Setup
+
+```bash
+# 1. Start Docker PostgreSQL
+pnpm docker:up
+
+# 2. Start dev server (uses .env.local automatically)
+pnpm dev
+
+# Access: http://localhost:3000/admin
+# First run creates superadmin: admin@nexusberry.com / 12345678
+```
+
+### Migration Workflow (Local → Production)
+
+**IMPORTANT:** Always create and test migrations locally before deploying.
+
+```bash
+# 1. Make collection changes in src/collections/
+
+# 2. Generate migration (uses local Docker PostgreSQL)
+pnpm migrate:create
+
+# 3. Test migration locally
+pnpm migrate:run
+
+# 4. Check status
+pnpm migrate:status
+
+# 5. If issues, rollback
+pnpm migrate:rollback
+
+# 6. Commit migration files
+git add src/migrations/
+git commit -m "Add migration for [description]"
+```
+
+**Why Docker PostgreSQL:** Both local and production use PostgreSQL, so migrations are compatible. This avoids SQL dialect issues that would occur with SQLite.
+
+### Production Build Testing
+
+To test production build locally (uses production `.env`):
+
+```bash
+# Temporarily disable local config
+mv .env.local .env.local.bak
+
+# Run production build
+pnpm build
+
+# Restore local config
+mv .env.local.bak .env.local
+```
+
+### File Structure for Environments
+
+```
+├── .env                    # Production config (Supabase DB + S3) - gitignored
+├── .env.local              # Local dev config (Docker + local uploads) - gitignored
+├── .env.example            # Template for new developers - committed
+├── docker-compose.yml      # Local PostgreSQL container
+├── public/media/           # Local uploads directory - gitignored
+│   └── .gitkeep
+└── DEVELOPMENT.md          # Detailed workflow documentation
+```
+
+### Conditional Storage Configuration
+
+In `src/plugins/index.ts`, the `getPlugins()` function conditionally includes S3:
+
+```typescript
+// S3 storage only added when PAYLOAD_LOCAL_STORAGE !== 'true'
+if (process.env.PAYLOAD_LOCAL_STORAGE !== 'true') {
+  basePlugins.push(s3Storage({...}))
+}
+```
+
+When `PAYLOAD_LOCAL_STORAGE=true`, PayloadCMS uses the `staticDir` from `Media.ts` (`public/media/`).
+
+### Important Notes for Development
+
+1. **Always start Docker first:** Run `pnpm docker:up` before `pnpm dev`
+2. **Migrations use local DB:** `pnpm migrate:create` generates PostgreSQL-compatible migrations
+3. **Build requires production DB or no .env.local:** The build process connects to the database
+4. **Local uploads are gitignored:** `public/media/*` is in `.gitignore`
+5. **CI/CD runs migrations:** The `pnpm ci` command runs `payload migrate && pnpm build`

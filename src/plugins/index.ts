@@ -23,192 +23,211 @@ import { getServerSideURL } from '@/utilities/getURL'
 //   return doc?.slug ? `${url}/${doc.slug}` : url
 // }
 
-export const plugins: Plugin[] = [
-  redirectsPlugin({
-    collections: ['pages', 'posts', 'departments', 'web-courses'],
-    redirectTypes: ['301', '302'],
-    overrides: {
-      // @ts-expect-error
-      fields: ({ defaultFields }) => {
-        return defaultFields.map((field) => {
-          if ('name' in field && field.name === 'from') {
-            return {
-              ...field,
-              admin: {
-                description: 'You will need to rebuild the website when changing this field.',
-              },
+/**
+ * Get plugins based on environment
+ * S3 storage is only included in production (PAYLOAD_LOCAL_STORAGE !== 'true')
+ * In local development, Payload uses the staticDir defined in Media collection
+ */
+export const getPlugins = (): Plugin[] => {
+  const basePlugins: Plugin[] = [
+    redirectsPlugin({
+      collections: ['pages', 'posts', 'departments', 'web-courses'],
+      redirectTypes: ['301', '302'],
+      overrides: {
+        // @ts-expect-error
+        fields: ({ defaultFields }) => {
+          return defaultFields.map((field) => {
+            if ('name' in field && field.name === 'from') {
+              return {
+                ...field,
+                admin: {
+                  description: 'You will need to rebuild the website when changing this field.',
+                },
+              }
             }
-          }
-          return field
-        })
+            return field
+          })
+        },
+        hooks: {
+          afterChange: [revalidateRedirects],
+        },
       },
-      hooks: {
-        afterChange: [revalidateRedirects],
+    }),
+    nestedDocsPlugin({
+      collections: ['categories'],
+    }),
+    seoPlugin({
+      generateTitle: ({ doc }) => {
+        return doc?.title ? `${doc.title} | NexusBerry` : 'NexusBerry Training & Solutions'
       },
-    },
-  }),
-  nestedDocsPlugin({
-    collections: ['categories'],
-  }),
-  seoPlugin({
-    generateTitle: ({ doc }) => {
-      return doc?.title ? `${doc.title} | NexusBerry` : 'NexusBerry Training & Solutions'
-    },
-    generateDescription: (_) => {
-      return "Best Selling Course at NexusBerry Training & Solutions"
-    },
-    generateURL: ({ doc }) => {
-      const url = getServerSideURL()
-      return doc?.slug ? `${url}/${doc.slug}` : url
-    },
-    fields: ({ defaultFields }) => [
-      ...defaultFields,
-      {
-        name: 'keywords',
-        type: 'textarea',
+      generateDescription: (_) => {
+        return "Best Selling Course at NexusBerry Training & Solutions"
       },
-      {
-        name: 'jsonld',
-        type: 'json',
+      generateURL: ({ doc }) => {
+        const url = getServerSideURL()
+        return doc?.slug ? `${url}/${doc.slug}` : url
       },
-      {
-        name: 'canonical',
-        type: 'text',
-      },
-      {
-        name: 'ogTitle',
-        type: 'text',
-      },
-      {
-        name: 'ogDescription',
-        type: 'textarea',
-      }
-    ]
-  }),
-  formBuilderPlugin({
-    fields: {
-      text: true,
-      textarea: true,
-      email: true,
-      checkbox: true,
-      number: true,
-      message: true,
-      select: true,
-      country: true,
-      state: true,
-      date: true,
-      fileUpload: true,
-      // Enable/disable as needed
-    },
-    redirectRelationships: ['pages'], // or whatever you use
-    defaultToEmail: 'admin@nexusberry.com',
-    beforeEmail: (emailToSend) => {
-      // console.log('📤 Sending email:', emailToSend);
-      return emailToSend;
-    },
-
-    // 👇 Customize the admin group for sidebar label
-    formOverrides: {
-      admin: {
-        group: 'All Forms',
-      },
-      slug: 'forms',
-      labels: {
-        singular: 'Form Design',
-        plural: 'Form Designs',
-      },
-
-      // ✅ Correct way to override fields
       fields: ({ defaultFields }) => [
         ...defaultFields,
         {
-          name: 'slug',
-          label: 'Slug',
-          type: 'text',
-          required: true,
-          admin: {
-            position: 'sidebar',
-          },
-          hooks: {
-            beforeValidate: [
-              ({ value, data }) => {
-                if (!value && data?.title) {
-                  return data.title
-                    .toLowerCase()
-                    .replace(/[^a-z0-9]+/g, '-')
-                    .replace(/(^-|-$)+/g, '');
-                }
-                return value;
-              },
-            ],
-          },
-        },
-        {
-          name: 'status',
-          label: 'Status',
-          type: 'select',
-          options: [
-            'Close Done',
-            'Close Rejected',
-            'Pending'
-          ],
-          defaultValue: 'Pending',
-          required: true,
-          admin: {
-            position: 'sidebar',
-          },
-        },
-        {
-          name: 'staffNotes',
-          label: 'Staff Notes',
+          name: 'keywords',
           type: 'textarea',
-          admin: {
-            position: 'sidebar',
-          },
+        },
+        {
+          name: 'jsonld',
+          type: 'json',
+        },
+        {
+          name: 'canonical',
+          type: 'text',
+        },
+        {
+          name: 'ogTitle',
+          type: 'text',
+        },
+        {
+          name: 'ogDescription',
+          type: 'textarea',
+        }
+      ]
+    }),
+    formBuilderPlugin({
+      fields: {
+        text: true,
+        textarea: true,
+        email: true,
+        checkbox: true,
+        number: true,
+        message: true,
+        select: true,
+        country: true,
+        state: true,
+        date: true,
+        fileUpload: true,
+        // Enable/disable as needed
+      },
+      redirectRelationships: ['pages'], // or whatever you use
+      defaultToEmail: 'admin@nexusberry.com',
+      beforeEmail: (emailToSend) => {
+        // console.log('📤 Sending email:', emailToSend);
+        return emailToSend;
+      },
+
+      // 👇 Customize the admin group for sidebar label
+      formOverrides: {
+        admin: {
+          group: 'All Forms',
+        },
+        slug: 'forms',
+        labels: {
+          singular: 'Form Design',
+          plural: 'Form Designs',
         },
 
-      ],
-    },
-    // ✅ Overrides for the Form Submissions collection
-    formSubmissionOverrides: {
-      admin: {
-        group: 'All Forms',
-      },
-      slug: 'form-submissions',
-      labels: {
-        singular: 'Form Submission',
-        plural: 'Form Submissions',
-      },
-    },
+        // ✅ Correct way to override fields
+        fields: ({ defaultFields }) => [
+          ...defaultFields,
+          {
+            name: 'slug',
+            label: 'Slug',
+            type: 'text',
+            required: true,
+            admin: {
+              position: 'sidebar',
+            },
+            hooks: {
+              beforeValidate: [
+                ({ value, data }) => {
+                  if (!value && data?.title) {
+                    return data.title
+                      .toLowerCase()
+                      .replace(/[^a-z0-9]+/g, '-')
+                      .replace(/(^-|-$)+/g, '');
+                  }
+                  return value;
+                },
+              ],
+            },
+          },
+          {
+            name: 'status',
+            label: 'Status',
+            type: 'select',
+            options: [
+              'Close Done',
+              'Close Rejected',
+              'Pending'
+            ],
+            defaultValue: 'Pending',
+            required: true,
+            admin: {
+              position: 'sidebar',
+            },
+          },
+          {
+            name: 'staffNotes',
+            label: 'Staff Notes',
+            type: 'textarea',
+            admin: {
+              position: 'sidebar',
+            },
+          },
 
-    // ✅ Optional: Add email hooks for debugging
+        ],
+      },
+      // ✅ Overrides for the Form Submissions collection
+      formSubmissionOverrides: {
+        admin: {
+          group: 'All Forms',
+        },
+        slug: 'form-submissions',
+        labels: {
+          singular: 'Form Submission',
+          plural: 'Form Submissions',
+        },
+      },
+
+      // ✅ Optional: Add email hooks for debugging
 
 
-  }),
-  searchPlugin({
-    collections: ['posts'],
-    beforeSync: beforeSyncWithSearch,
-    searchOverrides: {
-      fields: ({ defaultFields }) => {
-        return [...defaultFields, ...searchFields]
+    }),
+    searchPlugin({
+      collections: ['posts'],
+      beforeSync: beforeSyncWithSearch,
+      searchOverrides: {
+        fields: ({ defaultFields }) => {
+          return [...defaultFields, ...searchFields]
+        },
       },
-    },
-  }),
-  s3Storage({ // Supabase Storage
-    collections: {
-      media: {
-        prefix: 'media',
-      }
-    },
-    bucket: process.env.S3_BUCKET || '',
-    config: {
-      forcePathStyle: true, // Important for using Supabase
-      credentials: {
-        accessKeyId: process.env.S3_ACCESS_KEY_ID || '',
-        secretAccessKey: process.env.S3_SECRET_ACCESS_KEY || '',
-      },
-      region: process.env.S3_REGION || '',
-      endpoint: process.env.S3_ENDPOINT || '',
-    },
-  }),
-]
+    }),
+  ]
+
+  // Only add S3 storage in production (when PAYLOAD_LOCAL_STORAGE is not 'true')
+  // In local development, Payload uses the staticDir from Media collection (public/media)
+  if (process.env.PAYLOAD_LOCAL_STORAGE !== 'true') {
+    basePlugins.push(
+      s3Storage({ // Supabase Storage
+        collections: {
+          media: {
+            prefix: 'media',
+          }
+        },
+        bucket: process.env.S3_BUCKET || '',
+        config: {
+          forcePathStyle: true, // Important for using Supabase
+          credentials: {
+            accessKeyId: process.env.S3_ACCESS_KEY_ID || '',
+            secretAccessKey: process.env.S3_SECRET_ACCESS_KEY || '',
+          },
+          region: process.env.S3_REGION || '',
+          endpoint: process.env.S3_ENDPOINT || '',
+        },
+      })
+    )
+  }
+
+  return basePlugins
+}
+
+// Export for backward compatibility
+export const plugins: Plugin[] = getPlugins()

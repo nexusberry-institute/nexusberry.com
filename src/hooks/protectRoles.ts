@@ -44,6 +44,10 @@ export const protectRoles: FieldHook = async ({ data, req: { user }, originalDoc
   // Allow superadmins to perform any role changes
   if (user?.roles?.includes('superadmin')) return;
 
+  // Allow system-level operations (e.g., onInit seeding) when no user is authenticated
+  // This enables the initial superadmin creation during build/startup
+  if (!user) return;
+
   // Create error formatter for consistent error structure
   const throwRolesError = (message: string) => {
     throw new APIError(

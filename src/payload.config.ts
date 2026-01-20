@@ -13,7 +13,7 @@ import collections from '@/collections'
 import globals from './globals'
 
 import { Users } from '@/collections/Users'
-import { plugins } from './plugins'
+import { getPlugins } from './plugins'
 // import { formBuilderPlugin } from '@payloadcms/plugin-form-builder';
 import { defaultLexical } from '@/fields/defaultLexical'
 import { getServerSideURL } from './utilities/getURL'
@@ -116,7 +116,7 @@ export default buildConfig({
   csrf: [getServerSideURL()].filter(Boolean),
   globals,
   plugins: [
-    ...plugins,
+    ...getPlugins(),
     // storage-adapter-placeholder
   ],
   upload: {
@@ -149,19 +149,22 @@ export default buildConfig({
   // }),
 
   async onInit(payload) {
-    const existingUsers = await payload.find({
+    // Check if superadmin already exists (by email to avoid duplicates)
+    const existingAdmin = await payload.find({
       collection: 'users',
       limit: 1,
+      overrideAccess: true,
       where: {
-        roles: {
-          contains: 'superadmin',
+        email: {
+          equals: 'admin@nexusberry.com',
         }
       }
     })
 
-    if (existingUsers.docs.length === 0) {
+    if (existingAdmin.docs.length === 0) {
       await payload.create({
         collection: 'users',
+        overrideAccess: true,
         data: {
           username: 'superadmin',
           email: 'admin@nexusberry.com',

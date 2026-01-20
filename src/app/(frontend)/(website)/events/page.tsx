@@ -68,14 +68,25 @@ export function generateMetadata(): Metadata {
 }
 
 const queryEvents = unstable_cache(async () => {
-  const payload = await getPayload({ config: configPromise })
+  try {
+    const payload = await getPayload({ config: configPromise })
 
-  const globalEventData = await payload.findGlobal({
-    slug: 'global-event-data',
-    depth: 1
-  })
+    const globalEventData = await payload.findGlobal({
+      slug: 'global-event-data',
+      depth: 1
+    })
 
-  return globalEventData;
+    return globalEventData;
+  } catch (error) {
+    // Return default values if global doesn't exist (e.g., fresh database)
+    console.warn('global-event-data not found, using defaults:', error)
+    return {
+      totalAttendees: 0,
+      completedByLearners: 0,
+      whatsappCommunity: '',
+      whatsappQR: null
+    }
+  }
 },
   ["global-event-data"],
   {

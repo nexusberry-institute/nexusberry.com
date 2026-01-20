@@ -1,11 +1,15 @@
 {
+  "permissions": {
+    "allow": [
+      "Bash(pnpm build:*)",
+      "Bash(pnpm dev:setup:*)",
+      "Bash(curl:*)",
+      "Bash(taskkill:*)",
+      "Bash(pnpm dev)"
+    ]
+  },
   "enableAllProjectMcpServers": true,
   "enabledMcpjsonServers": [
     "playwright"
-  ],
-  "permissions": {
-    "allow": [
-      "Bash(pnpm build:*)"
-    ]
-  }
+  ]
 }

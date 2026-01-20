@@ -5,6 +5,7 @@ declare global {
       DATABASE_URI: string
       NEXT_PUBLIC_SERVER_URL: string
       VERCEL_PROJECT_PRODUCTION_URL: string
+      PAYLOAD_LOCAL_STORAGE?: string // 'true' for local dev, 'false' for production S3
     }
   }
 }

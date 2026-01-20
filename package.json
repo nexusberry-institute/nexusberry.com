@@ -5,7 +5,7 @@
   "license": "MIT",
   "type": "module",
   "scripts": {
-    "build": "cross-env NODE_OPTIONS=--no-deprecation next build",
+    "build": "cross-env NODE_OPTIONS=\"--no-deprecation --max-old-space-size=4096\" next build",
     "_postbuild": "next-sitemap --config next-sitemap.config.cjs",
     "dev": "cross-env NODE_OPTIONS=--no-deprecation next dev",
     "dev:prod": "cross-env NODE_OPTIONS=--no-deprecation rm -rf .next && pnpm build && pnpm start",
@@ -23,7 +23,11 @@
     "migrate:rollback": "payload migrate:down",
     "ci": "payload migrate && pnpm build",
     "test:email": "node scripts/email-test-with-env.js",
-    "test:env": "node scripts/quick-env-test.js"
+    "test:env": "node scripts/quick-env-test.js",
+    "docker:up": "docker-compose up -d",
+    "docker:down": "docker-compose down",
+    "docker:reset": "docker-compose down -v && docker-compose up -d",
+    "dev:setup": "docker-compose up -d && pnpm dev"
   },
   "dependencies": {
     "@hookform/resolvers": "^4.1.3",
