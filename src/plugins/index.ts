@@ -10,6 +10,7 @@ import { searchFields } from '@/search/fieldOverrides'
 import { beforeSyncWithSearch } from '@/search/beforeSync'
 import { formBuilderPlugin } from '@payloadcms/plugin-form-builder';
 // import { GenerateTitle, GenerateURL } from '@payloadcms/plugin-seo/types'
+import { mcpPlugin } from '@payloadcms/plugin-mcp'
 
 import { Page, Post } from '@/payload-types'
 import { getServerSideURL } from '@/utilities/getURL'
@@ -200,6 +201,14 @@ export const getPlugins = (): Plugin[] => {
         },
       },
     }),
+    mcpPlugin({
+      collections: {
+        posts: {
+          enabled: true,
+        },
+      },
+    }),
+
   ]
 
   // Only add S3 storage in production (when PAYLOAD_LOCAL_STORAGE is not 'true')

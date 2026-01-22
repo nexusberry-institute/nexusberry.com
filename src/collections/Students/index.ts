@@ -1,7 +1,6 @@
 // import { checkAccess } from '@/access/accessControl';
 import { CollectionConfig, PayloadRequest, CustomComponent } from 'payload'
 import { checkAndCreateUser } from '@/hooks/checkAndCreateUser'
-import { CSVExportButton } from '@/components/CSVExportButton'
 // import type { NextApiRequest, NextApiResponse } from 'next'
 import { trackNewStudentAdmission } from "./hooks/track";
 
@@ -13,7 +12,7 @@ export const Students: CollectionConfig = {
     useAsTitle: 'fullName',
     listSearchableFields: ['fullName', 'phoneNumber', "user.email"],
     components: {
-      beforeList: [CSVExportButton as any],
+      beforeList: ['@/components/CSVExportButton#CSVExportButton'],
     }
   },
   hooks: {

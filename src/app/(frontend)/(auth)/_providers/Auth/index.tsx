@@ -21,7 +21,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
   useEffect(() => {
     const fetchMe = async () => {
       const { user, permissions } = await getUser()
-      setUser(user)
+      // Only set user if it's a regular user (not MCP API key)
+      const regularUser = user && user.collection === 'users' ? user : null
+      setUser(regularUser)
       setPermissions(permissions)
     }
     void fetchMe()

@@ -14,7 +14,9 @@ export const HydrateClientUser: React.FC<{
   const { setPermissions, setUser } = useAuth()
 
   useEffect(() => {
-    setUser(user)
+    // Only set user if it's a regular user (not MCP API key)
+    const regularUser = user && user.collection === 'users' ? user : null
+    setUser(regularUser)
     setPermissions(permissions)
   }, [user, permissions, setUser, setPermissions])
 

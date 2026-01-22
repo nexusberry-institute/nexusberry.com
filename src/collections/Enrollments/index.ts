@@ -98,11 +98,12 @@ export const Enrollments: CollectionConfig = {
               required: true,
               admin: {
                 readOnly: true,
-                components: {
-                  Field: {
-                    path: "@/fields/EnrollmentSlug",
-                  },
-                }
+                // TODO: Create custom field component
+                // components: {
+                //   Field: {
+                //     path: "@/fields/EnrollmentSlug",
+                //   },
+                // }
               }
             },
             {

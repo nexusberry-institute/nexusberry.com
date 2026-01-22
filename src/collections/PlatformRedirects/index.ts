@@ -96,7 +96,9 @@ export const PlatformRedirects: CollectionConfig = {
         // Optional: Prevent manual click edits by non-admins
         beforeChange: [
             ({ data, originalDoc, operation, req }) => {
-                if (operation === 'update' && !req.user?.roles?.includes('admin')) {
+                // Check if user has roles (not MCP API key) and is admin
+                const userRoles = req.user && 'roles' in req.user ? req.user.roles : undefined
+                if (operation === 'update' && !userRoles?.includes('admin')) {
                     // Prevent direct manual changes to clicks
                     if (data.clicks !== originalDoc.clicks) {
                         data.clicks = originalDoc.clicks;

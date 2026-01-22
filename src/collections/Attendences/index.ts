@@ -194,17 +194,18 @@ export const Attendances: CollectionConfig = {
               name: "content",
               type: "text"
             },
-            {
-              name: "TimeTable",
-              type: "ui",
-              admin: {
-                components: {
-                  Field: {
-                    path: "@/fields/BatchesTimeTable"
-                  }
-                }
-              }
-            },
+            // TODO: Create custom field component
+            // {
+            //   name: "TimeTable",
+            //   type: "ui",
+            //   admin: {
+            //     components: {
+            //       Field: {
+            //         path: "@/fields/BatchesTimeTable"
+            //       }
+            //     }
+            //   }
+            // },
           ],
         },
         {
@@ -218,22 +219,23 @@ export const Attendances: CollectionConfig = {
             }
           ]
         },
-        {
-          label: "Mark Attendance",
-          fields: [
-            {
-              name: "markAttendance",
-              type: "ui",
-              admin: {
-                components: {
-                  Field: {
-                    path: "@/fields/MarkAttendance"
-                  }
-                }
-              }
-            }
-          ]
-        }
+        // TODO: Create custom field component
+        // {
+        //   label: "Mark Attendance",
+        //   fields: [
+        //     {
+        //       name: "markAttendance",
+        //       type: "ui",
+        //       admin: {
+        //         components: {
+        //           Field: {
+        //             path: "@/fields/MarkAttendance"
+        //           }
+        //         }
+        //       }
+        //     }
+        //   ]
+        // }
       ]
     }
   ]

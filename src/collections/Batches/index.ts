@@ -4,7 +4,6 @@
 import { getPayload } from "payload";
 import config from '@payload-config'
 import { CollectionConfig, PayloadRequest, CustomComponent } from 'payload'
-import { ExportBatchContacts } from "@/components/ExportButtons/ExportBatchEmails";
 
 export const Batches: CollectionConfig = {
   slug: "batches",
@@ -14,7 +13,7 @@ export const Batches: CollectionConfig = {
     group: "Academic Operations",
     components: {
       edit: {
-        beforeDocumentControls: [ExportBatchContacts as any],
+        beforeDocumentControls: ['@/components/ExportButtons/ExportBatchEmails#ExportBatchContacts'],
       },
     }
   },
@@ -42,11 +41,12 @@ export const Batches: CollectionConfig = {
               unique: true,
               admin: {
                 description: "Pattern: Batch/StartDate/MMMYY.Teacher/nick.module/nick.TimeTable/Days/D.TimeTable/Time/HH:MM AM|PM ",
-                components: {
-                  Field: {
-                    path: '@/fields/BatchesSlug',
-                  }
-                }
+                // TODO: Create custom field component
+                // components: {
+                //   Field: {
+                //     path: '@/fields/BatchesSlug',
+                //   }
+                // }
               }
             },
             {

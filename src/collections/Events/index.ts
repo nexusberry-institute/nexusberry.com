@@ -18,7 +18,6 @@ import {
   OverviewField,
   PreviewField,
 } from '@payloadcms/plugin-seo/fields'
-import { ExportEventLeads } from "@/components/ExportButtons/ExportEventLeads";
 
 
 export const Events: CollectionConfig = {
@@ -27,7 +26,7 @@ export const Events: CollectionConfig = {
     useAsTitle: 'title',
     components: {
       edit: {
-        beforeDocumentControls: [ExportEventLeads as any],
+        beforeDocumentControls: ['@/components/ExportButtons/ExportEventLeads#ExportEventLeads'],
       },
     }
   },

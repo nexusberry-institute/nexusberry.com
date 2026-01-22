@@ -1,8 +1,17 @@
 import { Access } from "payload";
 
+// Helper to check if user has roles (excludes MCP API keys)
+const hasRoles = (user: unknown): user is { roles?: string[]; id: number } => {
+  return user !== null && typeof user === 'object' && 'roles' in user;
+}
+
 export const adminOrSelf: Access = async ({ req: { user, payload } }) => {
   // Require user to be logged in
   if (!user) {
+    return false;
+  }
+  // Check if user has roles (not an MCP API key)
+  if (!hasRoles(user)) {
     return false;
   }
   // superadmin can update any user
@@ -43,6 +52,10 @@ export const superadminOrAdminDelete: Access = async ({ req: { user, payload } }
   // check if user is logged in
   if (!user) {
     return false
+  }
+  // Check if user has roles (not an MCP API key)
+  if (!hasRoles(user)) {
+    return false;
   }
   // superadmin can delete any user
   if (user.roles?.includes('superadmin')) {

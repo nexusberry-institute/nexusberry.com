@@ -41,8 +41,11 @@ export const protectRoles: FieldHook = async ({ data, req: { user }, originalDoc
   // Skip if no roles are being modified
   if (!data?.roles) return;
 
+  // Check if user has roles (not MCP API key)
+  const userRoles = user && 'roles' in user ? user.roles : undefined
+
   // Allow superadmins to perform any role changes
-  if (user?.roles?.includes('superadmin')) return;
+  if (userRoles?.includes('superadmin')) return;
 
   // Allow system-level operations (e.g., onInit seeding) when no user is authenticated
   // This enables the initial superadmin creation during build/startup

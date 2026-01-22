@@ -5,11 +5,15 @@
       "Bash(pnpm dev:setup:*)",
       "Bash(curl:*)",
       "Bash(taskkill:*)",
-      "Bash(pnpm dev)"
+      "Bash(pnpm dev)",
+      "Bash(netstat:*)",
+      "Bash(findstr:*)",
+      "Bash(powershell -Command \"Stop-Process -Id 12972 -Force; Stop-Process -Id 5780 -Force\")"
     ]
   },
   "enableAllProjectMcpServers": true,
   "enabledMcpjsonServers": [
-    "playwright"
+    "playwright",
+    "Payload"
   ]
 }
