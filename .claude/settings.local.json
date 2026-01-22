@@ -8,7 +8,15 @@
       "Bash(pnpm dev)",
       "Bash(netstat:*)",
       "Bash(findstr:*)",
-      "Bash(powershell -Command \"Stop-Process -Id 12972 -Force; Stop-Process -Id 5780 -Force\")"
+      "Bash(powershell -Command \"Stop-Process -Id 12972 -Force; Stop-Process -Id 5780 -Force\")",
+      "Bash(pnpm docker:up:*)",
+      "Bash(docker exec:*)",
+      "Bash(node -e:*)",
+      "mcp__playwright__browser_navigate",
+      "mcp__playwright__browser_snapshot",
+      "mcp__playwright__browser_fill_form",
+      "mcp__playwright__browser_click",
+      "mcp__playwright__browser_wait_for"
     ]
   },
   "enableAllProjectMcpServers": true,
