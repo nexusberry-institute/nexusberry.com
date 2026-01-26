@@ -18,7 +18,11 @@
       "mcp__playwright__browser_click",
       "mcp__playwright__browser_wait_for",
       "Bash(docker ps:*)",
-      "Bash(pnpm generate:types:*)"
+      "Bash(pnpm generate:types:*)",
+      "Bash(pnpm lint:*)",
+      "Bash(npx tsc:*)",
+      "Bash(cross-env NODE_OPTIONS=\"--no-deprecation --max-old-space-size=8192\" next build:*)",
+      "Bash(npx cross-env:*)"
     ]
   },
   "enableAllProjectMcpServers": true,
