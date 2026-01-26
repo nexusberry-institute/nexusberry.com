@@ -1115,6 +1115,25 @@ export interface Event {
  */
 export interface Lead {
   id: number;
+  stage?:
+    | (
+        | 'NEW'
+        | 'FOLLOW_UP'
+        | 'CONVERTED'
+        | 'WASTE'
+        | 'QUALIFIED'
+        | 'NOT_QUALIFIED'
+        | 'NEGOTIATION'
+        | 'ENROLLED'
+        | 'LOST'
+      )
+    | null;
+  interest_level?: ('LOW' | 'MEDIUM' | 'HIGH' | 'UNKNOWN') | null;
+  assign_to?: (number | null) | Staff;
+  not_responding?: boolean | null;
+  is_online?: boolean | null;
+  is_req_hostel?: boolean | null;
+  notes?: string | null;
   name: string;
   mobile?: string | null;
   email?: string | null;
@@ -1123,22 +1142,15 @@ export interface Lead {
   city?: string | null;
   province?: string | null;
   country?: string | null;
-  source?: string | null;
-  metaFormId?: string | null;
-  metaLeadId?: string | null;
-  is_online?: boolean | null;
-  is_req_hostel?: boolean | null;
-  stage?: ('NEW' | 'FOLLOW_UP' | 'CONVERTED' | 'WASTE') | null;
-  interest_level?: ('LOW' | 'MEDIUM' | 'HIGH' | 'UNKNOWN') | null;
   education?: string | null;
   job_info?: string | null;
-  student?: (number | null) | Student;
-  module?: (number | null) | Module;
-  department?: (number | null) | Department;
   reminder_date?: string | null;
   reminder_note?: string | null;
-  not_responding?: boolean | null;
-  assign_to?: (number | null) | Staff;
+  query?: string | null;
+  lead_issue?: string | null;
+  module?: (number | null) | Module;
+  department?: (number | null) | Department;
+  payment_plan?: string | null;
   courseDemoBookings?:
     | {
         course: number | WebCourse;
@@ -1156,10 +1168,13 @@ export interface Lead {
         id?: string | null;
       }[]
     | null;
-  payment_plan?: string | null;
-  query?: string | null;
-  lead_issue?: string | null;
-  notes?: string | null;
+  /**
+   * Link to student record if lead was converted
+   */
+  student?: (number | null) | Student;
+  source?: string | null;
+  metaFormId?: string | null;
+  metaLeadId?: string | null;
   activity?:
     | {
         [k: string]: unknown;
@@ -1183,97 +1198,27 @@ export interface Lead {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "students".
+ * via the `definition` "staffs".
  */
-export interface Student {
+export interface Staff {
   id: number;
-  user?: (number | null) | User;
-  studentEmail?: string | null;
-  studentPassword?: string | null;
-  fullName?: string | null;
-  phoneNumber?: string | null;
-  gmail_username?: string | null;
+  user: number | User;
+  fullName: string;
+  nick?: string | null;
   dateOfBirth?: string | null;
-  gender?: ('male' | 'female') | null;
-  /**
-   * Highest Student Education
-   */
-  education?: string | null;
-  otp?: string | null;
-  otpVerified?: boolean | null;
-  otpGeneratedAt?: string | null;
+  phoneNumber?: string | null;
   address?: {
-    homeAddress?: string | null;
+    street?: string | null;
     city?: string | null;
     state?: string | null;
+    zipCode?: string | null;
     country?: string | null;
   };
   profilePicture?: (number | null) | Media;
-  studentEnrollments?: {
-    docs?: (number | Enrollment)[];
-    hasNextPage?: boolean;
-    totalDocs?: number;
-  };
-  updatedAt: string;
-  createdAt: string;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "enrollments".
- */
-export interface Enrollment {
-  id: number;
-  student: number | Student;
-  'training-course': number | TrainingCourse;
-  slug: string;
-  batchEnrollments?:
-    | {
-        batch?: (number | null) | Batch;
-        modules?: (number | Module)[] | null;
-        mode?: ('ONLINE' | 'PHYSICAL' | 'HYBRID') | null;
-        id?: string | null;
-      }[]
-    | null;
-  selectedPaymentPlan: number | PaymentPlan;
-  discountCode?: (number | null) | DiscountCode;
-  admissionDate?: string | null;
-  admissionFee?: number | null;
-  freezeDate?: string | null;
-  unfreezeDate?: string | null;
-  completionState?: ('CONTINUE' | 'COMPLETED' | 'LEFT' | 'FREEZE') | null;
-  certificateStatus?: ('ISSUED' | 'PENDING') | null;
-  isSuspended?: boolean | null;
+  payMode?: ('FIX' | 'PER_ADMISSION' | 'FIX_PLUS_PER_ADMISSION') | null;
+  payPerAdmission?: number | null;
+  fixPay?: number | null;
   note?: string | null;
-  relatedFeeReciepts?: {
-    docs?: (number | FeeReceipt)[];
-    hasNextPage?: boolean;
-    totalDocs?: number;
-  };
-  updatedAt: string;
-  createdAt: string;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "training-courses".
- */
-export interface TrainingCourse {
-  id: number;
-  status?: ('active' | 'inactive') | null;
-  title: string;
-  slug: string;
-  slugLock?: boolean | null;
-  description?: string | null;
-  modules?: (number | Module)[] | null;
-  departments?: (number | Department)[] | null;
-  /**
-   * Full price of the course
-   */
-  fullPrice: number;
-  relatedPaymentPlans?: {
-    docs?: (number | PaymentPlan)[];
-    hasNextPage?: boolean;
-    totalDocs?: number;
-  };
   updatedAt: string;
   createdAt: string;
 }
@@ -1376,41 +1321,26 @@ export interface Batch {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "teachers".
+ * via the `definition` "training-courses".
  */
-export interface Teacher {
+export interface TrainingCourse {
   id: number;
-  user: number | User;
-  fullName: string;
-  nick: string;
-  dateOfBirth?: string | null;
-  phoneNumber?: string | null;
-  address?: {
-    street?: string | null;
-    city?: string | null;
-    state?: string | null;
-    zipCode?: string | null;
-    country?: string | null;
+  status?: ('active' | 'inactive') | null;
+  title: string;
+  slug: string;
+  slugLock?: boolean | null;
+  description?: string | null;
+  modules?: (number | Module)[] | null;
+  departments?: (number | Department)[] | null;
+  /**
+   * Full price of the course
+   */
+  fullPrice: number;
+  relatedPaymentPlans?: {
+    docs?: (number | PaymentPlan)[];
+    hasNextPage?: boolean;
+    totalDocs?: number;
   };
-  profilePicture?: (number | null) | Media;
-  payMode?: ('FIX' | 'PER_LECTURE') | null;
-  payPerLecture?: number | null;
-  fixPay?: number | null;
-  note?: string | null;
-  updatedAt: string;
-  createdAt: string;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "time-table".
- */
-export interface TimeTable {
-  id: number;
-  batch: number | Batch;
-  day: 'MONDAY' | 'TUESDAY' | 'WEDNESDAY' | 'THURSDAY' | 'FRIDAY' | 'SATURDAY' | 'SUNDAY';
-  startTime: string;
-  endTime: string;
-  room?: string | null;
   updatedAt: string;
   createdAt: string;
 }
@@ -1440,6 +1370,103 @@ export interface PaymentPlan {
     due_after_days?: number | null;
     id?: string | null;
   }[];
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "teachers".
+ */
+export interface Teacher {
+  id: number;
+  user: number | User;
+  fullName: string;
+  nick: string;
+  dateOfBirth?: string | null;
+  phoneNumber?: string | null;
+  address?: {
+    street?: string | null;
+    city?: string | null;
+    state?: string | null;
+    zipCode?: string | null;
+    country?: string | null;
+  };
+  profilePicture?: (number | null) | Media;
+  payMode?: ('FIX' | 'PER_LECTURE') | null;
+  payPerLecture?: number | null;
+  fixPay?: number | null;
+  note?: string | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "enrollments".
+ */
+export interface Enrollment {
+  id: number;
+  student: number | Student;
+  'training-course': number | TrainingCourse;
+  slug: string;
+  batchEnrollments?:
+    | {
+        batch?: (number | null) | Batch;
+        modules?: (number | Module)[] | null;
+        mode?: ('ONLINE' | 'PHYSICAL' | 'HYBRID') | null;
+        id?: string | null;
+      }[]
+    | null;
+  selectedPaymentPlan: number | PaymentPlan;
+  discountCode?: (number | null) | DiscountCode;
+  admissionDate?: string | null;
+  admissionFee?: number | null;
+  freezeDate?: string | null;
+  unfreezeDate?: string | null;
+  completionState?: ('CONTINUE' | 'COMPLETED' | 'LEFT' | 'FREEZE') | null;
+  certificateStatus?: ('ISSUED' | 'PENDING') | null;
+  isSuspended?: boolean | null;
+  note?: string | null;
+  relatedFeeReciepts?: {
+    docs?: (number | FeeReceipt)[];
+    hasNextPage?: boolean;
+    totalDocs?: number;
+  };
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "students".
+ */
+export interface Student {
+  id: number;
+  user?: (number | null) | User;
+  studentEmail?: string | null;
+  studentPassword?: string | null;
+  fullName?: string | null;
+  phoneNumber?: string | null;
+  gmail_username?: string | null;
+  dateOfBirth?: string | null;
+  gender?: ('male' | 'female') | null;
+  /**
+   * Highest Student Education
+   */
+  education?: string | null;
+  otp?: string | null;
+  otpVerified?: boolean | null;
+  otpGeneratedAt?: string | null;
+  address?: {
+    homeAddress?: string | null;
+    city?: string | null;
+    state?: string | null;
+    country?: string | null;
+  };
+  profilePicture?: (number | null) | Media;
+  studentEnrollments?: {
+    docs?: (number | Enrollment)[];
+    hasNextPage?: boolean;
+    totalDocs?: number;
+  };
   updatedAt: string;
   createdAt: string;
 }
@@ -1516,27 +1543,15 @@ export interface FeeReceipt {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "staffs".
+ * via the `definition` "time-table".
  */
-export interface Staff {
+export interface TimeTable {
   id: number;
-  user: number | User;
-  fullName: string;
-  nick?: string | null;
-  dateOfBirth?: string | null;
-  phoneNumber?: string | null;
-  address?: {
-    street?: string | null;
-    city?: string | null;
-    state?: string | null;
-    zipCode?: string | null;
-    country?: string | null;
-  };
-  profilePicture?: (number | null) | Media;
-  payMode?: ('FIX' | 'PER_ADMISSION' | 'FIX_PLUS_PER_ADMISSION') | null;
-  payPerAdmission?: number | null;
-  fixPay?: number | null;
-  note?: string | null;
+  batch: number | Batch;
+  day: 'MONDAY' | 'TUESDAY' | 'WEDNESDAY' | 'THURSDAY' | 'FRIDAY' | 'SATURDAY' | 'SUNDAY';
+  startTime: string;
+  endTime: string;
+  room?: string | null;
   updatedAt: string;
   createdAt: string;
 }
@@ -3040,6 +3055,13 @@ export interface AttendanceDetailsSelect<T extends boolean = true> {
  * via the `definition` "leads_select".
  */
 export interface LeadsSelect<T extends boolean = true> {
+  stage?: T;
+  interest_level?: T;
+  assign_to?: T;
+  not_responding?: T;
+  is_online?: T;
+  is_req_hostel?: T;
+  notes?: T;
   name?: T;
   mobile?: T;
   email?: T;
@@ -3048,22 +3070,15 @@ export interface LeadsSelect<T extends boolean = true> {
   city?: T;
   province?: T;
   country?: T;
-  source?: T;
-  metaFormId?: T;
-  metaLeadId?: T;
-  is_online?: T;
-  is_req_hostel?: T;
-  stage?: T;
-  interest_level?: T;
   education?: T;
   job_info?: T;
-  student?: T;
-  module?: T;
-  department?: T;
   reminder_date?: T;
   reminder_note?: T;
-  not_responding?: T;
-  assign_to?: T;
+  query?: T;
+  lead_issue?: T;
+  module?: T;
+  department?: T;
+  payment_plan?: T;
   courseDemoBookings?:
     | T
     | {
@@ -3081,10 +3096,10 @@ export interface LeadsSelect<T extends boolean = true> {
         hasAttended?: T;
         id?: T;
       };
-  payment_plan?: T;
-  query?: T;
-  lead_issue?: T;
-  notes?: T;
+  student?: T;
+  source?: T;
+  metaFormId?: T;
+  metaLeadId?: T;
   activity?: T;
   lead_engagement?: T;
   updatedAt?: T;
