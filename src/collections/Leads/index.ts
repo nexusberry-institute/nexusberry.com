@@ -5,7 +5,6 @@ import { updateCounters } from './hooks/counters'
 import {
   trackLeadSubmission,
   trackLeadEventAttendance,
-  trackInterestedLead,
 } from "./hooks/track";
 
 export const Leads: CollectionConfig = {
@@ -34,7 +33,6 @@ export const Leads: CollectionConfig = {
     {
       name: "stage",
       type: "select",
-      defaultValue: "NEW",
       options: [
         { label: "New", value: "NEW" },
         { label: "Follow Up", value: "FOLLOW_UP" },
@@ -51,26 +49,17 @@ export const Leads: CollectionConfig = {
       }
     },
     {
-      name: "interest_level",
-      type: "select",
-      options: [
-        { label: "Low", value: "LOW" },
-        { label: "Medium", value: "MEDIUM" },
-        { label: "High", value: "HIGH" },
-        { label: "Unknown", value: "UNKNOWN" },
-      ],
-      hooks: {
-        afterChange: [trackInterestedLead]
-      },
+      name: "label",
+      type: "text",
+      label: "Label",
       admin: {
         position: "sidebar",
       }
     },
     {
-      name: "assign_to",
-      type: "relationship",
-      relationTo: "staffs",
-      hasMany: false,
+      name: "notes",
+      type: "textarea",
+      label: "Staff Notes",
       admin: {
         position: "sidebar",
       }
@@ -83,6 +72,15 @@ export const Leads: CollectionConfig = {
         date: {
           pickerAppearance: "dayOnly",
         }
+      }
+    },
+    {
+      name: "assign_to",
+      type: "relationship",
+      relationTo: "staffs",
+      hasMany: false,
+      admin: {
+        position: "sidebar",
       }
     },
     {
@@ -105,14 +103,6 @@ export const Leads: CollectionConfig = {
       name: "is_req_hostel",
       type: "checkbox",
       label: "Requires Hostel",
-      admin: {
-        position: "sidebar",
-      }
-    },
-    {
-      name: "notes",
-      type: "textarea",
-      label: "Staff Notes",
       admin: {
         position: "sidebar",
       }

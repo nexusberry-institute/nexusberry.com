@@ -1130,13 +1130,13 @@ export interface Lead {
         | 'LOST'
       )
     | null;
-  interest_level?: ('LOW' | 'MEDIUM' | 'HIGH' | 'UNKNOWN') | null;
-  assign_to?: (number | null) | Staff;
+  label?: string | null;
+  notes?: string | null;
   reminder_date?: string | null;
+  assign_to?: (number | null) | Staff;
   not_responding?: boolean | null;
   is_online?: boolean | null;
   is_req_hostel?: boolean | null;
-  notes?: string | null;
   name: string;
   mobile?: string | null;
   email?: string | null;
@@ -3033,13 +3033,13 @@ export interface AttendanceDetailsSelect<T extends boolean = true> {
 export interface LeadsSelect<T extends boolean = true> {
   course?: T;
   stage?: T;
-  interest_level?: T;
-  assign_to?: T;
+  label?: T;
+  notes?: T;
   reminder_date?: T;
+  assign_to?: T;
   not_responding?: T;
   is_online?: T;
   is_req_hostel?: T;
-  notes?: T;
   name?: T;
   mobile?: T;
   email?: T;
