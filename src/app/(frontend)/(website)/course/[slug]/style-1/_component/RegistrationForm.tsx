@@ -76,9 +76,7 @@ const RegistrationForm = ({
                     name: data.fullName,
                     mobile: data.mobile,
                     email: data.email,
-                    education: data.education,
-                    job_info: data.occupation,
-                    notes: `Agreed to policy: ${data.policy}, Whatsapp updates: ${data.whatsapp}`,
+                    extraInfo: `Education: ${data.education}, Occupation: ${data.occupation}, Policy: ${data.policy}, Whatsapp: ${data.whatsapp}`,
                     courseSlug: slug,
                     courseId
                 });

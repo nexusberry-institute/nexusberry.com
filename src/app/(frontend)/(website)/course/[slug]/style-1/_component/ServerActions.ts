@@ -7,9 +7,7 @@ export default async function CreateCourseDemoBooking(data: {
   name: string;
   mobile: string;
   email: string;
-  education: string;
-  job_info: string;
-  notes?: string;
+  extraInfo?: string;
   courseSlug: string;
   courseId: number
 }) {
@@ -56,9 +54,7 @@ export default async function CreateCourseDemoBooking(data: {
         name: data.name,
         mobile: data.mobile,
         email: data.email,
-        education: data.education,
-        job_info: data.job_info,
-        notes: data.notes,
+        extraInfo: data.extraInfo,
         source: `course-page-course-${data.courseId}-demo-booking`,
         courseDemoBookings: [
           { course: data.courseId, bookedAt: new Date().toISOString() },
