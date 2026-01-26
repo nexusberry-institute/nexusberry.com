@@ -23,9 +23,7 @@ const nextConfig = {
   eslint: {
     ignoreDuringBuilds: true,
   },
-  compiler: {
-    removeConsole: process.env.NODE_ENV === 'production',
-  },
+  serverExternalPackages: ['sharp', 'graphql'],
   webpack: (webpackConfig) => {
     webpackConfig.resolve.extensionAlias = {
       '.cjs': ['.cts', '.cjs'],
