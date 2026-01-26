@@ -91,6 +91,7 @@ async function fetchAndStoreLead({ leadId, formId }: {
     // Get Payload instance and check for duplicates
     const payload = await getPayload({ config })
 
+    // do not save duplicate
     const existing = await payload.find({
         collection: "leads",
         where: { metaLeadId: { equals: leadId } },
@@ -103,6 +104,9 @@ async function fetchAndStoreLead({ leadId, formId }: {
         return
     }
 
+    // Adaptor: meta lead form data -> payloadcms Leads collection
+    const city = fieldData.city || fieldData.location_city
+
     await payload.create({
         collection: "leads",
         data: {
@@ -111,7 +115,8 @@ async function fetchAndStoreLead({ leadId, formId }: {
             source: "meta_instant_form",
             name: fieldData.full_name || fieldData.name,
             email: fieldData.email,
-            mobile: fieldData.phone_number,
+            mobile: fieldData.phone_number || fieldData.phone || fieldData.mobile_number || fieldData.mobile,
+            ...(city && { city }),
         },
     })
 }
