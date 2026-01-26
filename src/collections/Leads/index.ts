@@ -33,6 +33,7 @@ export const Leads: CollectionConfig = {
     {
       name: "stage",
       type: "select",
+      defaultValue: "NEW",
       options: [
         { label: "New", value: "NEW" },
         { label: "Follow Up", value: "FOLLOW_UP" },
