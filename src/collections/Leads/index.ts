@@ -32,6 +32,11 @@ export const Leads: CollectionConfig = {
         { label: "Follow Up", value: "FOLLOW_UP" },
         { label: "Converted", value: "CONVERTED" },
         { label: "Waste", value: "WASTE" },
+        { label: "QUALIFIED", value: "QUALIFIED" },
+        { label: "NOT_QUALIFIED", value: "NOT_QUALIFIED" },
+        { label: "NEGOTIATION", value: "NEGOTIATION" },
+        { label: "ENROLLED", value: "ENROLLED" },
+        { label: "LOST", value: "LOST" },
       ],
       admin: {
         position: "sidebar",
@@ -70,14 +75,38 @@ export const Leads: CollectionConfig = {
         position: "sidebar",
       }
     },
+    {
+      name: "is_online",
+      type: "checkbox",
+      label: "Prefers Online",
+      admin: {
+        position: "sidebar",
+      }
+    },
+    {
+      name: "is_req_hostel",
+      type: "checkbox",
+      label: "Requires Hostel",
+      admin: {
+        position: "sidebar",
+      }
+    },
+    {
+      name: "notes",
+      type: "textarea",
+      label: "Staff Notes",
+      admin: {
+        position: "sidebar",
+      }
+    },
 
     // ===== MAIN CONTENT WITH TABS =====
     {
       type: "tabs",
       tabs: [
-        // ----- TAB 1: Basic Info -----
+        // ----- TAB 1: Personal Info -----
         {
-          label: "Basic Info",
+          label: "Personal Info",
           fields: [
             {
               type: "row",
@@ -113,9 +142,6 @@ export const Leads: CollectionConfig = {
             {
               type: "collapsible",
               label: "Location",
-              admin: {
-                initCollapsed: true,
-              },
               fields: [
                 {
                   type: "row",
@@ -136,9 +162,6 @@ export const Leads: CollectionConfig = {
             {
               type: "collapsible",
               label: "Background",
-              admin: {
-                initCollapsed: true,
-              },
               fields: [
                 {
                   type: "row",
@@ -184,11 +207,6 @@ export const Leads: CollectionConfig = {
               type: "textarea",
               label: "Issues/Objections",
             },
-            {
-              name: "notes",
-              type: "textarea",
-              label: "Internal Notes",
-            },
           ]
         },
 
@@ -210,21 +228,6 @@ export const Leads: CollectionConfig = {
                   type: "relationship",
                   relationTo: "departments",
                   label: "Interested Department",
-                },
-              ]
-            },
-            {
-              type: "row",
-              fields: [
-                {
-                  name: "is_online",
-                  type: "checkbox",
-                  label: "Prefers Online",
-                },
-                {
-                  name: "is_req_hostel",
-                  type: "checkbox",
-                  label: "Requires Hostel",
                 },
               ]
             },
@@ -372,10 +375,7 @@ export const Leads: CollectionConfig = {
             },
             {
               type: "collapsible",
-              label: "Analytics Data",
-              admin: {
-                initCollapsed: true,
-              },
+              label: "Activity History",
               fields: [
                 {
                   name: "activity",

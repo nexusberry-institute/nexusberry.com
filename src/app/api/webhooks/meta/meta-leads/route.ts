@@ -78,7 +78,7 @@ async function fetchAndStoreLead({ leadId, formId }: {
     }
 
     const leadData = await response.json()
-    console.log("leadData: ", JSON.stringify(leadData, null, 2));
+    // console.log("leadData: ", JSON.stringify(leadData, null, 2));
 
     // Transform field data
     const fieldData: Record<string, any> = {}
