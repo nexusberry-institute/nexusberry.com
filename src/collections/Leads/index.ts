@@ -24,6 +24,14 @@ export const Leads: CollectionConfig = {
   fields: [
     // ===== SIDEBAR FIELDS =====
     {
+      name: "course",
+      type: "text",
+      label: "Course",
+      admin: {
+        position: "sidebar",
+      }
+    },
+    {
       name: "stage",
       type: "select",
       defaultValue: "NEW",
@@ -68,6 +76,16 @@ export const Leads: CollectionConfig = {
       }
     },
     {
+      name: "reminder_date",
+      type: "date",
+      admin: {
+        position: "sidebar",
+        date: {
+          pickerAppearance: "dayOnly",
+        }
+      }
+    },
+    {
       name: "not_responding",
       label: "Not Responding",
       type: "checkbox",
@@ -104,9 +122,9 @@ export const Leads: CollectionConfig = {
     {
       type: "tabs",
       tabs: [
-        // ----- TAB 1: Personal Info -----
+        // ----- TAB 1: Contact -----
         {
-          label: "Personal Info",
+          label: "Contact",
           fields: [
             {
               type: "row",
@@ -123,118 +141,32 @@ export const Leads: CollectionConfig = {
               ]
             },
             {
+              name: "email",
+              type: "email",
+            },
+            {
               type: "row",
               fields: [
-                {
-                  name: "email",
-                  type: "email",
-                },
-                {
-                  name: "gender",
-                  type: "select",
-                  options: [
-                    { label: "Male", value: "MALE" },
-                    { label: "Female", value: "FEMALE" },
-                  ]
-                },
+                { name: "city", type: "text" },
+                { name: "country", type: "text" },
               ]
             },
             {
-              type: "collapsible",
-              label: "Location",
-              fields: [
-                {
-                  type: "row",
-                  fields: [
-                    { name: "area", type: "text" },
-                    { name: "city", type: "text" },
-                  ]
-                },
-                {
-                  type: "row",
-                  fields: [
-                    { name: "province", type: "text" },
-                    { name: "country", type: "text" },
-                  ]
-                },
-              ]
-            },
-            {
-              type: "collapsible",
-              label: "Background",
-              fields: [
-                {
-                  type: "row",
-                  fields: [
-                    { name: "education", type: "text" },
-                    { name: "job_info", type: "text", label: "Job Info" },
-                  ]
-                },
-              ]
+              name: "extraInfo",
+              type: "textarea",
+              label: "Extra Info",
             },
           ]
         },
 
-        // ----- TAB 2: Follow Up -----
+        // ----- TAB 2: Engagement -----
         {
-          label: "Follow Up",
+          label: "Engagement",
           fields: [
-            {
-              type: "row",
-              fields: [
-                {
-                  name: "reminder_date",
-                  type: "date",
-                  admin: {
-                    date: {
-                      pickerAppearance: "dayOnly",
-                    }
-                  }
-                },
-                {
-                  name: "reminder_note",
-                  type: "textarea",
-                },
-              ]
-            },
-            {
-              name: "query",
-              type: "textarea",
-              label: "Lead Query",
-            },
-            {
-              name: "lead_issue",
-              type: "textarea",
-              label: "Issues/Objections",
-            },
-          ]
-        },
-
-        // ----- TAB 3: Course Interest -----
-        {
-          label: "Course Interest",
-          fields: [
-            {
-              type: "row",
-              fields: [
-                {
-                  name: "module",
-                  type: "relationship",
-                  relationTo: "modules",
-                  label: "Interested Module",
-                },
-                {
-                  name: "department",
-                  type: "relationship",
-                  relationTo: "departments",
-                  label: "Interested Department",
-                },
-              ]
-            },
             {
               name: "payment_plan",
               type: "text",
-              label: "Preferred Payment Plan",
+              label: "Payment Plan",
             },
             {
               name: "courseDemoBookings",
@@ -268,17 +200,13 @@ export const Leads: CollectionConfig = {
                 }
               ]
             },
-          ]
-        },
-
-        // ----- TAB 4: Events -----
-        {
-          label: "Events",
-          fields: [
             {
               name: "eventAttendance",
               type: "array",
               label: "Event Registrations",
+              admin: {
+                initCollapsed: true,
+              },
               fields: [
                 {
                   type: "row",
@@ -326,23 +254,7 @@ export const Leads: CollectionConfig = {
           ]
         },
 
-        // ----- TAB 5: Conversion -----
-        {
-          label: "Conversion",
-          fields: [
-            {
-              name: "student",
-              type: "relationship",
-              relationTo: "students",
-              label: "Converted to Student",
-              admin: {
-                description: "Link to student record if lead was converted",
-              }
-            },
-          ]
-        },
-
-        // ----- TAB 6: Source & Tracking -----
+        // ----- TAB 3: Source -----
         {
           label: "Source",
           fields: [
@@ -374,20 +286,13 @@ export const Leads: CollectionConfig = {
               }
             },
             {
-              type: "collapsible",
-              label: "Activity History",
-              fields: [
-                {
-                  name: "activity",
-                  type: "json",
-                  label: "Activity Log",
-                },
-                {
-                  name: "lead_engagement",
-                  type: "json",
-                  label: "Engagement Data",
-                }
-              ]
+              name: "student",
+              type: "relationship",
+              relationTo: "students",
+              label: "Converted to Student",
+              admin: {
+                description: "Link to student record if lead was converted",
+              }
             },
           ]
         },

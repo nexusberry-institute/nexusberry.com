@@ -1115,6 +1115,7 @@ export interface Event {
  */
 export interface Lead {
   id: number;
+  course?: string | null;
   stage?:
     | (
         | 'NEW'
@@ -1130,6 +1131,7 @@ export interface Lead {
     | null;
   interest_level?: ('LOW' | 'MEDIUM' | 'HIGH' | 'UNKNOWN') | null;
   assign_to?: (number | null) | Staff;
+  reminder_date?: string | null;
   not_responding?: boolean | null;
   is_online?: boolean | null;
   is_req_hostel?: boolean | null;
@@ -1137,19 +1139,9 @@ export interface Lead {
   name: string;
   mobile?: string | null;
   email?: string | null;
-  gender?: ('MALE' | 'FEMALE') | null;
-  area?: string | null;
   city?: string | null;
-  province?: string | null;
   country?: string | null;
-  education?: string | null;
-  job_info?: string | null;
-  reminder_date?: string | null;
-  reminder_note?: string | null;
-  query?: string | null;
-  lead_issue?: string | null;
-  module?: (number | null) | Module;
-  department?: (number | null) | Department;
+  extraInfo?: string | null;
   payment_plan?: string | null;
   courseDemoBookings?:
     | {
@@ -1168,31 +1160,13 @@ export interface Lead {
         id?: string | null;
       }[]
     | null;
+  source?: string | null;
+  metaFormId?: string | null;
+  metaLeadId?: string | null;
   /**
    * Link to student record if lead was converted
    */
   student?: (number | null) | Student;
-  source?: string | null;
-  metaFormId?: string | null;
-  metaLeadId?: string | null;
-  activity?:
-    | {
-        [k: string]: unknown;
-      }
-    | unknown[]
-    | string
-    | number
-    | boolean
-    | null;
-  lead_engagement?:
-    | {
-        [k: string]: unknown;
-      }
-    | unknown[]
-    | string
-    | number
-    | boolean
-    | null;
   updatedAt: string;
   createdAt: string;
 }
@@ -1219,6 +1193,149 @@ export interface Staff {
   payPerAdmission?: number | null;
   fixPay?: number | null;
   note?: string | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "campaigns".
+ */
+export interface Campaign {
+  id: number;
+  name: string;
+  platform?: string | null;
+  /**
+   * Detailed description of the campaign
+   */
+  detail?: string | null;
+  startDate?: string | null;
+  endDate?: string | null;
+  budget?: number | null;
+  events?: (number | Event)[] | null;
+  /**
+   * Identifies which site sent the traffic (e.g., google, facebook, newsletter)
+   */
+  utm_source?: string | null;
+  /**
+   * Identifies a specific product promotion or strategic campaign (e.g., spring_sale)
+   */
+  utm_campaign?: string | null;
+  /**
+   * Identifies what type of link was used (e.g., cpc, banner, email)
+   */
+  utm_medium?: string | null;
+  /**
+   * Identifies what specifically was clicked to bring the user (e.g., logolink, textlink)
+   */
+  utm_content?: string | null;
+  /**
+   * Legacy UTM field - kept for backward compatibility
+   */
+  utm?: string | null;
+  /**
+   * View all leads that came from this campaign. Use this to track campaign effectiveness.
+   */
+  campaignLeads?: {
+    docs?: (number | Lead)[];
+    hasNextPage?: boolean;
+    totalDocs?: number;
+  };
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "students".
+ */
+export interface Student {
+  id: number;
+  user?: (number | null) | User;
+  studentEmail?: string | null;
+  studentPassword?: string | null;
+  fullName?: string | null;
+  phoneNumber?: string | null;
+  gmail_username?: string | null;
+  dateOfBirth?: string | null;
+  gender?: ('male' | 'female') | null;
+  /**
+   * Highest Student Education
+   */
+  education?: string | null;
+  otp?: string | null;
+  otpVerified?: boolean | null;
+  otpGeneratedAt?: string | null;
+  address?: {
+    homeAddress?: string | null;
+    city?: string | null;
+    state?: string | null;
+    country?: string | null;
+  };
+  profilePicture?: (number | null) | Media;
+  studentEnrollments?: {
+    docs?: (number | Enrollment)[];
+    hasNextPage?: boolean;
+    totalDocs?: number;
+  };
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "enrollments".
+ */
+export interface Enrollment {
+  id: number;
+  student: number | Student;
+  'training-course': number | TrainingCourse;
+  slug: string;
+  batchEnrollments?:
+    | {
+        batch?: (number | null) | Batch;
+        modules?: (number | Module)[] | null;
+        mode?: ('ONLINE' | 'PHYSICAL' | 'HYBRID') | null;
+        id?: string | null;
+      }[]
+    | null;
+  selectedPaymentPlan: number | PaymentPlan;
+  discountCode?: (number | null) | DiscountCode;
+  admissionDate?: string | null;
+  admissionFee?: number | null;
+  freezeDate?: string | null;
+  unfreezeDate?: string | null;
+  completionState?: ('CONTINUE' | 'COMPLETED' | 'LEFT' | 'FREEZE') | null;
+  certificateStatus?: ('ISSUED' | 'PENDING') | null;
+  isSuspended?: boolean | null;
+  note?: string | null;
+  relatedFeeReciepts?: {
+    docs?: (number | FeeReceipt)[];
+    hasNextPage?: boolean;
+    totalDocs?: number;
+  };
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "training-courses".
+ */
+export interface TrainingCourse {
+  id: number;
+  status?: ('active' | 'inactive') | null;
+  title: string;
+  slug: string;
+  slugLock?: boolean | null;
+  description?: string | null;
+  modules?: (number | Module)[] | null;
+  departments?: (number | Department)[] | null;
+  /**
+   * Full price of the course
+   */
+  fullPrice: number;
+  relatedPaymentPlans?: {
+    docs?: (number | PaymentPlan)[];
+    hasNextPage?: boolean;
+    totalDocs?: number;
+  };
   updatedAt: string;
   createdAt: string;
 }
@@ -1321,26 +1438,41 @@ export interface Batch {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "training-courses".
+ * via the `definition` "teachers".
  */
-export interface TrainingCourse {
+export interface Teacher {
   id: number;
-  status?: ('active' | 'inactive') | null;
-  title: string;
-  slug: string;
-  slugLock?: boolean | null;
-  description?: string | null;
-  modules?: (number | Module)[] | null;
-  departments?: (number | Department)[] | null;
-  /**
-   * Full price of the course
-   */
-  fullPrice: number;
-  relatedPaymentPlans?: {
-    docs?: (number | PaymentPlan)[];
-    hasNextPage?: boolean;
-    totalDocs?: number;
+  user: number | User;
+  fullName: string;
+  nick: string;
+  dateOfBirth?: string | null;
+  phoneNumber?: string | null;
+  address?: {
+    street?: string | null;
+    city?: string | null;
+    state?: string | null;
+    zipCode?: string | null;
+    country?: string | null;
   };
+  profilePicture?: (number | null) | Media;
+  payMode?: ('FIX' | 'PER_LECTURE') | null;
+  payPerLecture?: number | null;
+  fixPay?: number | null;
+  note?: string | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "time-table".
+ */
+export interface TimeTable {
+  id: number;
+  batch: number | Batch;
+  day: 'MONDAY' | 'TUESDAY' | 'WEDNESDAY' | 'THURSDAY' | 'FRIDAY' | 'SATURDAY' | 'SUNDAY';
+  startTime: string;
+  endTime: string;
+  room?: string | null;
   updatedAt: string;
   createdAt: string;
 }
@@ -1370,103 +1502,6 @@ export interface PaymentPlan {
     due_after_days?: number | null;
     id?: string | null;
   }[];
-  updatedAt: string;
-  createdAt: string;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "teachers".
- */
-export interface Teacher {
-  id: number;
-  user: number | User;
-  fullName: string;
-  nick: string;
-  dateOfBirth?: string | null;
-  phoneNumber?: string | null;
-  address?: {
-    street?: string | null;
-    city?: string | null;
-    state?: string | null;
-    zipCode?: string | null;
-    country?: string | null;
-  };
-  profilePicture?: (number | null) | Media;
-  payMode?: ('FIX' | 'PER_LECTURE') | null;
-  payPerLecture?: number | null;
-  fixPay?: number | null;
-  note?: string | null;
-  updatedAt: string;
-  createdAt: string;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "enrollments".
- */
-export interface Enrollment {
-  id: number;
-  student: number | Student;
-  'training-course': number | TrainingCourse;
-  slug: string;
-  batchEnrollments?:
-    | {
-        batch?: (number | null) | Batch;
-        modules?: (number | Module)[] | null;
-        mode?: ('ONLINE' | 'PHYSICAL' | 'HYBRID') | null;
-        id?: string | null;
-      }[]
-    | null;
-  selectedPaymentPlan: number | PaymentPlan;
-  discountCode?: (number | null) | DiscountCode;
-  admissionDate?: string | null;
-  admissionFee?: number | null;
-  freezeDate?: string | null;
-  unfreezeDate?: string | null;
-  completionState?: ('CONTINUE' | 'COMPLETED' | 'LEFT' | 'FREEZE') | null;
-  certificateStatus?: ('ISSUED' | 'PENDING') | null;
-  isSuspended?: boolean | null;
-  note?: string | null;
-  relatedFeeReciepts?: {
-    docs?: (number | FeeReceipt)[];
-    hasNextPage?: boolean;
-    totalDocs?: number;
-  };
-  updatedAt: string;
-  createdAt: string;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "students".
- */
-export interface Student {
-  id: number;
-  user?: (number | null) | User;
-  studentEmail?: string | null;
-  studentPassword?: string | null;
-  fullName?: string | null;
-  phoneNumber?: string | null;
-  gmail_username?: string | null;
-  dateOfBirth?: string | null;
-  gender?: ('male' | 'female') | null;
-  /**
-   * Highest Student Education
-   */
-  education?: string | null;
-  otp?: string | null;
-  otpVerified?: boolean | null;
-  otpGeneratedAt?: string | null;
-  address?: {
-    homeAddress?: string | null;
-    city?: string | null;
-    state?: string | null;
-    country?: string | null;
-  };
-  profilePicture?: (number | null) | Media;
-  studentEnrollments?: {
-    docs?: (number | Enrollment)[];
-    hasNextPage?: boolean;
-    totalDocs?: number;
-  };
   updatedAt: string;
   createdAt: string;
 }
@@ -1538,67 +1573,6 @@ export interface FeeReceipt {
   proofText?: string | null;
   proofImage?: (number | null) | Media;
   note?: string | null;
-  updatedAt: string;
-  createdAt: string;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "time-table".
- */
-export interface TimeTable {
-  id: number;
-  batch: number | Batch;
-  day: 'MONDAY' | 'TUESDAY' | 'WEDNESDAY' | 'THURSDAY' | 'FRIDAY' | 'SATURDAY' | 'SUNDAY';
-  startTime: string;
-  endTime: string;
-  room?: string | null;
-  updatedAt: string;
-  createdAt: string;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "campaigns".
- */
-export interface Campaign {
-  id: number;
-  name: string;
-  platform?: string | null;
-  /**
-   * Detailed description of the campaign
-   */
-  detail?: string | null;
-  startDate?: string | null;
-  endDate?: string | null;
-  budget?: number | null;
-  events?: (number | Event)[] | null;
-  /**
-   * Identifies which site sent the traffic (e.g., google, facebook, newsletter)
-   */
-  utm_source?: string | null;
-  /**
-   * Identifies a specific product promotion or strategic campaign (e.g., spring_sale)
-   */
-  utm_campaign?: string | null;
-  /**
-   * Identifies what type of link was used (e.g., cpc, banner, email)
-   */
-  utm_medium?: string | null;
-  /**
-   * Identifies what specifically was clicked to bring the user (e.g., logolink, textlink)
-   */
-  utm_content?: string | null;
-  /**
-   * Legacy UTM field - kept for backward compatibility
-   */
-  utm?: string | null;
-  /**
-   * View all leads that came from this campaign. Use this to track campaign effectiveness.
-   */
-  campaignLeads?: {
-    docs?: (number | Lead)[];
-    hasNextPage?: boolean;
-    totalDocs?: number;
-  };
   updatedAt: string;
   createdAt: string;
 }
@@ -3055,9 +3029,11 @@ export interface AttendanceDetailsSelect<T extends boolean = true> {
  * via the `definition` "leads_select".
  */
 export interface LeadsSelect<T extends boolean = true> {
+  course?: T;
   stage?: T;
   interest_level?: T;
   assign_to?: T;
+  reminder_date?: T;
   not_responding?: T;
   is_online?: T;
   is_req_hostel?: T;
@@ -3065,19 +3041,9 @@ export interface LeadsSelect<T extends boolean = true> {
   name?: T;
   mobile?: T;
   email?: T;
-  gender?: T;
-  area?: T;
   city?: T;
-  province?: T;
   country?: T;
-  education?: T;
-  job_info?: T;
-  reminder_date?: T;
-  reminder_note?: T;
-  query?: T;
-  lead_issue?: T;
-  module?: T;
-  department?: T;
+  extraInfo?: T;
   payment_plan?: T;
   courseDemoBookings?:
     | T
@@ -3096,12 +3062,10 @@ export interface LeadsSelect<T extends boolean = true> {
         hasAttended?: T;
         id?: T;
       };
-  student?: T;
   source?: T;
   metaFormId?: T;
   metaLeadId?: T;
-  activity?: T;
-  lead_engagement?: T;
+  student?: T;
   updatedAt?: T;
   createdAt?: T;
 }
