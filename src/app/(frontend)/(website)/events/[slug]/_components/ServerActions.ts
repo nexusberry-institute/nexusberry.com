@@ -291,7 +291,8 @@ export default async function CreateEventRegistration(data: FormData) {
         email: data.email,
         mobile: data.phoneNumber,
         eventAttendance: [newRegistration],
-        source
+        source: 'website',
+        campaignId: data.campaignId ? String(data.campaignId) : undefined,
       },
     })
 

@@ -5,13 +5,16 @@ import { updateCounters } from './hooks/counters'
 import {
   trackLeadSubmission,
   trackLeadEventAttendance,
+  trackInterestedLead,
 } from "./hooks/track";
 
 export const Leads: CollectionConfig = {
   slug: "leads",
+  timestamps: true,
   admin: {
-    useAsTitle: "mobile",
+    useAsTitle: "name",
     group: "Marketing & Outreach",
+    defaultColumns: ['name', 'mobile', 'stage', 'course', 'createdAt'],
   },
   hooks: {
     afterChange: [
@@ -36,6 +39,7 @@ export const Leads: CollectionConfig = {
       type: "select",
       label: "Lead Stage",
       defaultValue: "NEW",
+      index: true,
       options: [
         { label: "New", value: "NEW" },
         { label: "Qualified", value: "QUALIFIED" },
@@ -44,9 +48,30 @@ export const Leads: CollectionConfig = {
         { label: "Enrolled", value: "ENROLLED" },
         { label: "Lost", value: "LOST" },
       ],
+      hooks: {
+        afterChange: [trackInterestedLead],
+      },
       admin: {
         position: "sidebar",
         description: "Current stage in the sales pipeline",
+      }
+    },
+    {
+      name: "lostReason",
+      type: "select",
+      label: "Lost Reason",
+      options: [
+        { label: "Price too high", value: "price" },
+        { label: "Chose competitor", value: "competitor" },
+        { label: "Not interested anymore", value: "not_interested" },
+        { label: "Bad timing", value: "timing" },
+        { label: "No response", value: "no_response" },
+        { label: "Other", value: "other" },
+      ],
+      admin: {
+        position: "sidebar",
+        description: "Why the lead was lost",
+        condition: (data) => data?.stage === "LOST",
       }
     },
     {
@@ -126,7 +151,6 @@ export const Leads: CollectionConfig = {
         description: "Lead is not answering calls/messages",
       }
     },
-
     // ===== MAIN CONTENT WITH TABS =====
     {
       type: "tabs",
@@ -148,6 +172,7 @@ export const Leads: CollectionConfig = {
                   name: "mobile",
                   type: "text",
                   label: "Mobile Number",
+                  index: true,
                   admin: {
                     description: "Include country code (e.g., 923001234567)",
                     components: {
@@ -167,14 +192,8 @@ export const Leads: CollectionConfig = {
               type: "row",
               fields: [
                 { name: "city", type: "text", label: "City" },
-                {
-                  name: "country",
-                  type: "text",
-                  label: "Country / Province",
-                  admin: {
-                    description: "Country or province name",
-                  }
-                },
+                { name: "province", type: "text", label: "Province / State" },
+                { name: "country", type: "text", label: "Country" },
               ]
             },
             {
@@ -193,6 +212,14 @@ export const Leads: CollectionConfig = {
               admin: {
                 placeholder: 'Describe your level with course prerequisites',
                 description: 'Current grasp of relevant tools (e.g., HTML/JS for Web or Python/Math for AI).',
+              },
+            },
+            {
+              name: 'extraInfo',
+              type: 'textarea',
+              label: 'Extra Information',
+              admin: {
+                description: 'Additional information provided by the lead',
               },
             }
           ]
@@ -320,12 +347,35 @@ export const Leads: CollectionConfig = {
               fields: [
                 {
                   name: "source",
-                  type: "text",
+                  type: "select",
                   label: "Lead Source",
+                  options: [
+                    { label: "Facebook", value: "facebook" },
+                    { label: "Instagram", value: "instagram" },
+                    { label: "Website", value: "website" },
+                    { label: "YouTube", value: "youtube" },
+                    { label: "LinkedIn", value: "linkedin" },
+                    { label: "Referral", value: "referral" },
+                    { label: "Walk-in", value: "walk_in" },
+                    { label: "Other", value: "other" },
+                  ],
                   admin: {
-                    description: "Where the lead came from (e.g., Facebook, Website, Referral)",
+                    description: "Where the lead came from",
                   }
                 },
+                {
+                  name: "campaignId",
+                  type: "text",
+                  label: "Campaign ID",
+                  admin: {
+                    description: "Marketing campaign identifier for tracking",
+                  }
+                },
+              ]
+            },
+            {
+              type: "row",
+              fields: [
                 {
                   name: 'metaFormId',
                   type: 'text',
@@ -335,17 +385,17 @@ export const Leads: CollectionConfig = {
                     description: "Facebook/Instagram form identifier",
                   }
                 },
+                {
+                  name: 'metaLeadId',
+                  type: 'text',
+                  unique: true,
+                  label: "Meta Lead ID",
+                  admin: {
+                    readOnly: true,
+                    description: "Unique lead ID from Meta Ads",
+                  }
+                },
               ]
-            },
-            {
-              name: 'metaLeadId',
-              type: 'text',
-              unique: true,
-              label: "Meta Lead ID",
-              admin: {
-                readOnly: true,
-                description: "Unique lead ID from Meta Ads",
-              }
             },
             {
               name: "student",

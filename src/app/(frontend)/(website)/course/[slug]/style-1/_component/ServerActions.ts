@@ -55,7 +55,8 @@ export default async function CreateCourseDemoBooking(data: {
         mobile: data.mobile,
         email: data.email,
         extraInfo: data.extraInfo,
-        source: `course-page-course-${data.courseId}-demo-booking`,
+        source: 'website',
+        campaignId: `course-page-course-${data.courseId}-demo-booking`,
         courseDemoBookings: [
           { course: data.courseId, bookedAt: new Date().toISOString() },
         ],

@@ -44,18 +44,18 @@ export const trackLeadSubmission: CollectionAfterChangeHook =
     })
   }
 
-// Leads Collection: Interested: fire when status first time  flips to LOW, MEDIUM or HIGHS
-// FIELD interest_level = "LOW" | "MEDIUM" | "HIGH" | "UNKNOWN" (optional)
+// Leads Collection: Interested: fire when stage first changes to QUALIFIED or NEGOTIATION
+// Uses stage field: NEW -> QUALIFIED/NEGOTIATION indicates interest
 export const trackInterestedLead: FieldHook =
   async ({ value, previousValue, operation, originalDoc: doc }) => {
+    const interestedStages = ["QUALIFIED", "NEGOTIATION"]
+
     if (
       operation !== "update" ||
       !value ||
-      value === "UNKNOWN" ||
       value === previousValue ||
-      previousValue === "LOW" ||
-      previousValue === "MEGIUM" ||
-      previousValue === "HIGH"
+      !interestedStages.includes(value) ||
+      interestedStages.includes(previousValue)
     ) return
 
     await postTrack({
@@ -72,7 +72,7 @@ export const trackInterestedLead: FieldHook =
         country: doc?.country,
         externalId: doc?.id ? String(doc.id) : undefined,
       },
-      customData: { leadId: doc?.id },
+      customData: { leadId: doc?.id, stage: value },
       ...(metaTestEventCode ? { metaTestEventCode } : {}),
     })
   }

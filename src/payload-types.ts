@@ -1125,6 +1125,10 @@ export interface Lead {
    */
   stage?: ('NEW' | 'QUALIFIED' | 'NOT_QUALIFIED' | 'NEGOTIATION' | 'ENROLLED' | 'LOST') | null;
   /**
+   * Why the lead was lost
+   */
+  lostReason?: ('price' | 'competitor' | 'not_interested' | 'timing' | 'no_response' | 'other') | null;
+  /**
    * Internal notes from CSR interactions
    */
   notes?: string | null;
@@ -1159,9 +1163,7 @@ export interface Lead {
   mobile?: string | null;
   email?: string | null;
   city?: string | null;
-  /**
-   * Country or province name
-   */
+  province?: string | null;
   country?: string | null;
   /**
    * The user's current professional or academic standing.
@@ -1171,6 +1173,10 @@ export interface Lead {
    * Current grasp of relevant tools (e.g., HTML/JS for Web or Python/Math for AI).
    */
   priorExperience?: string | null;
+  /**
+   * Additional information provided by the lead
+   */
+  extraInfo?: string | null;
   /**
    * Preferred payment plan discussed with lead
    */
@@ -1208,9 +1214,13 @@ export interface Lead {
       }[]
     | null;
   /**
-   * Where the lead came from (e.g., Facebook, Website, Referral)
+   * Where the lead came from
    */
-  source?: string | null;
+  source?: ('facebook' | 'instagram' | 'website' | 'youtube' | 'linkedin' | 'referral' | 'walk_in' | 'other') | null;
+  /**
+   * Marketing campaign identifier for tracking
+   */
+  campaignId?: string | null;
   /**
    * Facebook/Instagram form identifier
    */
@@ -3088,6 +3098,7 @@ export interface AttendanceDetailsSelect<T extends boolean = true> {
 export interface LeadsSelect<T extends boolean = true> {
   course?: T;
   stage?: T;
+  lostReason?: T;
   notes?: T;
   label?: T;
   confirmedAttending?: T;
@@ -3099,9 +3110,11 @@ export interface LeadsSelect<T extends boolean = true> {
   mobile?: T;
   email?: T;
   city?: T;
+  province?: T;
   country?: T;
   currentBackground?: T;
   priorExperience?: T;
+  extraInfo?: T;
   payment_plan?: T;
   courseDemoBookings?:
     | T
@@ -3121,6 +3134,7 @@ export interface LeadsSelect<T extends boolean = true> {
         id?: T;
       };
   source?: T;
+  campaignId?: T;
   metaFormId?: T;
   metaLeadId?: T;
   student?: T;
