@@ -196,6 +196,12 @@ export const Leads: CollectionConfig = {
                 { name: "country", type: "text", label: "Country" },
               ]
             },
+            // What is your current status? (sample question in mern lead form)
+            // 1. Student (CS, IT, SE, or related)
+            // 2. Fresh Graduate — looking for first developer job
+            // 3. Frontend Developer — want to learn backend
+            // 4. Non-tech professional — seeking career change to development
+            // 5. Freelancer — want to offer complete web solutions
             {
               name: 'currentBackground',
               type: 'text',
@@ -205,6 +211,11 @@ export const Leads: CollectionConfig = {
                 description: 'The user\'s current professional or academic standing.',
               },
             },
+            // What is your current knowledge of HTML, CSS, and JavaScript? (sample question in mern lead form)
+            // 1. No knowledge — complete beginner in web development
+            // 2. Know HTML & basic CSS — can build simple static pages
+            // 3. Know HTML, CSS & basic JavaScript — can add interactivity
+            // 4. Comfortable with HTML, CSS & JavaScript — built small projects
             {
               name: 'priorExperience',
               type: 'text',
