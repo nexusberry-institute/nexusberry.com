@@ -36,6 +36,8 @@ import { default as default_58798a9e2d7b92bc57a39edf2f62d889 } from '@/fields/Pa
 import { default as default_8b8375c73ab5ac7c14358b8f46631e93 } from '@/fields/PaymentPlanFields/SumOfInstallments'
 import { ExportBatchContacts as ExportBatchContacts_29a57357a65f775ccfc3fd5d8c403b26 } from '@/components/ExportButtons/ExportBatchEmails'
 import { CSVExportButton as CSVExportButton_f03101cb3cbd9ad9ffd5782969ca2083 } from '@/components/CSVExportButton'
+import { MobileCell as MobileCell_0048392b89b1f5508673bc0d793d5155 } from '@/fields/MobileField/MobileCell'
+import { MobileActions as MobileActions_ca9b09090057c7c65834c77ce7a44c9c } from '@/fields/MobileField/MobileActions'
 import { LinkToDoc as LinkToDoc_aead06e4cbf6b2620c5c51c9ab283634 } from '@payloadcms/plugin-search/client'
 import { ReindexButton as ReindexButton_aead06e4cbf6b2620c5c51c9ab283634 } from '@payloadcms/plugin-search/client'
 import { RowLabel as RowLabel_ec255a65fa6fa8d1faeb09cf35284224 } from '@/Header/RowLabel'
@@ -86,6 +88,8 @@ export const importMap = {
   "@/fields/PaymentPlanFields/SumOfInstallments#default": default_8b8375c73ab5ac7c14358b8f46631e93,
   "@/components/ExportButtons/ExportBatchEmails#ExportBatchContacts": ExportBatchContacts_29a57357a65f775ccfc3fd5d8c403b26,
   "@/components/CSVExportButton#CSVExportButton": CSVExportButton_f03101cb3cbd9ad9ffd5782969ca2083,
+  "@/fields/MobileField/MobileCell#MobileCell": MobileCell_0048392b89b1f5508673bc0d793d5155,
+  "@/fields/MobileField/MobileActions#MobileActions": MobileActions_ca9b09090057c7c65834c77ce7a44c9c,
   "@payloadcms/plugin-search/client#LinkToDoc": LinkToDoc_aead06e4cbf6b2620c5c51c9ab283634,
   "@payloadcms/plugin-search/client#ReindexButton": ReindexButton_aead06e4cbf6b2620c5c51c9ab283634,
   "@/Header/RowLabel#RowLabel": RowLabel_ec255a65fa6fa8d1faeb09cf35284224,

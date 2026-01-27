@@ -1,0 +1,67 @@
+.mobile-actions,
+.mobile-cell__actions {
+  display: inline-flex;
+  gap: 4px;
+  margin-left: 8px;
+
+  button {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 4px;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--theme-elevation-800);
+    transition: all 0.15s ease;
+
+    &:hover:not(:disabled) {
+      background: var(--theme-elevation-100);
+    }
+
+    &:disabled {
+      opacity: 0.3;
+      cursor: not-allowed;
+    }
+
+    &.copied {
+      color: var(--theme-success-500);
+    }
+
+    &.whatsapp-btn:not(:disabled) {
+      color: #25D366;
+    }
+
+    svg {
+      width: 16px;
+      height: 16px;
+    }
+  }
+}
+
+.mobile-cell {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+
+  &__value {
+    flex-shrink: 0;
+  }
+
+  &__actions {
+    opacity: 0.5;
+    transition: opacity 0.15s ease;
+  }
+
+  &:hover &__actions {
+    opacity: 1;
+  }
+}
+
+.mobile-actions {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+}

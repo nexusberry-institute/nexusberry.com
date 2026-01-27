@@ -50,17 +50,18 @@ export const Leads: CollectionConfig = {
       }
     },
     {
-      name: "label",
-      type: "text",
-      label: "Label",
+      name: "notes",
+      type: "textarea",
+      label: "Staff Notes",
       admin: {
         position: "sidebar",
       }
     },
     {
-      name: "notes",
-      type: "textarea",
-      label: "Staff Notes",
+      name: "label",
+      type: "text",
+
+      label: "Label",
       admin: {
         position: "sidebar",
       }
@@ -128,6 +129,12 @@ export const Leads: CollectionConfig = {
                 {
                   name: "mobile",
                   type: "text",
+                  admin: {
+                    components: {
+                      afterInput: ['@/fields/MobileField/MobileActions#MobileActions'],
+                      Cell: '@/fields/MobileField/MobileCell#MobileCell',
+                    },
+                  },
                 },
               ]
             },

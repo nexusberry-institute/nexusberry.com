@@ -1130,8 +1130,8 @@ export interface Lead {
         | 'LOST'
       )
     | null;
-  label?: string | null;
   notes?: string | null;
+  label?: string | null;
   reminder_date?: string | null;
   assign_to?: (number | null) | Staff;
   not_responding?: boolean | null;
@@ -3033,8 +3033,8 @@ export interface AttendanceDetailsSelect<T extends boolean = true> {
 export interface LeadsSelect<T extends boolean = true> {
   course?: T;
   stage?: T;
-  label?: T;
   notes?: T;
+  label?: T;
   reminder_date?: T;
   assign_to?: T;
   not_responding?: T;
