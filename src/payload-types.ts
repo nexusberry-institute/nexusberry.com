@@ -1116,34 +1116,68 @@ export interface Event {
  */
 export interface Lead {
   id: number;
+  /**
+   * Course the lead is interested in
+   */
   course?: string | null;
-  stage?:
-    | (
-        | 'NEW'
-        | 'FOLLOW_UP'
-        | 'CONVERTED'
-        | 'WASTE'
-        | 'QUALIFIED'
-        | 'NOT_QUALIFIED'
-        | 'NEGOTIATION'
-        | 'ENROLLED'
-        | 'LOST'
-      )
-    | null;
+  /**
+   * Current stage in the sales pipeline
+   */
+  stage?: ('NEW' | 'QUALIFIED' | 'NOT_QUALIFIED' | 'NEGOTIATION' | 'ENROLLED' | 'LOST') | null;
+  /**
+   * Internal notes from CSR interactions
+   */
   notes?: string | null;
+  /**
+   * Custom tag for categorization
+   */
   label?: string | null;
+  /**
+   * Confirmed for demo
+   */
+  confirmedAttending?: boolean | null;
+  /**
+   * Actually attended
+   */
+  actuallyAttended?: boolean | null;
+  /**
+   * Date to follow up with this lead
+   */
   reminder_date?: string | null;
+  /**
+   * Staff member responsible for this lead
+   */
   assign_to?: (number | null) | Staff;
+  /**
+   * Lead is not answering calls/messages
+   */
   not_responding?: boolean | null;
-  is_online?: boolean | null;
-  is_req_hostel?: boolean | null;
   name: string;
+  /**
+   * Include country code (e.g., 923001234567)
+   */
   mobile?: string | null;
   email?: string | null;
   city?: string | null;
+  /**
+   * Country or province name
+   */
   country?: string | null;
-  extraInfo?: string | null;
+  /**
+   * The user's current professional or academic standing.
+   */
+  currentBackground?: string | null;
+  /**
+   * Current grasp of relevant tools (e.g., HTML/JS for Web or Python/Math for AI).
+   */
+  priorExperience?: string | null;
+  /**
+   * Preferred payment plan discussed with lead
+   */
   payment_plan?: string | null;
+  /**
+   * Course demos/trials the lead has booked
+   */
   courseDemoBookings?:
     | {
         course: number | WebCourse;
@@ -1151,21 +1185,42 @@ export interface Lead {
         id?: string | null;
       }[]
     | null;
+  /**
+   * Events/webinars the lead registered for
+   */
   eventAttendance?:
     | {
         event: number | Event;
+        /**
+         * Marketing campaign source
+         */
         campaign?: (number | null) | Campaign;
+        /**
+         * Where they registered from
+         */
         source?: string | null;
         registeredAt?: string | null;
+        /**
+         * Check if lead attended this event
+         */
         hasAttended?: boolean | null;
         id?: string | null;
       }[]
     | null;
+  /**
+   * Where the lead came from (e.g., Facebook, Website, Referral)
+   */
   source?: string | null;
+  /**
+   * Facebook/Instagram form identifier
+   */
   metaFormId?: string | null;
+  /**
+   * Unique lead ID from Meta Ads
+   */
   metaLeadId?: string | null;
   /**
-   * Link to student record if lead was converted
+   * Link to student record after enrollment
    */
   student?: (number | null) | Student;
   updatedAt: string;
@@ -3035,17 +3090,18 @@ export interface LeadsSelect<T extends boolean = true> {
   stage?: T;
   notes?: T;
   label?: T;
+  confirmedAttending?: T;
+  actuallyAttended?: T;
   reminder_date?: T;
   assign_to?: T;
   not_responding?: T;
-  is_online?: T;
-  is_req_hostel?: T;
   name?: T;
   mobile?: T;
   email?: T;
   city?: T;
   country?: T;
-  extraInfo?: T;
+  currentBackground?: T;
+  priorExperience?: T;
   payment_plan?: T;
   courseDemoBookings?:
     | T

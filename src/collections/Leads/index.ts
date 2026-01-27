@@ -25,28 +25,28 @@ export const Leads: CollectionConfig = {
     {
       name: "course",
       type: "text",
-      label: "Course",
+      label: "Interested Course",
       admin: {
         position: "sidebar",
+        description: "Course the lead is interested in",
       }
     },
     {
       name: "stage",
       type: "select",
+      label: "Lead Stage",
       defaultValue: "NEW",
       options: [
         { label: "New", value: "NEW" },
-        { label: "Follow Up", value: "FOLLOW_UP" },
-        { label: "Converted", value: "CONVERTED" },
-        { label: "Waste", value: "WASTE" },
-        { label: "QUALIFIED", value: "QUALIFIED" },
-        { label: "NOT_QUALIFIED", value: "NOT_QUALIFIED" },
-        { label: "NEGOTIATION", value: "NEGOTIATION" },
-        { label: "ENROLLED", value: "ENROLLED" },
-        { label: "LOST", value: "LOST" },
+        { label: "Qualified", value: "QUALIFIED" },
+        { label: "Not Qualified", value: "NOT_QUALIFIED" },
+        { label: "Negotiation", value: "NEGOTIATION" },
+        { label: "Enrolled", value: "ENROLLED" },
+        { label: "Lost", value: "LOST" },
       ],
       admin: {
         position: "sidebar",
+        description: "Current stage in the sales pipeline",
       }
     },
     {
@@ -55,22 +55,51 @@ export const Leads: CollectionConfig = {
       label: "Staff Notes",
       admin: {
         position: "sidebar",
+        description: "Internal notes from CSR interactions",
       }
     },
     {
       name: "label",
       type: "text",
-
       label: "Label",
       admin: {
         position: "sidebar",
+        description: "Custom tag for categorization",
       }
+    },
+    {
+      type: "row",
+      admin: {
+        position: "sidebar",
+      },
+      fields: [
+        {
+          name: "confirmedAttending",
+          type: "checkbox",
+          label: "Trial Confirmed",
+          defaultValue: false,
+          admin: {
+            description: "Confirmed for demo",
+          }
+        },
+        {
+          name: "actuallyAttended",
+          type: "checkbox",
+          label: "Attended",
+          defaultValue: false,
+          admin: {
+            description: "Actually attended",
+          }
+        },
+      ]
     },
     {
       name: "reminder_date",
       type: "date",
+      label: "Follow-up Date",
       admin: {
         position: "sidebar",
+        description: "Date to follow up with this lead",
         date: {
           pickerAppearance: "dayOnly",
         }
@@ -80,33 +109,21 @@ export const Leads: CollectionConfig = {
       name: "assign_to",
       type: "relationship",
       relationTo: "staffs",
+      label: "Assigned To",
       hasMany: false,
       admin: {
         position: "sidebar",
+        description: "Staff member responsible for this lead",
       }
     },
     {
       name: "not_responding",
+      type: "checkbox",
       label: "Not Responding",
-      type: "checkbox",
+      defaultValue: false,
       admin: {
         position: "sidebar",
-      }
-    },
-    {
-      name: "is_online",
-      type: "checkbox",
-      label: "Prefers Online",
-      admin: {
-        position: "sidebar",
-      }
-    },
-    {
-      name: "is_req_hostel",
-      type: "checkbox",
-      label: "Requires Hostel",
-      admin: {
-        position: "sidebar",
+        description: "Lead is not answering calls/messages",
       }
     },
 
@@ -124,12 +141,15 @@ export const Leads: CollectionConfig = {
                 {
                   name: "name",
                   type: "text",
+                  label: "Full Name",
                   required: true,
                 },
                 {
                   name: "mobile",
                   type: "text",
+                  label: "Mobile Number",
                   admin: {
+                    description: "Include country code (e.g., 923001234567)",
                     components: {
                       afterInput: ['@/fields/MobileField/MobileActions#MobileActions'],
                       Cell: '@/fields/MobileField/MobileCell#MobileCell',
@@ -141,19 +161,40 @@ export const Leads: CollectionConfig = {
             {
               name: "email",
               type: "email",
+              label: "Email Address",
             },
             {
               type: "row",
               fields: [
-                { name: "city", type: "text" },
-                { name: "country", type: "text" },
+                { name: "city", type: "text", label: "City" },
+                {
+                  name: "country",
+                  type: "text",
+                  label: "Country / Province",
+                  admin: {
+                    description: "Country or province name",
+                  }
+                },
               ]
             },
             {
-              name: "extraInfo",
-              type: "textarea",
-              label: "Extra Info",
+              name: 'currentBackground',
+              type: 'text',
+              label: 'Current Status / Background',
+              admin: {
+                placeholder: 'e.g., Student, Freelancer, or Non-tech Professional',
+                description: 'The user\'s current professional or academic standing.',
+              },
             },
+            {
+              name: 'priorExperience',
+              type: 'text',
+              label: 'Current Technical Knowledge',
+              admin: {
+                placeholder: 'Describe your level with course prerequisites',
+                description: 'Current grasp of relevant tools (e.g., HTML/JS for Web or Python/Math for AI).',
+              },
+            }
           ]
         },
 
@@ -165,6 +206,9 @@ export const Leads: CollectionConfig = {
               name: "payment_plan",
               type: "text",
               label: "Payment Plan",
+              admin: {
+                description: "Preferred payment plan discussed with lead",
+              }
             },
             {
               name: "courseDemoBookings",
@@ -172,6 +216,7 @@ export const Leads: CollectionConfig = {
               label: "Demo Bookings",
               admin: {
                 initCollapsed: true,
+                description: "Course demos/trials the lead has booked",
               },
               fields: [
                 {
@@ -181,6 +226,7 @@ export const Leads: CollectionConfig = {
                       name: "course",
                       type: "relationship",
                       relationTo: "web-courses",
+                      label: "Course",
                       required: true,
                       hasMany: false,
                       admin: {
@@ -191,8 +237,8 @@ export const Leads: CollectionConfig = {
                     {
                       name: "bookedAt",
                       type: "date",
+                      label: "Booking Date",
                       required: true,
-                      label: "Booked At",
                     }
                   ]
                 }
@@ -204,6 +250,7 @@ export const Leads: CollectionConfig = {
               label: "Event Registrations",
               admin: {
                 initCollapsed: true,
+                description: "Events/webinars the lead registered for",
               },
               fields: [
                 {
@@ -213,6 +260,7 @@ export const Leads: CollectionConfig = {
                       name: "event",
                       type: "relationship",
                       relationTo: "events",
+                      label: "Event",
                       required: true,
                       hasMany: false,
                     },
@@ -220,8 +268,11 @@ export const Leads: CollectionConfig = {
                       name: "campaign",
                       type: "relationship",
                       relationTo: "campaigns",
-                      required: false,
                       label: "Campaign",
+                      required: false,
+                      admin: {
+                        description: "Marketing campaign source",
+                      }
                     }
                   ],
                 },
@@ -231,18 +282,26 @@ export const Leads: CollectionConfig = {
                     {
                       name: "source",
                       type: "text",
+                      label: "Registration Source",
+                      admin: {
+                        description: "Where they registered from",
+                      }
                     },
                     {
                       name: "registeredAt",
                       type: "date",
+                      label: "Registration Date",
                     }
                   ],
                 },
                 {
                   name: "hasAttended",
                   type: "checkbox",
-                  defaultValue: false,
                   label: "Has Attended",
+                  defaultValue: false,
+                  admin: {
+                    description: "Check if lead attended this event",
+                  },
                   hooks: {
                     afterChange: [trackLeadEventAttendance]
                   }
@@ -263,6 +322,9 @@ export const Leads: CollectionConfig = {
                   name: "source",
                   type: "text",
                   label: "Lead Source",
+                  admin: {
+                    description: "Where the lead came from (e.g., Facebook, Website, Referral)",
+                  }
                 },
                 {
                   name: 'metaFormId',
@@ -270,6 +332,7 @@ export const Leads: CollectionConfig = {
                   label: "Meta Form ID",
                   admin: {
                     readOnly: true,
+                    description: "Facebook/Instagram form identifier",
                   }
                 },
               ]
@@ -281,6 +344,7 @@ export const Leads: CollectionConfig = {
               label: "Meta Lead ID",
               admin: {
                 readOnly: true,
+                description: "Unique lead ID from Meta Ads",
               }
             },
             {
@@ -289,7 +353,7 @@ export const Leads: CollectionConfig = {
               relationTo: "students",
               label: "Converted to Student",
               admin: {
-                description: "Link to student record if lead was converted",
+                description: "Link to student record after enrollment",
               }
             },
           ]
