@@ -1214,9 +1214,9 @@ export interface Lead {
       }[]
     | null;
   /**
-   * Where the lead came from
+   * Where the lead came from (e.g., facebook, website, referral)
    */
-  source?: ('facebook' | 'instagram' | 'website' | 'youtube' | 'linkedin' | 'referral' | 'walk_in' | 'other') | null;
+  source?: string | null;
   /**
    * Marketing campaign identifier for tracking
    */

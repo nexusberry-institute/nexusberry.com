@@ -347,20 +347,10 @@ export const Leads: CollectionConfig = {
               fields: [
                 {
                   name: "source",
-                  type: "select",
+                  type: "text",
                   label: "Lead Source",
-                  options: [
-                    { label: "Facebook", value: "facebook" },
-                    { label: "Instagram", value: "instagram" },
-                    { label: "Website", value: "website" },
-                    { label: "YouTube", value: "youtube" },
-                    { label: "LinkedIn", value: "linkedin" },
-                    { label: "Referral", value: "referral" },
-                    { label: "Walk-in", value: "walk_in" },
-                    { label: "Other", value: "other" },
-                  ],
                   admin: {
-                    description: "Where the lead came from",
+                    description: "Where the lead came from (e.g., facebook, website, referral)",
                   }
                 },
                 {
