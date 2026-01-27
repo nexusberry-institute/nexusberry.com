@@ -13,6 +13,28 @@ const nextConfig = {
           protocol: url.protocol.replace(':', ''),
         }
       }),
+      // UploadThing CDN domains
+      {
+        hostname: 'utfs.io',
+        protocol: 'https',
+      },
+      {
+        hostname: '**.utfs.io',
+        protocol: 'https',
+      },
+      {
+        hostname: 'uploadthing.com',
+        protocol: 'https',
+      },
+      {
+        hostname: '**.uploadthing.com',
+        protocol: 'https',
+      },
+      // UploadThing newer format (ufs.sh)
+      {
+        hostname: '**.ufs.sh',
+        protocol: 'https',
+      },
     ],
   },
   logging: {

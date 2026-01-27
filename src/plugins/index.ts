@@ -1,4 +1,5 @@
-import { s3Storage } from '@payloadcms/storage-s3';
+import { uploadthingStorage } from '@payloadcms/storage-uploadthing'
+// import { s3Storage } from '@payloadcms/storage-s3';
 import { nestedDocsPlugin } from '@payloadcms/plugin-nested-docs'
 import { redirectsPlugin } from '@payloadcms/plugin-redirects'
 import { seoPlugin } from '@payloadcms/plugin-seo'
@@ -215,23 +216,33 @@ export const getPlugins = (): Plugin[] => {
   // In local development, Payload uses the staticDir from Media collection (public/media)
   if (process.env.PAYLOAD_LOCAL_STORAGE !== 'true') {
     basePlugins.push(
-      s3Storage({ // Supabase Storage
+      // s3Storage({ // Supabase Storage
+      //   collections: {
+      //     media: {
+      //       prefix: 'media',
+      //     }
+      //   },
+      //   bucket: process.env.S3_BUCKET || '',
+      //   config: {
+      //     forcePathStyle: true, // Important for using Supabase
+      //     credentials: {
+      //       accessKeyId: process.env.S3_ACCESS_KEY_ID || '',
+      //       secretAccessKey: process.env.S3_SECRET_ACCESS_KEY || '',
+      //     },
+      //     region: process.env.S3_REGION || '',
+      //     endpoint: process.env.S3_ENDPOINT || '',
+      //   },
+      // }),
+      uploadthingStorage({
+        clientUploads: true,
         collections: {
-          media: {
-            prefix: 'media',
-          }
+          media: true,
         },
-        bucket: process.env.S3_BUCKET || '',
-        config: {
-          forcePathStyle: true, // Important for using Supabase
-          credentials: {
-            accessKeyId: process.env.S3_ACCESS_KEY_ID || '',
-            secretAccessKey: process.env.S3_SECRET_ACCESS_KEY || '',
-          },
-          region: process.env.S3_REGION || '',
-          endpoint: process.env.S3_ENDPOINT || '',
+        options: {
+          token: process.env.UPLOADTHING_TOKEN,
+          acl: 'public-read',
         },
-      })
+      }),
     )
   }
 
