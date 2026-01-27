@@ -12,6 +12,13 @@ const CopyIcon = () => (
   </svg>
 )
 
+// Checkmark icon for copied state
+const CheckIcon = () => (
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+    <polyline points="20 6 9 17 4 12"/>
+  </svg>
+)
+
 // WhatsApp icon SVG component
 const WhatsAppIcon = () => (
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
@@ -29,7 +36,8 @@ export const MobileActions: React.FC<{ path: string }> = ({ path }) => {
   const handleCopy = async () => {
     if (isEmpty) return
     try {
-      await navigator.clipboard.writeText(value)
+      const formattedNumber = formatPhoneForWhatsApp(value)
+      await navigator.clipboard.writeText(formattedNumber)
       setCopied(true)
       setTimeout(() => setCopied(false), 2000)
     } catch (err) {
@@ -52,7 +60,7 @@ export const MobileActions: React.FC<{ path: string }> = ({ path }) => {
         title={copied ? 'Copied!' : 'Copy to clipboard'}
         className={copied ? 'copied' : ''}
       >
-        <CopyIcon />
+        {copied ? <CheckIcon /> : <CopyIcon />}
       </button>
       <button
         type="button"
