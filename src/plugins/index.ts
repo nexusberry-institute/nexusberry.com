@@ -216,7 +216,58 @@ export const getPlugins = (): Plugin[] => {
   // In local development, Payload uses the staticDir from Media collection (public/media)
   if (process.env.PAYLOAD_LOCAL_STORAGE !== 'true') {
     basePlugins.push(
-      // s3Storage({ // Supabase Storage
+      /**
+       * UploadThing Storage Adapter Configuration
+       *
+       * UploadThing is a file hosting service that provides CDN-backed storage.
+       * Files are uploaded directly from the browser to UploadThing's servers,
+       * bypassing the Next.js server entirely.
+       *
+       * IMPORTANT: There's a known issue with `clientUploads: true` where the
+       * `generateFileURL` function doesn't receive the UploadThing file key.
+       * This is fixed via an `afterRead` hook in src/collections/Media.ts
+       * that generates the correct URL from the `_key` field.
+       *
+       * Required Environment Variables:
+       * - UPLOADTHING_TOKEN: Auth token from UploadThing dashboard
+       * - UPLOADTHING_APP_ID: Your app identifier (e.g., "pn1iqo7y4j")
+       *
+       * @see src/collections/Media.ts for the URL fix implementation
+       * @see https://github.com/payloadcms/payload/issues/11473
+       */
+      uploadthingStorage({
+        // clientUploads: true enables direct browser-to-cloud uploads
+        // This is ESSENTIAL for serverless deployments (Vercel, Netlify) because:
+        // - Server-side uploads are limited to 4.5MB on Vercel serverless functions
+        // - Direct uploads have no size limit and are faster (no server middleman)
+        clientUploads: true,
+
+        collections: {
+          media: {
+            // disablePayloadAccessControl: true bypasses Payload's API proxy
+            // Without this, Payload tries to serve files via /api/media/file/...
+            // With this enabled, files are served directly from UploadThing's CDN
+            // Benefits: faster delivery, reduced server load, CDN caching
+            disablePayloadAccessControl: true,
+
+            // NOTE: generateFileURL is intentionally NOT configured here because
+            // it doesn't receive the UploadThing file key with clientUploads: true.
+            // Instead, the URL is fixed via afterRead hook in Media.ts
+          },
+        },
+
+        options: {
+          // UPLOADTHING_TOKEN: Unified auth token from UploadThing dashboard
+          // Found at: https://uploadthing.com/dashboard/{app}/api-keys
+          token: process.env.UPLOADTHING_TOKEN,
+
+          // acl: 'public-read' makes uploaded files publicly accessible
+          // This is required for images/media that need to be displayed on the website
+          acl: 'public-read',
+        },
+      })
+
+      // s3Storage({ // Old Supabase Storage is same project
       //   collections: {
       //     media: {
       //       prefix: 'media',
@@ -232,17 +283,7 @@ export const getPlugins = (): Plugin[] => {
       //     region: process.env.S3_REGION || '',
       //     endpoint: process.env.S3_ENDPOINT || '',
       //   },
-      // }),
-      uploadthingStorage({
-        clientUploads: true,
-        collections: {
-          media: true,
-        },
-        options: {
-          token: process.env.UPLOADTHING_TOKEN,
-          acl: 'public-read',
-        },
-      }),
+      // }),      
     )
   }
 
