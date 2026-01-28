@@ -173,19 +173,6 @@ export default buildConfig({
           _verified: true,
         },
       })
-    } else {
-      // Ensure superadmin is verified
-      const admin = existingAdmin.docs[0]
-      if (!admin._verified) {
-        await payload.update({
-          collection: 'users',
-          id: admin.id,
-          overrideAccess: true,
-          data: {
-            _verified: true,
-          },
-        })
-      }
     }
   },
 })
