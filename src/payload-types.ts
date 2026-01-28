@@ -1130,7 +1130,7 @@ export interface Lead {
   /**
    * Course the lead is interested in
    */
-  course?: string | null;
+  course?: (number | null) | WebCourse;
   /**
    * Current stage in the sales pipeline
    */
@@ -1138,9 +1138,9 @@ export interface Lead {
   /**
    * Why the lead was lost
    */
-  lostReason?: ('price' | 'competitor' | 'not_interested' | 'timing' | 'no_response' | 'other') | null;
+  lostReason?: ('price' | 'competitor' | 'timing' | 'not_interested' | 'enroll_later' | 'no_response' | 'other') | null;
   /**
-   * Internal notes from CSR interactions
+   * CSR interactions, fee package, issues
    */
   notes?: string | null;
   /**

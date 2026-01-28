@@ -125,7 +125,8 @@ async function fetchAndStoreLead({ leadId, formId }: {
             mobile: fieldData.phone || fieldData.phone_number || fieldData.mobile_number || fieldData.mobile,
             city: fieldData.city || fieldData.location_city,
             currentBackground: fieldData.currentBackground || fieldData['what_is_your_current_status?'],
-            priorExperience: fieldData.priorExperience || fieldData['what_is_your_current_knowledge_of_html,_css,_and_javascript?']
+            priorExperience: fieldData.priorExperience || fieldData['what_is_your_current_knowledge_of_html,_css,_and_javascript?'],
+            course: fieldData.course || 3,
         },
     })
 }

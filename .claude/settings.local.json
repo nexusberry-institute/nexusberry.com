@@ -24,7 +24,8 @@
       "Bash(cross-env NODE_OPTIONS=\"--no-deprecation --max-old-space-size=8192\" next build:*)",
       "Bash(npx cross-env:*)",
       "WebFetch(domain:payloadcms.com)",
-      "Bash(pnpm generate:importmap:*)"
+      "Bash(pnpm generate:importmap:*)",
+      "Bash(xargs:*)"
     ]
   },
   "enableAllProjectMcpServers": true,

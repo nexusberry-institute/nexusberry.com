@@ -14,7 +14,8 @@ export const Leads: CollectionConfig = {
   admin: {
     useAsTitle: "name",
     group: "Marketing & Outreach",
-    defaultColumns: ['name', 'mobile', 'stage', 'course', 'createdAt'],
+    defaultColumns: ['createdAt', 'name', 'mobile', 'city', 'stage', 'notes', 'course'],
+    listSearchableFields: ['mobile', 'name'],
   },
   hooks: {
     afterChange: [
@@ -27,11 +28,14 @@ export const Leads: CollectionConfig = {
     // ===== SIDEBAR FIELDS =====
     {
       name: "course",
-      type: "text",
+      type: "relationship",
+      relationTo: "web-courses",
       label: "Interested Course",
+      hasMany: false,
       admin: {
         position: "sidebar",
         description: "Course the lead is interested in",
+        allowCreate: false,
       }
     },
     {
@@ -63,8 +67,9 @@ export const Leads: CollectionConfig = {
       options: [
         { label: "Price too high", value: "price" },
         { label: "Chose competitor", value: "competitor" },
-        { label: "Not interested anymore", value: "not_interested" },
         { label: "Bad timing", value: "timing" },
+        { label: "Not interested anymore", value: "not_interested" },
+        { label: "Delayed", value: "enroll_later" },
         { label: "No response", value: "no_response" },
         { label: "Other", value: "other" },
       ],
@@ -80,7 +85,7 @@ export const Leads: CollectionConfig = {
       label: "Staff Notes",
       admin: {
         position: "sidebar",
-        description: "Internal notes from CSR interactions",
+        description: "CSR interactions, fee package, issues",
       }
     },
     {

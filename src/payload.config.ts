@@ -169,9 +169,23 @@ export default buildConfig({
           username: 'superadmin',
           email: 'admin@nexusberry.com',
           password: '12345678',
-          roles: ["superadmin"]
+          roles: ["superadmin"],
+          _verified: true,
         },
       })
+    } else {
+      // Ensure superadmin is verified
+      const admin = existingAdmin.docs[0]
+      if (!admin._verified) {
+        await payload.update({
+          collection: 'users',
+          id: admin.id,
+          overrideAccess: true,
+          data: {
+            _verified: true,
+          },
+        })
+      }
     }
   },
 })
