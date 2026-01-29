@@ -14,7 +14,7 @@
 //         type: 'text',
 //         admin: {
 //             description: 'The canonical URL for this page. Leave blank to use the default URL.',
-//             placeholder: 'https://yoursite.com/courses/course-slug',
+//             placeholder: 'https://nexusberry.com/course/course-slug',
 //             ...(overrides?.admin || {}),
 //         },
 //         // validate: (value) => {
