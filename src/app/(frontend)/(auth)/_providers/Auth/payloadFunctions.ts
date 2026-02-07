@@ -95,21 +95,21 @@ export const payloadLogin = async (args: Login) => {
       }
     })
 
-    if (result.user.provider === "google") {
+    if (result.user?.provider === "google") {
       return {
         success: false,
         message: "Your account is registered through google. Use Login with google to access this account"
       }
     }
 
-    if (!result.user._verified) {
+    if (!result.user?._verified) {
       return {
         success: false,
         message: "our account needs verification. Please check your email for a verification link."
       }
     }
 
-    if (result.user.blocked) {
+    if (result.user?.blocked) {
       return {
         success: false,
         message: "Your account has been temporarily suspended. Please contact our support team for assistance."
