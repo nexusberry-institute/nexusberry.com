@@ -86,24 +86,25 @@ export default async function TopDepartments() {
               key={department.title}
             >
               <div className="bg-background flex flex-col items-center  justify-center gap-4  rounded-2xl hover:-translate-y-2 duration-700 h-60 px-2 py-14">
-                <div className="w-36 aspect-square relative">
-                  <Image
-                    src={typeof department.image === "object" ? department.image?.url || placeholderImg : placeholderImg}
-                    alt={typeof department.image === "object" ? department.image?.alt || department.title : department.title}
-                    fill
-                    className="object-cover"
-                    sizes="144px"
-                  />
-                </div>
+                {department.image && (
+                  <div className="w-36 aspect-square relative">
+                    <Image
+                      src={typeof department.image === "object" ? department.image?.url || placeholderImg : placeholderImg}
+                      alt={typeof department.image === "object" ? department.image?.alt || department.title : department.title}
+                      fill
+                      className="object-cover"
+                      sizes="144px"
+                    />
+                  </div>
+                )}
+
                 <h1 className="lg:text-[20px] font-semibold text-sm text-center ">
                   {department.title}
                 </h1>
                 <span
-                  // href={`/department/${department.slug}`}
-                  // aria-label={module.href}
                   className="text-primary-400 text-sm leading-[22px]"
                 >
-                  See Programs <ChevronRight className="inline" size={18} />
+                  See Courses <ChevronRight className="inline" size={18} />
                 </span>
               </div>
             </Link>
