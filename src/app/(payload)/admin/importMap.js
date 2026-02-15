@@ -29,7 +29,7 @@ import { InlineCodeFeatureClient as InlineCodeFeatureClient_e70f5e05f09f93e00b99
 import { SuperscriptFeatureClient as SuperscriptFeatureClient_e70f5e05f09f93e00b997edb1ef0c864 } from '@payloadcms/richtext-lexical/client'
 import { SubscriptFeatureClient as SubscriptFeatureClient_e70f5e05f09f93e00b997edb1ef0c864 } from '@payloadcms/richtext-lexical/client'
 import { StrikethroughFeatureClient as StrikethroughFeatureClient_e70f5e05f09f93e00b997edb1ef0c864 } from '@payloadcms/richtext-lexical/client'
-import { SlugField as SlugField_3817bf644402e67bfe6577f60ef982de } from '@payloadcms/ui'
+import { SlugField as SlugField_2b8867833a34864a02ddf429b0728a40 } from '@payloadcms/next/client'
 import { ExportEventLeads as ExportEventLeads_f28f5365c983c464fb2acfc112f47d5d } from '@/components/ExportButtons/ExportEventLeads'
 import { ExportCampaignLeads as ExportCampaignLeads_2c0e23320ca102fb71c4e1f25d2de1db } from '@/components/ExportButtons/ExportCampaignLeads'
 import { default as default_58798a9e2d7b92bc57a39edf2f62d889 } from '@/fields/PaymentPlanFields/TotalPrice'
@@ -47,7 +47,7 @@ import { Logo as Logo_6c8490617bef60039b781082d4fedeae } from '@/graphics/Logo/i
 import { default as default_1a7510af427896d367a49dbf838d2de6 } from '@/components/BeforeDashboard'
 import { default as default_8a7ab0eb7ab5c511aba12e68480bfe5e } from '@/components/BeforeLogin'
 import { UploadthingClientUploadHandler as UploadthingClientUploadHandler_749dcaa11bb61b873d113cb6c609bc10 } from '@payloadcms/storage-uploadthing/client'
-import { CollectionCards as CollectionCards_ab83ff7e88da8d3530831f296ec4756a } from '@payloadcms/ui/rsc'
+import { CollectionCards as CollectionCards_f9c02e79a4aed9a3924487c0cd4cafb1 } from '@payloadcms/next/rsc'
 
 export const importMap = {
   "@payloadcms/richtext-lexical/rsc#RscEntryLexicalCell": RscEntryLexicalCell_44fe37237e0ebf4470c9990d8cb7b07e,
@@ -81,7 +81,7 @@ export const importMap = {
   "@payloadcms/richtext-lexical/client#SuperscriptFeatureClient": SuperscriptFeatureClient_e70f5e05f09f93e00b997edb1ef0c864,
   "@payloadcms/richtext-lexical/client#SubscriptFeatureClient": SubscriptFeatureClient_e70f5e05f09f93e00b997edb1ef0c864,
   "@payloadcms/richtext-lexical/client#StrikethroughFeatureClient": StrikethroughFeatureClient_e70f5e05f09f93e00b997edb1ef0c864,
-  "@payloadcms/ui#SlugField": SlugField_3817bf644402e67bfe6577f60ef982de,
+  "@payloadcms/next/client#SlugField": SlugField_2b8867833a34864a02ddf429b0728a40,
   "@/components/ExportButtons/ExportEventLeads#ExportEventLeads": ExportEventLeads_f28f5365c983c464fb2acfc112f47d5d,
   "@/components/ExportButtons/ExportCampaignLeads#ExportCampaignLeads": ExportCampaignLeads_2c0e23320ca102fb71c4e1f25d2de1db,
   "@/fields/PaymentPlanFields/TotalPrice#default": default_58798a9e2d7b92bc57a39edf2f62d889,
@@ -99,5 +99,5 @@ export const importMap = {
   "@/components/BeforeDashboard#default": default_1a7510af427896d367a49dbf838d2de6,
   "@/components/BeforeLogin#default": default_8a7ab0eb7ab5c511aba12e68480bfe5e,
   "@payloadcms/storage-uploadthing/client#UploadthingClientUploadHandler": UploadthingClientUploadHandler_749dcaa11bb61b873d113cb6c609bc10,
-  "@payloadcms/ui/rsc#CollectionCards": CollectionCards_ab83ff7e88da8d3530831f296ec4756a
+  "@payloadcms/next/rsc#CollectionCards": CollectionCards_f9c02e79a4aed9a3924487c0cd4cafb1
 }
