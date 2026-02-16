@@ -25,7 +25,9 @@
       "Bash(npx cross-env:*)",
       "WebFetch(domain:payloadcms.com)",
       "Bash(pnpm generate:importmap:*)",
-      "Bash(xargs:*)"
+      "Bash(xargs:*)",
+      "Bash(ls:*)",
+      "Bash(pnpm remove:*)"
     ]
   },
   "enableAllProjectMcpServers": true,

@@ -108,6 +108,8 @@ export interface Config {
     quizzes: Quiz;
     'quiz-questions': QuizQuestion;
     videos: Video;
+    tutorials: Tutorial;
+    'tutorial-subjects': TutorialSubject;
     redirects: Redirect;
     forms: Form;
     'form-submissions': FormSubmission;
@@ -189,6 +191,8 @@ export interface Config {
     quizzes: QuizzesSelect<false> | QuizzesSelect<true>;
     'quiz-questions': QuizQuestionsSelect<false> | QuizQuestionsSelect<true>;
     videos: VideosSelect<false> | VideosSelect<true>;
+    tutorials: TutorialsSelect<false> | TutorialsSelect<true>;
+    'tutorial-subjects': TutorialSubjectsSelect<false> | TutorialSubjectsSelect<true>;
     redirects: RedirectsSelect<false> | RedirectsSelect<true>;
     forms: FormsSelect<false> | FormsSelect<true>;
     'form-submissions': FormSubmissionsSelect<false> | FormSubmissionsSelect<true>;
@@ -2027,6 +2031,31 @@ export interface Video {
   createdAt: string;
 }
 /**
+ * Tutorials of All Subjects
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "tutorials".
+ */
+export interface Tutorial {
+  id: number;
+  title?: string | null;
+  subject?: (number | null) | TutorialSubject;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * Subjects Categories for Tutorials
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "tutorial-subjects".
+ */
+export interface TutorialSubject {
+  id: number;
+  title?: string | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "redirects".
  */
@@ -2336,6 +2365,14 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'videos';
         value: number | Video;
+      } | null)
+    | ({
+        relationTo: 'tutorials';
+        value: number | Tutorial;
+      } | null)
+    | ({
+        relationTo: 'tutorial-subjects';
+        value: number | TutorialSubject;
       } | null)
     | ({
         relationTo: 'redirects';
@@ -3363,6 +3400,25 @@ export interface VideosSelect<T extends boolean = true> {
       };
   generateSlug?: T;
   slug?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "tutorials_select".
+ */
+export interface TutorialsSelect<T extends boolean = true> {
+  title?: T;
+  subject?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "tutorial-subjects_select".
+ */
+export interface TutorialSubjectsSelect<T extends boolean = true> {
+  title?: T;
   updatedAt?: T;
   createdAt?: T;
 }

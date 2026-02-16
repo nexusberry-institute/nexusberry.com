@@ -40,6 +40,8 @@ import { Quizzes } from './Quizzes'
 import { QuizQuestions } from './QuizQuestions'
 import { Assignments } from './Assignments'
 import { Videos } from './Videos'
+import { Tutorials } from './Tutorials'
+import { TutorialSubjects } from './TutorialSubjects'
 
 const collections = [
    Users, Media, Pages,
@@ -83,20 +85,10 @@ const collections = [
    Assignments,
    Quizzes,
    QuizQuestions,
-   Videos
+   Videos,
+   // Tutorials
+   Tutorials,
+   TutorialSubjects
 ];
+
 export default collections;
-
-
-//remainings => roles, rolepermissions, Events,
-
-// Groups
-// Academic Content
-//   Departments, Courses, Modules, Batches,
-// People Management
-// Users, Roles, Students, Teachers, Staffs,
-// Academic Operations
-// Lectures, TimeTable, AttendanceDetails, Attendances, Enrollments, FeeReceipts,
-// Marketing & Outreach
-// Leads, Events, Messages, RolePermissions,
-// Coursework
