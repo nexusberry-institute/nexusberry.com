@@ -4,8 +4,8 @@
             "command": "cmd",
             "args": [
                 "/c",
-                "npx",
-                "-y",
+                "pnpm",
+                "dlx",
                 "@playwright/mcp@latest"
             ]
         },
@@ -13,12 +13,12 @@
             "command": "cmd",
             "args": [
                 "/c",
-                "npx",
-                "-y",
+                "pnpm",
+                "dlx",
                 "mcp-remote",
                 "http://127.0.0.1:3000/api/mcp",
                 "--header",
-                "Authorization: Bearer API-KEY-HERE"
+                "Authorization: Bearer 39a4771a-9b82-4953-9cea-8c358f49621f"
             ]
         }
     }
