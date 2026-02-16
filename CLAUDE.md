@@ -7,8 +7,8 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 NexusBerry Training & Solutions is a full-stack education management platform built with Next.js 15 (App Router), PayloadCMS 3.68.3, and PostgreSQL. It combines a headless CMS with student/course management, LMS, event management, and marketing automation.
 
 **Tech Stack:**
-- Next.js 15.4.9 with React 19 (App Router)
-- PayloadCMS 3.68.3 (Headless CMS)
+- Next.js 15.4.11 with React 19 (App Router)
+- PayloadCMS 3.76.1 (Headless CMS)
 - PostgreSQL via Supabase (@payloadcms/db-postgres)
 - TypeScript 5.9.3
 - Tailwind CSS 4.1.18
@@ -86,6 +86,7 @@ src/app/
 │   │   ├── departments/    # Department pages
 │   │   ├── events/         # Events with live-stream support
 │   │   ├── forms/          # Dynamic forms
+│   │   ├── tutorials/       # Tutorials by subject
 │   │   └── verify-certificate/
 │   └── lms/                # Learning Management System
 │       ├── videos/         # Video lectures
@@ -117,7 +118,7 @@ src/app/
    - `seoPlugin`: Meta tags, Open Graph, JSON-LD, keywords, canonical
    - `formBuilderPlugin`: Dynamic form builder with submissions
    - `searchPlugin`: Full-text search on posts
-   - `s3Storage`: Supabase storage integration (endpoint in .env)
+   - `uploadthingStorage`: UploadThing CDN file storage (replaces S3)
 
 ### Access Control System
 
@@ -189,7 +190,8 @@ src/app/
 - `DATABASE_URI`: PostgreSQL connection string (Supabase)
 - `PAYLOAD_SECRET`: PayloadCMS secret key
 - `NEXT_PUBLIC_SERVER_URL`: Public URL (http://localhost:3000 in dev)
-- `S3_*`: Supabase storage credentials (endpoint, keys, bucket, region)
+- `UPLOADTHING_TOKEN`: Auth token from UploadThing dashboard
+- `UPLOADTHING_APP_ID`: App identifier for UploadThing
 
 **Marketing Integration:**
 - `NEXT_PUBLIC_GTM_ID`: Google Tag Manager
@@ -208,10 +210,10 @@ src/app/
 
 ### Storage Architecture
 
-**Current:** Supabase S3-compatible storage
-- Configuration in `src/plugins/index.ts` (s3Storage plugin)
-- Media uploads go to S3_BUCKET with 'media' prefix
-- 5MB file size limit (configured in payload.config.ts)
+**Current:** UploadThing CDN storage
+- Configuration in `src/plugins/index.ts` (uploadthingStorage plugin)
+- `clientUploads: true` for direct browser-to-cloud uploads (essential for Vercel's 4.5MB serverless limit)
+- URL generation handled via `afterRead` hook in `src/collections/Media.ts` (workaround for clientUploads key issue)
 
 **Legacy:** Cloudinary (nexusberry.it account) - still has historical content
 
@@ -265,7 +267,7 @@ Configured with responsive breakpoints:
 
 ### Important Patterns
 
-1. **Slug Generation:** Use `formatSlug` hook on beforeValidate for any collection with URLs
+1. **Slug Generation:** Use `...slugField()` from `@/fields/slug` (returns `[TextField, CheckboxField]` tuple, spread into fields array). Includes auto-generate from title + lock/unlock UI in sidebar.
 2. **Role Protection:** Use `protectRoles` hook to prevent unauthorized role changes
 3. **Published Date:** Use `populatePublishedAt` for content that needs publish dates
 4. **Access Control:** Always define read/create/update/delete access based on roles
@@ -315,7 +317,7 @@ The project uses two separate environments:
 | Environment | Database | File Storage | Config File |
 |-------------|----------|--------------|-------------|
 | **Local Dev** | Docker PostgreSQL (localhost:5432) | `public/media/` (local) | `.env.local` |
-| **Production** | Supabase PostgreSQL | Supabase S3 | `.env` |
+| **Production** | Supabase PostgreSQL | UploadThing CDN | `.env` |
 
 **How it works:** Next.js automatically loads `.env.local` with higher priority than `.env`. When running `pnpm dev`, local config is used. In CI/CD (where `.env.local` doesn't exist), production `.env` is used.
 
@@ -326,7 +328,7 @@ The project uses two separate environments:
 PAYLOAD_LOCAL_STORAGE=true   # Uses public/media/ for uploads
 
 # .env (production)
-PAYLOAD_LOCAL_STORAGE=false  # Uses Supabase S3 storage
+PAYLOAD_LOCAL_STORAGE=false  # Uses UploadThing CDN storage
 ```
 
 The S3 storage plugin is conditionally loaded in `src/plugins/index.ts` based on this variable.
@@ -397,7 +399,7 @@ mv .env.local.bak .env.local
 ### File Structure for Environments
 
 ```
-├── .env                    # Production config (Supabase DB + S3) - gitignored
+├── .env                    # Production config (Supabase DB + UploadThing) - gitignored
 ├── .env.local              # Local dev config (Docker + local uploads) - gitignored
 ├── .env.example            # Template for new developers - committed
 ├── docker-compose.yml      # Local PostgreSQL container
@@ -408,12 +410,12 @@ mv .env.local.bak .env.local
 
 ### Conditional Storage Configuration
 
-In `src/plugins/index.ts`, the `getPlugins()` function conditionally includes S3:
+In `src/plugins/index.ts`, the `getPlugins()` function conditionally includes UploadThing:
 
 ```typescript
-// S3 storage only added when PAYLOAD_LOCAL_STORAGE !== 'true'
+// UploadThing storage only added when PAYLOAD_LOCAL_STORAGE !== 'true'
 if (process.env.PAYLOAD_LOCAL_STORAGE !== 'true') {
-  basePlugins.push(s3Storage({...}))
+  basePlugins.push(uploadthingStorage({...}))
 }
 ```
 

@@ -207,6 +207,9 @@ export const getPlugins = (): Plugin[] => {
         posts: {
           enabled: true,
         },
+        tutorials: {
+          enabled: true
+        }
       },
     }),
 

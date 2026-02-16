@@ -1,4 +1,5 @@
 import type { CollectionConfig } from "payload";
+import { slugField } from '@/fields/slug'
 
 export const Tutorials: CollectionConfig = {
   slug: 'tutorials',
@@ -10,7 +11,16 @@ export const Tutorials: CollectionConfig = {
   fields: [
     {
       name: 'title',
-      type: 'text'
+      type: 'text',
+      required: true
+    },
+    ...slugField(),
+    {
+      name: 'position',
+      type: "number",
+      admin: {
+        position: 'sidebar',
+      },
     },
     {
       name: 'subject',
@@ -19,8 +29,47 @@ export const Tutorials: CollectionConfig = {
       admin: {
         position: 'sidebar',
       },
-    }
-    // video
+    },
+    {
+      name: 'label',
+      type: "text",
+      admin: {
+        position: 'sidebar',
+      },
+    },
+    {
+      name: 'videoSource',
+      type: 'select',
+      label: 'Video Source',
+      defaultValue: 'youtube',
+      options: [
+        { label: 'YouTube', value: 'youtube' },
+        { label: 'Bunny CDN', value: 'bunny' },
+      ],
+    },
+    {
+      name: 'youtubeUrl',
+      type: 'text',
+      label: 'YouTube Video URL',
+      admin: {
+        placeholder: 'https://www.youtube.com/watch?v=...',
+        condition: (_, siblingData) => siblingData?.videoSource === 'youtube',
+      },
+    },
+    {
+      name: 'bunnyVideoId',
+      type: 'text',
+      label: 'Bunny CDN Video ID',
+      admin: {
+        placeholder: 'e.g. abc123-def456',
+        description: 'The video ID from your Bunny CDN library',
+        condition: (_, siblingData) => siblingData?.videoSource === 'bunny',
+      },
+    },
+    {
+      name: 'content',
+      type: 'richText',
+      label: 'Tutorial Content',
+    },
   ]
-
 }

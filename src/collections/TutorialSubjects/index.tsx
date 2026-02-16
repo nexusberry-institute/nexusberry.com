@@ -1,4 +1,5 @@
 import type { CollectionConfig } from "payload";
+import { slugField } from '@/fields/slug'
 
 export const TutorialSubjects: CollectionConfig = {
   slug: 'tutorial-subjects',
@@ -10,8 +11,17 @@ export const TutorialSubjects: CollectionConfig = {
   fields: [
     {
       name: 'title',
-      type: 'text'
-    }
+      type: 'text',
+      required: true
+    },
+    ...slugField(),
+    {
+      name: 'position',
+      type: "number",
+      admin: {
+        position: 'sidebar',
+      },
+    },
   ]
 
 }

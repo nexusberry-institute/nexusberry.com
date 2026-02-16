@@ -2038,8 +2038,33 @@ export interface Video {
  */
 export interface Tutorial {
   id: number;
-  title?: string | null;
+  title: string;
+  slug?: string | null;
+  slugLock?: boolean | null;
+  position?: number | null;
   subject?: (number | null) | TutorialSubject;
+  label?: string | null;
+  videoSource?: ('youtube' | 'bunny') | null;
+  youtubeUrl?: string | null;
+  /**
+   * The video ID from your Bunny CDN library
+   */
+  bunnyVideoId?: string | null;
+  content?: {
+    root: {
+      type: string;
+      children: {
+        type: any;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  } | null;
   updatedAt: string;
   createdAt: string;
 }
@@ -2051,7 +2076,10 @@ export interface Tutorial {
  */
 export interface TutorialSubject {
   id: number;
-  title?: string | null;
+  title: string;
+  slug?: string | null;
+  slugLock?: boolean | null;
+  position?: number | null;
   updatedAt: string;
   createdAt: string;
 }
@@ -2172,6 +2200,24 @@ export interface PayloadMcpApiKey {
     update?: boolean | null;
     /**
      * Allow clients to delete posts.
+     */
+    delete?: boolean | null;
+  };
+  tutorials?: {
+    /**
+     * Allow clients to find tutorials.
+     */
+    find?: boolean | null;
+    /**
+     * Allow clients to create tutorials.
+     */
+    create?: boolean | null;
+    /**
+     * Allow clients to update tutorials.
+     */
+    update?: boolean | null;
+    /**
+     * Allow clients to delete tutorials.
      */
     delete?: boolean | null;
   };
@@ -3409,7 +3455,15 @@ export interface VideosSelect<T extends boolean = true> {
  */
 export interface TutorialsSelect<T extends boolean = true> {
   title?: T;
+  slug?: T;
+  slugLock?: T;
+  position?: T;
   subject?: T;
+  label?: T;
+  videoSource?: T;
+  youtubeUrl?: T;
+  bunnyVideoId?: T;
+  content?: T;
   updatedAt?: T;
   createdAt?: T;
 }
@@ -3419,6 +3473,9 @@ export interface TutorialsSelect<T extends boolean = true> {
  */
 export interface TutorialSubjectsSelect<T extends boolean = true> {
   title?: T;
+  slug?: T;
+  slugLock?: T;
+  position?: T;
   updatedAt?: T;
   createdAt?: T;
 }
@@ -3639,6 +3696,14 @@ export interface PayloadMcpApiKeysSelect<T extends boolean = true> {
   label?: T;
   description?: T;
   posts?:
+    | T
+    | {
+        find?: T;
+        create?: T;
+        update?: T;
+        delete?: T;
+      };
+  tutorials?:
     | T
     | {
         find?: T;
