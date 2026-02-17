@@ -1,0 +1,559 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Luxury Auto Dealership | NexusBerry</title>
+    <style>
+        /* ===== CSS CUSTOM PROPERTIES ===== */
+        :root {
+            /* Brand Colors */
+            --color-primary: #C9A84C;
+            --color-primary-dark: #A8882F;
+            --color-bg: #0A0A0A;
+            --color-bg-alt: #1A1A1A;
+            --color-text: #F5F5F5;
+            --color-text-muted: #888888;
+            --color-accent: #FFFFFF;
+            --color-overlay: rgba(0, 0, 0, 0.6);
+
+            /* Spacing Scale */
+            --space-xs: 0.5rem;
+            --space-sm: 1rem;
+            --space-md: 1.5rem;
+            --space-lg: 2rem;
+            --space-xl: 3rem;
+            --space-2xl: 4rem;
+
+            /* Typography Scale (fluid with clamp) */
+            --text-sm: clamp(0.8rem, 1.5vw, 0.9rem);
+            --text-base: clamp(0.9rem, 2vw, 1rem);
+            --text-lg: clamp(1.1rem, 2.5vw, 1.25rem);
+            --text-xl: clamp(1.5rem, 4vw, 2rem);
+            --text-2xl: clamp(2rem, 6vw, 3.5rem);
+            --text-3xl: clamp(2.5rem, 8vw, 5rem);
+
+            /* Transitions */
+            --transition-fast: 0.2s ease;
+            --transition-normal: 0.3s ease;
+
+            /* Layout */
+            --max-width: 1200px;
+            --border-radius: 8px;
+        }
+
+        /* ===== UNIVERSAL RESET ===== */
+        *, *::before, *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* ===== BODY ===== */
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--color-bg);
+            color: var(--color-text);
+            font-size: var(--text-base);
+            line-height: 1.6;
+        }
+
+        /* ===== NAVIGATION ===== */
+        .nav {
+            background-color: var(--color-bg-alt);
+            padding: var(--space-sm) var(--space-md);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            border-bottom: 1px solid var(--color-primary);
+        }
+
+        .nav-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: var(--max-width);
+            margin: 0 auto;
+        }
+
+        .nav-logo {
+            font-size: var(--text-lg);
+            font-weight: 700;
+            color: var(--color-primary);
+            text-decoration: none;
+            letter-spacing: 0.05em;
+        }
+
+        .nav-links {
+            display: none;
+            list-style: none;
+            gap: var(--space-md);
+        }
+
+        .nav-links a {
+            color: var(--color-text-muted);
+            text-decoration: none;
+            font-size: var(--text-sm);
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            transition: color var(--transition-fast);
+        }
+
+        .nav-links a:hover {
+            color: var(--color-primary);
+        }
+
+        @media (min-width: 768px) {
+            .nav-links {
+                display: flex;
+            }
+        }
+
+        /* ===== HERO SECTION ===== */
+        .hero {
+            position: relative;
+            min-height: 60vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: var(--space-xl) var(--space-md);
+            background: url('https://picsum.photos/id/514/1920/1080') center / cover no-repeat;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(to bottom, rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.4));
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 1;
+            max-width: 700px;
+        }
+
+        .hero h1 {
+            font-size: var(--text-3xl);
+            color: var(--color-accent);
+            margin-bottom: var(--space-sm);
+            letter-spacing: 0.02em;
+        }
+
+        .hero p {
+            font-size: var(--text-lg);
+            color: var(--color-text-muted);
+            margin-bottom: var(--space-lg);
+        }
+
+        @media (min-width: 768px) {
+            .hero {
+                min-height: 80vh;
+            }
+        }
+
+        @media (min-width: 1024px) {
+            .hero {
+                min-height: 100vh;
+            }
+        }
+
+        /* ===== BUTTONS ===== */
+        .btn-primary {
+            display: inline-block;
+            padding: var(--space-sm) var(--space-lg);
+            background-color: var(--color-primary);
+            color: var(--color-bg);
+            text-decoration: none;
+            font-weight: 700;
+            font-size: var(--text-base);
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            border-radius: var(--border-radius);
+            border: none;
+            cursor: pointer;
+            font-family: inherit;
+            transition: background-color var(--transition-normal),
+                        transform var(--transition-fast);
+        }
+
+        .btn-primary:hover {
+            background-color: var(--color-primary-dark);
+            transform: translateY(-2px);
+        }
+
+        .btn-secondary {
+            display: inline-block;
+            padding: var(--space-xs) var(--space-md);
+            border: 2px solid var(--color-primary);
+            color: var(--color-primary);
+            text-decoration: none;
+            font-weight: 600;
+            font-size: var(--text-sm);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            border-radius: var(--border-radius);
+            transition: background-color var(--transition-normal),
+                        color var(--transition-normal);
+        }
+
+        .btn-secondary:hover {
+            background-color: var(--color-primary);
+            color: var(--color-bg);
+        }
+
+        /* ===== VEHICLE CARDS SECTION ===== */
+        .vehicles {
+            padding: var(--space-2xl) var(--space-md);
+            max-width: var(--max-width);
+            margin: 0 auto;
+        }
+
+        .section-title {
+            text-align: center;
+            font-size: var(--text-xl);
+            color: var(--color-primary);
+            margin-bottom: var(--space-xl);
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+        }
+
+        .vehicle-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: var(--space-md);
+        }
+
+        @media (min-width: 768px) {
+            .vehicle-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (min-width: 1024px) {
+            .vehicle-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+
+        /* ===== VEHICLE CARD ===== */
+        .vehicle-card {
+            background-color: var(--color-bg-alt);
+            border-radius: var(--border-radius);
+            overflow: hidden;
+            transition: transform var(--transition-normal),
+                        box-shadow var(--transition-normal);
+        }
+
+        .vehicle-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 12px 40px rgba(201, 168, 76, 0.15);
+        }
+
+        .vehicle-card-image {
+            overflow: hidden;
+            height: 220px;
+        }
+
+        .vehicle-card-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform var(--transition-normal);
+        }
+
+        .vehicle-card:hover .vehicle-card-image img {
+            transform: scale(1.05);
+        }
+
+        .vehicle-card-body {
+            padding: var(--space-md);
+        }
+
+        .vehicle-card-body h3 {
+            color: var(--color-accent);
+            font-size: var(--text-lg);
+            margin-bottom: var(--space-xs);
+        }
+
+        .vehicle-card-body .price {
+            color: var(--color-primary);
+            font-size: var(--text-lg);
+            font-weight: 700;
+            margin-bottom: var(--space-sm);
+        }
+
+        .vehicle-card-body p {
+            color: var(--color-text-muted);
+            font-size: var(--text-sm);
+            margin-bottom: var(--space-md);
+        }
+
+        /* ===== WHY CHOOSE US SECTION ===== */
+        .features {
+            padding: var(--space-2xl) var(--space-md);
+            background-color: var(--color-bg-alt);
+        }
+
+        .features-container {
+            max-width: var(--max-width);
+            margin: 0 auto;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: var(--space-md);
+        }
+
+        @media (min-width: 768px) {
+            .features-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (min-width: 1024px) {
+            .features-grid {
+                grid-template-columns: repeat(4, 1fr);
+            }
+        }
+
+        .feature-card {
+            text-align: center;
+            padding: var(--space-lg);
+            background-color: var(--color-bg);
+            border-radius: var(--border-radius);
+            border: 1px solid transparent;
+            transition: border-color var(--transition-normal),
+                        transform var(--transition-normal);
+        }
+
+        .feature-card:hover {
+            border-color: var(--color-primary);
+            transform: translateY(-4px);
+        }
+
+        .feature-card .icon {
+            font-size: 2.5rem;
+            margin-bottom: var(--space-sm);
+            display: block;
+        }
+
+        .feature-card h3 {
+            color: var(--color-accent);
+            font-size: var(--text-base);
+            margin-bottom: var(--space-xs);
+        }
+
+        .feature-card p {
+            color: var(--color-text-muted);
+            font-size: var(--text-sm);
+            line-height: 1.5;
+        }
+
+        /* ===== CONTACT SECTION ===== */
+        .contact {
+            padding: var(--space-2xl) var(--space-md);
+            max-width: var(--max-width);
+            margin: 0 auto;
+        }
+
+        .contact-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: var(--space-lg);
+        }
+
+        @media (min-width: 768px) {
+            .contact-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+
+        .contact-info h3 {
+            color: var(--color-accent);
+            font-size: var(--text-lg);
+            margin-bottom: var(--space-sm);
+        }
+
+        .contact-info p {
+            color: var(--color-text-muted);
+            font-size: var(--text-sm);
+            margin-bottom: var(--space-xs);
+            line-height: 1.6;
+        }
+
+        .contact-form input,
+        .contact-form textarea {
+            width: 100%;
+            padding: var(--space-sm);
+            margin-bottom: var(--space-sm);
+            background-color: var(--color-bg-alt);
+            border: 1px solid var(--color-text-muted);
+            border-radius: var(--border-radius);
+            color: var(--color-text);
+            font-size: var(--text-base);
+            font-family: inherit;
+            transition: border-color var(--transition-fast);
+        }
+
+        .contact-form input:focus,
+        .contact-form textarea:focus {
+            outline: none;
+            border-color: var(--color-primary);
+        }
+
+        .contact-form textarea {
+            min-height: 120px;
+            resize: vertical;
+        }
+
+        .contact-form .btn-primary {
+            width: 100%;
+        }
+
+        /* ===== FOOTER ===== */
+        .footer {
+            text-align: center;
+            padding: var(--space-lg) var(--space-md);
+            border-top: 2px solid var(--color-primary);
+            background-color: var(--color-bg-alt);
+        }
+
+        .footer p {
+            color: var(--color-text-muted);
+            font-size: var(--text-sm);
+            margin-bottom: var(--space-xs);
+        }
+
+        .footer .brand {
+            color: var(--color-primary);
+            font-weight: 700;
+        }
+    </style>
+</head>
+<body>
+    <!-- ===== NAVIGATION ===== -->
+    <nav class="nav">
+        <div class="nav-container">
+            <a href="#" class="nav-logo">LUXE MOTORS</a>
+            <ul class="nav-links">
+                <li><a href="#vehicles">Vehicles</a></li>
+                <li><a href="#why-us">Why Us</a></li>
+                <li><a href="#contact">Contact</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- ===== HERO SECTION ===== -->
+    <section class="hero">
+        <div class="hero-content">
+            <h1>Experience Luxury</h1>
+            <p>Discover our exclusive collection of premium vehicles crafted for those who demand the extraordinary.</p>
+            <a href="#vehicles" class="btn-primary">View Collection</a>
+        </div>
+    </section>
+
+    <!-- ===== VEHICLE CARDS SECTION ===== -->
+    <section class="vehicles" id="vehicles">
+        <h2 class="section-title">Our Collection</h2>
+        <div class="vehicle-grid">
+            <div class="vehicle-card">
+                <div class="vehicle-card-image">
+                    <img src="https://picsum.photos/id/111/600/400" alt="2024 Luxury Sedan in showroom">
+                </div>
+                <div class="vehicle-card-body">
+                    <h3>Luxury Sedan</h3>
+                    <p class="price">$89,900</p>
+                    <p>Twin-turbo engine, premium leather interior, advanced driver assistance system.</p>
+                    <a href="#" class="btn-secondary">View Details</a>
+                </div>
+            </div>
+            <div class="vehicle-card">
+                <div class="vehicle-card-image">
+                    <img src="https://picsum.photos/id/116/600/400" alt="2024 Sport SUV on display">
+                </div>
+                <div class="vehicle-card-body">
+                    <h3>Sport SUV</h3>
+                    <p class="price">$72,500</p>
+                    <p>All-wheel drive, panoramic sunroof, 7-passenger seating with luxury trim.</p>
+                    <a href="#" class="btn-secondary">View Details</a>
+                </div>
+            </div>
+            <div class="vehicle-card">
+                <div class="vehicle-card-image">
+                    <img src="https://picsum.photos/id/133/600/400" alt="2024 Electric GT at dealership">
+                </div>
+                <div class="vehicle-card-body">
+                    <h3>Electric GT</h3>
+                    <p class="price">$124,000</p>
+                    <p>0-60 in 2.9s, 400-mile range, autonomous driving ready with OTA updates.</p>
+                    <a href="#" class="btn-secondary">View Details</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== WHY CHOOSE US SECTION ===== -->
+    <section class="features" id="why-us">
+        <div class="features-container">
+            <h2 class="section-title">Why Choose Us</h2>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <span class="icon">&#127942;</span>
+                    <h3>Award Winning</h3>
+                    <p>Recognized as the top luxury dealership for 5 consecutive years.</p>
+                </div>
+                <div class="feature-card">
+                    <span class="icon">&#128295;</span>
+                    <h3>Expert Service</h3>
+                    <p>Factory-trained technicians with state-of-the-art facilities.</p>
+                </div>
+                <div class="feature-card">
+                    <span class="icon">&#128142;</span>
+                    <h3>Premium Selection</h3>
+                    <p>Curated collection of the world's finest automobiles.</p>
+                </div>
+                <div class="feature-card">
+                    <span class="icon">&#129309;</span>
+                    <h3>Trusted Partner</h3>
+                    <p>Transparent pricing with no hidden fees. Ever.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== CONTACT SECTION ===== -->
+    <section class="contact" id="contact">
+        <h2 class="section-title">Get In Touch</h2>
+        <div class="contact-grid">
+            <div class="contact-info">
+                <h3>Visit Our Showroom</h3>
+                <p>123 Luxury Lane, Lahore, Pakistan</p>
+                <p>Phone: 042-36440443</p>
+                <p>Email: sales@luxemotors.com</p>
+                <p>WhatsApp: 0328-4500073</p>
+                <p>Mon - Sat: 9:00 AM - 8:00 PM</p>
+                <p>Sunday: By appointment only</p>
+            </div>
+            <form class="contact-form">
+                <input type="text" placeholder="Your Name" required>
+                <input type="email" placeholder="Your Email" required>
+                <input type="tel" placeholder="Your Phone">
+                <textarea placeholder="Tell us about your dream car..." required></textarea>
+                <button type="submit" class="btn-primary">Send Message</button>
+            </form>
+        </div>
+    </section>
+
+    <!-- ===== FOOTER ===== -->
+    <footer class="footer">
+        <p>&copy; 2026 <span class="brand">LUXE MOTORS</span>. All rights reserved.</p>
+        <p>A project by NexusBerry Modern Frontend Course</p>
+    </footer>
+</body>
+</html>

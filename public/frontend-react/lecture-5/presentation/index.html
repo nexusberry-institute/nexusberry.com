@@ -1,0 +1,1022 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lecture 5: Advanced CSS & Responsive Design | NexusBerry Modern Frontend Course</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5/dist/reveal.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5/dist/theme/black.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5/plugin/highlight/monokai.css">
+    <style>
+        :root {
+            /* NexusBerry Brand Colors */
+            --nb-berry: #990147;
+            --nb-nexus: #0020C2;
+            --nb-berry-light: #E04A7A;
+            --nb-nexus-light: #4D70FF;
+            --nb-bg: #080D2B;
+            --nb-text: #F0F0F5;
+
+            /* Extended palette for infographics */
+            --nb-accent-green: #00C896;
+            --nb-accent-orange: #FF8C42;
+            --nb-accent-red: #FF4C6A;
+            --nb-accent-purple: #A855F7;
+            --nb-surface: #0F1642;
+            --nb-surface-2: #1A2258;
+            --nb-border: #2A3370;
+            --nb-dim: #6B7094;
+
+            /* Animation timing */
+            --nb-duration-fast: 0.3s;
+            --nb-duration-normal: 0.6s;
+            --nb-duration-slow: 0.9s;
+            --nb-ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .reveal {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        .reveal h1, .reveal h2, .reveal h3 {
+            color: var(--nb-berry-light);
+            text-transform: none;
+        }
+        .reveal .slide-background {
+            background-color: var(--nb-bg);
+        }
+        .reveal pre code {
+            font-size: 0.85em;
+            line-height: 1.4;
+            max-height: 500px;
+        }
+        .reveal .nexusberry-brand {
+            color: var(--nb-berry);
+            font-weight: bold;
+        }
+        .reveal .interactive-q-slide {
+            text-align: left;
+        }
+        .reveal .interactive-q-slide .options {
+            list-style: upper-alpha;
+            font-size: 0.9em;
+        }
+        .reveal .code-transition {
+            font-size: 1.5em;
+            color: var(--nb-berry-light);
+        }
+        .reveal .part-label {
+            font-size: 0.6em;
+            color: var(--nb-nexus-light);
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+        }
+        .reveal footer {
+            position: absolute;
+            bottom: 1em;
+            left: 1em;
+            font-size: 0.5em;
+            color: #8888AA;
+        }
+
+        /* ===== ANIMATION KEYFRAMES ===== */
+        @keyframes nb-rise { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes nb-slide-right { from { opacity: 0; transform: translateX(-30px); } to { opacity: 1; transform: translateX(0); } }
+        @keyframes nb-slide-left { from { opacity: 0; transform: translateX(30px); } to { opacity: 1; transform: translateX(0); } }
+        @keyframes nb-pop { from { opacity: 0; transform: scale(0.8); } to { opacity: 1; transform: scale(1); } }
+        @keyframes nb-draw-h { from { width: 0; } to { width: 100%; } }
+        @keyframes nb-draw-v { from { height: 0; } to { height: 100%; } }
+        @keyframes nb-pulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.05); } }
+        @keyframes nb-glow { 0%, 100% { box-shadow: 0 0 5px var(--nb-berry-light); } 50% { box-shadow: 0 0 20px var(--nb-berry-light); } }
+        @keyframes nb-fill-bar { from { width: 0; } }
+        @keyframes nb-highlight-correct { to { background: rgba(0,200,150,0.2); border-color: var(--nb-accent-green); } }
+        @keyframes nb-highlight-wrong { to { background: rgba(255,76,106,0.15); border-color: var(--nb-accent-red); } }
+
+        /* Animation utility classes */
+        .nb-anim-rise { animation: nb-rise var(--nb-duration-normal) var(--nb-ease-out) both; }
+        .nb-anim-pop { animation: nb-pop var(--nb-duration-normal) var(--nb-ease-out) both; }
+        .nb-anim-pulse { animation: nb-pulse 2s ease-in-out infinite; }
+        .nb-anim-glow { animation: nb-glow 2s ease-in-out infinite; }
+        .nb-delay-1 { animation-delay: 0.1s; } .nb-delay-2 { animation-delay: 0.2s; }
+        .nb-delay-3 { animation-delay: 0.3s; } .nb-delay-4 { animation-delay: 0.4s; }
+        .nb-delay-5 { animation-delay: 0.5s; } .nb-delay-6 { animation-delay: 0.6s; }
+        .nb-delay-7 { animation-delay: 0.7s; } .nb-delay-8 { animation-delay: 0.8s; }
+
+        /* ===== INFOGRAPHIC: Process Flow (Horizontal) ===== */
+        .nb-flow { display: flex; align-items: center; justify-content: center; gap: 0; flex-wrap: wrap; margin: 0.8em 0; }
+        .nb-flow-step { background: var(--nb-surface); border: 1px solid var(--nb-border); border-radius: 10px; padding: 0.5em 0.7em; text-align: center; min-width: 90px; flex-shrink: 1; }
+        .nb-flow-step .icon { font-size: 1.3em; display: block; margin-bottom: 0.2em; }
+        .nb-flow-step .label { font-size: 0.6em; font-weight: 600; color: var(--nb-text); }
+        .nb-flow-step .sublabel { font-size: 0.45em; color: var(--nb-dim); margin-top: 0.1em; }
+        .nb-flow-step.nb-active { border-color: var(--nb-berry-light); box-shadow: 0 0 12px rgba(224,74,122,0.3); }
+        .nb-flow-arrow { font-size: 1em; color: var(--nb-dim); padding: 0 0.2em; flex-shrink: 0; }
+
+        /* ===== INFOGRAPHIC: Process Flow (Vertical) ===== */
+        .nb-flow-v { display: flex; flex-direction: column; align-items: center; gap: 0; margin: 0.5em auto; max-width: 320px; }
+        .nb-flow-v .nb-flow-step { width: 100%; min-width: unset; padding: 0.4em 0.6em; }
+        .nb-flow-v .nb-flow-step .icon { font-size: 1.1em; margin-bottom: 0.1em; }
+        .nb-flow-v .nb-flow-step .label { font-size: 0.55em; }
+        .nb-flow-v .nb-flow-arrow { transform: rotate(90deg); padding: 0.1em 0; font-size: 0.8em; }
+
+        /* ===== INFOGRAPHIC: Comparison / Versus ===== */
+        .nb-compare { display: grid; grid-template-columns: 1fr auto 1fr; gap: 0.6em; align-items: start; margin: 0.6em 0; }
+        .nb-col-a, .nb-col-b { background: var(--nb-surface); border-radius: 10px; padding: 0.7em; border: 2px solid var(--nb-border); }
+        .nb-col-a { border-color: var(--nb-nexus-light); }
+        .nb-col-b { border-color: var(--nb-berry-light); }
+        .nb-col-a h4, .nb-col-b h4 { margin-top: 0; font-size: 0.75em; }
+        .nb-col-a p, .nb-col-b p { margin: 0.3em 0; }
+        .nb-col-a pre, .nb-col-b pre { margin: 0.3em 0; }
+        .nb-vs { display: flex; align-items: center; font-size: 1.1em; font-weight: 700; color: var(--nb-dim); padding: 0 0.2em; }
+        .nb-winner { border-color: var(--nb-accent-green) !important; box-shadow: 0 0 15px rgba(0,200,150,0.25); }
+
+        /* ===== INFOGRAPHIC: Anatomy / Breakdown ===== */
+        .nb-anatomy { text-align: center; margin: 1em 0; }
+        .nb-anatomy pre { display: inline-block; text-align: left; }
+        .nb-anatomy .nb-callouts { display: flex; justify-content: center; gap: 1.5em; margin-top: 1em; flex-wrap: wrap; }
+        .nb-anatomy .nb-callout-item { font-size: 0.65em; display: flex; align-items: center; gap: 0.4em; }
+        .nb-anatomy .nb-dot { width: 10px; height: 10px; border-radius: 50%; display: inline-block; flex-shrink: 0; }
+        .nb-hl-1 { color: var(--nb-berry-light); } .nb-dot-1 { background: var(--nb-berry-light); }
+        .nb-hl-2 { color: var(--nb-nexus-light); } .nb-dot-2 { background: var(--nb-nexus-light); }
+        .nb-hl-3 { color: var(--nb-accent-green); } .nb-dot-3 { background: var(--nb-accent-green); }
+        .nb-hl-4 { color: var(--nb-accent-orange); } .nb-dot-4 { background: var(--nb-accent-orange); }
+
+        /* ===== INFOGRAPHIC: Timeline ===== */
+        .nb-timeline { display: flex; align-items: flex-start; justify-content: center; position: relative; margin: 2em 0; padding-top: 1.5em; }
+        .nb-timeline::before { content: ''; position: absolute; top: 1.5em; left: 10%; right: 10%; height: 3px; background: var(--nb-border); }
+        .nb-timeline-point { text-align: center; position: relative; z-index: 1; flex: 1; }
+        .nb-timeline-point .dot { width: 14px; height: 14px; border-radius: 50%; background: var(--nb-dim); margin: 0 auto 0.5em; border: 2px solid var(--nb-border); }
+        .nb-timeline-point .label { font-size: 0.65em; color: var(--nb-text); }
+        .nb-timeline-point .sublabel { font-size: 0.5em; color: var(--nb-dim); }
+        .nb-timeline-point.nb-current .dot { background: var(--nb-berry-light); border-color: var(--nb-berry-light); box-shadow: 0 0 10px rgba(224,74,122,0.4); }
+
+        /* ===== INFOGRAPHIC: Tree / Hierarchy ===== */
+        .nb-tree { display: flex; flex-direction: column; align-items: center; gap: 0; margin: 0.6em 0; }
+        .nb-tree-node { background: var(--nb-surface); border: 1px solid var(--nb-border); border-radius: 6px; padding: 0.4em 0.8em; font-size: 0.6em; text-align: center; position: relative; }
+        .nb-tree-node.nb-root { border-color: var(--nb-berry-light); font-weight: 600; }
+        .nb-tree-connector { width: 2px; height: 15px; background: var(--nb-border); }
+        .nb-tree-children { display: flex; gap: 1.5em; position: relative; padding-top: 15px; }
+
+        /* ===== INFOGRAPHIC: Icon Cards ===== */
+        .nb-cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 0.7em; margin: 0.8em 0; }
+        .nb-card { background: var(--nb-surface); border: 1px solid var(--nb-border); border-radius: 10px; padding: 0.8em 0.7em; text-align: center; }
+        .nb-card .icon { font-size: 1.5em; display: block; margin-bottom: 0.2em; }
+        .nb-card .title { font-size: 0.65em; font-weight: 600; color: var(--nb-text); margin-bottom: 0.2em; }
+        .nb-card .desc { font-size: 0.5em; color: var(--nb-dim); line-height: 1.3; }
+        .nb-card-berry { border-color: var(--nb-berry-light); }
+        .nb-card-nexus { border-color: var(--nb-nexus-light); }
+        .nb-card-green { border-color: var(--nb-accent-green); }
+        .nb-card-orange { border-color: var(--nb-accent-orange); }
+
+        /* ===== INFOGRAPHIC: Stat Bars ===== */
+        .nb-stats { margin: 0.6em 0; }
+        .nb-stat { margin-bottom: 0.6em; }
+        .nb-stat .stat-header { display: flex; justify-content: space-between; font-size: 0.6em; margin-bottom: 0.2em; }
+        .nb-stat .stat-label { color: var(--nb-text); }
+        .nb-stat .stat-value { color: var(--nb-berry-light); font-weight: 700; }
+        .nb-stat .stat-track { height: 6px; background: var(--nb-surface); border-radius: 3px; overflow: hidden; }
+        .nb-stat .stat-fill { height: 100%; border-radius: 3px; background: linear-gradient(90deg, var(--nb-nexus-light), var(--nb-berry-light)); }
+        .present .nb-stat .stat-fill { animation: nb-fill-bar var(--nb-duration-slow) var(--nb-ease-out) both; }
+
+        /* ===== INFOGRAPHIC: Callout Boxes ===== */
+        .nb-callout { background: var(--nb-surface); border-left: 4px solid var(--nb-border); border-radius: 0 8px 8px 0; padding: 0.6em 0.8em; margin: 0.6em 0 1.5em 0; text-align: left; font-size: 0.65em; display: flex; align-items: flex-start; gap: 0.5em; }
+        .nb-callout .callout-icon { font-size: 1.1em; flex-shrink: 0; }
+        .nb-callout .callout-text { line-height: 1.4; }
+        .nb-tip { border-color: var(--nb-accent-green); }
+        .nb-warning { border-color: var(--nb-accent-orange); }
+        .nb-error { border-color: var(--nb-accent-red); }
+        .nb-pro { border-color: var(--nb-accent-purple); }
+
+        /* ===== COMPACT TABLES ===== */
+        .reveal table { font-size: 0.6em; margin: 0.5em auto; }
+        .reveal table th, .reveal table td { padding: 0.3em 0.6em; }
+        .reveal table code { font-size: 0.85em; }
+
+        /* ===== CODE BLOCK COPY BUTTON ===== */
+        .reveal pre { position: relative; }
+        .reveal pre code { padding-right: 2.5em; }
+        .copy-btn {
+            position: absolute;
+            top: 0.4em;
+            right: 0.4em;
+            background: var(--nb-surface-2);
+            border: 1px solid var(--nb-border);
+            border-radius: 4px;
+            padding: 0.3em 0.5em;
+            font-size: 0.7em;
+            color: var(--nb-dim);
+            cursor: pointer;
+            opacity: 0;
+            transition: opacity 0.2s, background 0.2s;
+            z-index: 10;
+        }
+        .reveal pre:hover .copy-btn { opacity: 1; }
+        .copy-btn:hover { background: var(--nb-border); color: var(--nb-text); }
+        .copy-btn.copied { background: var(--nb-accent-green); color: var(--nb-bg); }
+
+        /* ===== LOGO WATERMARK ===== */
+        .reveal .slides section:not(.stack)::after {
+            content: '';
+            position: absolute;
+            bottom: 10px;
+            right: 10px;
+            width: 120px;
+            height: 32px;
+            background: url('../../logo/nexusberry-logo-transparent-1712x450.png') no-repeat center / contain;
+            opacity: 0.35;
+            pointer-events: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="reveal">
+        <div class="slides">
+
+            <!-- ===== TITLE SLIDE ===== -->
+            <section>
+                <img src="../../../logo/nexusberry-logo-whitebg-1914x468.png"
+                     alt="NexusBerry Logo" style="width: 200px; margin-bottom: 0.5em; opacity: 0.9;">
+                <p class="part-label">NexusBerry Modern Frontend Course</p>
+                <h1>Lecture 5</h1>
+                <h2>Advanced CSS &amp; Responsive Design</h2>
+                <p>By Rana M. Ajmal | February 2026</p>
+                <p style="font-size: 0.5em;">
+                    <a href="?print-pdf" target="_blank" style="color: var(--nb-dim);">Export PDF</a>
+                    &nbsp;|&nbsp;
+                    <a href="index.html" target="_blank" style="color: var(--nb-dim);">Open in Browser</a>
+                </p>
+                <footer>www.nexusberry.com</footer>
+            </section>
+
+            <!-- ===== TABLE OF CONTENTS ===== -->
+            <section>
+                <h2>Today's Agenda</h2>
+                <ol>
+                    <li class="fragment fade-up">CSS Custom Properties &amp; Responsive Units</li>
+                    <li class="fragment fade-up">Media Queries &amp; Mobile-First Design</li>
+                    <li class="fragment fade-up">CSS Transitions, Transforms &amp; Responsive Images</li>
+                    <li class="fragment fade-up">Building the Complete Luxury Dealership</li>
+                </ol>
+                <div class="nb-callout nb-pro fragment fade-up" style="margin-top: 1em;">
+                    <span class="callout-icon">&#128142;</span>
+                    <span class="callout-text"><strong>Project:</strong> Luxury Auto Dealership Showcase &mdash; a premium responsive multi-section website</span>
+                </div>
+            </section>
+
+            <!-- ===== PART 1: CSS Custom Properties & Responsive Units ===== -->
+            <section>
+                <!-- Part 1 Title -->
+                <section>
+                    <p class="part-label">Part 1</p>
+                    <h2>CSS Custom Properties &amp; Responsive Units</h2>
+                    <p style="font-size: 0.8em; color: var(--nb-dim);">Define once. Use everywhere. Change in one place.</p>
+                </section>
+
+                <!-- Comparison: Hardcoded vs Variables -->
+                <section>
+                    <h3>The Problem with Hardcoded Values</h3>
+                    <div class="nb-compare">
+                        <div class="nb-col-a fragment fade-right">
+                            <h4>&#10060; Hardcoded</h4>
+                            <pre><code data-trim data-noescape style="font-size: 0.7em;">
+.nav { color: #C9A84C; }
+.btn { background: #C9A84C; }
+.link { border: 1px solid #C9A84C; }
+.heading { color: #C9A84C; }
+/* Client says "make it blue"...
+   Change 47 lines! */
+                            </code></pre>
+                        </div>
+                        <div class="nb-vs">VS</div>
+                        <div class="nb-col-b nb-winner fragment fade-left">
+                            <h4>&#9989; Variables</h4>
+                            <pre><code data-trim data-noescape style="font-size: 0.7em;">
+:root {
+  --color-primary: #C9A84C;
+}
+.nav { color: var(--color-primary); }
+.btn { background: var(--color-primary); }
+/* Change 1 line! */
+                            </code></pre>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Anatomy: Variable Syntax -->
+                <section>
+                    <h3>CSS Variable Syntax</h3>
+                    <div class="nb-anatomy">
+                        <pre><code data-trim data-noescape style="font-size: 0.9em;">
+<span class="nb-hl-1">:root</span> {
+    <span class="nb-hl-2">--color-primary</span>: <span class="nb-hl-3">#C9A84C</span>;
+}
+h1 {
+    color: <span class="nb-hl-4">var(</span><span class="nb-hl-2">--color-primary</span><span class="nb-hl-4">)</span>;
+}
+                        </code></pre>
+                        <div class="nb-callouts fragment fade-up">
+                            <span class="nb-callout-item"><span class="nb-dot nb-dot-1"></span> :root scope (global)</span>
+                            <span class="nb-callout-item"><span class="nb-dot nb-dot-2"></span> Variable name (--prefix)</span>
+                            <span class="nb-callout-item"><span class="nb-dot nb-dot-3"></span> Value</span>
+                            <span class="nb-callout-item"><span class="nb-dot nb-dot-4"></span> var() function</span>
+                        </div>
+                    </div>
+                    <div class="nb-callout nb-warning fragment fade-up">
+                        <span class="callout-icon">&#9888;</span>
+                        <span class="callout-text">Misspelled variable names fail <strong>silently</strong> &mdash; no error, just no value applied!</span>
+                    </div>
+                </section>
+
+                <!-- Cards: Responsive Units -->
+                <section>
+                    <h3>Responsive Units</h3>
+                    <div class="nb-cards" style="grid-template-columns: repeat(2, 1fr);">
+                        <div class="nb-card nb-card-berry fragment fade-up">
+                            <span class="icon">&#128207;</span>
+                            <span class="title"><code>rem</code></span>
+                            <span class="desc">Relative to root font size (16px). Best for font sizes &amp; spacing.</span>
+                        </div>
+                        <div class="nb-card nb-card-nexus fragment fade-up">
+                            <span class="icon">&#128196;</span>
+                            <span class="title"><code>em</code></span>
+                            <span class="desc">Relative to parent font size. Compounds with nesting &mdash; use carefully.</span>
+                        </div>
+                        <div class="nb-card nb-card-green fragment fade-up">
+                            <span class="icon">&#8596;</span>
+                            <span class="title"><code>vw / vh</code></span>
+                            <span class="desc">1% of viewport width/height. Great for full-screen sections.</span>
+                        </div>
+                        <div class="nb-card nb-card-orange fragment fade-up">
+                            <span class="icon">&#128200;</span>
+                            <span class="title"><code>clamp()</code></span>
+                            <span class="desc">Fluid sizing: clamp(min, preferred, max). Replaces media queries!</span>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Flow: Evolution -->
+                <section>
+                    <h3>The Sizing Evolution</h3>
+                    <div class="nb-flow">
+                        <div class="nb-flow-step fragment fade-up">
+                            <span class="icon">&#128207;</span>
+                            <span class="label"><code>px</code></span>
+                            <span class="sublabel">Fixed, doesn't scale</span>
+                        </div>
+                        <span class="nb-flow-arrow fragment fade-in">&#8594;</span>
+                        <div class="nb-flow-step fragment fade-up">
+                            <span class="icon">&#128200;</span>
+                            <span class="label"><code>rem</code></span>
+                            <span class="sublabel">Scalable, consistent</span>
+                        </div>
+                        <span class="nb-flow-arrow fragment fade-in">&#8594;</span>
+                        <div class="nb-flow-step nb-active fragment fade-up">
+                            <span class="icon">&#11088;</span>
+                            <span class="label"><code>clamp()</code></span>
+                            <span class="sublabel">Fluid, no breakpoints</span>
+                        </div>
+                    </div>
+                    <pre class="fragment fade-up"><code data-trim style="font-size: 0.8em;">
+/* Fluid typography — no media queries needed! */
+h1 {
+    font-size: clamp(2rem, 6vw, 3.5rem);
+    /* min: 32px | scales with viewport | max: 56px */
+}
+                    </code></pre>
+                </section>
+
+                <!-- Code Transition -->
+                <section>
+                    <p class="code-transition">Let's build our project skeleton!</p>
+                    <p>Switch to VS Code</p>
+                    <p style="font-size: 0.6em; color: var(--nb-dim);">:root variables + reset + base typography with clamp()</p>
+                </section>
+
+                <!-- Interactive Question 1 -->
+                <section class="interactive-q-slide">
+                    <h3>&#129300; Interactive Question</h3>
+                    <p style="font-size: 0.8em;">You have <code>--color-primary: #C9A84C;</code> used in <strong>15 different places</strong>. The client wants blue. How many lines do you change?</p>
+                    <ol class="options">
+                        <li class="fragment fade-in">15 lines</li>
+                        <li class="fragment fade-in" style="color: var(--nb-accent-green);">1 line (the variable declaration) &#9989;</li>
+                        <li class="fragment fade-in">0 lines (CSS doesn't support variables)</li>
+                        <li class="fragment fade-in">You have to use JavaScript</li>
+                    </ol>
+                    <div class="nb-callout nb-tip fragment fade-up">
+                        <span class="callout-icon">&#9889;</span>
+                        <span class="callout-text">Change the <code>:root</code> declaration once &mdash; every <code>var(--color-primary)</code> updates automatically.</span>
+                    </div>
+                </section>
+
+                <!-- Interactive Question 2 -->
+                <section class="interactive-q-slide">
+                    <h3>&#129300; Predict the Output</h3>
+                    <p style="font-size: 0.8em;">Default browser font size is <strong>16px</strong>. What is <code>10rem</code> and <code>1.5rem</code> in pixels?</p>
+                    <ol class="options">
+                        <li class="fragment fade-in">10px and 1.5px</li>
+                        <li class="fragment fade-in">100px and 15px</li>
+                        <li class="fragment fade-in" style="color: var(--nb-accent-green);">160px and 24px &#9989;</li>
+                        <li class="fragment fade-in">Depends on the parent element</li>
+                    </ol>
+                    <div class="nb-callout nb-tip fragment fade-up">
+                        <span class="callout-icon">&#9889;</span>
+                        <span class="callout-text"><code>1rem</code> = root font size = 16px. So <code>10 &times; 16 = 160px</code>, <code>1.5 &times; 16 = 24px</code>. Note: <code>rem</code> is relative to ROOT, not parent (that's <code>em</code>).</span>
+                    </div>
+                </section>
+
+                <!-- Interactive Question 3: Hidden-Fact-Reveal -->
+                <section>
+                    <h3>&#128161; The Magic of <code>clamp()</code></h3>
+                    <pre><code data-trim style="font-size: 0.85em;">
+h1 {
+    font-size: clamp(2rem, 6vw, 4rem);
+}
+                    </code></pre>
+                    <p class="fragment fade-up" style="font-size: 0.8em;">Resize the browser slowly and watch the heading...</p>
+                    <p class="fragment fade-up" style="font-size: 0.9em; color: var(--nb-accent-green);">&#128161; <strong>Smooth scaling. No jumps. No media queries. One function.</strong></p>
+                    <div class="nb-callout nb-pro fragment fade-up">
+                        <span class="callout-icon">&#128142;</span>
+                        <span class="callout-text">This is how Mercedes-Benz and Tesla build their websites. Fluid typography &mdash; the pro way.</span>
+                    </div>
+                </section>
+
+                <!-- Part 1 Summary -->
+                <section>
+                    <h3>Part 1 Summary</h3>
+                    <ul>
+                        <li class="fragment fade-up"><strong>Common Mistake:</strong> Misspelling variable names &mdash; CSS fails silently!</li>
+                        <li class="fragment fade-up"><strong>Best Practice:</strong> Group variables by category: <code>--color-*</code>, <code>--space-*</code>, <code>--text-*</code></li>
+                        <li class="fragment fade-up"><strong>Pro Tip:</strong> Use <code>clamp()</code> for fluid typography &mdash; one function replaces 3 media queries</li>
+                    </ul>
+                    <div class="nb-callout nb-pro fragment fade-up">
+                        <span class="callout-icon">&#128142;</span>
+                        <span class="callout-text">Every design system in production uses CSS variables. YouTube tutorials hardcode colors &mdash; professionals don't.</span>
+                    </div>
+                </section>
+            </section>
+
+            <!-- ===== PART 2: Media Queries & Mobile-First Design ===== -->
+            <section>
+                <!-- Part 2 Title -->
+                <section>
+                    <p class="part-label">Part 2</p>
+                    <h2>Media Queries &amp; Mobile-First Design</h2>
+                    <p style="font-size: 0.8em; color: var(--nb-dim);">One layout. Every screen. Zero JavaScript.</p>
+                </section>
+
+                <!-- Anatomy: Media Query Syntax -->
+                <section>
+                    <h3>Media Query Syntax</h3>
+                    <div class="nb-anatomy">
+                        <pre><code data-trim data-noescape style="font-size: 0.9em;">
+<span class="nb-hl-1">@media</span> (<span class="nb-hl-2">min-width</span>: <span class="nb-hl-3">768px</span>) {
+    <span class="nb-hl-4">.sidebar { display: block; }</span>
+}
+                        </code></pre>
+                        <div class="nb-callouts fragment fade-up">
+                            <span class="nb-callout-item"><span class="nb-dot nb-dot-1"></span> @media rule</span>
+                            <span class="nb-callout-item"><span class="nb-dot nb-dot-2"></span> Condition type</span>
+                            <span class="nb-callout-item"><span class="nb-dot nb-dot-3"></span> Breakpoint value</span>
+                            <span class="nb-callout-item"><span class="nb-dot nb-dot-4"></span> CSS rules to apply</span>
+                        </div>
+                    </div>
+                    <p class="fragment fade-up" style="font-size: 0.7em; color: var(--nb-dim);">"When the viewport is at least 768px wide, apply these styles."</p>
+                </section>
+
+                <!-- Comparison: Desktop-First vs Mobile-First -->
+                <section>
+                    <h3>Desktop-First vs Mobile-First</h3>
+                    <div class="nb-compare">
+                        <div class="nb-col-a fragment fade-right">
+                            <h4>&#10060; Desktop-First</h4>
+                            <pre><code data-trim style="font-size: 0.65em;">
+/* Start big, REMOVE for small */
+.nav { display: flex; }
+
+@media (max-width: 768px) {
+    .nav { display: none; }
+}
+                            </code></pre>
+                            <p style="font-size: 0.5em;">Uses <code>max-width</code>. Harder to maintain.</p>
+                        </div>
+                        <div class="nb-vs">VS</div>
+                        <div class="nb-col-b nb-winner fragment fade-left">
+                            <h4>&#9989; Mobile-First</h4>
+                            <pre><code data-trim style="font-size: 0.65em;">
+/* Start small, ADD for big */
+.nav { display: none; }
+
+@media (min-width: 768px) {
+    .nav { display: flex; }
+}
+                            </code></pre>
+                            <p style="font-size: 0.5em;">Uses <code>min-width</code>. Industry standard.</p>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Flow: Breakpoints -->
+                <section>
+                    <h3>Standard Breakpoints</h3>
+                    <div class="nb-flow">
+                        <div class="nb-flow-step fragment fade-up">
+                            <span class="icon">&#128241;</span>
+                            <span class="label">Mobile</span>
+                            <span class="sublabel">Base CSS (0px+)</span>
+                        </div>
+                        <span class="nb-flow-arrow fragment fade-in">&#8594;</span>
+                        <div class="nb-flow-step fragment fade-up">
+                            <span class="icon">&#128195;</span>
+                            <span class="label">Tablet</span>
+                            <span class="sublabel">min-width: 768px</span>
+                        </div>
+                        <span class="nb-flow-arrow fragment fade-in">&#8594;</span>
+                        <div class="nb-flow-step fragment fade-up">
+                            <span class="icon">&#128187;</span>
+                            <span class="label">Desktop</span>
+                            <span class="sublabel">min-width: 1024px</span>
+                        </div>
+                        <span class="nb-flow-arrow fragment fade-in">&#8594;</span>
+                        <div class="nb-flow-step fragment fade-up">
+                            <span class="icon">&#128421;</span>
+                            <span class="label">Wide</span>
+                            <span class="sublabel">min-width: 1280px</span>
+                        </div>
+                    </div>
+                    <div class="nb-callout nb-tip fragment fade-up">
+                        <span class="callout-icon">&#9889;</span>
+                        <span class="callout-text">Mobile-first = <code>min-width</code>. Desktop-first = <code>max-width</code>. <strong>Always pick <code>min-width</code>.</strong></span>
+                    </div>
+                </section>
+
+                <!-- Cards: Breakpoint Reference -->
+                <section>
+                    <h3>Breakpoint Quick Reference</h3>
+                    <div class="nb-cards" style="grid-template-columns: repeat(3, 1fr);">
+                        <div class="nb-card nb-card-berry fragment fade-up">
+                            <span class="icon">&#128195;</span>
+                            <span class="title">768px</span>
+                            <span class="desc">Tablet. Show nav links, 2-column layouts.</span>
+                        </div>
+                        <div class="nb-card nb-card-nexus fragment fade-up">
+                            <span class="icon">&#128187;</span>
+                            <span class="title">1024px</span>
+                            <span class="desc">Desktop. 3+ columns, sidebar layouts.</span>
+                        </div>
+                        <div class="nb-card nb-card-green fragment fade-up">
+                            <span class="icon">&#128421;</span>
+                            <span class="title">1280px</span>
+                            <span class="desc">Wide. 4 columns, extra spacing.</span>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Code Transition -->
+                <section>
+                    <p class="code-transition">Let's build the nav &amp; hero!</p>
+                    <p>Switch to VS Code</p>
+                    <p style="font-size: 0.6em; color: var(--nb-dim);">Sticky nav + hero with overlay + mobile-first media queries</p>
+                </section>
+
+                <!-- Interactive Question 4 -->
+                <section class="interactive-q-slide">
+                    <h3>&#129300; Predict the Output</h3>
+                    <pre><code data-trim style="font-size: 0.75em;">
+.sidebar { display: none; }
+
+@media (min-width: 768px) {
+    .sidebar { display: block; }
+}
+@media (min-width: 1024px) {
+    .sidebar { width: 250px; }
+}
+                    </code></pre>
+                    <p style="font-size: 0.8em;">At viewport width <strong>900px</strong>, what is the sidebar's state?</p>
+                    <ol class="options">
+                        <li class="fragment fade-in">Hidden (display: none)</li>
+                        <li class="fragment fade-in" style="color: var(--nb-accent-green);">Visible, no fixed width &#9989;</li>
+                        <li class="fragment fade-in">Visible, 250px wide</li>
+                        <li class="fragment fade-in">Error &mdash; conflicting rules</li>
+                    </ol>
+                </section>
+
+                <!-- Interactive Question 5 -->
+                <section class="interactive-q-slide">
+                    <h3>&#129300; Spot the Error</h3>
+                    <pre><code data-trim style="font-size: 0.75em;">
+/* "Mobile-first" approach */
+.card { width: 100%; }
+
+@media (max-width: 768px) {
+    .card { width: 50%; }
+}
+                    </code></pre>
+                    <p style="font-size: 0.8em;">What's wrong with this "mobile-first" code?</p>
+                    <ol class="options">
+                        <li class="fragment fade-in">Nothing &mdash; it works correctly</li>
+                        <li class="fragment fade-in" style="color: var(--nb-accent-green);">Should use <code>min-width</code>, not <code>max-width</code> &#9989;</li>
+                        <li class="fragment fade-in">The order of queries is wrong</li>
+                        <li class="fragment fade-in"><code>width: 50%</code> is not valid</li>
+                    </ol>
+                    <div class="nb-callout nb-error fragment fade-up">
+                        <span class="callout-icon">&#10060;</span>
+                        <span class="callout-text"><code>max-width</code> = desktop-first. Mobile-first always uses <code>min-width</code>.</span>
+                    </div>
+                </section>
+
+                <!-- Interactive Question 6 -->
+                <section class="interactive-q-slide">
+                    <h3>&#129300; Concept Check</h3>
+                    <p style="font-size: 0.8em;">In one sentence, define the <strong>mobile-first</strong> approach:</p>
+                    <ol class="options">
+                        <li class="fragment fade-in">Design the desktop version first, then shrink it</li>
+                        <li class="fragment fade-in" style="color: var(--nb-accent-green);">Base CSS for mobile, <code>min-width</code> queries to enhance &#9989;</li>
+                        <li class="fragment fade-in">Always use <code>max-width</code> media queries</li>
+                        <li class="fragment fade-in">Only support mobile devices</li>
+                    </ol>
+                    <div class="nb-callout nb-pro fragment fade-up">
+                        <span class="callout-icon">&#128142;</span>
+                        <span class="callout-text">Google ranks mobile-friendly sites higher. Over 60% of web traffic is mobile. Mobile-first isn't a preference &mdash; it's a business requirement.</span>
+                    </div>
+                </section>
+
+                <!-- Part 2 Summary -->
+                <section>
+                    <h3>Part 2 Summary</h3>
+                    <ul>
+                        <li class="fragment fade-up"><strong>Common Mistake:</strong> Using <code>max-width</code> in mobile-first code &mdash; use <code>min-width</code>!</li>
+                        <li class="fragment fade-up"><strong>Best Practice:</strong> Stick to 2-3 breakpoints: 768px, 1024px, 1280px</li>
+                        <li class="fragment fade-up"><strong>Pro Tip:</strong> Always include <code>&lt;meta name="viewport"&gt;</code> &mdash; responsive design breaks without it</li>
+                    </ul>
+                </section>
+            </section>
+
+            <!-- ===== PART 3: CSS Transitions, Transforms & Responsive Images ===== -->
+            <section>
+                <!-- Part 3 Title -->
+                <section>
+                    <p class="part-label">Part 3</p>
+                    <h2>CSS Transitions, Transforms &amp; Responsive Images</h2>
+                    <p style="font-size: 0.8em; color: var(--nb-dim);">From static to stunning. Zero JavaScript.</p>
+                </section>
+
+                <!-- Anatomy: Transition Syntax -->
+                <section>
+                    <h3>Transition Syntax</h3>
+                    <div class="nb-anatomy">
+                        <pre><code data-trim data-noescape style="font-size: 0.9em;">
+.card {
+    transition: <span class="nb-hl-1">transform</span> <span class="nb-hl-2">0.3s</span> <span class="nb-hl-3">ease</span>;
+}
+.card:hover {
+    <span class="nb-hl-4">transform: translateY(-8px);</span>
+}
+                        </code></pre>
+                        <div class="nb-callouts fragment fade-up">
+                            <span class="nb-callout-item"><span class="nb-dot nb-dot-1"></span> Property to animate</span>
+                            <span class="nb-callout-item"><span class="nb-dot nb-dot-2"></span> Duration</span>
+                            <span class="nb-callout-item"><span class="nb-dot nb-dot-3"></span> Timing function</span>
+                            <span class="nb-callout-item"><span class="nb-dot nb-dot-4"></span> End state (on hover)</span>
+                        </div>
+                    </div>
+                    <div class="nb-callout nb-warning fragment fade-up">
+                        <span class="callout-icon">&#9888;</span>
+                        <span class="callout-text">Put <code>transition</code> on the <strong>base state</strong>, not on <code>:hover</code> &mdash; so the un-hover also animates!</span>
+                    </div>
+                </section>
+
+                <!-- Cards: Transform Functions -->
+                <section>
+                    <h3>Transform Functions</h3>
+                    <div class="nb-cards" style="grid-template-columns: repeat(3, 1fr);">
+                        <div class="nb-card nb-card-berry fragment fade-up">
+                            <span class="icon">&#8593;</span>
+                            <span class="title"><code>translateY(-8px)</code></span>
+                            <span class="desc">Move up. Card hover lift effect.</span>
+                        </div>
+                        <div class="nb-card nb-card-nexus fragment fade-up">
+                            <span class="icon">&#128269;</span>
+                            <span class="title"><code>scale(1.05)</code></span>
+                            <span class="desc">Zoom in 5%. Image hover zoom.</span>
+                        </div>
+                        <div class="nb-card nb-card-green fragment fade-up">
+                            <span class="icon">&#128260;</span>
+                            <span class="title"><code>rotate(45deg)</code></span>
+                            <span class="desc">Spin element. Icon animations.</span>
+                        </div>
+                    </div>
+                    <div class="nb-callout nb-tip fragment fade-up">
+                        <span class="callout-icon">&#9889;</span>
+                        <span class="callout-text"><strong>Performance rule:</strong> Only animate <code>transform</code> and <code>opacity</code> &mdash; they're GPU-accelerated. Avoid animating <code>width</code>/<code>height</code>/<code>margin</code>.</span>
+                    </div>
+                </section>
+
+                <!-- Comparison: With vs Without Transition -->
+                <section>
+                    <h3>With vs Without Transition</h3>
+                    <div class="nb-compare">
+                        <div class="nb-col-a fragment fade-right">
+                            <h4>&#10060; No Transition</h4>
+                            <pre><code data-trim style="font-size: 0.65em;">
+.card:hover {
+    transform: translateY(-8px);
+}
+/* Instant jump &mdash; feels broken */
+                            </code></pre>
+                        </div>
+                        <div class="nb-vs">VS</div>
+                        <div class="nb-col-b nb-winner fragment fade-left">
+                            <h4>&#9989; With Transition</h4>
+                            <pre><code data-trim style="font-size: 0.65em;">
+.card {
+    transition: transform 0.3s ease;
+}
+.card:hover {
+    transform: translateY(-8px);
+}
+/* Smooth glide &mdash; feels premium */
+                            </code></pre>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Code Transition -->
+                <section>
+                    <p class="code-transition">Let's build the vehicle cards!</p>
+                    <p>Switch to VS Code</p>
+                    <p style="font-size: 0.6em; color: var(--nb-dim);">Responsive card grid + hover effects + image zoom + object-fit</p>
+                </section>
+
+                <!-- Interactive Question 7 -->
+                <section class="interactive-q-slide">
+                    <h3>&#129300; Predict the Output</h3>
+                    <pre><code data-trim style="font-size: 0.8em;">
+.card:hover {
+    transform: translateY(-10px) scale(1.02);
+}
+                    </code></pre>
+                    <p style="font-size: 0.8em;">What happens when you hover?</p>
+                    <ol class="options">
+                        <li class="fragment fade-in">Moves up only (scale is ignored)</li>
+                        <li class="fragment fade-in">Scales up only (translate is ignored)</li>
+                        <li class="fragment fade-in" style="color: var(--nb-accent-green);">Both apply: lifts up AND gets bigger &#9989;</li>
+                        <li class="fragment fade-in">Error &mdash; can't combine transforms</li>
+                    </ol>
+                </section>
+
+                <!-- Interactive Question 8 -->
+                <section class="interactive-q-slide">
+                    <h3>&#129300; Spot the Error</h3>
+                    <pre><code data-trim style="font-size: 0.8em;">
+.card {
+    transition: all 0.3s ease;
+}
+                    </code></pre>
+                    <p style="font-size: 0.8em;">This works, but what's the professional concern?</p>
+                    <ol class="options">
+                        <li class="fragment fade-in"><code>all</code> is not a valid keyword</li>
+                        <li class="fragment fade-in" style="color: var(--nb-accent-green);">Transitions EVERY property change &mdash; unnecessary work &#9989;</li>
+                        <li class="fragment fade-in">0.3s is too slow</li>
+                        <li class="fragment fade-in"><code>ease</code> is deprecated</li>
+                    </ol>
+                    <div class="nb-callout nb-tip fragment fade-up">
+                        <span class="callout-icon">&#9889;</span>
+                        <span class="callout-text">Be specific: <code>transition: transform 0.3s ease, box-shadow 0.3s ease;</code></span>
+                    </div>
+                </section>
+
+                <!-- Interactive Question 9 -->
+                <section class="interactive-q-slide">
+                    <h3>&#129300; Quick-Fire</h3>
+                    <p style="font-size: 0.8em;">An image inside a card <strong>stretches</strong> when the card is narrow. What fixes it?</p>
+                    <ol class="options">
+                        <li class="fragment fade-in"><code>image-rendering: crisp;</code></li>
+                        <li class="fragment fade-in" style="color: var(--nb-accent-green);"><code>object-fit: cover;</code> &#9989;</li>
+                        <li class="fragment fade-in"><code>max-width: auto;</code></li>
+                        <li class="fragment fade-in"><code>width: 100vw;</code></li>
+                    </ol>
+                </section>
+
+                <!-- Part 3 Summary -->
+                <section>
+                    <h3>Part 3 Summary</h3>
+                    <ul>
+                        <li class="fragment fade-up"><strong>Common Mistake:</strong> Using <code>transition: all</code> &mdash; be specific about properties</li>
+                        <li class="fragment fade-up"><strong>Best Practice:</strong> Pair <code>overflow: hidden</code> with <code>scale()</code> for contained zoom</li>
+                        <li class="fragment fade-up"><strong>Pro Tip:</strong> The difference between a $500 freelance site and a $50,000 agency site? Transitions.</li>
+                    </ul>
+                </section>
+            </section>
+
+            <!-- ===== PART 4: Building the Complete Luxury Dealership ===== -->
+            <section>
+                <!-- Part 4 Title -->
+                <section>
+                    <p class="part-label">Part 4</p>
+                    <h2>Building the Complete Luxury Dealership</h2>
+                    <p style="font-size: 0.8em; color: var(--nb-dim);">Integrating everything into a premium multi-section site.</p>
+                </section>
+
+                <!-- Flow: Build Order -->
+                <section>
+                    <h3>Section-by-Section Build</h3>
+                    <div class="nb-flow">
+                        <div class="nb-flow-step fragment fade-up">
+                            <span class="icon">&#128209;</span>
+                            <span class="label">Nav</span>
+                            <span class="sublabel">Sticky, responsive</span>
+                        </div>
+                        <span class="nb-flow-arrow fragment fade-in">&#8594;</span>
+                        <div class="nb-flow-step fragment fade-up">
+                            <span class="icon">&#127960;</span>
+                            <span class="label">Hero</span>
+                            <span class="sublabel">Overlay, CTA</span>
+                        </div>
+                        <span class="nb-flow-arrow fragment fade-in">&#8594;</span>
+                        <div class="nb-flow-step fragment fade-up">
+                            <span class="icon">&#128663;</span>
+                            <span class="label">Vehicles</span>
+                            <span class="sublabel">Card grid</span>
+                        </div>
+                        <span class="nb-flow-arrow fragment fade-in">&#8594;</span>
+                        <div class="nb-flow-step fragment fade-up">
+                            <span class="icon">&#11088;</span>
+                            <span class="label">Features</span>
+                            <span class="sublabel">4-card grid</span>
+                        </div>
+                        <span class="nb-flow-arrow fragment fade-in">&#8594;</span>
+                        <div class="nb-flow-step fragment fade-up">
+                            <span class="icon">&#128233;</span>
+                            <span class="label">Contact</span>
+                            <span class="sublabel">Form + info</span>
+                        </div>
+                    </div>
+                    <div class="nb-callout nb-pro fragment fade-up">
+                        <span class="callout-icon">&#128142;</span>
+                        <span class="callout-text">Tesla.com, Mercedes-Benz.com, BMW.com &mdash; they all follow this exact section pattern.</span>
+                    </div>
+                </section>
+
+                <!-- Code Transition -->
+                <section>
+                    <p class="code-transition">Let's complete the site!</p>
+                    <p>Switch to VS Code</p>
+                    <p style="font-size: 0.6em; color: var(--nb-dim);">"Why Choose Us" grid + Contact section + Footer + responsive polish</p>
+                </section>
+
+                <!-- Interactive Question 10 -->
+                <section class="interactive-q-slide">
+                    <h3>&#129300; Concept Check</h3>
+                    <p style="font-size: 0.8em;">For 4 feature cards (1 col mobile, 2 tablet, 4 desktop) &mdash; media queries or <code>auto-fit</code>?</p>
+                    <ol class="options">
+                        <li class="fragment fade-in">Only <code>auto-fit</code> with <code>minmax()</code></li>
+                        <li class="fragment fade-in">Only media queries</li>
+                        <li class="fragment fade-in" style="color: var(--nb-accent-green);">Both work &mdash; queries give more precise control &#9989;</li>
+                        <li class="fragment fade-in">Neither &mdash; use Flexbox</li>
+                    </ol>
+                </section>
+
+                <!-- Interactive Question 11 -->
+                <section>
+                    <h3>&#129300; Quick-Fire Recall</h3>
+                    <p style="font-size: 0.7em;">Match each concept to its purpose:</p>
+                    <table>
+                        <thead>
+                            <tr><th>Concept</th><th>Purpose</th></tr>
+                        </thead>
+                        <tbody>
+                            <tr class="fragment fade-up"><td><code>CSS Variables</code></td><td style="color: var(--nb-accent-green);">Theming &amp; consistency</td></tr>
+                            <tr class="fragment fade-up"><td><code>Media Queries</code></td><td style="color: var(--nb-accent-green);">Layout adaptation</td></tr>
+                            <tr class="fragment fade-up"><td><code>clamp()</code></td><td style="color: var(--nb-accent-green);">Fluid typography</td></tr>
+                            <tr class="fragment fade-up"><td><code>transition</code></td><td style="color: var(--nb-accent-green);">Smooth hover effects</td></tr>
+                            <tr class="fragment fade-up"><td><code>object-fit: cover</code></td><td style="color: var(--nb-accent-green);">Responsive images</td></tr>
+                        </tbody>
+                    </table>
+                </section>
+
+                <!-- Interactive Question 12: Hidden-Fact-Reveal -->
+                <section>
+                    <h3>&#128161; The Complete Picture</h3>
+                    <p style="font-size: 0.8em;">Open DevTools responsive mode. Toggle between devices:</p>
+                    <div class="nb-flow" style="margin: 0.5em 0;">
+                        <div class="nb-flow-step fragment fade-up">
+                            <span class="icon">&#128241;</span>
+                            <span class="label">iPhone SE</span>
+                            <span class="sublabel">375px</span>
+                        </div>
+                        <span class="nb-flow-arrow fragment fade-in">&#8594;</span>
+                        <div class="nb-flow-step fragment fade-up">
+                            <span class="icon">&#128195;</span>
+                            <span class="label">iPad</span>
+                            <span class="sublabel">768px</span>
+                        </div>
+                        <span class="nb-flow-arrow fragment fade-in">&#8594;</span>
+                        <div class="nb-flow-step fragment fade-up">
+                            <span class="icon">&#128187;</span>
+                            <span class="label">Desktop</span>
+                            <span class="sublabel">1440px</span>
+                        </div>
+                    </div>
+                    <p class="fragment fade-up" style="font-size: 0.9em; color: var(--nb-accent-green);">&#128161; <strong>One file. No JavaScript. Every section responds perfectly.</strong></p>
+                </section>
+
+                <!-- Part 4 Summary -->
+                <section>
+                    <h3>Part 4 Summary</h3>
+                    <ul>
+                        <li class="fragment fade-up"><strong>Common Mistake:</strong> Forgetting <code>max-width</code> &mdash; content stretches on ultra-wide screens</li>
+                        <li class="fragment fade-up"><strong>Best Practice:</strong> <code>max-width: 1200px; margin: 0 auto;</code> for centered containers</li>
+                        <li class="fragment fade-up"><strong>Pro Tip:</strong> Variables + media queries + transitions = the complete responsive toolkit</li>
+                    </ul>
+                </section>
+            </section>
+
+            <!-- ===== CHEAT SHEET (ending) ===== -->
+            <section>
+                <h2>Cheat Sheet</h2>
+                <table style="font-size: 0.5em;">
+                    <thead>
+                        <tr><th>Concept</th><th>Syntax</th><th>Use For</th></tr>
+                    </thead>
+                    <tbody>
+                        <tr><td>CSS Variables</td><td><code>:root { --name: value; }</code> + <code>var(--name)</code></td><td>Theming, consistency</td></tr>
+                        <tr><td><code>rem</code></td><td><code>1.5rem</code> = 24px (at 16px base)</td><td>Font sizes, spacing</td></tr>
+                        <tr><td><code>clamp()</code></td><td><code>clamp(2rem, 6vw, 3.5rem)</code></td><td>Fluid typography</td></tr>
+                        <tr><td>Media Query</td><td><code>@media (min-width: 768px) { }</code></td><td>Mobile-first responsive</td></tr>
+                        <tr><td>Transition</td><td><code>transition: transform 0.3s ease;</code></td><td>Smooth hover effects</td></tr>
+                        <tr><td>Transform</td><td><code>translateY(-8px)</code>, <code>scale(1.05)</code></td><td>Move, zoom, rotate</td></tr>
+                        <tr><td>Responsive Img</td><td><code>object-fit: cover;</code></td><td>Fill without distortion</td></tr>
+                        <tr><td>Sticky Nav</td><td><code>position: sticky; top: 0;</code></td><td>Nav sticks on scroll</td></tr>
+                    </tbody>
+                </table>
+                <p style="font-size: 0.6em;"><em>Full cheat sheet shared after class</em></p>
+            </section>
+
+            <!-- ===== ASSIGNMENT (ending) ===== -->
+            <section>
+                <h2>Home Assignment</h2>
+                <h3>Responsive Luxury Showcase</h3>
+                <ul style="font-size: 0.7em;">
+                    <li>CSS Custom Properties (8+ variables) &mdash; 15 pts</li>
+                    <li>Mobile-first media queries (2+ breakpoints) &mdash; 20 pts</li>
+                    <li>Sticky nav + hero with overlay &mdash; 15 pts</li>
+                    <li>Responsive card grid (1&rarr;3 cols) &mdash; 10 pts</li>
+                    <li>CSS transitions on hover &mdash; 10 pts</li>
+                    <li>Responsive images &amp; typography &mdash; 10 pts</li>
+                    <li>Semantic HTML + box-sizing reset &mdash; 10 pts</li>
+                    <li>Creative addition &mdash; 10 pts</li>
+                </ul>
+                <p style="font-size: 0.6em;">Due: Before next lecture | Submit via Google Classroom</p>
+            </section>
+
+            <!-- ===== CLOSING ===== -->
+            <section>
+                <h2>Questions?</h2>
+                <p>Next Lecture: <strong>Landing Page Components (Tailwind CSS)</strong></p>
+                <p class="fragment fade-up" style="font-size: 0.8em; color: var(--nb-accent-green);">
+                    <em>"You wrote a LOT of CSS. What if there's a framework that does all this with just class names? Meet Tailwind CSS."</em>
+                </p>
+                <br>
+                <p class="nexusberry-brand">NexusBerry Training and Solutions</p>
+                <p style="font-size: 0.7em;">
+                    www.nexusberry.com | admin@nexusberry.com<br>
+                    WhatsApp: 0328-4500073
+                </p>
+            </section>
+
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/reveal.js@5/dist/reveal.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/reveal.js@5/plugin/highlight/highlight.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/reveal.js@5/plugin/notes/notes.js"></script>
+    <script>
+        Reveal.initialize({
+            hash: true,
+            slideNumber: true,
+            transition: 'fade',
+            plugins: [RevealHighlight, RevealNotes]
+        });
+
+        // Add copy buttons to all code blocks
+        document.addEventListener('DOMContentLoaded', function() {
+            document.querySelectorAll('pre').forEach(function(pre) {
+                var btn = document.createElement('button');
+                btn.className = 'copy-btn';
+                btn.innerHTML = '&#128203;';
+                btn.title = 'Copy to clipboard';
+                btn.addEventListener('click', function() {
+                    var code = pre.querySelector('code');
+                    var text = code ? code.textContent : pre.textContent;
+                    navigator.clipboard.writeText(text).then(function() {
+                        btn.innerHTML = '&#9989;';
+                        btn.classList.add('copied');
+                        setTimeout(function() {
+                            btn.innerHTML = '&#128203;';
+                            btn.classList.remove('copied');
+                        }, 2000);
+                    });
+                });
+                pre.appendChild(btn);
+            });
+        });
+    </script>
+</body>
+</html>
