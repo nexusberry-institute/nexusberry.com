@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Landing Page Components | NexusBerry Modern Frontend Course</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+</head>
+<body class="bg-slate-950 text-gray-100 font-sans">
+
+    <!-- ===== STICKY NAVIGATION ===== -->
+    <nav class="bg-slate-900/95 border-b border-amber-500/30 sticky top-0 z-50 backdrop-blur-sm">
+        <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
+            <a href="#" class="text-amber-500 text-xl font-bold tracking-wider uppercase">
+                Luxe Motors
+            </a>
+            <ul class="hidden md:flex gap-8">
+                <li>
+                    <a href="#features" class="text-gray-400 text-sm uppercase tracking-widest hover:text-amber-500 transition duration-200">
+                        Features
+                    </a>
+                </li>
+                <li>
+                    <a href="#vehicles" class="text-gray-400 text-sm uppercase tracking-widest hover:text-amber-500 transition duration-200">
+                        Vehicles
+                    </a>
+                </li>
+                <li>
+                    <a href="#testimonials" class="text-gray-400 text-sm uppercase tracking-widest hover:text-amber-500 transition duration-200">
+                        Testimonials
+                    </a>
+                </li>
+                <li>
+                    <a href="#contact" class="text-gray-400 text-sm uppercase tracking-widest hover:text-amber-500 transition duration-200">
+                        Contact
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- ===== HERO SECTION ===== -->
+    <section class="relative min-h-screen flex items-center justify-center text-center">
+        <!-- Background Image -->
+        <img src="https://picsum.photos/id/514/1920/1080" alt="Luxury car on open road"
+             class="absolute inset-0 w-full h-full object-cover">
+        <!-- Dark Overlay -->
+        <div class="absolute inset-0 bg-black/60"></div>
+        <!-- Hero Content -->
+        <div class="relative z-10 max-w-3xl px-6">
+            <h1 class="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold text-white mb-6 tracking-tight leading-tight">
+                Experience Luxury
+            </h1>
+            <p class="text-lg md:text-xl text-gray-300 mb-10 leading-relaxed max-w-2xl mx-auto">
+                Discover our exclusive collection of premium vehicles crafted for those who demand the extraordinary.
+            </p>
+            <a href="#vehicles" class="inline-block bg-amber-500 text-black font-bold py-4 px-10 rounded-lg text-lg uppercase tracking-wide hover:bg-amber-600 hover:-translate-y-1 transition-all duration-300 shadow-lg hover:shadow-amber-500/25">
+                View Collection
+            </a>
+        </div>
+    </section>
+
+    <!-- ===== FEATURE CARDS SECTION ===== -->
+    <section id="features" class="py-16 md:py-24 px-6">
+        <div class="max-w-7xl mx-auto">
+            <h2 class="text-3xl md:text-4xl font-bold text-center text-amber-500 mb-4 uppercase tracking-wide">
+                Why Choose Us
+            </h2>
+            <p class="text-gray-400 text-center mb-12 md:mb-16 max-w-2xl mx-auto">
+                Over 25 years of excellence in luxury automotive sales and service.
+            </p>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <!-- Card 1 -->
+                <div class="bg-slate-900 rounded-xl p-8 text-center border border-transparent hover:border-amber-500/50 hover:-translate-y-2 transition-all duration-300 group">
+                    <div class="text-5xl mb-5">&#127942;</div>
+                    <h3 class="text-xl font-semibold text-white mb-3">Award Winning</h3>
+                    <p class="text-gray-400 leading-relaxed">
+                        Recognized as the top luxury dealership for 5 consecutive years by the Automotive Excellence Awards.
+                    </p>
+                </div>
+                <!-- Card 2 -->
+                <div class="bg-slate-900 rounded-xl p-8 text-center border border-transparent hover:border-amber-500/50 hover:-translate-y-2 transition-all duration-300 group">
+                    <div class="text-5xl mb-5">&#128295;</div>
+                    <h3 class="text-xl font-semibold text-white mb-3">Expert Service</h3>
+                    <p class="text-gray-400 leading-relaxed">
+                        Factory-trained technicians with state-of-the-art diagnostic equipment and genuine parts.
+                    </p>
+                </div>
+                <!-- Card 3 -->
+                <div class="bg-slate-900 rounded-xl p-8 text-center border border-transparent hover:border-amber-500/50 hover:-translate-y-2 transition-all duration-300 group">
+                    <div class="text-5xl mb-5">&#128142;</div>
+                    <h3 class="text-xl font-semibold text-white mb-3">Premium Selection</h3>
+                    <p class="text-gray-400 leading-relaxed">
+                        A curated collection of the world's finest automobiles, handpicked from every continent.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== VEHICLE SHOWCASE SECTION ===== -->
+    <section id="vehicles" class="py-16 md:py-24 px-6 bg-slate-900/40">
+        <div class="max-w-7xl mx-auto">
+            <h2 class="text-3xl md:text-4xl font-bold text-center text-amber-500 mb-4 uppercase tracking-wide">
+                Our Collection
+            </h2>
+            <p class="text-gray-400 text-center mb-12 md:mb-16 max-w-2xl mx-auto">
+                Each vehicle in our showroom is selected for its exceptional craftsmanship and performance.
+            </p>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <!-- Vehicle Card 1 -->
+                <div class="bg-slate-900 rounded-xl overflow-hidden border border-slate-800 hover:border-amber-500/40 hover:-translate-y-2 transition-all duration-300 hover:shadow-lg hover:shadow-amber-500/10">
+                    <div class="overflow-hidden h-56">
+                        <img src="https://picsum.photos/id/111/600/400" alt="2026 Luxury Sedan in showroom"
+                             class="w-full h-full object-cover hover:scale-105 transition-transform duration-500">
+                    </div>
+                    <div class="p-6">
+                        <h3 class="text-lg font-semibold text-white mb-1">Luxury Sedan</h3>
+                        <p class="text-amber-500 text-xl font-bold mb-3">$89,900</p>
+                        <p class="text-gray-400 text-sm leading-relaxed mb-4">
+                            Twin-turbo engine, premium leather interior, advanced driver assistance system.
+                        </p>
+                        <a href="#" class="inline-block border-2 border-amber-500 text-amber-500 font-semibold py-2 px-6 rounded-lg text-sm uppercase tracking-wide hover:bg-amber-500 hover:text-black transition-all duration-300">
+                            View Details
+                        </a>
+                    </div>
+                </div>
+                <!-- Vehicle Card 2 -->
+                <div class="bg-slate-900 rounded-xl overflow-hidden border border-slate-800 hover:border-amber-500/40 hover:-translate-y-2 transition-all duration-300 hover:shadow-lg hover:shadow-amber-500/10">
+                    <div class="overflow-hidden h-56">
+                        <img src="https://picsum.photos/id/116/600/400" alt="2026 Sport SUV on display"
+                             class="w-full h-full object-cover hover:scale-105 transition-transform duration-500">
+                    </div>
+                    <div class="p-6">
+                        <h3 class="text-lg font-semibold text-white mb-1">Sport SUV</h3>
+                        <p class="text-amber-500 text-xl font-bold mb-3">$72,500</p>
+                        <p class="text-gray-400 text-sm leading-relaxed mb-4">
+                            All-wheel drive, panoramic sunroof, 7-passenger seating with luxury trim package.
+                        </p>
+                        <a href="#" class="inline-block border-2 border-amber-500 text-amber-500 font-semibold py-2 px-6 rounded-lg text-sm uppercase tracking-wide hover:bg-amber-500 hover:text-black transition-all duration-300">
+                            View Details
+                        </a>
+                    </div>
+                </div>
+                <!-- Vehicle Card 3 -->
+                <div class="bg-slate-900 rounded-xl overflow-hidden border border-slate-800 hover:border-amber-500/40 hover:-translate-y-2 transition-all duration-300 hover:shadow-lg hover:shadow-amber-500/10">
+                    <div class="overflow-hidden h-56">
+                        <img src="https://picsum.photos/id/133/600/400" alt="2026 Electric GT at dealership"
+                             class="w-full h-full object-cover hover:scale-105 transition-transform duration-500">
+                    </div>
+                    <div class="p-6">
+                        <h3 class="text-lg font-semibold text-white mb-1">Electric GT</h3>
+                        <p class="text-amber-500 text-xl font-bold mb-3">$124,000</p>
+                        <p class="text-gray-400 text-sm leading-relaxed mb-4">
+                            0-60 in 2.9s, 400-mile range, autonomous driving ready with over-the-air updates.
+                        </p>
+                        <a href="#" class="inline-block border-2 border-amber-500 text-amber-500 font-semibold py-2 px-6 rounded-lg text-sm uppercase tracking-wide hover:bg-amber-500 hover:text-black transition-all duration-300">
+                            View Details
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== TESTIMONIALS SECTION ===== -->
+    <section id="testimonials" class="py-16 md:py-24 px-6">
+        <div class="max-w-7xl mx-auto">
+            <h2 class="text-3xl md:text-4xl font-bold text-center text-amber-500 mb-4 uppercase tracking-wide">
+                What Our Clients Say
+            </h2>
+            <p class="text-gray-400 text-center mb-12 md:mb-16 max-w-2xl mx-auto">
+                Hear from drivers who found their perfect vehicle with us.
+            </p>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <!-- Testimonial 1 -->
+                <div class="bg-slate-900 p-8 rounded-xl border border-slate-800">
+                    <p class="text-gray-300 leading-relaxed mb-6 italic">
+                        "The buying experience was exceptional. From the first test drive to delivery, every detail was handled with care and professionalism."
+                    </p>
+                    <div class="flex items-center gap-4">
+                        <div class="w-12 h-12 rounded-full bg-amber-500/20 flex items-center justify-center text-amber-500 font-bold text-sm shrink-0">
+                            AK
+                        </div>
+                        <div>
+                            <p class="text-white font-semibold">Ahmad Khan</p>
+                            <p class="text-gray-500 text-sm">Business Owner, Lahore</p>
+                        </div>
+                    </div>
+                </div>
+                <!-- Testimonial 2 -->
+                <div class="bg-slate-900 p-8 rounded-xl border border-slate-800">
+                    <p class="text-gray-300 leading-relaxed mb-6 italic">
+                        "I've purchased three vehicles from Luxe Motors. Their after-sales service is unmatched. The team treats you like family."
+                    </p>
+                    <div class="flex items-center gap-4">
+                        <div class="w-12 h-12 rounded-full bg-amber-500/20 flex items-center justify-center text-amber-500 font-bold text-sm shrink-0">
+                            SA
+                        </div>
+                        <div>
+                            <p class="text-white font-semibold">Sara Ahmed</p>
+                            <p class="text-gray-500 text-sm">Doctor, Islamabad</p>
+                        </div>
+                    </div>
+                </div>
+                <!-- Testimonial 3 -->
+                <div class="bg-slate-900 p-8 rounded-xl border border-slate-800">
+                    <p class="text-gray-300 leading-relaxed mb-6 italic">
+                        "The Electric GT exceeded every expectation. The range is incredible and the technology is years ahead of the competition."
+                    </p>
+                    <div class="flex items-center gap-4">
+                        <div class="w-12 h-12 rounded-full bg-amber-500/20 flex items-center justify-center text-amber-500 font-bold text-sm shrink-0">
+                            FR
+                        </div>
+                        <div>
+                            <p class="text-white font-semibold">Faisal Rashid</p>
+                            <p class="text-gray-500 text-sm">Tech Executive, Karachi</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== CTA / NEWSLETTER SECTION ===== -->
+    <section id="contact" class="py-16 md:py-24 px-6 bg-slate-900/40">
+        <div class="max-w-3xl mx-auto text-center">
+            <h2 class="text-3xl md:text-4xl font-bold text-white mb-4">
+                Stay in the Loop
+            </h2>
+            <p class="text-gray-400 mb-10 text-lg leading-relaxed">
+                Get exclusive offers, early access to new arrivals, and VIP event invitations delivered to your inbox.
+            </p>
+            <form class="flex flex-col sm:flex-row gap-4 max-w-lg mx-auto">
+                <input type="email" placeholder="Enter your email address"
+                       class="flex-1 px-5 py-3 bg-slate-800 border border-slate-700 rounded-lg text-white placeholder-gray-500 focus:ring-2 focus:ring-amber-500 focus:outline-none focus:border-amber-500 transition duration-200">
+                <button type="submit"
+                        class="bg-amber-500 text-black font-bold py-3 px-8 rounded-lg hover:bg-amber-600 transition duration-300 shrink-0 uppercase tracking-wide">
+                    Subscribe
+                </button>
+            </form>
+            <p class="text-gray-600 text-sm mt-4">No spam. Unsubscribe anytime.</p>
+        </div>
+    </section>
+
+    <!-- ===== FOOTER ===== -->
+    <footer class="border-t border-amber-500/30 bg-slate-900 py-10 px-6">
+        <div class="max-w-7xl mx-auto text-center">
+            <p class="text-gray-500 text-sm mb-2">
+                &copy; 2026 <span class="text-amber-500 font-bold">LUXE MOTORS</span>. All rights reserved.
+            </p>
+            <p class="text-gray-600 text-xs">
+                A project by NexusBerry Modern Frontend Course | www.nexusberry.com
+            </p>
+        </div>
+    </footer>
+
+</body>
+</html>

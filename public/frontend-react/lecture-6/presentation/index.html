@@ -1,0 +1,1096 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lecture 6: Tailwind CSS Basics | NexusBerry Modern Frontend Course</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5/dist/reveal.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5/dist/theme/black.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5/plugin/highlight/monokai.css">
+    <style>
+        :root {
+            /* NexusBerry Brand Colors */
+            --nb-berry: #990147;
+            --nb-nexus: #0020C2;
+            --nb-berry-light: #E04A7A;
+            --nb-nexus-light: #4D70FF;
+            --nb-bg: #080D2B;
+            --nb-text: #F0F0F5;
+
+            /* Extended palette for infographics */
+            --nb-accent-green: #00C896;
+            --nb-accent-orange: #FF8C42;
+            --nb-accent-red: #FF4C6A;
+            --nb-accent-purple: #A855F7;
+            --nb-surface: #0F1642;
+            --nb-surface-2: #1A2258;
+            --nb-border: #2A3370;
+            --nb-dim: #6B7094;
+
+            /* Animation timing */
+            --nb-duration-fast: 0.3s;
+            --nb-duration-normal: 0.6s;
+            --nb-duration-slow: 0.9s;
+            --nb-ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .reveal {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        .reveal h1, .reveal h2, .reveal h3 {
+            color: var(--nb-berry-light);
+            text-transform: none;
+        }
+        .reveal .slide-background {
+            background-color: var(--nb-bg);
+        }
+        .reveal pre code {
+            font-size: 0.85em;
+            line-height: 1.4;
+            max-height: 500px;
+        }
+        .reveal .nexusberry-brand {
+            color: var(--nb-berry);
+            font-weight: bold;
+        }
+        .reveal .interactive-q-slide {
+            text-align: left;
+        }
+        .reveal .interactive-q-slide .options {
+            list-style: upper-alpha;
+            font-size: 0.9em;
+        }
+        .reveal .code-transition {
+            font-size: 1.5em;
+            color: var(--nb-berry-light);
+        }
+        .reveal .part-label {
+            font-size: 0.6em;
+            color: var(--nb-nexus-light);
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+        }
+        .reveal footer {
+            position: absolute;
+            bottom: 1em;
+            left: 1em;
+            font-size: 0.5em;
+            color: #8888AA;
+        }
+
+        /* ===== ANIMATION KEYFRAMES ===== */
+        @keyframes nb-rise { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes nb-slide-right { from { opacity: 0; transform: translateX(-30px); } to { opacity: 1; transform: translateX(0); } }
+        @keyframes nb-slide-left { from { opacity: 0; transform: translateX(30px); } to { opacity: 1; transform: translateX(0); } }
+        @keyframes nb-pop { from { opacity: 0; transform: scale(0.8); } to { opacity: 1; transform: scale(1); } }
+        @keyframes nb-draw-h { from { width: 0; } to { width: 100%; } }
+        @keyframes nb-draw-v { from { height: 0; } to { height: 100%; } }
+        @keyframes nb-pulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.05); } }
+        @keyframes nb-glow { 0%, 100% { box-shadow: 0 0 5px var(--nb-berry-light); } 50% { box-shadow: 0 0 20px var(--nb-berry-light); } }
+        @keyframes nb-fill-bar { from { width: 0; } }
+        @keyframes nb-highlight-correct { to { background: rgba(0,200,150,0.2); border-color: var(--nb-accent-green); } }
+        @keyframes nb-highlight-wrong { to { background: rgba(255,76,106,0.15); border-color: var(--nb-accent-red); } }
+
+        /* Animation utility classes */
+        .nb-anim-rise { animation: nb-rise var(--nb-duration-normal) var(--nb-ease-out) both; }
+        .nb-anim-pop { animation: nb-pop var(--nb-duration-normal) var(--nb-ease-out) both; }
+        .nb-anim-pulse { animation: nb-pulse 2s ease-in-out infinite; }
+        .nb-anim-glow { animation: nb-glow 2s ease-in-out infinite; }
+        .nb-delay-1 { animation-delay: 0.1s; } .nb-delay-2 { animation-delay: 0.2s; }
+        .nb-delay-3 { animation-delay: 0.3s; } .nb-delay-4 { animation-delay: 0.4s; }
+        .nb-delay-5 { animation-delay: 0.5s; } .nb-delay-6 { animation-delay: 0.6s; }
+        .nb-delay-7 { animation-delay: 0.7s; } .nb-delay-8 { animation-delay: 0.8s; }
+
+        /* ===== INFOGRAPHIC: Process Flow (Horizontal) ===== */
+        .nb-flow { display: flex; align-items: center; justify-content: center; gap: 0; flex-wrap: wrap; margin: 0.8em 0; }
+        .nb-flow-step { background: var(--nb-surface); border: 1px solid var(--nb-border); border-radius: 10px; padding: 0.5em 0.7em; text-align: center; min-width: 90px; flex-shrink: 1; }
+        .nb-flow-step .icon { font-size: 1.3em; display: block; margin-bottom: 0.2em; }
+        .nb-flow-step .label { font-size: 0.6em; font-weight: 600; color: var(--nb-text); }
+        .nb-flow-step .sublabel { font-size: 0.45em; color: var(--nb-dim); margin-top: 0.1em; }
+        .nb-flow-step.nb-active { border-color: var(--nb-berry-light); box-shadow: 0 0 12px rgba(224,74,122,0.3); }
+        .nb-flow-arrow { font-size: 1em; color: var(--nb-dim); padding: 0 0.2em; flex-shrink: 0; }
+
+        /* ===== INFOGRAPHIC: Process Flow (Vertical) ===== */
+        .nb-flow-v { display: flex; flex-direction: column; align-items: center; gap: 0; margin: 0.5em auto; max-width: 320px; }
+        .nb-flow-v .nb-flow-step { width: 100%; min-width: unset; padding: 0.4em 0.6em; }
+        .nb-flow-v .nb-flow-step .icon { font-size: 1.1em; margin-bottom: 0.1em; }
+        .nb-flow-v .nb-flow-step .label { font-size: 0.55em; }
+        .nb-flow-v .nb-flow-arrow { transform: rotate(90deg); padding: 0.1em 0; font-size: 0.8em; }
+
+        /* ===== INFOGRAPHIC: Comparison / Versus ===== */
+        .nb-compare { display: grid; grid-template-columns: 1fr auto 1fr; gap: 0.6em; align-items: start; margin: 0.6em 0; }
+        .nb-col-a, .nb-col-b { background: var(--nb-surface); border-radius: 10px; padding: 0.7em; border: 2px solid var(--nb-border); }
+        .nb-col-a { border-color: var(--nb-nexus-light); }
+        .nb-col-b { border-color: var(--nb-berry-light); }
+        .nb-col-a h4, .nb-col-b h4 { margin-top: 0; font-size: 0.75em; }
+        .nb-col-a p, .nb-col-b p { margin: 0.3em 0; }
+        .nb-col-a pre, .nb-col-b pre { margin: 0.3em 0; }
+        .nb-vs { display: flex; align-items: center; font-size: 1.1em; font-weight: 700; color: var(--nb-dim); padding: 0 0.2em; }
+        .nb-winner { border-color: var(--nb-accent-green) !important; box-shadow: 0 0 15px rgba(0,200,150,0.25); }
+
+        /* ===== INFOGRAPHIC: Anatomy / Breakdown ===== */
+        .nb-anatomy { text-align: center; margin: 1em 0; }
+        .nb-anatomy pre { display: inline-block; text-align: left; }
+        .nb-anatomy .nb-callouts { display: flex; justify-content: center; gap: 1.5em; margin-top: 1em; flex-wrap: wrap; }
+        .nb-anatomy .nb-callout-item { font-size: 0.65em; display: flex; align-items: center; gap: 0.4em; }
+        .nb-anatomy .nb-dot { width: 10px; height: 10px; border-radius: 50%; display: inline-block; flex-shrink: 0; }
+        .nb-hl-1 { color: var(--nb-berry-light); } .nb-dot-1 { background: var(--nb-berry-light); }
+        .nb-hl-2 { color: var(--nb-nexus-light); } .nb-dot-2 { background: var(--nb-nexus-light); }
+        .nb-hl-3 { color: var(--nb-accent-green); } .nb-dot-3 { background: var(--nb-accent-green); }
+        .nb-hl-4 { color: var(--nb-accent-orange); } .nb-dot-4 { background: var(--nb-accent-orange); }
+
+        /* ===== INFOGRAPHIC: Timeline ===== */
+        .nb-timeline { display: flex; align-items: flex-start; justify-content: center; position: relative; margin: 2em 0; padding-top: 1.5em; }
+        .nb-timeline::before { content: ''; position: absolute; top: 1.5em; left: 10%; right: 10%; height: 3px; background: var(--nb-border); }
+        .nb-timeline-point { text-align: center; position: relative; z-index: 1; flex: 1; }
+        .nb-timeline-point .dot { width: 14px; height: 14px; border-radius: 50%; background: var(--nb-dim); margin: 0 auto 0.5em; border: 2px solid var(--nb-border); }
+        .nb-timeline-point .label { font-size: 0.65em; color: var(--nb-text); }
+        .nb-timeline-point .sublabel { font-size: 0.5em; color: var(--nb-dim); }
+        .nb-timeline-point.nb-current .dot { background: var(--nb-berry-light); border-color: var(--nb-berry-light); box-shadow: 0 0 10px rgba(224,74,122,0.4); }
+
+        /* ===== INFOGRAPHIC: Icon Cards ===== */
+        .nb-cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 0.7em; margin: 0.8em 0; }
+        .nb-card { background: var(--nb-surface); border: 1px solid var(--nb-border); border-radius: 10px; padding: 0.8em 0.7em; text-align: center; }
+        .nb-card .icon { font-size: 1.5em; display: block; margin-bottom: 0.2em; }
+        .nb-card .title { font-size: 0.65em; font-weight: 600; color: var(--nb-text); margin-bottom: 0.2em; }
+        .nb-card .desc { font-size: 0.5em; color: var(--nb-dim); line-height: 1.3; }
+        .nb-card-berry { border-color: var(--nb-berry-light); }
+        .nb-card-nexus { border-color: var(--nb-nexus-light); }
+        .nb-card-green { border-color: var(--nb-accent-green); }
+        .nb-card-orange { border-color: var(--nb-accent-orange); }
+
+        /* ===== INFOGRAPHIC: Stat Bars ===== */
+        .nb-stats { margin: 0.6em 0; }
+        .nb-stat { margin-bottom: 0.6em; }
+        .nb-stat .stat-header { display: flex; justify-content: space-between; font-size: 0.6em; margin-bottom: 0.2em; }
+        .nb-stat .stat-label { color: var(--nb-text); }
+        .nb-stat .stat-value { color: var(--nb-berry-light); font-weight: 700; }
+        .nb-stat .stat-track { height: 6px; background: var(--nb-surface); border-radius: 3px; overflow: hidden; }
+        .nb-stat .stat-fill { height: 100%; border-radius: 3px; background: linear-gradient(90deg, var(--nb-nexus-light), var(--nb-berry-light)); }
+        .present .nb-stat .stat-fill { animation: nb-fill-bar var(--nb-duration-slow) var(--nb-ease-out) both; }
+
+        /* ===== INFOGRAPHIC: Callout Boxes ===== */
+        .nb-callout { background: var(--nb-surface); border-left: 4px solid var(--nb-border); border-radius: 0 8px 8px 0; padding: 0.6em 0.8em; margin: 0.6em 0 1.5em 0; text-align: left; font-size: 0.65em; display: flex; align-items: flex-start; gap: 0.5em; }
+        .nb-callout .callout-icon { font-size: 1.1em; flex-shrink: 0; }
+        .nb-callout .callout-text { line-height: 1.4; }
+        .nb-tip { border-color: var(--nb-accent-green); }
+        .nb-warning { border-color: var(--nb-accent-orange); }
+        .nb-error { border-color: var(--nb-accent-red); }
+        .nb-pro { border-color: var(--nb-accent-purple); }
+
+        /* ===== COMPACT TABLES ===== */
+        .reveal table { font-size: 0.6em; margin: 0.5em auto; }
+        .reveal table th, .reveal table td { padding: 0.3em 0.6em; }
+        .reveal table code { font-size: 0.85em; }
+
+        /* ===== CODE BLOCK COPY BUTTON ===== */
+        .reveal pre { position: relative; }
+        .reveal pre code { padding-right: 2.5em; }
+        .copy-btn {
+            position: absolute;
+            top: 0.4em;
+            right: 0.4em;
+            background: var(--nb-surface-2);
+            border: 1px solid var(--nb-border);
+            border-radius: 4px;
+            padding: 0.3em 0.5em;
+            font-size: 0.7em;
+            color: var(--nb-dim);
+            cursor: pointer;
+            opacity: 0;
+            transition: opacity 0.2s, background 0.2s;
+            z-index: 10;
+        }
+        .reveal pre:hover .copy-btn { opacity: 1; }
+        .copy-btn:hover { background: var(--nb-border); color: var(--nb-text); }
+        .copy-btn.copied { background: var(--nb-accent-green); color: var(--nb-bg); }
+
+        /* ===== LOGO WATERMARK ===== */
+        .reveal .slides section:not(.stack)::after {
+            content: '';
+            position: absolute;
+            bottom: 10px;
+            right: 10px;
+            width: 120px;
+            height: 32px;
+            background: url('../../logo/nexusberry-logo-transparent-1712x450.png') no-repeat center / contain;
+            opacity: 0.35;
+            pointer-events: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="reveal">
+        <div class="slides">
+
+            <!-- ===== TITLE SLIDE ===== -->
+            <section>
+                <img src="../../../logo/nexusberry-logo-whitebg-1914x468.png"
+                     alt="NexusBerry Logo" style="width: 200px; margin-bottom: 0.5em; opacity: 0.9;">
+                <p class="part-label">NexusBerry Modern Frontend Course</p>
+                <h1>Lecture 6</h1>
+                <h2>Tailwind CSS Basics</h2>
+                <p>By Rana M. Ajmal | February 2026</p>
+                <p style="font-size: 0.5em;">
+                    <a href="?print-pdf" target="_blank" style="color: var(--nb-dim);">Export PDF</a>
+                    &nbsp;|&nbsp;
+                    <a href="index.html" target="_blank" style="color: var(--nb-dim);">Open in Browser</a>
+                </p>
+                <footer>www.nexusberry.com</footer>
+            </section>
+
+            <!-- ===== TABLE OF CONTENTS ===== -->
+            <section>
+                <h2>Today's Agenda</h2>
+                <ol>
+                    <li class="fragment fade-up">Why Tailwind? The Utility-First Revolution</li>
+                    <li class="fragment fade-up">Layout, Spacing & Sizing Utilities</li>
+                    <li class="fragment fade-up">Typography, Colors & State Modifiers</li>
+                    <li class="fragment fade-up">Responsive Prefixes & Complete Landing Page</li>
+                </ol>
+                <div class="nb-callout nb-pro fragment fade-up" style="margin-top: 1em;">
+                    <span class="callout-icon">&#128142;</span>
+                    <span class="callout-text">From 400+ lines of CSS to ZERO. Same result. Let's see how.</span>
+                </div>
+            </section>
+
+            <!-- ===== PART 1: Why Tailwind? (vertical stack) ===== -->
+            <section>
+                <!-- Part 1 Title -->
+                <section>
+                    <p class="part-label">Part 1</p>
+                    <h2>Why Tailwind?</h2>
+                    <h3>The Utility-First Revolution</h3>
+                    <p style="font-size: 0.7em; color: var(--nb-dim);">From writing CSS to composing with class names</p>
+                </section>
+
+                <!-- Traditional CSS vs Tailwind Comparison -->
+                <section>
+                    <h3>Traditional CSS vs Tailwind</h3>
+                    <div class="nb-compare">
+                        <div class="nb-col-a fragment fade-right">
+                            <h4>&#127912; Traditional CSS</h4>
+                            <p style="font-size: 0.55em;">1. Think of a class name</p>
+                            <p style="font-size: 0.55em;">2. Write CSS rules</p>
+                            <p style="font-size: 0.55em;">3. Apply class in HTML</p>
+                            <p style="font-size: 0.55em;">4. Debug across files</p>
+                            <pre><code data-trim style="font-size: 0.7em;">
+.btn-primary {
+  padding: 0.75rem 2rem;
+  background: #f59e0b;
+  color: #000;
+  font-weight: 700;
+  border-radius: 0.5rem;
+  /* ...12+ more lines */
+}
+                            </code></pre>
+                        </div>
+                        <div class="nb-vs">VS</div>
+                        <div class="nb-col-b nb-winner fragment fade-left">
+                            <h4>&#9889; Tailwind CSS</h4>
+                            <p style="font-size: 0.55em;">1. Apply utility classes</p>
+                            <p style="font-size: 0.55em;">2. Done!</p>
+                            <p style="font-size: 0.55em;">&nbsp;</p>
+                            <p style="font-size: 0.55em;">&nbsp;</p>
+                            <pre><code data-trim data-noescape style="font-size: 0.7em;">
+&lt;button class="bg-amber-500
+  text-black font-bold
+  py-3 px-8 rounded-lg"&gt;
+  View Collection
+&lt;/button&gt;
+
+/* Zero CSS written! */
+                            </code></pre>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Three Benefits -->
+                <section>
+                    <h3>Why Developers Love Tailwind</h3>
+                    <div class="nb-cards">
+                        <div class="nb-card nb-card-berry fragment fade-up">
+                            <span class="icon">&#128203;</span>
+                            <span class="title">No Naming Classes</span>
+                            <span class="desc">No more .card-wrapper-inner-content. Just apply what you need.</span>
+                        </div>
+                        <div class="nb-card nb-card-nexus fragment fade-up">
+                            <span class="icon">&#9889;</span>
+                            <span class="title">No Context Switching</span>
+                            <span class="desc">Stay in your HTML. No jumping to CSS files.</span>
+                        </div>
+                        <div class="nb-card nb-card-green fragment fade-up">
+                            <span class="icon">&#127912;</span>
+                            <span class="title">Built-in Design System</span>
+                            <span class="desc">Constrained palette, spacing scale, consistent look.</span>
+                        </div>
+                    </div>
+                    <div class="nb-callout nb-warning fragment fade-up">
+                        <span class="callout-icon">&#9888;</span>
+                        <span class="callout-text">Not inline styles! Tailwind has responsive prefixes (<code>md:</code>), hover states (<code>hover:</code>), and design constraints.</span>
+                    </div>
+                </section>
+
+                <!-- CDN Setup -->
+                <section>
+                    <h3>Tailwind CSS 4 Setup (CDN)</h3>
+                    <pre><code data-trim data-noescape class="language-html">
+&lt;!DOCTYPE html&gt;
+&lt;html lang="en"&gt;
+&lt;head&gt;
+    &lt;meta charset="UTF-8"&gt;
+    &lt;meta name="viewport"
+          content="width=device-width, initial-scale=1.0"&gt;
+    &lt;title&gt;My Tailwind Page&lt;/title&gt;
+    <span class="nb-hl-1">&lt;script src="https://cdn.jsdelivr.net/npm/
+      @tailwindcss/browser@4"&gt;&lt;/script&gt;</span>
+&lt;/head&gt;
+&lt;body class="<span class="nb-hl-3">bg-slate-950 text-gray-100</span>"&gt;
+    &lt;!-- Your content --&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+                    </code></pre>
+                    <div class="nb-callout nb-tip fragment fade-up">
+                        <span class="callout-icon">&#9889;</span>
+                        <span class="callout-text">One script tag. No npm. No config. That's it.</span>
+                    </div>
+                </section>
+
+                <!-- Code Transition -->
+                <section>
+                    <p class="code-transition">&#128187; Let's see this in code!</p>
+                    <p style="font-size: 0.7em; color: var(--nb-dim);">CDN setup + first Tailwind button</p>
+                </section>
+
+                <!-- Interactive Question 1 -->
+                <section class="interactive-q-slide">
+                    <h3>&#129300; Interactive Question</h3>
+                    <p style="font-size: 0.8em;">What's the main advantage of utility-first CSS over traditional CSS?</p>
+                    <ol class="options">
+                        <li class="fragment fade-in">It makes your HTML smaller</li>
+                        <li class="fragment fade-in">No naming classes, no context-switching, built-in design system</li>
+                        <li class="fragment fade-in">It replaces HTML entirely</li>
+                        <li class="fragment fade-in">It only works with React</li>
+                    </ol>
+                    <p class="fragment fade-in" style="color: var(--nb-accent-green); font-weight: bold; margin-top: 0.5em;">
+                        &#9989; Answer: B — No naming, no file-switching, constrained design system!
+                    </p>
+                </section>
+
+                <!-- Interactive Question 2 -->
+                <section class="interactive-q-slide">
+                    <h3>&#128270; Spot the Error</h3>
+                    <pre><code data-trim class="language-html">
+&lt;div class="bg-blue text-white p4"&gt;Hello&lt;/div&gt;
+                    </code></pre>
+                    <p style="font-size: 0.8em;">This code has TWO errors. Can you spot them?</p>
+                    <ol class="options">
+                        <li class="fragment fade-in"><code>bg-blue</code> needs a shade (<code>bg-blue-500</code>), <code>p4</code> needs a dash (<code>p-4</code>)</li>
+                        <li class="fragment fade-in"><code>text-white</code> should be <code>color-white</code></li>
+                        <li class="fragment fade-in">There's no <code>&lt;div&gt;</code> in Tailwind</li>
+                        <li class="fragment fade-in">You need a <code>class="tw"</code> prefix</li>
+                    </ol>
+                    <p class="fragment fade-in" style="color: var(--nb-accent-green); font-weight: bold; margin-top: 0.5em;">
+                        &#9989; Answer: A — Colors need shades, spacing needs dashes!
+                    </p>
+                </section>
+
+                <!-- Interactive Question 3: Hidden Fact Reveal -->
+                <section>
+                    <h3>&#128161; The Hidden Fact</h3>
+                    <p style="font-size: 0.7em; color: var(--nb-dim);">Lecture 5's button: 15 lines of CSS</p>
+                    <pre class="fragment fade-up"><code data-trim class="language-css" style="font-size: 0.7em;">
+.btn-primary {
+  display: inline-block;
+  padding: 1rem 2rem;
+  background-color: #f59e0b;
+  color: #000;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  border-radius: 0.5rem;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.3s ease,
+              transform 0.2s ease;
+}
+.btn-primary:hover {
+  background-color: #d97706;
+  transform: translateY(-2px);
+}
+                    </code></pre>
+                    <p class="fragment fade-up" style="color: var(--nb-accent-green); font-size: 0.7em;">Tailwind: <code>bg-amber-500 text-black font-bold py-3 px-8 rounded-lg hover:bg-amber-600 hover:-translate-y-0.5 transition duration-300</code></p>
+                    <p class="fragment fade-up" style="font-size: 0.65em; color: var(--nb-berry-light);">Same result. Zero CSS. Every utility maps to CSS you already know.</p>
+                </section>
+
+                <!-- Part 1 Summary -->
+                <section>
+                    <h3>Part 1 Summary</h3>
+                    <ul>
+                        <li class="fragment fade-up"><strong>Common Mistake:</strong> Forgetting shade number (<code>bg-blue</code> &#10060; → <code>bg-blue-500</code> &#9989;)</li>
+                        <li class="fragment fade-up"><strong>Common Mistake:</strong> Missing dash in spacing (<code>p4</code> &#10060; → <code>p-4</code> &#9989;)</li>
+                        <li class="fragment fade-up"><strong>Best Practice:</strong> Install Tailwind CSS IntelliSense in VS Code</li>
+                        <li class="fragment fade-up"><strong>Pro Tip:</strong> Every Tailwind class maps 1-to-1 to CSS you already know</li>
+                    </ul>
+                </section>
+            </section>
+
+            <!-- ===== PART 2: Layout, Spacing & Sizing (vertical stack) ===== -->
+            <section>
+                <!-- Part 2 Title -->
+                <section>
+                    <p class="part-label">Part 2</p>
+                    <h2>Layout, Spacing & Sizing</h2>
+                    <h3>Utilities</h3>
+                    <p style="font-size: 0.7em; color: var(--nb-dim);">Flexbox, Grid, and the 4px spacing system</p>
+                </section>
+
+                <!-- Tailwind Class Anatomy -->
+                <section>
+                    <h3>Tailwind Class Anatomy</h3>
+                    <div class="nb-anatomy">
+                        <pre><code data-trim data-noescape style="font-size: 1.3em;">
+<span class="nb-hl-1">p</span><span class="nb-hl-4">-</span><span class="nb-hl-2">4</span>
+                        </code></pre>
+                        <div class="nb-callouts fragment fade-up">
+                            <span class="nb-callout-item"><span class="nb-dot nb-dot-1"></span> Property (padding)</span>
+                            <span class="nb-callout-item"><span class="nb-dot nb-dot-4"></span> Separator</span>
+                            <span class="nb-callout-item"><span class="nb-dot nb-dot-2"></span> Value (1rem = 16px)</span>
+                        </div>
+                    </div>
+                    <p class="fragment fade-up" style="font-size: 0.65em; color: var(--nb-dim);">Pattern: <code>{property}-{value}</code> &rarr; <code>p-4</code> = <code>padding: 1rem</code></p>
+                    <div class="nb-callout nb-tip fragment fade-up">
+                        <span class="callout-icon">&#9889;</span>
+                        <span class="callout-text">The 4px base: number &times; 4 = pixels. <code>p-6</code> = 6 &times; 4 = 24px = 1.5rem</span>
+                    </div>
+                </section>
+
+                <!-- Spacing Scale -->
+                <section>
+                    <h3>Spacing Scale</h3>
+                    <div class="nb-cards">
+                        <div class="nb-card fragment fade-up">
+                            <span class="icon" style="font-size: 1em;">p-1</span>
+                            <span class="title">4px</span>
+                            <span class="desc">0.25rem</span>
+                        </div>
+                        <div class="nb-card fragment fade-up">
+                            <span class="icon" style="font-size: 1em;">p-2</span>
+                            <span class="title">8px</span>
+                            <span class="desc">0.5rem</span>
+                        </div>
+                        <div class="nb-card nb-card-nexus fragment fade-up">
+                            <span class="icon" style="font-size: 1em;">p-4</span>
+                            <span class="title">16px</span>
+                            <span class="desc">1rem</span>
+                        </div>
+                        <div class="nb-card fragment fade-up">
+                            <span class="icon" style="font-size: 1em;">p-6</span>
+                            <span class="title">24px</span>
+                            <span class="desc">1.5rem</span>
+                        </div>
+                        <div class="nb-card nb-card-berry fragment fade-up">
+                            <span class="icon" style="font-size: 1em;">p-8</span>
+                            <span class="title">32px</span>
+                            <span class="desc">2rem</span>
+                        </div>
+                        <div class="nb-card fragment fade-up">
+                            <span class="icon" style="font-size: 1em;">p-12</span>
+                            <span class="title">48px</span>
+                            <span class="desc">3rem</span>
+                        </div>
+                    </div>
+                    <p class="fragment fade-up" style="font-size: 0.6em;">Same prefixes: <code>p-</code>, <code>px-</code>, <code>py-</code>, <code>pt-</code>, <code>m-</code>, <code>mx-</code>, <code>my-</code>, <code>mt-</code>, <code>mb-</code></p>
+                </section>
+
+                <!-- Flexbox & Grid Comparison -->
+                <section>
+                    <h3>CSS Grid: Traditional vs Tailwind</h3>
+                    <div class="nb-compare">
+                        <div class="nb-col-a fragment fade-right">
+                            <h4>Traditional CSS</h4>
+                            <pre><code data-trim style="font-size: 0.7em;">
+.grid {
+  display: grid;
+  grid-template-columns:
+    repeat(3, 1fr);
+  gap: 1.5rem;
+}
+                            </code></pre>
+                        </div>
+                        <div class="nb-vs">VS</div>
+                        <div class="nb-col-b nb-winner fragment fade-left">
+                            <h4>Tailwind</h4>
+                            <pre><code data-trim data-noescape style="font-size: 0.7em;">
+class="<span class="nb-hl-3">grid grid-cols-3 gap-6</span>"
+
+
+
+
+                            </code></pre>
+                        </div>
+                    </div>
+                    <div class="nb-callout nb-pro fragment fade-up">
+                        <span class="callout-icon">&#128142;</span>
+                        <span class="callout-text">Same CSS. Just shorthand class names. You already know the concepts!</span>
+                    </div>
+                </section>
+
+                <!-- Code Transition -->
+                <section>
+                    <p class="code-transition">&#128187; Let's see this in code!</p>
+                    <p style="font-size: 0.7em; color: var(--nb-dim);">Navigation bar + Hero section</p>
+                </section>
+
+                <!-- Interactive Question 4 -->
+                <section class="interactive-q-slide">
+                    <h3>&#129300; Predict the Output</h3>
+                    <pre><code data-trim class="language-html">
+&lt;div class="flex justify-between items-center"&gt;
+    &lt;span&gt;Logo&lt;/span&gt;
+    &lt;nav&gt;Links&lt;/nav&gt;
+&lt;/div&gt;
+                    </code></pre>
+                    <p style="font-size: 0.8em;">What layout does this create?</p>
+                    <ol class="options">
+                        <li class="fragment fade-in">Vertical column with centered items</li>
+                        <li class="fragment fade-in">Horizontal row, items pushed to edges, vertically centered</li>
+                        <li class="fragment fade-in">A grid with 2 columns</li>
+                        <li class="fragment fade-in">Items stacked on top of each other</li>
+                    </ol>
+                    <p class="fragment fade-in" style="color: var(--nb-accent-green); font-weight: bold; margin-top: 0.5em;">
+                        &#9989; Answer: B — The standard navigation layout pattern!
+                    </p>
+                </section>
+
+                <!-- Interactive Question 5: Quick-Fire -->
+                <section>
+                    <h3>&#9889; Quick-Fire: Utility &rarr; CSS</h3>
+                    <table>
+                        <thead><tr><th>Tailwind</th><th>CSS</th></tr></thead>
+                        <tbody>
+                            <tr class="fragment fade-up"><td><code>p-4</code></td><td><code>padding: 1rem</code> (16px)</td></tr>
+                            <tr class="fragment fade-up"><td><code>gap-6</code></td><td><code>gap: 1.5rem</code> (24px)</td></tr>
+                            <tr class="fragment fade-up"><td><code>mx-auto</code></td><td><code>margin-left: auto; margin-right: auto</code></td></tr>
+                            <tr class="fragment fade-up"><td><code>h-screen</code></td><td><code>height: 100vh</code></td></tr>
+                            <tr class="fragment fade-up"><td><code>max-w-7xl</code></td><td><code>max-width: 80rem</code> (1280px)</td></tr>
+                        </tbody>
+                    </table>
+                    <p class="fragment fade-up" style="font-size: 0.6em; color: var(--nb-dim);">1-to-1 mapping. You're using shortcuts for CSS you already know.</p>
+                </section>
+
+                <!-- Interactive Question 6 -->
+                <section class="interactive-q-slide">
+                    <h3>&#129300; Concept Check</h3>
+                    <p style="font-size: 0.8em;">What does <code>max-w-7xl mx-auto</code> do?</p>
+                    <ol class="options">
+                        <li class="fragment fade-in">Makes text bold and centered</li>
+                        <li class="fragment fade-in">Sets max-width to 80rem and centers the block — the standard container pattern</li>
+                        <li class="fragment fade-in">Creates a flexbox container</li>
+                        <li class="fragment fade-in">Adds maximum width only on XL screens</li>
+                    </ol>
+                    <p class="fragment fade-in" style="color: var(--nb-accent-green); font-weight: bold; margin-top: 0.5em;">
+                        &#9989; Answer: B — Same as Lecture 5's <code>max-width + margin: 0 auto</code>!
+                    </p>
+                </section>
+
+                <!-- Part 2 Summary -->
+                <section>
+                    <h3>Part 2 Summary</h3>
+                    <ul>
+                        <li class="fragment fade-up"><strong>Container Pattern:</strong> <code>max-w-7xl mx-auto px-6</code> (memorize this!)</li>
+                        <li class="fragment fade-up"><strong>Spacing Math:</strong> number &times; 4 = pixels (<code>p-8</code> = 32px)</li>
+                        <li class="fragment fade-up"><strong>Pro Tip:</strong> <code>inset-0</code> = <code>top-0 right-0 bottom-0 left-0</code></li>
+                        <li class="fragment fade-up"><strong>Overlay:</strong> <code>bg-black/60</code> replaces <code>::before</code> from Lecture 5</li>
+                    </ul>
+                </section>
+            </section>
+
+            <!-- ===== PART 3: Typography, Colors & State Modifiers (vertical stack) ===== -->
+            <section>
+                <!-- Part 3 Title -->
+                <section>
+                    <p class="part-label">Part 3</p>
+                    <h2>Typography, Colors &</h2>
+                    <h3>State Modifiers</h3>
+                    <p style="font-size: 0.7em; color: var(--nb-dim);">Making things beautiful with hover:, focus:, and the color system</p>
+                </section>
+
+                <!-- Modifier Anatomy -->
+                <section>
+                    <h3>State Modifier Anatomy</h3>
+                    <div class="nb-anatomy">
+                        <pre><code data-trim data-noescape style="font-size: 1.3em;">
+<span class="nb-hl-1">hover</span><span class="nb-hl-4">:</span><span class="nb-hl-2">bg-amber</span><span class="nb-hl-4">-</span><span class="nb-hl-3">600</span>
+                        </code></pre>
+                        <div class="nb-callouts fragment fade-up">
+                            <span class="nb-callout-item"><span class="nb-dot nb-dot-1"></span> Modifier (when)</span>
+                            <span class="nb-callout-item"><span class="nb-dot nb-dot-2"></span> Property-value</span>
+                            <span class="nb-callout-item"><span class="nb-dot nb-dot-3"></span> Shade</span>
+                        </div>
+                    </div>
+                    <p class="fragment fade-up" style="font-size: 0.65em;">Pattern: <code>modifier:property-value</code> &rarr; replaces CSS <code>:hover { }</code> blocks</p>
+                </section>
+
+                <!-- Color Shade Scale -->
+                <section>
+                    <h3>Color Shade System</h3>
+                    <div class="nb-flow">
+                        <div class="nb-flow-step fragment fade-up" style="background: #fef3c7;">
+                            <span class="label" style="color: #000;">50</span>
+                            <span class="sublabel" style="color: #666;">Lightest</span>
+                        </div>
+                        <span class="nb-flow-arrow fragment fade-in">&#8594;</span>
+                        <div class="nb-flow-step fragment fade-up" style="background: #fbbf24;">
+                            <span class="label" style="color: #000;">400</span>
+                            <span class="sublabel" style="color: #333;">Light</span>
+                        </div>
+                        <span class="nb-flow-arrow fragment fade-in">&#8594;</span>
+                        <div class="nb-flow-step nb-active fragment fade-up" style="background: #f59e0b;">
+                            <span class="label" style="color: #000;">500</span>
+                            <span class="sublabel" style="color: #333;">Base</span>
+                        </div>
+                        <span class="nb-flow-arrow fragment fade-in">&#8594;</span>
+                        <div class="nb-flow-step fragment fade-up" style="background: #d97706;">
+                            <span class="label" style="color: #fff;">600</span>
+                            <span class="sublabel" style="color: #ddd;">Dark</span>
+                        </div>
+                        <span class="nb-flow-arrow fragment fade-in">&#8594;</span>
+                        <div class="nb-flow-step fragment fade-up" style="background: #78350f;">
+                            <span class="label" style="color: #fff;">900</span>
+                            <span class="sublabel" style="color: #ccc;">Darkest</span>
+                        </div>
+                    </div>
+                    <p class="fragment fade-up" style="font-size: 0.6em;">Every color: slate, gray, red, amber, green, blue, purple... all have 50&ndash;950 shades</p>
+                </section>
+
+                <!-- State Modifiers Cards -->
+                <section>
+                    <h3>State Modifiers</h3>
+                    <div class="nb-cards">
+                        <div class="nb-card nb-card-berry fragment fade-up">
+                            <span class="icon">&#128433;</span>
+                            <span class="title">hover:</span>
+                            <span class="desc">Mouse over the element. <code>hover:bg-blue-700</code></span>
+                        </div>
+                        <div class="nb-card nb-card-nexus fragment fade-up">
+                            <span class="icon">&#128270;</span>
+                            <span class="title">focus:</span>
+                            <span class="desc">Input is selected. <code>focus:ring-2</code></span>
+                        </div>
+                        <div class="nb-card nb-card-green fragment fade-up">
+                            <span class="icon">&#128073;</span>
+                            <span class="title">active:</span>
+                            <span class="desc">Being clicked. <code>active:scale-95</code></span>
+                        </div>
+                    </div>
+                    <div class="nb-callout nb-error fragment fade-up">
+                        <span class="callout-icon">&#10060;</span>
+                        <span class="callout-text">Common mistake: <code>hover-bg-blue-700</code> (dash) &#10060; &rarr; <code>hover:bg-blue-700</code> (colon) &#9989;</span>
+                    </div>
+                </section>
+
+                <!-- Hover Comparison -->
+                <section>
+                    <h3>Hover Effects: Lecture 5 vs Tailwind</h3>
+                    <div class="nb-compare">
+                        <div class="nb-col-a fragment fade-right">
+                            <h4>Lecture 5 CSS</h4>
+                            <pre><code data-trim style="font-size: 0.65em;">
+.card {
+  transition: transform 0.3s,
+    box-shadow 0.3s;
+}
+.card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 12px 40px
+    rgba(0,0,0,0.3);
+}
+                            </code></pre>
+                        </div>
+                        <div class="nb-vs">VS</div>
+                        <div class="nb-col-b nb-winner fragment fade-left">
+                            <h4>Tailwind</h4>
+                            <pre><code data-trim data-noescape style="font-size: 0.65em;">
+class="<span class="nb-hl-3">hover:-translate-y-2
+  hover:shadow-xl
+  transition duration-300</span>"
+
+
+
+
+                            </code></pre>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Code Transition -->
+                <section>
+                    <p class="code-transition">&#128187; Let's see this in code!</p>
+                    <p style="font-size: 0.7em; color: var(--nb-dim);">Feature cards + image zoom + form inputs</p>
+                </section>
+
+                <!-- Interactive Question 7 -->
+                <section class="interactive-q-slide">
+                    <h3>&#129300; Predict the Output</h3>
+                    <pre><code data-trim class="language-html">
+&lt;div class="hover:bg-slate-800 hover:scale-105
+            transition duration-300"&gt;
+    Card content
+&lt;/div&gt;
+                    </code></pre>
+                    <p style="font-size: 0.8em;">What happens on hover?</p>
+                    <ol class="options">
+                        <li class="fragment fade-in">Only the background changes</li>
+                        <li class="fragment fade-in">Only the scale changes</li>
+                        <li class="fragment fade-in">Both: background darkens AND card scales up, smoothly over 300ms</li>
+                        <li class="fragment fade-in">Error — can't have two hover: modifiers</li>
+                    </ol>
+                    <p class="fragment fade-in" style="color: var(--nb-accent-green); font-weight: bold; margin-top: 0.5em;">
+                        &#9989; Answer: C — Multiple hover: modifiers work independently!
+                    </p>
+                </section>
+
+                <!-- Interactive Question 8 -->
+                <section class="interactive-q-slide">
+                    <h3>&#128270; Spot the Error</h3>
+                    <pre><code data-trim class="language-html">
+&lt;button class="bg-blue-500 hover-bg-blue-700
+               text-white font-bold py-2 px-4 rounded"&gt;
+    Click Me
+&lt;/button&gt;
+                    </code></pre>
+                    <p style="font-size: 0.8em;">What's wrong with this code?</p>
+                    <ol class="options">
+                        <li class="fragment fade-in"><code>bg-blue-500</code> should be <code>background-blue-500</code></li>
+                        <li class="fragment fade-in"><code>hover-bg-blue-700</code> uses a dash &mdash; should be <code>hover:bg-blue-700</code></li>
+                        <li class="fragment fade-in"><code>rounded</code> needs a size like <code>rounded-lg</code></li>
+                        <li class="fragment fade-in">Tailwind doesn't support hover effects</li>
+                    </ol>
+                    <p class="fragment fade-in" style="color: var(--nb-accent-green); font-weight: bold; margin-top: 0.5em;">
+                        &#9989; Answer: B — Modifiers use COLON, not dash!
+                    </p>
+                </section>
+
+                <!-- Interactive Question 9: Quick-Fire -->
+                <section>
+                    <h3>&#9889; Quick-Fire: CSS &rarr; Tailwind</h3>
+                    <p style="font-size: 0.7em;">Convert Lecture 5 hover CSS to Tailwind:</p>
+                    <pre><code data-trim class="language-css" style="font-size: 0.75em;">
+.card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 12px 40px rgba(0,0,0,0.3);
+}
+.card { transition: transform 0.3s, box-shadow 0.3s; }
+                    </code></pre>
+                    <div class="fragment fade-up" style="margin-top: 0.8em;">
+                        <p style="color: var(--nb-accent-green); font-size: 0.7em;">Answer:</p>
+                        <pre><code data-trim style="font-size: 0.85em;">hover:-translate-y-2 hover:shadow-xl transition duration-300</code></pre>
+                        <table style="margin-top: 0.5em;">
+                            <tr class="fragment fade-up"><td><code>translateY(-8px)</code></td><td>&rarr;</td><td><code>-translate-y-2</code></td></tr>
+                            <tr class="fragment fade-up"><td><code>box-shadow: large</code></td><td>&rarr;</td><td><code>shadow-xl</code></td></tr>
+                            <tr class="fragment fade-up"><td><code>transition: 0.3s</code></td><td>&rarr;</td><td><code>transition duration-300</code></td></tr>
+                        </table>
+                    </div>
+                </section>
+
+                <!-- Part 3 Summary -->
+                <section>
+                    <h3>Part 3 Summary</h3>
+                    <ul>
+                        <li class="fragment fade-up"><strong>Modifier Syntax:</strong> <code>hover:property-value</code> (COLON, not dash)</li>
+                        <li class="fragment fade-up"><strong>Colors:</strong> Always include shade: <code>bg-blue-500</code>, not <code>bg-blue</code></li>
+                        <li class="fragment fade-up"><strong>Transitions:</strong> Always pair <code>hover:</code> transforms with <code>transition duration-300</code></li>
+                        <li class="fragment fade-up"><strong>Pro Tip:</strong> <code>bg-black/60</code> = black at 60% opacity (replaces <code>rgba()</code>)</li>
+                    </ul>
+                </section>
+            </section>
+
+            <!-- ===== PART 4: Responsive Prefixes (vertical stack) ===== -->
+            <section>
+                <!-- Part 4 Title -->
+                <section>
+                    <p class="part-label">Part 4</p>
+                    <h2>Responsive Prefixes &</h2>
+                    <h3>Complete Landing Page</h3>
+                    <p style="font-size: 0.7em; color: var(--nb-dim);">Same mobile-first from Lecture 5 &mdash; now with prefixes</p>
+                </section>
+
+                <!-- Breakpoints Flow -->
+                <section>
+                    <h3>Tailwind Breakpoints</h3>
+                    <div class="nb-flow">
+                        <div class="nb-flow-step nb-active fragment fade-up">
+                            <span class="icon">&#128241;</span>
+                            <span class="label">base</span>
+                            <span class="sublabel">0px+</span>
+                        </div>
+                        <span class="nb-flow-arrow fragment fade-in">&#8594;</span>
+                        <div class="nb-flow-step fragment fade-up">
+                            <span class="icon">&#128241;</span>
+                            <span class="label">sm:</span>
+                            <span class="sublabel">640px+</span>
+                        </div>
+                        <span class="nb-flow-arrow fragment fade-in">&#8594;</span>
+                        <div class="nb-flow-step fragment fade-up">
+                            <span class="icon">&#128195;</span>
+                            <span class="label">md:</span>
+                            <span class="sublabel">768px+</span>
+                        </div>
+                        <span class="nb-flow-arrow fragment fade-in">&#8594;</span>
+                        <div class="nb-flow-step fragment fade-up">
+                            <span class="icon">&#128187;</span>
+                            <span class="label">lg:</span>
+                            <span class="sublabel">1024px+</span>
+                        </div>
+                        <span class="nb-flow-arrow fragment fade-in">&#8594;</span>
+                        <div class="nb-flow-step fragment fade-up">
+                            <span class="icon">&#128421;</span>
+                            <span class="label">xl:</span>
+                            <span class="sublabel">1280px+</span>
+                        </div>
+                    </div>
+                    <div class="nb-callout nb-tip fragment fade-up">
+                        <span class="callout-icon">&#9889;</span>
+                        <span class="callout-text">Same mobile-first from Lecture 5! Base = mobile. Prefixes ADD for larger screens. <code>md:</code> = <code>@media (min-width: 768px)</code></span>
+                    </div>
+                </section>
+
+                <!-- Responsive Comparison -->
+                <section>
+                    <h3>Responsive Grid: Lecture 5 vs Tailwind</h3>
+                    <div class="nb-compare">
+                        <div class="nb-col-a fragment fade-right">
+                            <h4>Lecture 5: 3 Media Queries</h4>
+                            <pre><code data-trim style="font-size: 0.6em;">
+.grid {
+  grid-template-columns: 1fr;
+}
+@media (min-width: 768px) {
+  .grid {
+    grid-template-columns:
+      repeat(2, 1fr);
+  }
+}
+@media (min-width: 1024px) {
+  .grid {
+    grid-template-columns:
+      repeat(3, 1fr);
+  }
+}
+                            </code></pre>
+                        </div>
+                        <div class="nb-vs">VS</div>
+                        <div class="nb-col-b nb-winner fragment fade-left">
+                            <h4>Tailwind: 1 Line</h4>
+                            <pre><code data-trim data-noescape style="font-size: 0.6em;">
+class="grid
+  <span class="nb-hl-1">grid-cols-1</span>
+  <span class="nb-hl-2">md:grid-cols-2</span>
+  <span class="nb-hl-3">lg:grid-cols-3</span>
+  gap-8"
+
+
+                            </code></pre>
+                            <p style="font-size: 0.55em; margin-top: 0.5em;">Same result. Same CSS under the hood.</p>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Common Responsive Patterns -->
+                <section>
+                    <h3>Common Responsive Patterns</h3>
+                    <table>
+                        <thead><tr><th>Pattern</th><th>Tailwind Classes</th></tr></thead>
+                        <tbody>
+                            <tr class="fragment fade-up"><td>Responsive grid</td><td><code>grid-cols-1 md:grid-cols-2 lg:grid-cols-3</code></td></tr>
+                            <tr class="fragment fade-up"><td>Hide on mobile</td><td><code>hidden md:flex</code></td></tr>
+                            <tr class="fragment fade-up"><td>Stack &rarr; row</td><td><code>flex flex-col sm:flex-row</code></td></tr>
+                            <tr class="fragment fade-up"><td>Responsive text</td><td><code>text-3xl md:text-5xl lg:text-7xl</code></td></tr>
+                            <tr class="fragment fade-up"><td>Responsive spacing</td><td><code>py-12 md:py-20</code></td></tr>
+                        </tbody>
+                    </table>
+                </section>
+
+                <!-- Code Transition -->
+                <section>
+                    <p class="code-transition">&#128187; Let's see this in code!</p>
+                    <p style="font-size: 0.7em; color: var(--nb-dim);">Testimonials + CTA + Footer &mdash; complete the page</p>
+                </section>
+
+                <!-- Interactive Question 10 -->
+                <section class="interactive-q-slide">
+                    <h3>&#129300; Predict the Output</h3>
+                    <pre><code data-trim class="language-html">
+&lt;div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3"&gt;
+                    </code></pre>
+                    <p style="font-size: 0.8em;">At a viewport of 800px, how many columns?</p>
+                    <ol class="options">
+                        <li class="fragment fade-in">1 column</li>
+                        <li class="fragment fade-in">2 columns</li>
+                        <li class="fragment fade-in">3 columns</li>
+                        <li class="fragment fade-in">Error &mdash; multiple grid-cols conflict</li>
+                    </ol>
+                    <p class="fragment fade-in" style="color: var(--nb-accent-green); font-weight: bold; margin-top: 0.5em;">
+                        &#9989; Answer: B &mdash; <code>md:</code> (768px) applies. <code>lg:</code> (1024px) doesn't yet.
+                    </p>
+                </section>
+
+                <!-- Interactive Question 11 -->
+                <section class="interactive-q-slide">
+                    <h3>&#129300; Concept Check</h3>
+                    <p style="font-size: 0.8em;">Is Tailwind's <code>md:</code> prefix mobile-first or desktop-first?</p>
+                    <ol class="options">
+                        <li class="fragment fade-in">Desktop-first &mdash; targets screens BELOW 768px</li>
+                        <li class="fragment fade-in">Mobile-first &mdash; targets screens AT or ABOVE 768px</li>
+                        <li class="fragment fade-in">Neither &mdash; targets exactly 768px only</li>
+                        <li class="fragment fade-in">It depends on the class used</li>
+                    </ol>
+                    <p class="fragment fade-in" style="color: var(--nb-accent-green); font-weight: bold; margin-top: 0.5em;">
+                        &#9989; Answer: B &mdash; Same as <code>@media (min-width: 768px)</code> from Lecture 5!
+                    </p>
+                </section>
+
+                <!-- Interactive Question 12: Hidden Fact -->
+                <section>
+                    <h3>&#128161; The Final Comparison</h3>
+                    <div class="nb-stats">
+                        <div class="nb-stat fragment fade-up">
+                            <div class="stat-header">
+                                <span class="stat-label">Lecture 5: Lines of Code</span>
+                                <span class="stat-value">~437 lines</span>
+                            </div>
+                            <div class="stat-track">
+                                <div class="stat-fill" style="width: 100%;"></div>
+                            </div>
+                        </div>
+                        <div class="nb-stat fragment fade-up">
+                            <div class="stat-header">
+                                <span class="stat-label">Lecture 6: Lines of Code</span>
+                                <span class="stat-value">~150 lines</span>
+                            </div>
+                            <div class="stat-track">
+                                <div class="stat-fill" style="width: 34%;"></div>
+                            </div>
+                        </div>
+                        <div class="nb-stat fragment fade-up">
+                            <div class="stat-header">
+                                <span class="stat-label">Custom CSS Written</span>
+                                <span class="stat-value">0 lines</span>
+                            </div>
+                            <div class="stat-track">
+                                <div class="stat-fill" style="width: 0%;"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <p class="fragment fade-up" style="font-size: 0.7em; color: var(--nb-berry-light);">Same sticky nav. Same hero. Same responsive grid. Same hover effects. 65% less code.</p>
+                </section>
+
+                <!-- Part 4 Summary -->
+                <section>
+                    <h3>Part 4 Summary</h3>
+                    <ul>
+                        <li class="fragment fade-up"><strong>Mobile-first:</strong> Base = mobile. <code>md:</code> and <code>lg:</code> ADD for larger.</li>
+                        <li class="fragment fade-up"><strong>Key Pattern:</strong> <code>grid-cols-1 md:grid-cols-2 lg:grid-cols-3</code></li>
+                        <li class="fragment fade-up"><strong>Visibility:</strong> <code>hidden md:flex</code> = hide on mobile, show on tablet+</li>
+                        <li class="fragment fade-up"><strong>Pro Tip:</strong> Test at 640, 768, 1024 &mdash; the exact breakpoint values</li>
+                    </ul>
+                </section>
+            </section>
+
+            <!-- ===== CHEAT SHEET (ending) ===== -->
+            <section>
+                <h2>Cheat Sheet</h2>
+                <table style="font-size: 0.5em;">
+                    <thead><tr><th>What you want</th><th>Tailwind Classes</th></tr></thead>
+                    <tbody>
+                        <tr><td>Dark page background</td><td><code>bg-slate-950 text-gray-100</code></td></tr>
+                        <tr><td>Centered container</td><td><code>max-w-7xl mx-auto px-6</code></td></tr>
+                        <tr><td>Sticky nav</td><td><code>sticky top-0 z-50 bg-slate-900</code></td></tr>
+                        <tr><td>Full-screen hero</td><td><code>min-h-screen flex items-center justify-center</code></td></tr>
+                        <tr><td>Dark overlay</td><td><code>absolute inset-0 bg-black/60</code></td></tr>
+                        <tr><td>CTA button</td><td><code>bg-amber-500 text-black font-bold py-3 px-8 rounded-lg</code></td></tr>
+                        <tr><td>Responsive grid</td><td><code>grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8</code></td></tr>
+                        <tr><td>Card hover</td><td><code>hover:-translate-y-2 transition duration-300</code></td></tr>
+                        <tr><td>Image zoom</td><td><code>overflow-hidden</code> + <code>hover:scale-105 transition-transform</code></td></tr>
+                        <tr><td>Form input focus</td><td><code>focus:ring-2 focus:ring-amber-500 focus:outline-none</code></td></tr>
+                        <tr><td>Hidden on mobile</td><td><code>hidden md:flex</code></td></tr>
+                    </tbody>
+                </table>
+                <p style="font-size: 0.5em;"><em>Full cheat sheet shared after class</em></p>
+            </section>
+
+            <!-- ===== ASSIGNMENT (ending) ===== -->
+            <section>
+                <h2>Home Assignment</h2>
+                <h3>Tailwind Landing Page</h3>
+                <ul style="font-size: 0.7em;">
+                    <li>Build a multi-section landing page using <strong>only Tailwind CSS</strong></li>
+                    <li>Nav + Hero + Cards + CTA + Footer &mdash; all responsive</li>
+                    <li>Hover effects, responsive prefixes (<code>md:</code>, <code>lg:</code>)</li>
+                    <li>Zero custom CSS &mdash; pure utility classes</li>
+                </ul>
+                <table style="font-size: 0.5em; margin-top: 0.5em;">
+                    <tr><td>CDN setup</td><td>5 pts</td><td>Responsive prefixes</td><td>15 pts</td></tr>
+                    <tr><td>Navigation</td><td>10 pts</td><td>Typography</td><td>10 pts</td></tr>
+                    <tr><td>Hero section</td><td>15 pts</td><td>Colors</td><td>5 pts</td></tr>
+                    <tr><td>Card grid</td><td>15 pts</td><td>Semantic HTML</td><td>5 pts</td></tr>
+                    <tr><td>Hover effects</td><td>10 pts</td><td>Creative addition</td><td>10 pts</td></tr>
+                </table>
+                <p style="font-size: 0.6em; margin-top: 0.5em;">Due: Before Lecture 7 | Submit via Google Classroom</p>
+            </section>
+
+            <!-- ===== CLOSING ===== -->
+            <section>
+                <h2>Questions?</h2>
+                <p>Next Lecture: <strong>Advanced Tailwind & Customization</strong></p>
+                <p style="font-size: 0.7em; color: var(--nb-dim); margin-top: 0.5em;">
+                    Custom themes, brand colors, @apply component extraction,<br>
+                    Restaurant Digital Menu project
+                </p>
+                <br>
+                <p class="nexusberry-brand">NexusBerry Training and Solutions</p>
+                <p style="font-size: 0.7em;">
+                    www.nexusberry.com | admin@nexusberry.com<br>
+                    WhatsApp: 0328-4500073
+                </p>
+            </section>
+
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/reveal.js@5/dist/reveal.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/reveal.js@5/plugin/highlight/highlight.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/reveal.js@5/plugin/notes/notes.js"></script>
+    <script>
+        Reveal.initialize({
+            hash: true,
+            slideNumber: true,
+            transition: 'fade',
+            plugins: [RevealHighlight, RevealNotes]
+        });
+
+        // Add copy buttons to all code blocks
+        document.addEventListener('DOMContentLoaded', function() {
+            document.querySelectorAll('pre').forEach(function(pre) {
+                var btn = document.createElement('button');
+                btn.className = 'copy-btn';
+                btn.innerHTML = '&#128203;';
+                btn.title = 'Copy to clipboard';
+                btn.addEventListener('click', function() {
+                    var code = pre.querySelector('code');
+                    var text = code ? code.textContent : pre.textContent;
+                    navigator.clipboard.writeText(text).then(function() {
+                        btn.innerHTML = '&#9989;';
+                        btn.classList.add('copied');
+                        setTimeout(function() {
+                            btn.innerHTML = '&#128203;';
+                            btn.classList.remove('copied');
+                        }, 2000);
+                    });
+                });
+                pre.appendChild(btn);
+            });
+        });
+    </script>
+</body>
+</html>

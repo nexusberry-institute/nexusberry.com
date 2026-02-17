@@ -1,0 +1,1171 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lecture 4: Flexbox & CSS Grid Mastery | NexusBerry Modern Frontend Course</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5/dist/reveal.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5/dist/theme/black.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5/plugin/highlight/monokai.css">
+    <style>
+        :root {
+            /* NexusBerry Brand Colors */
+            --nb-berry: #990147;
+            --nb-nexus: #0020C2;
+            --nb-berry-light: #E04A7A;
+            --nb-nexus-light: #4D70FF;
+            --nb-bg: #080D2B;
+            --nb-text: #F0F0F5;
+
+            /* Extended palette for infographics */
+            --nb-accent-green: #00C896;
+            --nb-accent-orange: #FF8C42;
+            --nb-accent-red: #FF4C6A;
+            --nb-accent-purple: #A855F7;
+            --nb-surface: #0F1642;
+            --nb-surface-2: #1A2258;
+            --nb-border: #2A3370;
+            --nb-dim: #6B7094;
+
+            /* Animation timing */
+            --nb-duration-fast: 0.3s;
+            --nb-duration-normal: 0.6s;
+            --nb-duration-slow: 0.9s;
+            --nb-ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .reveal {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        .reveal h1, .reveal h2, .reveal h3 {
+            color: var(--nb-berry-light);
+            text-transform: none;
+        }
+        .reveal .slide-background {
+            background-color: var(--nb-bg);
+        }
+        .reveal pre code {
+            font-size: 0.85em;
+            line-height: 1.4;
+            max-height: 500px;
+        }
+        .reveal .nexusberry-brand {
+            color: var(--nb-berry);
+            font-weight: bold;
+        }
+        .reveal .interactive-q-slide {
+            text-align: left;
+        }
+        .reveal .interactive-q-slide .options {
+            list-style: upper-alpha;
+            font-size: 0.9em;
+        }
+        .reveal .code-transition {
+            font-size: 1.5em;
+            color: var(--nb-berry-light);
+        }
+        .reveal .part-label {
+            font-size: 0.6em;
+            color: var(--nb-nexus-light);
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+        }
+        .reveal footer {
+            position: absolute;
+            bottom: 1em;
+            left: 1em;
+            font-size: 0.5em;
+            color: #8888AA;
+        }
+
+        /* ===== ANIMATION KEYFRAMES ===== */
+        @keyframes nb-rise { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes nb-slide-right { from { opacity: 0; transform: translateX(-30px); } to { opacity: 1; transform: translateX(0); } }
+        @keyframes nb-slide-left { from { opacity: 0; transform: translateX(30px); } to { opacity: 1; transform: translateX(0); } }
+        @keyframes nb-pop { from { opacity: 0; transform: scale(0.8); } to { opacity: 1; transform: scale(1); } }
+        @keyframes nb-draw-h { from { width: 0; } to { width: 100%; } }
+        @keyframes nb-draw-v { from { height: 0; } to { height: 100%; } }
+        @keyframes nb-pulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.05); } }
+        @keyframes nb-glow { 0%, 100% { box-shadow: 0 0 5px var(--nb-berry-light); } 50% { box-shadow: 0 0 20px var(--nb-berry-light); } }
+        @keyframes nb-fill-bar { from { width: 0; } }
+        @keyframes nb-highlight-correct { to { background: rgba(0,200,150,0.2); border-color: var(--nb-accent-green); } }
+        @keyframes nb-highlight-wrong { to { background: rgba(255,76,106,0.15); border-color: var(--nb-accent-red); } }
+
+        /* Animation utility classes */
+        .nb-anim-rise { animation: nb-rise var(--nb-duration-normal) var(--nb-ease-out) both; }
+        .nb-anim-pop { animation: nb-pop var(--nb-duration-normal) var(--nb-ease-out) both; }
+        .nb-anim-pulse { animation: nb-pulse 2s ease-in-out infinite; }
+        .nb-anim-glow { animation: nb-glow 2s ease-in-out infinite; }
+        .nb-delay-1 { animation-delay: 0.1s; } .nb-delay-2 { animation-delay: 0.2s; }
+        .nb-delay-3 { animation-delay: 0.3s; } .nb-delay-4 { animation-delay: 0.4s; }
+        .nb-delay-5 { animation-delay: 0.5s; } .nb-delay-6 { animation-delay: 0.6s; }
+        .nb-delay-7 { animation-delay: 0.7s; } .nb-delay-8 { animation-delay: 0.8s; }
+
+        /* ===== INFOGRAPHIC: Process Flow (Horizontal) ===== */
+        .nb-flow { display: flex; align-items: center; justify-content: center; gap: 0; flex-wrap: wrap; margin: 0.8em 0; }
+        .nb-flow-step { background: var(--nb-surface); border: 1px solid var(--nb-border); border-radius: 10px; padding: 0.5em 0.7em; text-align: center; min-width: 90px; flex-shrink: 1; }
+        .nb-flow-step .icon { font-size: 1.3em; display: block; margin-bottom: 0.2em; }
+        .nb-flow-step .label { font-size: 0.6em; font-weight: 600; color: var(--nb-text); }
+        .nb-flow-step .sublabel { font-size: 0.45em; color: var(--nb-dim); margin-top: 0.1em; }
+        .nb-flow-step.nb-active { border-color: var(--nb-berry-light); box-shadow: 0 0 12px rgba(224,74,122,0.3); }
+        .nb-flow-arrow { font-size: 1em; color: var(--nb-dim); padding: 0 0.2em; flex-shrink: 0; }
+
+        /* ===== INFOGRAPHIC: Process Flow (Vertical) ===== */
+        .nb-flow-v { display: flex; flex-direction: column; align-items: center; gap: 0; margin: 0.5em auto; max-width: 320px; }
+        .nb-flow-v .nb-flow-step { width: 100%; min-width: unset; padding: 0.4em 0.6em; }
+        .nb-flow-v .nb-flow-step .icon { font-size: 1.1em; margin-bottom: 0.1em; }
+        .nb-flow-v .nb-flow-step .label { font-size: 0.55em; }
+        .nb-flow-v .nb-flow-arrow { transform: rotate(90deg); padding: 0.1em 0; font-size: 0.8em; }
+
+        /* ===== INFOGRAPHIC: Comparison / Versus ===== */
+        .nb-compare { display: grid; grid-template-columns: 1fr auto 1fr; gap: 0.6em; align-items: start; margin: 0.6em 0; }
+        .nb-col-a, .nb-col-b { background: var(--nb-surface); border-radius: 10px; padding: 0.7em; border: 2px solid var(--nb-border); }
+        .nb-col-a { border-color: var(--nb-nexus-light); }
+        .nb-col-b { border-color: var(--nb-berry-light); }
+        .nb-col-a h4, .nb-col-b h4 { margin-top: 0; font-size: 0.75em; }
+        .nb-col-a p, .nb-col-b p { margin: 0.3em 0; }
+        .nb-vs { display: flex; align-items: center; font-size: 1.1em; font-weight: 700; color: var(--nb-dim); padding: 0 0.2em; }
+        .nb-winner { border-color: var(--nb-accent-green) !important; box-shadow: 0 0 15px rgba(0,200,150,0.25); }
+
+        /* ===== INFOGRAPHIC: Anatomy / Breakdown ===== */
+        .nb-anatomy { text-align: center; margin: 1em 0; }
+        .nb-anatomy pre { display: inline-block; text-align: left; }
+        .nb-anatomy .nb-callouts { display: flex; justify-content: center; gap: 1.5em; margin-top: 1em; flex-wrap: wrap; }
+        .nb-anatomy .nb-callout-item { font-size: 0.65em; display: flex; align-items: center; gap: 0.4em; }
+        .nb-anatomy .nb-dot { width: 10px; height: 10px; border-radius: 50%; display: inline-block; flex-shrink: 0; }
+        .nb-hl-1 { color: var(--nb-berry-light); } .nb-dot-1 { background: var(--nb-berry-light); }
+        .nb-hl-2 { color: var(--nb-nexus-light); } .nb-dot-2 { background: var(--nb-nexus-light); }
+        .nb-hl-3 { color: var(--nb-accent-green); } .nb-dot-3 { background: var(--nb-accent-green); }
+        .nb-hl-4 { color: var(--nb-accent-orange); } .nb-dot-4 { background: var(--nb-accent-orange); }
+
+        /* ===== INFOGRAPHIC: Timeline ===== */
+        .nb-timeline { display: flex; align-items: flex-start; justify-content: center; position: relative; margin: 2em 0; padding-top: 1.5em; }
+        .nb-timeline::before { content: ''; position: absolute; top: 1.5em; left: 10%; right: 10%; height: 3px; background: var(--nb-border); }
+        .nb-timeline-point { text-align: center; position: relative; z-index: 1; flex: 1; }
+        .nb-timeline-point .dot { width: 14px; height: 14px; border-radius: 50%; background: var(--nb-dim); margin: 0 auto 0.5em; border: 2px solid var(--nb-border); }
+        .nb-timeline-point .label { font-size: 0.65em; color: var(--nb-text); }
+        .nb-timeline-point .sublabel { font-size: 0.5em; color: var(--nb-dim); }
+        .nb-timeline-point.nb-current .dot { background: var(--nb-berry-light); border-color: var(--nb-berry-light); box-shadow: 0 0 10px rgba(224,74,122,0.4); }
+
+        /* ===== INFOGRAPHIC: Tree / Hierarchy ===== */
+        .nb-tree { display: flex; flex-direction: column; align-items: center; gap: 0; margin: 0.6em 0; }
+        .nb-tree-node { background: var(--nb-surface); border: 1px solid var(--nb-border); border-radius: 6px; padding: 0.4em 0.8em; font-size: 0.6em; text-align: center; position: relative; }
+        .nb-tree-node.nb-root { border-color: var(--nb-berry-light); font-weight: 600; }
+        .nb-tree-connector { width: 2px; height: 15px; background: var(--nb-border); }
+        .nb-tree-children { display: flex; gap: 1.5em; position: relative; padding-top: 15px; }
+
+        /* ===== INFOGRAPHIC: Icon Cards ===== */
+        .nb-cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 0.7em; margin: 0.8em 0; }
+        .nb-card { background: var(--nb-surface); border: 1px solid var(--nb-border); border-radius: 10px; padding: 0.8em 0.7em; text-align: center; }
+        .nb-card .icon { font-size: 1.5em; display: block; margin-bottom: 0.2em; }
+        .nb-card .title { font-size: 0.65em; font-weight: 600; color: var(--nb-text); margin-bottom: 0.2em; }
+        .nb-card .desc { font-size: 0.5em; color: var(--nb-dim); line-height: 1.3; }
+        .nb-card-berry { border-color: var(--nb-berry-light); }
+        .nb-card-nexus { border-color: var(--nb-nexus-light); }
+        .nb-card-green { border-color: var(--nb-accent-green); }
+        .nb-card-orange { border-color: var(--nb-accent-orange); }
+
+        /* ===== INFOGRAPHIC: Stat Bars ===== */
+        .nb-stats { margin: 0.6em 0; }
+        .nb-stat { margin-bottom: 0.6em; }
+        .nb-stat .stat-header { display: flex; justify-content: space-between; font-size: 0.6em; margin-bottom: 0.2em; }
+        .nb-stat .stat-label { color: var(--nb-text); }
+        .nb-stat .stat-value { color: var(--nb-berry-light); font-weight: 700; }
+        .nb-stat .stat-track { height: 6px; background: var(--nb-surface); border-radius: 3px; overflow: hidden; }
+        .nb-stat .stat-fill { height: 100%; border-radius: 3px; background: linear-gradient(90deg, var(--nb-nexus-light), var(--nb-berry-light)); }
+        .present .nb-stat .stat-fill { animation: nb-fill-bar var(--nb-duration-slow) var(--nb-ease-out) both; }
+
+        /* ===== INFOGRAPHIC: Callout Boxes ===== */
+        .nb-callout { background: var(--nb-surface); border-left: 4px solid var(--nb-border); border-radius: 0 8px 8px 0; padding: 0.6em 0.8em; margin: 0.6em 0 1.5em 0; text-align: left; font-size: 0.65em; display: flex; align-items: flex-start; gap: 0.5em; }
+        .nb-callout .callout-icon { font-size: 1.1em; flex-shrink: 0; }
+        .nb-callout .callout-text { line-height: 1.4; }
+        .nb-tip { border-color: var(--nb-accent-green); }
+        .nb-warning { border-color: var(--nb-accent-orange); }
+        .nb-error { border-color: var(--nb-accent-red); }
+        .nb-pro { border-color: var(--nb-accent-purple); }
+
+        /* ===== COMPACT TABLES ===== */
+        .reveal table { font-size: 0.6em; margin: 0.5em auto; }
+        .reveal table th, .reveal table td { padding: 0.3em 0.6em; }
+        .reveal table code { font-size: 0.85em; }
+
+        /* ===== CODE BLOCK COPY BUTTON ===== */
+        .reveal pre { position: relative; }
+        .reveal pre code { padding-right: 2.5em; }
+        .copy-btn {
+            position: absolute;
+            top: 0.4em;
+            right: 0.4em;
+            background: var(--nb-surface-2);
+            border: 1px solid var(--nb-border);
+            border-radius: 4px;
+            padding: 0.3em 0.5em;
+            font-size: 0.7em;
+            color: var(--nb-dim);
+            cursor: pointer;
+            opacity: 0;
+            transition: opacity 0.2s, background 0.2s;
+            z-index: 10;
+        }
+        .reveal pre:hover .copy-btn { opacity: 1; }
+        .copy-btn:hover { background: var(--nb-border); color: var(--nb-text); }
+        .copy-btn.copied { background: var(--nb-accent-green); color: var(--nb-bg); }
+
+        /* ===== LOGO WATERMARK ===== */
+        .reveal .slides section:not(.stack)::after {
+            content: '';
+            position: absolute;
+            bottom: 10px;
+            right: 10px;
+            width: 120px;
+            height: 32px;
+            background: url('../../logo/nexusberry-logo-transparent-1712x450.png') no-repeat center / contain;
+            opacity: 0.35;
+            pointer-events: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="reveal">
+        <div class="slides">
+
+            <!-- ===== TITLE SLIDE ===== -->
+            <section>
+                <img src="../../../logo/nexusberry-logo-whitebg-1914x468.png"
+                     alt="NexusBerry Logo" style="width: 200px; margin-bottom: 0.5em; opacity: 0.9;">
+                <p class="part-label">NexusBerry Modern Frontend Course</p>
+                <h1>Lecture 4</h1>
+                <h2>Flexbox &amp; CSS Grid Mastery</h2>
+                <p>By Rana M. Ajmal | February 2026</p>
+                <p style="font-size: 0.5em;">
+                    <a href="?print-pdf" target="_blank" style="color: var(--nb-dim);">Export PDF</a>
+                    &nbsp;|&nbsp;
+                    <a href="index.html" target="_blank" style="color: var(--nb-dim);">Open in Browser</a>
+                </p>
+                <footer>www.nexusberry.com</footer>
+            </section>
+
+            <!-- ===== TABLE OF CONTENTS ===== -->
+            <section>
+                <h2>Today's Agenda</h2>
+                <ol>
+                    <li class="fragment fade-up">Flexbox Deep Dive &mdash; One-Dimensional Layouts</li>
+                    <li class="fragment fade-up">Flex Items &mdash; Sizing &amp; Distribution</li>
+                    <li class="fragment fade-up">CSS Grid &mdash; Two-Dimensional Layouts</li>
+                    <li class="fragment fade-up">Building the Modern Dashboard</li>
+                </ol>
+                <div class="nb-callout nb-pro fragment fade-up" style="margin-bottom: 2em;">
+                    <span class="callout-icon">&#128142;</span>
+                    <span class="callout-text">Your business card from Lecture 3 is about to get neighbors. Welcome to layout.</span>
+                </div>
+            </section>
+
+            <!-- ===== PART 1: Flexbox Deep Dive (vertical stack) ===== -->
+            <section>
+                <!-- Part 1 Title -->
+                <section>
+                    <p class="part-label">Part 1</p>
+                    <h2>Flexbox Deep Dive</h2>
+                    <h3>One-Dimensional Layouts</h3>
+                    <p style="font-size: 0.7em; color: var(--nb-dim);">Analogy: Items on a shelf &mdash; one direction at a time</p>
+                </section>
+
+                <!-- Row vs Column Comparison -->
+                <section>
+                    <h3>flex-direction: Row vs Column</h3>
+                    <div class="nb-compare">
+                        <div class="nb-col-a fragment fade-right">
+                            <h4>&#8594; Row (default)</h4>
+                            <p style="font-size: 0.5em;">Items flow left to right</p>
+                            <p style="font-size: 0.5em;">Main axis: horizontal</p>
+                            <p style="font-size: 0.5em;">Cross axis: vertical</p>
+                            <pre style="font-size: 0.8em;"><code data-trim class="language-css">flex-direction: row;</code></pre>
+                        </div>
+                        <div class="nb-vs">VS</div>
+                        <div class="nb-col-b fragment fade-left">
+                            <h4>&#8595; Column</h4>
+                            <p style="font-size: 0.5em;">Items flow top to bottom</p>
+                            <p style="font-size: 0.5em;">Main axis: vertical</p>
+                            <p style="font-size: 0.5em;">Cross axis: horizontal</p>
+                            <pre style="font-size: 0.8em;"><code data-trim class="language-css">flex-direction: column;</code></pre>
+                        </div>
+                    </div>
+                    <div class="nb-callout nb-tip fragment fade-up" style="margin-bottom: 2em;">
+                        <span class="callout-icon">&#9889;</span>
+                        <span class="callout-text"><code>justify-content</code> works along the <strong>main axis</strong>. <code>align-items</code> works along the <strong>cross axis</strong>.</span>
+                    </div>
+                </section>
+
+                <!-- Flexbox Mental Model Flow -->
+                <section>
+                    <h3>Flexbox Mental Model</h3>
+                    <div class="nb-flow">
+                        <div class="nb-flow-step fragment fade-up">
+                            <span class="icon">&#127959;</span>
+                            <span class="label">Parent</span>
+                            <span class="sublabel">Container</span>
+                        </div>
+                        <span class="nb-flow-arrow fragment fade-in">&#8594;</span>
+                        <div class="nb-flow-step fragment fade-up">
+                            <span class="icon">&#128296;</span>
+                            <span class="label">display: flex</span>
+                            <span class="sublabel">Activate</span>
+                        </div>
+                        <span class="nb-flow-arrow fragment fade-in">&#8594;</span>
+                        <div class="nb-flow-step fragment fade-up">
+                            <span class="icon">&#8596;</span>
+                            <span class="label">justify-content</span>
+                            <span class="sublabel">Main axis</span>
+                        </div>
+                        <span class="nb-flow-arrow fragment fade-in">&#8594;</span>
+                        <div class="nb-flow-step fragment fade-up">
+                            <span class="icon">&#8597;</span>
+                            <span class="label">align-items</span>
+                            <span class="sublabel">Cross axis</span>
+                        </div>
+                        <span class="nb-flow-arrow fragment fade-in">&#8594;</span>
+                        <div class="nb-flow-step nb-active fragment fade-up">
+                            <span class="icon">&#9989;</span>
+                            <span class="label">gap</span>
+                            <span class="sublabel">Spacing</span>
+                        </div>
+                    </div>
+                    <div class="nb-callout nb-warning fragment fade-up" style="margin-bottom: 2em;">
+                        <span class="callout-icon">&#9888;</span>
+                        <span class="callout-text"><code>display: flex</code> only affects <strong>direct children</strong> &mdash; not grandchildren!</span>
+                    </div>
+                </section>
+
+                <!-- justify-content Values -->
+                <section>
+                    <h3>justify-content Values</h3>
+                    <div class="nb-cards" style="grid-template-columns: repeat(3, 1fr);">
+                        <div class="nb-card fragment fade-up">
+                            <span class="icon" style="font-size: 1em;">&#9664;&#9654;</span>
+                            <span class="title" style="font-size: 0.55em;">flex-start</span>
+                            <span class="desc">Pack to the start (default)</span>
+                        </div>
+                        <div class="nb-card fragment fade-up">
+                            <span class="icon" style="font-size: 1em;">&#9654;&#9664;</span>
+                            <span class="title" style="font-size: 0.55em;">flex-end</span>
+                            <span class="desc">Pack to the end</span>
+                        </div>
+                        <div class="nb-card nb-card-nexus fragment fade-up">
+                            <span class="icon" style="font-size: 1em;">&#9654;&#9632;&#9664;</span>
+                            <span class="title" style="font-size: 0.55em;">center</span>
+                            <span class="desc">Center items</span>
+                        </div>
+                        <div class="nb-card nb-card-green fragment fade-up">
+                            <span class="icon" style="font-size: 1em;">|&bull; &bull;|</span>
+                            <span class="title" style="font-size: 0.55em;">space-between</span>
+                            <span class="desc">Items at edges, equal gaps</span>
+                        </div>
+                        <div class="nb-card nb-card-berry fragment fade-up">
+                            <span class="icon" style="font-size: 1em;">&nbsp;&bull; &bull;&nbsp;</span>
+                            <span class="title" style="font-size: 0.55em;">space-around</span>
+                            <span class="desc">Equal space around each</span>
+                        </div>
+                        <div class="nb-card nb-card-orange fragment fade-up">
+                            <span class="icon" style="font-size: 1em;">&#8212;&bull;&#8212;&bull;&#8212;</span>
+                            <span class="title" style="font-size: 0.55em;">space-evenly</span>
+                            <span class="desc">Equal space everywhere</span>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Flex Container Properties Table -->
+                <section>
+                    <h3>Flex Container Properties</h3>
+                    <table>
+                        <thead>
+                            <tr><th>Property</th><th>What It Controls</th><th>Common Value</th></tr>
+                        </thead>
+                        <tbody>
+                            <tr class="fragment fade-up"><td><code>display: flex</code></td><td>Activate Flexbox</td><td><code>flex</code></td></tr>
+                            <tr class="fragment fade-up"><td><code>flex-direction</code></td><td>Main axis direction</td><td><code>row</code> / <code>column</code></td></tr>
+                            <tr class="fragment fade-up"><td><code>flex-wrap</code></td><td>Allow wrapping</td><td><code>nowrap</code> / <code>wrap</code></td></tr>
+                            <tr class="fragment fade-up"><td><code>justify-content</code></td><td>Main axis alignment</td><td><code>space-between</code></td></tr>
+                            <tr class="fragment fade-up"><td><code>align-items</code></td><td>Cross axis alignment</td><td><code>center</code></td></tr>
+                            <tr class="fragment fade-up"><td><code>gap</code></td><td>Space between items</td><td><code>16px</code></td></tr>
+                        </tbody>
+                    </table>
+                </section>
+
+                <!-- Code Transition -->
+                <section>
+                    <p class="code-transition">&#128187; Let's see this in code!</p>
+                    <p style="font-size: 0.7em;">Switch to VS Code &mdash; building a Flexbox navigation bar</p>
+                </section>
+
+                <!-- Interactive Q1: Predict Output - flex-direction: column -->
+                <section class="interactive-q-slide">
+                    <h3>&#129300; Predict the Output</h3>
+                    <pre><code data-trim class="language-css">
+.container {
+    display: flex;
+    flex-direction: column;
+}
+                    </code></pre>
+                    <p>What happens to the child elements?</p>
+                    <ol class="options">
+                        <li class="fragment fade-up">They stay in a row (left to right)</li>
+                        <li class="fragment fade-up" style="color: var(--nb-accent-green);">They stack vertically (top to bottom) &#9989;</li>
+                        <li class="fragment fade-up">They overlap on top of each other</li>
+                        <li class="fragment fade-up">They disappear</li>
+                    </ol>
+                    <p class="fragment fade-up" style="font-size: 0.55em;"><code>flex-direction: column</code> changes the main axis from horizontal to vertical.</p>
+                </section>
+
+                <!-- Interactive Q2: Concept Check - space-between vs space-around -->
+                <section class="interactive-q-slide">
+                    <h3>&#129300; Concept Check</h3>
+                    <p>Difference between <code>space-between</code> and <code>space-around</code>?</p>
+                    <ol class="options">
+                        <li class="fragment fade-up">No difference &mdash; they're aliases</li>
+                        <li class="fragment fade-up" style="color: var(--nb-accent-green);"><code>space-between</code>: no edge space. <code>space-around</code>: equal space around each &#9989;</li>
+                        <li class="fragment fade-up"><code>space-between</code> only works with 2 items</li>
+                        <li class="fragment fade-up"><code>space-around</code> centers everything</li>
+                    </ol>
+                    <div class="nb-callout nb-tip fragment fade-up" style="margin-bottom: 2em;">
+                        <span class="callout-icon">&#9889;</span>
+                        <span class="callout-text"><code>space-between</code> pushes first/last to edges. <code>space-around</code> gives each item equal space on both sides.</span>
+                    </div>
+                </section>
+
+                <!-- Interactive Q3: Spot the Error - align-items: space-between -->
+                <section class="interactive-q-slide">
+                    <h3>&#128270; Spot the Error</h3>
+                    <pre><code data-trim class="language-css">
+.container {
+    display: flex;
+    align-items: space-between;
+}
+                    </code></pre>
+                    <p class="fragment fade-up" style="color: var(--nb-accent-red);"><code>space-between</code> is NOT valid for <code>align-items</code>!</p>
+                    <div class="nb-callout nb-error fragment fade-up" style="margin-bottom: 2em;">
+                        <span class="callout-icon">&#10060;</span>
+                        <span class="callout-text"><code>align-items</code> accepts: <code>stretch</code>, <code>flex-start</code>, <code>flex-end</code>, <code>center</code>, <code>baseline</code>. The <code>space-*</code> values only work with <code>justify-content</code>.</span>
+                    </div>
+                </section>
+
+                <!-- Part 1 Summary -->
+                <section>
+                    <h3>Part 1 Summary</h3>
+                    <ul>
+                        <li class="fragment fade-up"><strong>Key Concept:</strong> Flexbox = one-dimensional layout (row OR column)</li>
+                        <li class="fragment fade-up"><strong>Common Mistake:</strong> Applying flex properties to children instead of the container</li>
+                        <li class="fragment fade-up"><strong>Best Practice:</strong> Use <code>gap</code> instead of margins between flex items</li>
+                    </ul>
+                    <div class="nb-callout nb-pro fragment fade-up" style="margin-bottom: 2em;">
+                        <span class="callout-icon">&#128142;</span>
+                        <span class="callout-text">The shift from floats to Flexbox was the single biggest quality-of-life improvement in CSS history.</span>
+                    </div>
+                </section>
+            </section>
+
+            <!-- ===== PART 2: Flex Items (vertical stack) ===== -->
+            <section>
+                <!-- Part 2 Title -->
+                <section>
+                    <p class="part-label">Part 2</p>
+                    <h2>Flex Items</h2>
+                    <h3>Sizing &amp; Distribution</h3>
+                    <p style="font-size: 0.7em; color: var(--nb-dim);">Analogy: flex-grow = dividing pizza slices &#127829;</p>
+                </section>
+
+                <!-- flex-grow Ratios Stat Bars -->
+                <section>
+                    <h3>flex-grow: Space Distribution</h3>
+                    <p style="font-size: 0.6em; color: var(--nb-dim);">flex-grow: 1 | flex-grow: 2 | flex-grow: 1 &mdash; ratio 1:2:1</p>
+                    <div class="nb-stats">
+                        <div class="nb-stat fragment fade-up">
+                            <div class="stat-header">
+                                <span class="stat-label">Item A (flex-grow: 1)</span>
+                                <span class="stat-value">25%</span>
+                            </div>
+                            <div class="stat-track">
+                                <div class="stat-fill" style="width: 25%;"></div>
+                            </div>
+                        </div>
+                        <div class="nb-stat fragment fade-up">
+                            <div class="stat-header">
+                                <span class="stat-label">Item B (flex-grow: 2)</span>
+                                <span class="stat-value">50%</span>
+                            </div>
+                            <div class="stat-track">
+                                <div class="stat-fill" style="width: 50%;"></div>
+                            </div>
+                        </div>
+                        <div class="nb-stat fragment fade-up">
+                            <div class="stat-header">
+                                <span class="stat-label">Item C (flex-grow: 1)</span>
+                                <span class="stat-value">25%</span>
+                            </div>
+                            <div class="stat-track">
+                                <div class="stat-fill" style="width: 25%;"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <p class="fragment fade-up" style="font-size: 0.55em;">Total grow = 1+2+1 = 4 parts. Each item gets its share of extra space.</p>
+                </section>
+
+                <!-- flex Shorthand Anatomy -->
+                <section>
+                    <h3>The <code>flex: 1</code> Shorthand</h3>
+                    <div class="nb-anatomy">
+                        <pre><code data-trim data-noescape class="language-css">
+<span class="nb-hl-1">flex</span>: <span class="nb-hl-2">1</span>;
+
+/* Expands to: */
+<span class="nb-hl-2">flex-grow</span>:   <span class="nb-hl-3">1</span>;
+<span class="nb-hl-2">flex-shrink</span>: <span class="nb-hl-3">1</span>;
+<span class="nb-hl-2">flex-basis</span>:  <span class="nb-hl-4">0%</span>;
+                        </code></pre>
+                        <div class="nb-callouts fragment fade-up">
+                            <span class="nb-callout-item"><span class="nb-dot nb-dot-1"></span> Shorthand property</span>
+                            <span class="nb-callout-item"><span class="nb-dot nb-dot-3"></span> Grow &amp; shrink equally</span>
+                            <span class="nb-callout-item"><span class="nb-dot nb-dot-4"></span> Start from 0 (ignore content size)</span>
+                        </div>
+                    </div>
+                    <div class="nb-callout nb-pro fragment fade-up" style="margin-bottom: 2em;">
+                        <span class="callout-icon">&#128142;</span>
+                        <span class="callout-text"><code>flex: 1</code> handles 90% of your Flexbox needs. Master this one shorthand.</span>
+                    </div>
+                </section>
+
+                <!-- flex-basis: auto vs 0 Comparison -->
+                <section>
+                    <h3>flex-basis: auto vs 0</h3>
+                    <div class="nb-compare">
+                        <div class="nb-col-a fragment fade-right">
+                            <h4>flex-basis: auto</h4>
+                            <p style="font-size: 0.5em;">Starts from content size</p>
+                            <p style="font-size: 0.5em;">Wider content = wider item</p>
+                            <p style="font-size: 0.5em;">Default behavior</p>
+                            <pre style="font-size: 0.8em;"><code data-trim class="language-css">flex: 1 1 auto;</code></pre>
+                        </div>
+                        <div class="nb-vs">VS</div>
+                        <div class="nb-col-b nb-winner fragment fade-left">
+                            <h4>flex-basis: 0%</h4>
+                            <p style="font-size: 0.5em;">Ignores content size</p>
+                            <p style="font-size: 0.5em;">All items equal width</p>
+                            <p style="font-size: 0.5em;">What <code>flex: 1</code> uses</p>
+                            <pre style="font-size: 0.8em;"><code data-trim class="language-css">flex: 1; /* = 1 1 0% */</code></pre>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Flex Item Properties Table -->
+                <section>
+                    <h3>Flex Item Properties</h3>
+                    <table>
+                        <thead>
+                            <tr><th>Property</th><th>What It Does</th><th>Default</th></tr>
+                        </thead>
+                        <tbody>
+                            <tr class="fragment fade-up"><td><code>flex-grow</code></td><td>How much item grows</td><td><code>0</code></td></tr>
+                            <tr class="fragment fade-up"><td><code>flex-shrink</code></td><td>How much item shrinks</td><td><code>1</code></td></tr>
+                            <tr class="fragment fade-up"><td><code>flex-basis</code></td><td>Starting size</td><td><code>auto</code></td></tr>
+                            <tr class="fragment fade-up"><td><code>flex</code></td><td>Shorthand (grow shrink basis)</td><td>&mdash;</td></tr>
+                            <tr class="fragment fade-up"><td><code>align-self</code></td><td>Override parent's align-items</td><td><code>auto</code></td></tr>
+                            <tr class="fragment fade-up"><td><code>order</code></td><td>Visual order (without changing HTML)</td><td><code>0</code></td></tr>
+                        </tbody>
+                    </table>
+                </section>
+
+                <!-- Code Transition -->
+                <section>
+                    <p class="code-transition">&#128187; Let's see this in code!</p>
+                    <p style="font-size: 0.7em;">Switch to VS Code &mdash; building equal-width cards with a featured card</p>
+                </section>
+
+                <!-- Interactive Q1: flex-grow ratio -->
+                <section class="interactive-q-slide">
+                    <h3>&#129300; Predict the Output</h3>
+                    <pre><code data-trim class="language-css">
+.item-a { flex-grow: 1; }
+.item-b { flex-grow: 2; }
+.item-c { flex-grow: 1; }
+/* 400px extra space to distribute */
+                    </code></pre>
+                    <p>How is the extra space distributed?</p>
+                    <ol class="options">
+                        <li class="fragment fade-up">Each gets 133px extra</li>
+                        <li class="fragment fade-up" style="color: var(--nb-accent-green);">A: 100px, B: 200px, C: 100px &#9989;</li>
+                        <li class="fragment fade-up">B gets all 400px</li>
+                        <li class="fragment fade-up">Space is distributed equally</li>
+                    </ol>
+                    <p class="fragment fade-up" style="font-size: 0.55em;">Total grow = 4. A gets 1/4 (100px), B gets 2/4 (200px), C gets 1/4 (100px).</p>
+                </section>
+
+                <!-- Interactive Q2: flex: 1 shorthand -->
+                <section class="interactive-q-slide">
+                    <h3>&#9889; Quick-Fire</h3>
+                    <p>What does <code>flex: 1</code> expand to?</p>
+                    <ol class="options">
+                        <li class="fragment fade-up"><code>flex-grow: 1; flex-shrink: 0; flex-basis: auto;</code></li>
+                        <li class="fragment fade-up" style="color: var(--nb-accent-green);"><code>flex-grow: 1; flex-shrink: 1; flex-basis: 0%;</code> &#9989;</li>
+                        <li class="fragment fade-up"><code>flex-grow: 1;</code> (nothing else)</li>
+                        <li class="fragment fade-up"><code>flex: 100%;</code></li>
+                    </ol>
+                    <p class="fragment fade-up" style="font-size: 0.55em;">The <code>0%</code> basis is key &mdash; items ignore content size and share space equally.</p>
+                </section>
+
+                <!-- Interactive Q3: flex-wrap -->
+                <section class="interactive-q-slide">
+                    <h3>&#129300; Concept Check</h3>
+                    <p>5 cards in a row squish too much on small screens. How to make them wrap?</p>
+                    <ol class="options">
+                        <li class="fragment fade-up"><code>flex-direction: wrap;</code></li>
+                        <li class="fragment fade-up" style="color: var(--nb-accent-green);"><code>flex-wrap: wrap;</code> &#9989;</li>
+                        <li class="fragment fade-up"><code>display: flex-wrap;</code></li>
+                        <li class="fragment fade-up"><code>overflow: wrap;</code></li>
+                    </ol>
+                    <div class="nb-callout nb-tip fragment fade-up" style="margin-bottom: 2em;">
+                        <span class="callout-icon">&#9889;</span>
+                        <span class="callout-text"><code>flex-wrap: wrap</code> allows items to flow to the next line. Essential for responsive layouts!</span>
+                    </div>
+                </section>
+
+                <!-- Part 2 Summary -->
+                <section>
+                    <h3>Part 2 Summary</h3>
+                    <ul>
+                        <li class="fragment fade-up"><strong><code>flex: 1</code></strong> = equal-width items (the 90% shorthand)</li>
+                        <li class="fragment fade-up"><strong><code>flex-grow</code></strong> distributes extra space proportionally</li>
+                        <li class="fragment fade-up"><strong><code>flex-wrap: wrap</code></strong> makes flex layouts responsive</li>
+                    </ul>
+                    <div class="nb-callout nb-pro fragment fade-up" style="margin-bottom: 2em;">
+                        <span class="callout-icon">&#128142;</span>
+                        <span class="callout-text">Don't set fixed widths AND flex-grow on the same item &mdash; they conflict. Use <code>flex: 1</code> instead.</span>
+                    </div>
+                </section>
+            </section>
+
+            <!-- ===== PART 3: CSS Grid (vertical stack) ===== -->
+            <section>
+                <!-- Part 3 Title -->
+                <section>
+                    <p class="part-label">Part 3</p>
+                    <h2>CSS Grid</h2>
+                    <h3>Two-Dimensional Layouts</h3>
+                    <p style="font-size: 0.7em; color: var(--nb-dim);">Analogy: Grid = spreadsheet &mdash; rows AND columns</p>
+                </section>
+
+                <!-- Flexbox 1D vs Grid 2D Comparison -->
+                <section>
+                    <h3>Flexbox vs Grid</h3>
+                    <div class="nb-compare">
+                        <div class="nb-col-a fragment fade-right">
+                            <h4>&#8596; Flexbox (1D)</h4>
+                            <p style="font-size: 0.5em;">Row <strong>OR</strong> column</p>
+                            <p style="font-size: 0.5em;">Content-driven layout</p>
+                            <p style="font-size: 0.5em;">Items decide the flow</p>
+                            <p style="font-size: 0.45em; color: var(--nb-dim);">Best for components</p>
+                        </div>
+                        <div class="nb-vs">VS</div>
+                        <div class="nb-col-b fragment fade-left">
+                            <h4>&#9638; Grid (2D)</h4>
+                            <p style="font-size: 0.5em;">Rows <strong>AND</strong> columns</p>
+                            <p style="font-size: 0.5em;">Layout-driven design</p>
+                            <p style="font-size: 0.5em;">YOU define the grid</p>
+                            <p style="font-size: 0.45em; color: var(--nb-dim);">Best for page layout</p>
+                        </div>
+                    </div>
+                    <div class="nb-callout nb-tip fragment fade-up" style="margin-bottom: 2em;">
+                        <span class="callout-icon">&#9889;</span>
+                        <span class="callout-text">Flexbox: items decide layout. Grid: YOU define the layout. Different mindsets!</span>
+                    </div>
+                </section>
+
+                <!-- grid-template-columns Anatomy -->
+                <section>
+                    <h3>Defining Grid Columns</h3>
+                    <div class="nb-anatomy">
+                        <pre><code data-trim data-noescape class="language-css">
+<span class="nb-hl-1">display</span>: <span class="nb-hl-2">grid</span>;
+<span class="nb-hl-1">grid-template-columns</span>: <span class="nb-hl-3">1fr</span> <span class="nb-hl-4">2fr</span> <span class="nb-hl-3">1fr</span>;
+<span class="nb-hl-1">gap</span>: <span class="nb-hl-2">16px</span>;
+                        </code></pre>
+                        <div class="nb-callouts fragment fade-up">
+                            <span class="nb-callout-item"><span class="nb-dot nb-dot-1"></span> Grid properties</span>
+                            <span class="nb-callout-item"><span class="nb-dot nb-dot-2"></span> Activate Grid</span>
+                            <span class="nb-callout-item"><span class="nb-dot nb-dot-3"></span> 1 fraction each</span>
+                            <span class="nb-callout-item"><span class="nb-dot nb-dot-4"></span> 2 fractions (double)</span>
+                        </div>
+                    </div>
+                    <p class="fragment fade-up" style="font-size: 0.55em;">On 800px: 1fr = 200px, 2fr = 400px, 1fr = 200px (total 4 fr parts)</p>
+                </section>
+
+                <!-- Grid Concepts Cards -->
+                <section>
+                    <h3>Grid Concepts</h3>
+                    <div class="nb-cards" style="grid-template-columns: repeat(2, 1fr);">
+                        <div class="nb-card nb-card-nexus fragment fade-up">
+                            <span class="icon">&#128200;</span>
+                            <span class="title">Tracks</span>
+                            <span class="desc">Rows and columns of the grid</span>
+                        </div>
+                        <div class="nb-card nb-card-berry fragment fade-up">
+                            <span class="icon">&#9638;</span>
+                            <span class="title">Cells</span>
+                            <span class="desc">Individual grid spaces</span>
+                        </div>
+                        <div class="nb-card nb-card-green fragment fade-up">
+                            <span class="icon">&#128207;</span>
+                            <span class="title">Lines</span>
+                            <span class="desc">Numbered borders between tracks</span>
+                        </div>
+                        <div class="nb-card nb-card-orange fragment fade-up">
+                            <span class="icon">&#128506;</span>
+                            <span class="title">Areas</span>
+                            <span class="desc">Named regions spanning cells</span>
+                        </div>
+                    </div>
+                    <div class="nb-callout nb-tip fragment fade-up" style="margin-bottom: 2em;">
+                        <span class="callout-icon">&#9889;</span>
+                        <span class="callout-text"><code>fr</code> = fraction of remaining space. Only works inside <code>grid-template-columns/rows</code>.</span>
+                    </div>
+                </section>
+
+                <!-- Grid Definition Steps -->
+                <section>
+                    <h3>Defining a Grid: Step by Step</h3>
+                    <div class="nb-flow-v">
+                        <div class="nb-flow-step fragment fade-up">
+                            <span class="icon">1&#65039;&#8419;</span>
+                            <span class="label"><code>display: grid</code></span>
+                        </div>
+                        <span class="nb-flow-arrow fragment fade-in">&#8595;</span>
+                        <div class="nb-flow-step fragment fade-up">
+                            <span class="icon">2&#65039;&#8419;</span>
+                            <span class="label"><code>grid-template-columns</code></span>
+                        </div>
+                        <span class="nb-flow-arrow fragment fade-in">&#8595;</span>
+                        <div class="nb-flow-step fragment fade-up">
+                            <span class="icon">3&#65039;&#8419;</span>
+                            <span class="label"><code>grid-template-rows</code> (optional)</span>
+                        </div>
+                        <span class="nb-flow-arrow fragment fade-in">&#8595;</span>
+                        <div class="nb-flow-step fragment fade-up">
+                            <span class="icon">4&#65039;&#8419;</span>
+                            <span class="label"><code>gap</code></span>
+                        </div>
+                        <span class="nb-flow-arrow fragment fade-in">&#8595;</span>
+                        <div class="nb-flow-step nb-active fragment fade-up">
+                            <span class="icon">5&#65039;&#8419;</span>
+                            <span class="label">Place items (<code>grid-column</code>)</span>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Grid Spanning -->
+                <section>
+                    <h3>Spanning Columns &amp; Rows</h3>
+                    <table>
+                        <thead>
+                            <tr><th>Code</th><th>What It Does</th></tr>
+                        </thead>
+                        <tbody>
+                            <tr class="fragment fade-up"><td><code>grid-column: 1 / 3</code></td><td>Span from line 1 to line 3 (2 columns)</td></tr>
+                            <tr class="fragment fade-up"><td><code>grid-column: 1 / -1</code></td><td>Span from first to last line (full width)</td></tr>
+                            <tr class="fragment fade-up"><td><code>grid-column: span 2</code></td><td>Span 2 columns from current position</td></tr>
+                            <tr class="fragment fade-up"><td><code>grid-row: 1 / 3</code></td><td>Span from row line 1 to 3 (2 rows)</td></tr>
+                        </tbody>
+                    </table>
+                    <div class="nb-callout nb-tip fragment fade-up" style="margin-bottom: 2em;">
+                        <span class="callout-icon">&#9889;</span>
+                        <span class="callout-text"><code>-1</code> means &ldquo;the last line.&rdquo; <code>grid-column: 1 / -1</code> = full width regardless of column count.</span>
+                    </div>
+                </section>
+
+                <!-- The Magic Responsive Pattern -->
+                <section>
+                    <h3>The Magic Responsive Pattern</h3>
+                    <pre style="font-size: 0.9em;"><code data-trim class="language-css">
+.grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 16px;
+}
+                    </code></pre>
+                    <div class="nb-flow fragment fade-up" style="margin-top: 0.5em;">
+                        <div class="nb-flow-step">
+                            <span class="icon" style="font-size: 1em;">&#128187;</span>
+                            <span class="label">Wide</span>
+                            <span class="sublabel">4 columns</span>
+                        </div>
+                        <span class="nb-flow-arrow">&#8594;</span>
+                        <div class="nb-flow-step">
+                            <span class="icon" style="font-size: 1em;">&#128187;</span>
+                            <span class="label">Medium</span>
+                            <span class="sublabel">3 columns</span>
+                        </div>
+                        <span class="nb-flow-arrow">&#8594;</span>
+                        <div class="nb-flow-step">
+                            <span class="icon" style="font-size: 1em;">&#128241;</span>
+                            <span class="label">Tablet</span>
+                            <span class="sublabel">2 columns</span>
+                        </div>
+                        <span class="nb-flow-arrow">&#8594;</span>
+                        <div class="nb-flow-step nb-active">
+                            <span class="icon" style="font-size: 1em;">&#128241;</span>
+                            <span class="label">Mobile</span>
+                            <span class="sublabel">1 column</span>
+                        </div>
+                    </div>
+                    <div class="nb-callout nb-pro fragment fade-up" style="margin-bottom: 2em;">
+                        <span class="callout-icon">&#128142;</span>
+                        <span class="callout-text">One line replaces 30+ lines of media queries. This is the Grid one-liner I use in every project.</span>
+                    </div>
+                </section>
+
+                <!-- Code Transition -->
+                <section>
+                    <p class="code-transition">&#128187; Let's see this in code!</p>
+                    <p style="font-size: 0.7em;">Switch to VS Code &mdash; building grid layouts &amp; the magic pattern</p>
+                </section>
+
+                <!-- Interactive Q1: fr calculation -->
+                <section class="interactive-q-slide">
+                    <h3>&#129300; Predict the Output</h3>
+                    <pre><code data-trim class="language-css">
+.container {
+    display: grid;
+    grid-template-columns: 1fr 2fr 1fr;
+    /* Container: 800px, gap: 0 */
+}
+                    </code></pre>
+                    <p>How wide is each column?</p>
+                    <ol class="options">
+                        <li class="fragment fade-up">266px, 266px, 266px</li>
+                        <li class="fragment fade-up" style="color: var(--nb-accent-green);">200px, 400px, 200px &#9989;</li>
+                        <li class="fragment fade-up">100px, 600px, 100px</li>
+                        <li class="fragment fade-up">250px, 300px, 250px</li>
+                    </ol>
+                    <p class="fragment fade-up" style="font-size: 0.55em;">Total = 4fr. 800 &divide; 4 = 200px per fr. Columns: 200 | 400 | 200.</p>
+                </section>
+
+                <!-- Interactive Q2: grid-column: 1 / -1 -->
+                <section class="interactive-q-slide">
+                    <h3>&#129300; Concept Check</h3>
+                    <p>What does <code>grid-column: 1 / -1</code> mean?</p>
+                    <ol class="options">
+                        <li class="fragment fade-up">Invalid &mdash; negative values don't work</li>
+                        <li class="fragment fade-up" style="color: var(--nb-accent-green);">Span from first to last column line (full width) &#9989;</li>
+                        <li class="fragment fade-up">The item is 1px wide with -1px margin</li>
+                        <li class="fragment fade-up">Columns are reversed</li>
+                    </ol>
+                    <p class="fragment fade-up" style="font-size: 0.55em;"><code>-1</code> = the last grid line. Works regardless of how many columns you have.</p>
+                </section>
+
+                <!-- Interactive Q3: Hidden Fact - auto-fit + minmax -->
+                <section>
+                    <h3>&#128161; Hidden Fact Reveal</h3>
+                    <pre style="font-size: 0.9em;"><code data-trim class="language-css">
+grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+                    </code></pre>
+                    <p class="fragment fade-up" style="font-size: 0.8em; color: var(--nb-accent-green);">Responsive grid &mdash; no media queries needed!</p>
+                    <p class="fragment fade-up" style="font-size: 0.6em;">Resize the browser: 4 cols &#8594; 3 &#8594; 2 &#8594; 1 &mdash; automatically.</p>
+                    <div class="nb-callout nb-pro fragment fade-up" style="margin-bottom: 2em;">
+                        <span class="callout-icon">&#128142;</span>
+                        <span class="callout-text">This single line is the most useful CSS Grid pattern. Memorize it. Use it everywhere.</span>
+                    </div>
+                </section>
+
+                <!-- Part 3 Summary -->
+                <section>
+                    <h3>Part 3 Summary</h3>
+                    <ul>
+                        <li class="fragment fade-up"><strong>CSS Grid</strong> = two-dimensional layout (rows AND columns)</li>
+                        <li class="fragment fade-up"><strong><code>fr</code> unit</strong> = fraction of remaining space</li>
+                        <li class="fragment fade-up"><strong><code>auto-fit + minmax</code></strong> = responsive without media queries</li>
+                    </ul>
+                    <div class="nb-callout nb-tip fragment fade-up" style="margin-bottom: 2em;">
+                        <span class="callout-icon">&#9889;</span>
+                        <span class="callout-text">Use DevTools Grid inspector to visualize grid lines, track sizes, and areas.</span>
+                    </div>
+                </section>
+            </section>
+
+            <!-- ===== PART 4: Building the Modern Dashboard (vertical stack) ===== -->
+            <section>
+                <!-- Part 4 Title -->
+                <section>
+                    <p class="part-label">Part 4</p>
+                    <h2>Building the Modern Dashboard</h2>
+                    <p style="font-size: 0.7em; color: var(--nb-dim);">Grid for the big picture, Flexbox for the details</p>
+                </section>
+
+                <!-- Flexbox vs Grid Decision Guide -->
+                <section>
+                    <h3>When to Use Which?</h3>
+                    <div class="nb-compare">
+                        <div class="nb-col-a fragment fade-right">
+                            <h4>&#8596; Use Flexbox</h4>
+                            <p style="font-size: 0.5em;">&#8226; Navigation bars</p>
+                            <p style="font-size: 0.5em;">&#8226; Button groups</p>
+                            <p style="font-size: 0.5em;">&#8226; Card internals</p>
+                            <p style="font-size: 0.5em;">&#8226; Centering elements</p>
+                            <p style="font-size: 0.45em; color: var(--nb-nexus-light);">Component-level (micro)</p>
+                        </div>
+                        <div class="nb-vs">+</div>
+                        <div class="nb-col-b fragment fade-left">
+                            <h4>&#9638; Use Grid</h4>
+                            <p style="font-size: 0.5em;">&#8226; Page layouts</p>
+                            <p style="font-size: 0.5em;">&#8226; Card grids</p>
+                            <p style="font-size: 0.5em;">&#8226; Dashboard structure</p>
+                            <p style="font-size: 0.5em;">&#8226; Complex 2D layouts</p>
+                            <p style="font-size: 0.45em; color: var(--nb-berry-light);">Page-level (macro)</p>
+                        </div>
+                    </div>
+                    <div class="nb-callout nb-pro fragment fade-up" style="margin-bottom: 2em;">
+                        <span class="callout-icon">&#128142;</span>
+                        <span class="callout-text">Best developers use BOTH. Grid for the structure, Flexbox for the components inside.</span>
+                    </div>
+                </section>
+
+                <!-- Dashboard Build Steps -->
+                <section>
+                    <h3>Dashboard Build Steps</h3>
+                    <div class="nb-flow">
+                        <div class="nb-flow-step fragment fade-up">
+                            <span class="icon">&#9638;</span>
+                            <span class="label">Grid Skeleton</span>
+                            <span class="sublabel">Page layout</span>
+                        </div>
+                        <span class="nb-flow-arrow fragment fade-in">&#8594;</span>
+                        <div class="nb-flow-step fragment fade-up">
+                            <span class="icon">&#8596;</span>
+                            <span class="label">Header Flex</span>
+                            <span class="sublabel">Logo + nav</span>
+                        </div>
+                        <span class="nb-flow-arrow fragment fade-in">&#8594;</span>
+                        <div class="nb-flow-step fragment fade-up">
+                            <span class="icon">&#8597;</span>
+                            <span class="label">Sidebar Flex</span>
+                            <span class="sublabel">Vertical nav</span>
+                        </div>
+                        <span class="nb-flow-arrow fragment fade-in">&#8594;</span>
+                        <div class="nb-flow-step fragment fade-up">
+                            <span class="icon">&#128200;</span>
+                            <span class="label">Stats Grid</span>
+                            <span class="sublabel">4 cards</span>
+                        </div>
+                        <span class="nb-flow-arrow fragment fade-in">&#8594;</span>
+                        <div class="nb-flow-step nb-active fragment fade-up">
+                            <span class="icon">&#9989;</span>
+                            <span class="label">Content</span>
+                            <span class="sublabel">Data table</span>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Dashboard Layout Diagram -->
+                <section>
+                    <h3>Dashboard Grid Structure</h3>
+                    <div style="display: grid; grid-template-columns: 100px 1fr; grid-template-rows: 30px 1fr 20px; gap: 4px; width: 80%; margin: 0.5em auto; font-size: 0.5em;">
+                        <div style="grid-column: 1 / -1; background: var(--nb-surface-2); border: 1px solid var(--nb-nexus-light); border-radius: 4px; display: flex; align-items: center; justify-content: space-between; padding: 0 0.5em;" class="fragment fade-up">
+                            <span style="color: var(--nb-berry-light); font-weight: 600;">Header</span>
+                            <span style="color: var(--nb-dim);">grid-column: 1 / -1</span>
+                        </div>
+                        <div style="background: var(--nb-surface); border: 1px solid var(--nb-berry-light); border-radius: 4px; padding: 0.5em; text-align: center; min-height: 120px;" class="fragment fade-up">
+                            <span style="color: var(--nb-berry-light);">Sidebar</span><br>
+                            <span style="color: var(--nb-dim); font-size: 0.8em;">250px</span>
+                        </div>
+                        <div style="background: var(--nb-surface); border: 1px solid var(--nb-accent-green); border-radius: 4px; padding: 0.5em;" class="fragment fade-up">
+                            <span style="color: var(--nb-accent-green);">Main Content (1fr)</span>
+                            <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 3px; margin-top: 0.3em;">
+                                <div style="background: var(--nb-surface-2); border-radius: 3px; padding: 0.3em; text-align: center; color: var(--nb-dim);">Stat</div>
+                                <div style="background: var(--nb-surface-2); border-radius: 3px; padding: 0.3em; text-align: center; color: var(--nb-dim);">Stat</div>
+                                <div style="background: var(--nb-surface-2); border-radius: 3px; padding: 0.3em; text-align: center; color: var(--nb-dim);">Stat</div>
+                                <div style="background: var(--nb-surface-2); border-radius: 3px; padding: 0.3em; text-align: center; color: var(--nb-dim);">Stat</div>
+                            </div>
+                        </div>
+                        <div style="grid-column: 1 / -1; background: var(--nb-surface-2); border: 1px solid var(--nb-border); border-radius: 4px; display: flex; align-items: center; justify-content: center; padding: 0 0.5em;" class="fragment fade-up">
+                            <span style="color: var(--nb-dim);">Footer (grid-column: 1 / -1)</span>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Code Transition -->
+                <section>
+                    <p class="code-transition">&#128187; Let's build the dashboard!</p>
+                    <p style="font-size: 0.7em;">Switch to VS Code &mdash; combining Grid &amp; Flexbox</p>
+                </section>
+
+                <!-- Interactive Q1: Card Grid choice -->
+                <section class="interactive-q-slide">
+                    <h3>&#129300; Concept Check</h3>
+                    <p>4 cards per row on desktop, 1 per row on mobile. Best approach?</p>
+                    <ol class="options">
+                        <li class="fragment fade-up">Flexbox with media queries</li>
+                        <li class="fragment fade-up">Grid with <code>repeat(auto-fit, minmax(250px, 1fr))</code></li>
+                        <li class="fragment fade-up" style="color: var(--nb-accent-green);">Both work, but Grid is cleaner for this case &#9989;</li>
+                        <li class="fragment fade-up">Use a table</li>
+                    </ol>
+                    <p class="fragment fade-up" style="font-size: 0.55em;">Grid gives you cleaner 2D control with one line. Flexbox needs more setup.</p>
+                </section>
+
+                <!-- Interactive Q2: Spot the Error (trick) -->
+                <section class="interactive-q-slide">
+                    <h3>&#128270; Spot the Error</h3>
+                    <pre><code data-trim class="language-css">
+.dashboard {
+    display: grid;
+    display: flex;
+}
+                    </code></pre>
+                    <p class="fragment fade-up" style="color: var(--nb-accent-orange);">NOT a syntax error &mdash; but a likely copy-paste mistake!</p>
+                    <div class="nb-callout nb-warning fragment fade-up" style="margin-bottom: 2em;">
+                        <span class="callout-icon">&#9888;</span>
+                        <span class="callout-text">The second <code>display</code> overrides the first. The element becomes <code>flex</code>, not <code>grid</code>. Did you mean to do that?</span>
+                    </div>
+                </section>
+
+                <!-- Interactive Q3: Quick-Fire Match -->
+                <section class="interactive-q-slide">
+                    <h3>&#9889; Quick-Fire: Match the Tool</h3>
+                    <table>
+                        <thead>
+                            <tr><th>Layout Need</th><th class="fragment fade-up">Tool</th></tr>
+                        </thead>
+                        <tbody>
+                            <tr><td>Nav bar (logo + links)</td><td class="fragment fade-up" style="color: var(--nb-nexus-light);"><strong>Flexbox</strong></td></tr>
+                            <tr><td>Page with header, sidebar, main, footer</td><td class="fragment fade-up" style="color: var(--nb-berry-light);"><strong>Grid</strong></td></tr>
+                            <tr><td>Centering one element</td><td class="fragment fade-up" style="color: var(--nb-accent-green);"><strong>Both!</strong></td></tr>
+                            <tr><td>Auto-wrapping card grid</td><td class="fragment fade-up" style="color: var(--nb-berry-light);"><strong>Grid</strong> (auto-fit + minmax)</td></tr>
+                        </tbody>
+                    </table>
+                </section>
+
+                <!-- Part 4 Summary -->
+                <section>
+                    <h3>Part 4 Summary</h3>
+                    <ul>
+                        <li class="fragment fade-up"><strong>Grid</strong> for page structure (macro layout)</li>
+                        <li class="fragment fade-up"><strong>Flexbox</strong> for component internals (micro layout)</li>
+                        <li class="fragment fade-up"><strong>Combine both</strong> &mdash; they're designed to work together</li>
+                    </ul>
+                    <div class="nb-callout nb-pro fragment fade-up" style="margin-bottom: 2em;">
+                        <span class="callout-icon">&#128142;</span>
+                        <span class="callout-text">Every professional codebase uses BOTH Grid and Flexbox. Know when to reach for which tool.</span>
+                    </div>
+                </section>
+            </section>
+
+            <!-- ===== CHEAT SHEET (ending) ===== -->
+            <section>
+                <!-- Cheat Sheet Slide 1: Flexbox -->
+                <section>
+                    <h2>Cheat Sheet</h2>
+                    <h3>Flexbox Properties</h3>
+                    <table>
+                        <thead>
+                            <tr><th>Container</th><th>Common Value</th></tr>
+                        </thead>
+                        <tbody>
+                            <tr><td><code>display: flex</code></td><td>Activate Flexbox</td></tr>
+                            <tr><td><code>flex-direction</code></td><td><code>row</code> / <code>column</code></td></tr>
+                            <tr><td><code>justify-content</code></td><td><code>space-between</code> / <code>center</code></td></tr>
+                            <tr><td><code>align-items</code></td><td><code>center</code> / <code>stretch</code></td></tr>
+                            <tr><td><code>gap</code></td><td><code>16px</code></td></tr>
+                        </tbody>
+                    </table>
+                    <p style="font-size: 0.55em; color: var(--nb-dim);">Flex item shorthand: <code>flex: 1</code> = grow: 1, shrink: 1, basis: 0%</p>
+                </section>
+
+                <!-- Cheat Sheet Slide 2: Grid + Decision Guide -->
+                <section>
+                    <h3>Grid &amp; Decision Guide</h3>
+                    <table>
+                        <thead>
+                            <tr><th>Grid Property</th><th>Example</th></tr>
+                        </thead>
+                        <tbody>
+                            <tr><td><code>display: grid</code></td><td>Activate Grid</td></tr>
+                            <tr><td><code>grid-template-columns</code></td><td><code>250px 1fr</code></td></tr>
+                            <tr><td><code>grid-column: 1 / -1</code></td><td>Full-width spanning</td></tr>
+                        </tbody>
+                    </table>
+                    <p style="font-size: 0.55em; color: var(--nb-accent-green); margin-top: 0.3em;">Magic pattern: <code>repeat(auto-fit, minmax(250px, 1fr))</code></p>
+                    <table style="margin-top: 0.3em;">
+                        <thead>
+                            <tr><th>Need</th><th>Tool</th></tr>
+                        </thead>
+                        <tbody>
+                            <tr><td>Nav bar, button group</td><td>Flexbox</td></tr>
+                            <tr><td>Page layout, card grid</td><td>Grid</td></tr>
+                        </tbody>
+                    </table>
+                    <p style="font-size: 0.5em;"><em>Full cheat sheet shared after class</em></p>
+                </section>
+            </section>
+
+            <!-- ===== ASSIGNMENT (ending) ===== -->
+            <section>
+                <h2>Home Assignment</h2>
+                <h3>Interactive Team Directory Layout</h3>
+                <ul style="font-size: 0.7em;">
+                    <li>Build a team directory page using <strong>both</strong> Grid and Flexbox</li>
+                    <li>Grid page layout (header, main, footer spanning full width)</li>
+                    <li>Flexbox navigation bar (logo + links, space-between)</li>
+                    <li>Team cards using <code>repeat(auto-fit, minmax(...))</code></li>
+                    <li>At least one card spanning 2 columns</li>
+                    <li>Include one creative addition beyond class demo</li>
+                </ul>
+                <p style="font-size: 0.6em;">Due: Before Lecture 5 | Submit via Google Classroom</p>
+                <p style="font-size: 0.55em; color: var(--nb-dim);">Total: 100 points | See assignment.md for full rubric</p>
+            </section>
+
+            <!-- ===== CLOSING ===== -->
+            <section>
+                <h2>Questions?</h2>
+                <p>Next Lecture: <strong>Advanced CSS &amp; Responsive Design</strong></p>
+                <p style="font-size: 0.7em; color: var(--nb-dim);">Media queries, mobile-first strategy, responsive units</p>
+                <br>
+                <p class="nexusberry-brand">NexusBerry Training and Solutions</p>
+                <p style="font-size: 0.7em;">
+                    www.nexusberry.com | admin@nexusberry.com<br>
+                    WhatsApp: 0328-4500073
+                </p>
+            </section>
+
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/reveal.js@5/dist/reveal.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/reveal.js@5/plugin/highlight/highlight.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/reveal.js@5/plugin/notes/notes.js"></script>
+    <script>
+        Reveal.initialize({
+            hash: true,
+            slideNumber: true,
+            transition: 'fade',
+            plugins: [RevealHighlight, RevealNotes]
+        });
+
+        // Add copy buttons to all code blocks
+        document.addEventListener('DOMContentLoaded', function() {
+            document.querySelectorAll('pre').forEach(function(pre) {
+                var btn = document.createElement('button');
+                btn.className = 'copy-btn';
+                btn.innerHTML = '&#128203;';
+                btn.title = 'Copy to clipboard';
+                btn.addEventListener('click', function() {
+                    var code = pre.querySelector('code');
+                    var text = code ? code.textContent : pre.textContent;
+                    navigator.clipboard.writeText(text).then(function() {
+                        btn.innerHTML = '&#9989;';
+                        btn.classList.add('copied');
+                        setTimeout(function() {
+                            btn.innerHTML = '&#128203;';
+                            btn.classList.remove('copied');
+                        }, 2000);
+                    });
+                });
+                pre.appendChild(btn);
+            });
+        });
+    </script>
+</body>
+</html>

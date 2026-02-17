@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Savory Bites | Restaurant Digital Menu</title>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- Tailwind CSS 4 CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+
+    <style type="text/tailwindcss">
+        /* ===== CUSTOM THEME ===== */
+        @theme {
+            /* Brand Colors */
+            --color-brand: #8B1A1A;
+            --color-brand-light: #A52A2A;
+            --color-brand-dark: #6B1010;
+
+            /* Accent Colors */
+            --color-sage: #7C9070;
+            --color-sage-light: #A3B898;
+
+            /* Neutral Colors */
+            --color-cream: #FFF8F0;
+            --color-cream-dark: #F5EDE0;
+            --color-charcoal: #2C2C2C;
+            --color-warm-gray: #6B6360;
+
+            /* Custom Fonts */
+            --font-display: 'Playfair Display', serif;
+            --font-body: 'Inter', sans-serif;
+        }
+
+        /* ===== EXTRACTED COMPONENTS (@apply) ===== */
+
+        /* Navigation Links */
+        .nav-link {
+            @apply text-warm-gray text-sm uppercase tracking-widest hover:text-brand transition duration-200;
+        }
+
+        /* Section Titles */
+        .section-title {
+            @apply font-display text-3xl md:text-4xl font-bold text-charcoal text-center mb-2;
+        }
+        .section-subtitle {
+            @apply text-warm-gray text-center text-lg mb-12 max-w-2xl mx-auto;
+        }
+
+        /* Menu Card */
+        .menu-card {
+            @apply bg-white rounded-xl shadow-md overflow-hidden hover:-translate-y-1 hover:shadow-xl transition duration-300;
+        }
+        .menu-card-image {
+            @apply w-full h-48 object-cover;
+        }
+
+        /* Price Tag */
+        .price-tag {
+            @apply font-display text-xl font-bold text-brand;
+        }
+
+        /* Badges — Base + Variants (use both classes: class="badge badge-spicy") */
+        .badge {
+            @apply text-xs font-semibold px-3 py-1 rounded-full uppercase tracking-wide;
+        }
+        .badge-spicy {
+            @apply bg-red-100 text-red-700;
+        }
+        .badge-veg {
+            @apply bg-green-100 text-green-700;
+        }
+        .badge-popular {
+            @apply bg-amber-100 text-amber-700;
+        }
+        .badge-new {
+            @apply bg-purple-100 text-purple-700;
+        }
+
+        /* Buttons */
+        .btn-primary {
+            @apply bg-brand text-cream font-semibold py-3 px-8 rounded-lg hover:bg-brand-light transition duration-300;
+        }
+        .btn-outline {
+            @apply border-2 border-brand text-brand font-semibold py-3 px-8 rounded-lg hover:bg-brand hover:text-cream transition duration-300;
+        }
+    </style>
+</head>
+<body class="bg-cream text-charcoal font-body">
+
+    <!-- ===== STICKY NAVIGATION ===== -->
+    <nav class="bg-white/90 backdrop-blur-md border-b border-brand/10 sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
+            <a href="#" class="font-display text-2xl font-bold text-brand">
+                Savory Bites
+            </a>
+            <ul class="hidden md:flex gap-8">
+                <li><a href="#starters" class="nav-link">Starters</a></li>
+                <li><a href="#mains" class="nav-link">Mains</a></li>
+                <li><a href="#desserts" class="nav-link">Desserts</a></li>
+                <li><a href="#reserve" class="nav-link">Reserve</a></li>
+            </ul>
+            <!-- Mobile menu button (visual only — JS toggle in Module 2) -->
+            <button class="md:hidden text-brand text-2xl" aria-label="Open menu">&#9776;</button>
+        </div>
+    </nav>
+
+    <!-- ===== HERO SECTION ===== -->
+    <section class="relative min-h-[70vh] flex items-center justify-center text-center bg-gradient-to-br from-brand via-brand-dark to-charcoal">
+        <div class="relative z-10 max-w-3xl px-6">
+            <p class="text-cream/60 text-sm uppercase tracking-[0.3em] mb-4 font-body">
+                Est. 2024 &bull; Lahore, Pakistan
+            </p>
+            <h1 class="font-display text-5xl md:text-7xl font-bold text-cream leading-tight mb-6">
+                Savory Bites
+            </h1>
+            <p class="text-cream/80 text-lg md:text-xl mb-8 font-body leading-relaxed">
+                Experience the finest flavors of Lahore &mdash; from smoky grills to delicate desserts, every dish tells a story.
+            </p>
+            <a href="#starters" class="inline-block bg-cream text-brand font-semibold py-3 px-10 rounded-lg hover:bg-cream-dark transition duration-300 text-lg">
+                Explore Our Menu
+            </a>
+        </div>
+    </section>
+
+    <!-- ===== STARTERS SECTION ===== -->
+    <section id="starters" class="py-16 md:py-20 px-6 bg-cream">
+        <div class="max-w-7xl mx-auto">
+            <p class="text-sage text-sm uppercase tracking-[0.3em] text-center mb-4">From Our Kitchen</p>
+            <h2 class="section-title">Starters</h2>
+            <p class="section-subtitle">Light bites to awaken your palate</p>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <!-- Card 1: Seekh Kebab -->
+                <div class="menu-card">
+                    <img src="https://picsum.photos/id/292/600/400" alt="Seekh Kebab platter with mint chutney" class="menu-card-image">
+                    <div class="p-6">
+                        <div class="flex justify-between items-start mb-2">
+                            <h3 class="font-display text-xl font-semibold text-charcoal">Seekh Kebab</h3>
+                            <span class="price-tag">PKR 650</span>
+                        </div>
+                        <p class="text-warm-gray text-sm mb-3 leading-relaxed">Hand-minced lamb kebabs with fresh mint chutney, served on a sizzling plate</p>
+                        <div class="flex gap-2">
+                            <span class="badge badge-spicy">Spicy</span>
+                            <span class="badge badge-popular">Popular</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Card 2: Chicken Samosa -->
+                <div class="menu-card">
+                    <img src="https://picsum.photos/id/312/600/400" alt="Crispy samosas with tamarind sauce" class="menu-card-image">
+                    <div class="p-6">
+                        <div class="flex justify-between items-start mb-2">
+                            <h3 class="font-display text-xl font-semibold text-charcoal">Chicken Samosa</h3>
+                            <span class="price-tag">PKR 350</span>
+                        </div>
+                        <p class="text-warm-gray text-sm mb-3 leading-relaxed">Crispy pastry shells stuffed with spiced chicken and herbs, served with tamarind dip</p>
+                        <div class="flex gap-2">
+                            <span class="badge badge-popular">Popular</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Card 3: Garden Fresh Salad -->
+                <div class="menu-card">
+                    <img src="https://picsum.photos/id/429/600/400" alt="Fresh garden salad with pomegranate" class="menu-card-image">
+                    <div class="p-6">
+                        <div class="flex justify-between items-start mb-2">
+                            <h3 class="font-display text-xl font-semibold text-charcoal">Garden Fresh Salad</h3>
+                            <span class="price-tag">PKR 450</span>
+                        </div>
+                        <p class="text-warm-gray text-sm mb-3 leading-relaxed">Seasonal greens with pomegranate, walnuts, and house-made citrus vinaigrette</p>
+                        <div class="flex gap-2">
+                            <span class="badge badge-veg">Vegetarian</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== MAINS SECTION ===== -->
+    <section id="mains" class="py-16 md:py-20 px-6 bg-cream-dark">
+        <div class="max-w-7xl mx-auto">
+            <p class="text-sage text-sm uppercase tracking-[0.3em] text-center mb-4">Signature Dishes</p>
+            <h2 class="section-title">Main Course</h2>
+            <p class="section-subtitle">Our chef's proudest creations, prepared with passion</p>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <!-- Featured Item (spans 2 columns on desktop) -->
+                <div class="menu-card lg:col-span-2 lg:flex">
+                    <img src="https://picsum.photos/id/488/800/600" alt="Signature Lamb Biryani with raita and mirchi ka salan" class="menu-card-image lg:w-1/2 lg:h-auto">
+                    <div class="p-6 lg:p-8 flex flex-col justify-center">
+                        <span class="badge badge-popular w-fit mb-3">Chef's Special</span>
+                        <h3 class="font-display text-2xl font-bold text-charcoal mb-2">Signature Lamb Biryani</h3>
+                        <p class="text-warm-gray mb-4 leading-relaxed">Slow-cooked lamb layered with aged basmati rice, saffron, and our secret 12-spice blend. Served with raita and mirchi ka salan.</p>
+                        <div class="flex items-center gap-4">
+                            <span class="price-tag text-2xl">PKR 1,200</span>
+                            <span class="badge badge-spicy">Medium Spice</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Regular Card: Chicken Karahi -->
+                <div class="menu-card">
+                    <img src="https://picsum.photos/id/326/600/400" alt="Grilled chicken karahi with tomatoes and green chilies" class="menu-card-image">
+                    <div class="p-6">
+                        <div class="flex justify-between items-start mb-2">
+                            <h3 class="font-display text-xl font-semibold text-charcoal">Chicken Karahi</h3>
+                            <span class="price-tag">PKR 950</span>
+                        </div>
+                        <p class="text-warm-gray text-sm mb-3 leading-relaxed">Traditional wok-cooked chicken with tomatoes, green chilies, and fresh ginger</p>
+                        <div class="flex gap-2">
+                            <span class="badge badge-spicy">Spicy</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Regular Card: Mutton Nihari -->
+                <div class="menu-card">
+                    <img src="https://picsum.photos/id/395/600/400" alt="Rich mutton nihari served with naan" class="menu-card-image">
+                    <div class="p-6">
+                        <div class="flex justify-between items-start mb-2">
+                            <h3 class="font-display text-xl font-semibold text-charcoal">Mutton Nihari</h3>
+                            <span class="price-tag">PKR 1,100</span>
+                        </div>
+                        <p class="text-warm-gray text-sm mb-3 leading-relaxed">Overnight slow-cooked mutton stew with bone marrow, served with fresh naan and garnishes</p>
+                        <div class="flex gap-2">
+                            <span class="badge badge-spicy">Spicy</span>
+                            <span class="badge badge-popular">Popular</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Regular Card: Paneer Tikka -->
+                <div class="menu-card">
+                    <img src="https://picsum.photos/id/493/600/400" alt="Grilled paneer tikka with bell peppers" class="menu-card-image">
+                    <div class="p-6">
+                        <div class="flex justify-between items-start mb-2">
+                            <h3 class="font-display text-xl font-semibold text-charcoal">Paneer Tikka</h3>
+                            <span class="price-tag">PKR 750</span>
+                        </div>
+                        <p class="text-warm-gray text-sm mb-3 leading-relaxed">Marinated paneer cubes grilled with bell peppers and onions, served with mint raita</p>
+                        <div class="flex gap-2">
+                            <span class="badge badge-veg">Vegetarian</span>
+                            <span class="badge badge-new">New</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Regular Card: Grilled Fish -->
+                <div class="menu-card">
+                    <img src="https://picsum.photos/id/225/600/400" alt="Lahori grilled fish with lemon" class="menu-card-image">
+                    <div class="p-6">
+                        <div class="flex justify-between items-start mb-2">
+                            <h3 class="font-display text-xl font-semibold text-charcoal">Lahori Grilled Fish</h3>
+                            <span class="price-tag">PKR 1,050</span>
+                        </div>
+                        <p class="text-warm-gray text-sm mb-3 leading-relaxed">Fresh river fish marinated in Lahori spices, chargrilled and served with lemon wedges</p>
+                        <div class="flex gap-2">
+                            <span class="badge badge-spicy">Mild Spice</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== DESSERTS SECTION ===== -->
+    <section id="desserts" class="py-16 md:py-20 px-6 bg-cream">
+        <div class="max-w-7xl mx-auto">
+            <p class="text-sage text-sm uppercase tracking-[0.3em] text-center mb-4">Sweet Endings</p>
+            <h2 class="section-title">Desserts</h2>
+            <p class="section-subtitle">Traditional sweets with a modern twist</p>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <!-- Card 1: Gulab Jamun -->
+                <div class="menu-card">
+                    <img src="https://picsum.photos/id/431/600/400" alt="Warm gulab jamun in sugar syrup" class="menu-card-image">
+                    <div class="p-6">
+                        <div class="flex justify-between items-start mb-2">
+                            <h3 class="font-display text-xl font-semibold text-charcoal">Gulab Jamun</h3>
+                            <span class="price-tag">PKR 300</span>
+                        </div>
+                        <p class="text-warm-gray text-sm mb-3 leading-relaxed">Soft milk dumplings soaked in rose-scented sugar syrup, served warm with cardamom</p>
+                        <div class="flex gap-2">
+                            <span class="badge badge-popular">Classic</span>
+                            <span class="badge badge-veg">Vegetarian</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Card 2: Kheer -->
+                <div class="menu-card">
+                    <img src="https://picsum.photos/id/835/600/400" alt="Creamy rice kheer with pistachios" class="menu-card-image">
+                    <div class="p-6">
+                        <div class="flex justify-between items-start mb-2">
+                            <h3 class="font-display text-xl font-semibold text-charcoal">Pistachio Kheer</h3>
+                            <span class="price-tag">PKR 350</span>
+                        </div>
+                        <p class="text-warm-gray text-sm mb-3 leading-relaxed">Slow-cooked rice pudding with saffron, crushed pistachios, and silver leaf garnish</p>
+                        <div class="flex gap-2">
+                            <span class="badge badge-veg">Vegetarian</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Card 3: Falooda -->
+                <div class="menu-card">
+                    <img src="https://picsum.photos/id/766/600/400" alt="Rose falooda with ice cream" class="menu-card-image">
+                    <div class="p-6">
+                        <div class="flex justify-between items-start mb-2">
+                            <h3 class="font-display text-xl font-semibold text-charcoal">Royal Falooda</h3>
+                            <span class="price-tag">PKR 400</span>
+                        </div>
+                        <p class="text-warm-gray text-sm mb-3 leading-relaxed">Layered rose milk with vermicelli, basil seeds, ice cream, and crushed nuts</p>
+                        <div class="flex gap-2">
+                            <span class="badge badge-popular">Popular</span>
+                            <span class="badge badge-new">New</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== RESERVATION CTA ===== -->
+    <section id="reserve" class="py-16 md:py-24 px-6 bg-gradient-to-br from-brand via-brand-dark to-charcoal text-center">
+        <div class="max-w-3xl mx-auto">
+            <p class="text-cream/60 text-sm uppercase tracking-[0.3em] mb-4">Join Us Tonight</p>
+            <h2 class="font-display text-3xl md:text-5xl font-bold text-cream mb-6">Reserve Your Table</h2>
+            <p class="text-cream/80 text-lg mb-10 leading-relaxed">
+                Experience the warmth of Lahore's finest dining. Book your table and let us take care of the rest.
+            </p>
+            <div class="flex flex-col sm:flex-row gap-4 justify-center">
+                <button class="btn-primary bg-cream text-brand hover:bg-cream-dark">
+                    Book a Table
+                </button>
+                <button class="btn-outline border-cream text-cream hover:bg-cream hover:text-brand">
+                    Call: 0328-4500073
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== FOOTER ===== -->
+    <footer class="bg-charcoal text-cream/70 py-12 px-6">
+        <div class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-8">
+            <!-- Brand Column -->
+            <div>
+                <h3 class="font-display text-xl font-bold text-cream mb-4">Savory Bites</h3>
+                <p class="text-sm leading-relaxed">Bringing the authentic flavors of Lahore to your table since 2024. Every dish prepared with love and tradition.</p>
+            </div>
+            <!-- Hours Column -->
+            <div>
+                <h4 class="font-semibold text-cream mb-4 uppercase text-sm tracking-wide">Hours</h4>
+                <p class="text-sm">Mon &ndash; Thu: 12:00 PM &ndash; 11:00 PM</p>
+                <p class="text-sm">Fri &ndash; Sun: 12:00 PM &ndash; 12:00 AM</p>
+                <p class="text-sm mt-3 text-sage-light">Ramadan timings may vary</p>
+            </div>
+            <!-- Contact Column -->
+            <div>
+                <h4 class="font-semibold text-cream mb-4 uppercase text-sm tracking-wide">Contact</h4>
+                <p class="text-sm">College Road, Near Akbar Chowk</p>
+                <p class="text-sm">Faisal Town, Lahore</p>
+                <p class="text-sm mt-3">Tel: 042-36440443</p>
+                <p class="text-sm">WhatsApp: 0328-4500073</p>
+                <p class="text-sm">Email: admin@nexusberry.com</p>
+            </div>
+        </div>
+        <div class="max-w-7xl mx-auto border-t border-cream/10 mt-8 pt-8 text-center text-sm">
+            <p>&copy; 2026 Savory Bites. A <span class="text-cream">NexusBerry</span> Demo Project.</p>
+        </div>
+    </footer>
+
+</body>
+</html>

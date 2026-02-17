@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Modern Dashboard | NexusBerry</title>
+    <style>
+        /* ===== UNIVERSAL RESET ===== */
+        *, *::before, *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* ===== BODY ===== */
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #080D2B;
+            color: #F0F0F5;
+        }
+
+        /* ===== DASHBOARD GRID LAYOUT ===== */
+        .dashboard {
+            display: grid;
+            grid-template-columns: 250px 1fr;
+            grid-template-rows: 60px 1fr 40px;
+            min-height: 100vh;
+        }
+
+        /* ===== HEADER (spans full width) ===== */
+        .header {
+            grid-column: 1 / -1;
+            background-color: #0F1642;
+            border-bottom: 2px solid #2A3370;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 24px;
+        }
+
+        .header-logo {
+            font-size: 20px;
+            font-weight: 700;
+            color: #E04A7A;
+            letter-spacing: 0.02em;
+        }
+
+        .header-user {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 14px;
+            color: #9B9FC0;
+        }
+
+        .header-avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background-color: #990147;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            font-weight: 600;
+            color: #F0F0F5;
+        }
+
+        /* ===== SIDEBAR ===== */
+        .sidebar {
+            background-color: #0F1642;
+            border-right: 1px solid #2A3370;
+            padding: 20px 0;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .sidebar-nav {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+
+        .sidebar-nav a {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 24px;
+            color: #6B7094;
+            text-decoration: none;
+            font-size: 14px;
+            border-left: 3px solid transparent;
+        }
+
+        .sidebar-nav a:hover {
+            color: #F0F0F5;
+            background-color: #1A2258;
+            border-left-color: #4D70FF;
+        }
+
+        .sidebar-nav a.active {
+            color: #E04A7A;
+            background-color: rgba(153, 1, 71, 0.1);
+            border-left-color: #990147;
+            font-weight: 600;
+        }
+
+        .sidebar-nav .nav-icon {
+            width: 20px;
+            text-align: center;
+            font-size: 16px;
+        }
+
+        .sidebar-section {
+            font-size: 11px;
+            color: #4D70FF;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            padding: 16px 24px 8px;
+            font-weight: 600;
+        }
+
+        /* ===== MAIN CONTENT ===== */
+        .main {
+            padding: 24px;
+            overflow-y: auto;
+        }
+
+        .main-title {
+            font-size: 22px;
+            color: #E04A7A;
+            margin-bottom: 20px;
+            font-weight: 600;
+        }
+
+        /* ===== STATS GRID ===== */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+
+        .stat-card {
+            background-color: #0F1642;
+            border: 1px solid #2A3370;
+            border-radius: 12px;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .stat-card:hover {
+            border-color: #4D70FF;
+            box-shadow: 0 4px 16px rgba(77, 112, 255, 0.1);
+        }
+
+        .stat-label {
+            font-size: 12px;
+            color: #6B7094;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .stat-value {
+            font-size: 28px;
+            font-weight: 700;
+            color: #F0F0F5;
+        }
+
+        .stat-change {
+            font-size: 12px;
+        }
+
+        .stat-change.positive {
+            color: #00C896;
+        }
+
+        .stat-change.negative {
+            color: #FF4C6A;
+        }
+
+        .stat-card.highlight {
+            border-color: #990147;
+            box-shadow: 0 0 20px rgba(153, 1, 71, 0.15);
+        }
+
+        /* ===== CONTENT AREA ===== */
+        .content-area {
+            background-color: #0F1642;
+            border: 1px solid #2A3370;
+            border-radius: 12px;
+            padding: 20px;
+        }
+
+        .content-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+
+        .content-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: #F0F0F5;
+        }
+
+        .content-badge {
+            font-size: 12px;
+            background-color: rgba(153, 1, 71, 0.2);
+            color: #E04A7A;
+            padding: 4px 12px;
+            border-radius: 20px;
+        }
+
+        /* ===== DATA TABLE ===== */
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 14px;
+        }
+
+        .data-table thead {
+            border-bottom: 2px solid #2A3370;
+        }
+
+        .data-table th {
+            text-align: left;
+            padding: 10px 12px;
+            color: #6B7094;
+            font-weight: 600;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .data-table td {
+            padding: 12px;
+            border-bottom: 1px solid #1A2258;
+            color: #9B9FC0;
+        }
+
+        .data-table tr:hover td {
+            background-color: rgba(77, 112, 255, 0.05);
+            color: #F0F0F5;
+        }
+
+        .data-table .status {
+            display: inline-block;
+            padding: 3px 10px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .status.active {
+            background-color: rgba(0, 200, 150, 0.15);
+            color: #00C896;
+        }
+
+        .status.pending {
+            background-color: rgba(255, 140, 66, 0.15);
+            color: #FF8C42;
+        }
+
+        .status.completed {
+            background-color: rgba(77, 112, 255, 0.15);
+            color: #4D70FF;
+        }
+
+        /* ===== FOOTER (spans full width) ===== */
+        .footer {
+            grid-column: 1 / -1;
+            background-color: #0F1642;
+            border-top: 1px solid #2A3370;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 12px;
+            color: #6B7094;
+        }
+
+        .footer a {
+            color: #990147;
+            text-decoration: none;
+        }
+
+        .footer a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard">
+
+        <!-- ===== HEADER ===== -->
+        <header class="header">
+            <span class="header-logo">NexusBerry Dashboard</span>
+            <div class="header-user">
+                <span>Rana M. Ajmal</span>
+                <div class="header-avatar">RA</div>
+            </div>
+        </header>
+
+        <!-- ===== SIDEBAR ===== -->
+        <aside class="sidebar">
+            <p class="sidebar-section">Main</p>
+            <ul class="sidebar-nav">
+                <li><a href="#" class="active"><span class="nav-icon">&#128200;</span> Dashboard</a></li>
+                <li><a href="#"><span class="nav-icon">&#128218;</span> Courses</a></li>
+                <li><a href="#"><span class="nav-icon">&#128101;</span> Students</a></li>
+                <li><a href="#"><span class="nav-icon">&#128197;</span> Schedule</a></li>
+            </ul>
+            <p class="sidebar-section">Settings</p>
+            <ul class="sidebar-nav">
+                <li><a href="#"><span class="nav-icon">&#9881;</span> Preferences</a></li>
+                <li><a href="#"><span class="nav-icon">&#128100;</span> Profile</a></li>
+            </ul>
+        </aside>
+
+        <!-- ===== MAIN CONTENT ===== -->
+        <main class="main">
+            <h1 class="main-title">Dashboard Overview</h1>
+
+            <!-- Stats Cards -->
+            <div class="stats-grid">
+                <div class="stat-card highlight">
+                    <span class="stat-label">Revenue</span>
+                    <span class="stat-value">PKR 2.4M</span>
+                    <span class="stat-change positive">&#9650; 12.5% from last month</span>
+                </div>
+                <div class="stat-card">
+                    <span class="stat-label">Students</span>
+                    <span class="stat-value">1,284</span>
+                    <span class="stat-change positive">&#9650; 8.3% from last month</span>
+                </div>
+                <div class="stat-card">
+                    <span class="stat-label">Courses</span>
+                    <span class="stat-value">24</span>
+                    <span class="stat-change positive">&#9650; 3 new this quarter</span>
+                </div>
+                <div class="stat-card">
+                    <span class="stat-label">Completion Rate</span>
+                    <span class="stat-value">87%</span>
+                    <span class="stat-change negative">&#9660; 2.1% from last month</span>
+                </div>
+            </div>
+
+            <!-- Recent Enrollments Table -->
+            <div class="content-area">
+                <div class="content-header">
+                    <span class="content-title">Recent Enrollments</span>
+                    <span class="content-badge">This Week</span>
+                </div>
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>Student</th>
+                            <th>Course</th>
+                            <th>Date</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Ahmed Hassan</td>
+                            <td>Modern Frontend with React</td>
+                            <td>Feb 10, 2026</td>
+                            <td><span class="status active">Active</span></td>
+                        </tr>
+                        <tr>
+                            <td>Sara Malik</td>
+                            <td>Modern Frontend with React</td>
+                            <td>Feb 9, 2026</td>
+                            <td><span class="status active">Active</span></td>
+                        </tr>
+                        <tr>
+                            <td>Usman Ali</td>
+                            <td>Python for Data Science</td>
+                            <td>Feb 8, 2026</td>
+                            <td><span class="status pending">Pending</span></td>
+                        </tr>
+                        <tr>
+                            <td>Fatima Noor</td>
+                            <td>UI/UX Design Bootcamp</td>
+                            <td>Feb 7, 2026</td>
+                            <td><span class="status completed">Completed</span></td>
+                        </tr>
+                        <tr>
+                            <td>Bilal Khan</td>
+                            <td>Modern Frontend with React</td>
+                            <td>Feb 6, 2026</td>
+                            <td><span class="status active">Active</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </main>
+
+        <!-- ===== FOOTER ===== -->
+        <footer class="footer">
+            &copy; 2026 <a href="https://www.nexusberry.com">NexusBerry</a> Training and Solutions | Lahore, Pakistan
+        </footer>
+
+    </div>
+</body>
+</html>

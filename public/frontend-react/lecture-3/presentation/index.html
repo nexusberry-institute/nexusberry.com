@@ -1,0 +1,1068 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lecture 3: CSS Fundamentals & The Box Model | NexusBerry Modern Frontend Course</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5/dist/reveal.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5/dist/theme/black.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5/plugin/highlight/monokai.css">
+    <style>
+        :root {
+            /* NexusBerry Brand Colors */
+            --nb-berry: #990147;
+            --nb-nexus: #0020C2;
+            --nb-berry-light: #E04A7A;
+            --nb-nexus-light: #4D70FF;
+            --nb-bg: #080D2B;
+            --nb-text: #F0F0F5;
+
+            /* Extended palette for infographics */
+            --nb-accent-green: #00C896;
+            --nb-accent-orange: #FF8C42;
+            --nb-accent-red: #FF4C6A;
+            --nb-accent-purple: #A855F7;
+            --nb-surface: #0F1642;
+            --nb-surface-2: #1A2258;
+            --nb-border: #2A3370;
+            --nb-dim: #6B7094;
+
+            /* Animation timing */
+            --nb-duration-fast: 0.3s;
+            --nb-duration-normal: 0.6s;
+            --nb-duration-slow: 0.9s;
+            --nb-ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .reveal {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        .reveal h1, .reveal h2, .reveal h3 {
+            color: var(--nb-berry-light);
+            text-transform: none;
+        }
+        .reveal .slide-background {
+            background-color: var(--nb-bg);
+        }
+        .reveal pre code {
+            font-size: 0.85em;
+            line-height: 1.4;
+            max-height: 500px;
+        }
+        .reveal .nexusberry-brand {
+            color: var(--nb-berry);
+            font-weight: bold;
+        }
+        .reveal .interactive-q-slide {
+            text-align: left;
+        }
+        .reveal .interactive-q-slide .options {
+            list-style: upper-alpha;
+            font-size: 0.9em;
+        }
+        .reveal .code-transition {
+            font-size: 1.5em;
+            color: var(--nb-berry-light);
+        }
+        .reveal .part-label {
+            font-size: 0.6em;
+            color: var(--nb-nexus-light);
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+        }
+        .reveal footer {
+            position: absolute;
+            bottom: 1em;
+            left: 1em;
+            font-size: 0.5em;
+            color: #8888AA;
+        }
+
+        /* ===== ANIMATION KEYFRAMES ===== */
+        @keyframes nb-rise { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes nb-slide-right { from { opacity: 0; transform: translateX(-30px); } to { opacity: 1; transform: translateX(0); } }
+        @keyframes nb-slide-left { from { opacity: 0; transform: translateX(30px); } to { opacity: 1; transform: translateX(0); } }
+        @keyframes nb-pop { from { opacity: 0; transform: scale(0.8); } to { opacity: 1; transform: scale(1); } }
+        @keyframes nb-draw-h { from { width: 0; } to { width: 100%; } }
+        @keyframes nb-draw-v { from { height: 0; } to { height: 100%; } }
+        @keyframes nb-pulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.05); } }
+        @keyframes nb-glow { 0%, 100% { box-shadow: 0 0 5px var(--nb-berry-light); } 50% { box-shadow: 0 0 20px var(--nb-berry-light); } }
+        @keyframes nb-fill-bar { from { width: 0; } }
+        @keyframes nb-highlight-correct { to { background: rgba(0,200,150,0.2); border-color: var(--nb-accent-green); } }
+        @keyframes nb-highlight-wrong { to { background: rgba(255,76,106,0.15); border-color: var(--nb-accent-red); } }
+
+        /* Animation utility classes */
+        .nb-anim-rise { animation: nb-rise var(--nb-duration-normal) var(--nb-ease-out) both; }
+        .nb-anim-pop { animation: nb-pop var(--nb-duration-normal) var(--nb-ease-out) both; }
+        .nb-anim-pulse { animation: nb-pulse 2s ease-in-out infinite; }
+        .nb-anim-glow { animation: nb-glow 2s ease-in-out infinite; }
+        .nb-delay-1 { animation-delay: 0.1s; } .nb-delay-2 { animation-delay: 0.2s; }
+        .nb-delay-3 { animation-delay: 0.3s; } .nb-delay-4 { animation-delay: 0.4s; }
+        .nb-delay-5 { animation-delay: 0.5s; } .nb-delay-6 { animation-delay: 0.6s; }
+        .nb-delay-7 { animation-delay: 0.7s; } .nb-delay-8 { animation-delay: 0.8s; }
+
+        /* ===== INFOGRAPHIC: Process Flow (Horizontal) ===== */
+        .nb-flow { display: flex; align-items: center; justify-content: center; gap: 0; flex-wrap: wrap; margin: 0.8em 0; }
+        .nb-flow-step { background: var(--nb-surface); border: 1px solid var(--nb-border); border-radius: 10px; padding: 0.5em 0.7em; text-align: center; min-width: 90px; flex-shrink: 1; }
+        .nb-flow-step .icon { font-size: 1.3em; display: block; margin-bottom: 0.2em; }
+        .nb-flow-step .label { font-size: 0.6em; font-weight: 600; color: var(--nb-text); }
+        .nb-flow-step .sublabel { font-size: 0.45em; color: var(--nb-dim); margin-top: 0.1em; }
+        .nb-flow-step.nb-active { border-color: var(--nb-berry-light); box-shadow: 0 0 12px rgba(224,74,122,0.3); }
+        .nb-flow-arrow { font-size: 1em; color: var(--nb-dim); padding: 0 0.2em; flex-shrink: 0; }
+
+        /* ===== INFOGRAPHIC: Process Flow (Vertical) ===== */
+        .nb-flow-v { display: flex; flex-direction: column; align-items: center; gap: 0; margin: 0.5em auto; max-width: 320px; }
+        .nb-flow-v .nb-flow-step { width: 100%; min-width: unset; padding: 0.4em 0.6em; }
+        .nb-flow-v .nb-flow-step .icon { font-size: 1.1em; margin-bottom: 0.1em; }
+        .nb-flow-v .nb-flow-step .label { font-size: 0.55em; }
+        .nb-flow-v .nb-flow-arrow { transform: rotate(90deg); padding: 0.1em 0; font-size: 0.8em; }
+
+        /* ===== INFOGRAPHIC: Comparison / Versus ===== */
+        .nb-compare { display: grid; grid-template-columns: 1fr auto 1fr; gap: 0.6em; align-items: start; margin: 0.6em 0; }
+        .nb-col-a, .nb-col-b { background: var(--nb-surface); border-radius: 10px; padding: 0.7em; border: 2px solid var(--nb-border); }
+        .nb-col-a { border-color: var(--nb-nexus-light); }
+        .nb-col-b { border-color: var(--nb-berry-light); }
+        .nb-col-a h4, .nb-col-b h4 { margin-top: 0; font-size: 0.75em; }
+        .nb-col-a p, .nb-col-b p { margin: 0.3em 0; }
+        .nb-vs { display: flex; align-items: center; font-size: 1.1em; font-weight: 700; color: var(--nb-dim); padding: 0 0.2em; }
+        .nb-winner { border-color: var(--nb-accent-green) !important; box-shadow: 0 0 15px rgba(0,200,150,0.25); }
+
+        /* ===== INFOGRAPHIC: Anatomy / Breakdown ===== */
+        .nb-anatomy { text-align: center; margin: 1em 0; }
+        .nb-anatomy pre { display: inline-block; text-align: left; }
+        .nb-anatomy .nb-callouts { display: flex; justify-content: center; gap: 1.5em; margin-top: 1em; flex-wrap: wrap; }
+        .nb-anatomy .nb-callout-item { font-size: 0.65em; display: flex; align-items: center; gap: 0.4em; }
+        .nb-anatomy .nb-dot { width: 10px; height: 10px; border-radius: 50%; display: inline-block; flex-shrink: 0; }
+        .nb-hl-1 { color: var(--nb-berry-light); } .nb-dot-1 { background: var(--nb-berry-light); }
+        .nb-hl-2 { color: var(--nb-nexus-light); } .nb-dot-2 { background: var(--nb-nexus-light); }
+        .nb-hl-3 { color: var(--nb-accent-green); } .nb-dot-3 { background: var(--nb-accent-green); }
+        .nb-hl-4 { color: var(--nb-accent-orange); } .nb-dot-4 { background: var(--nb-accent-orange); }
+
+        /* ===== INFOGRAPHIC: Timeline ===== */
+        .nb-timeline { display: flex; align-items: flex-start; justify-content: center; position: relative; margin: 2em 0; padding-top: 1.5em; }
+        .nb-timeline::before { content: ''; position: absolute; top: 1.5em; left: 10%; right: 10%; height: 3px; background: var(--nb-border); }
+        .nb-timeline-point { text-align: center; position: relative; z-index: 1; flex: 1; }
+        .nb-timeline-point .dot { width: 14px; height: 14px; border-radius: 50%; background: var(--nb-dim); margin: 0 auto 0.5em; border: 2px solid var(--nb-border); }
+        .nb-timeline-point .label { font-size: 0.65em; color: var(--nb-text); }
+        .nb-timeline-point .sublabel { font-size: 0.5em; color: var(--nb-dim); }
+        .nb-timeline-point.nb-current .dot { background: var(--nb-berry-light); border-color: var(--nb-berry-light); box-shadow: 0 0 10px rgba(224,74,122,0.4); }
+
+        /* ===== INFOGRAPHIC: Tree / Hierarchy ===== */
+        .nb-tree { display: flex; flex-direction: column; align-items: center; gap: 0; margin: 0.6em 0; }
+        .nb-tree-node { background: var(--nb-surface); border: 1px solid var(--nb-border); border-radius: 6px; padding: 0.4em 0.8em; font-size: 0.6em; text-align: center; position: relative; }
+        .nb-tree-node.nb-root { border-color: var(--nb-berry-light); font-weight: 600; }
+        .nb-tree-connector { width: 2px; height: 15px; background: var(--nb-border); }
+        .nb-tree-children { display: flex; gap: 1.5em; position: relative; padding-top: 15px; }
+
+        /* ===== INFOGRAPHIC: Icon Cards ===== */
+        .nb-cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 0.7em; margin: 0.8em 0; }
+        .nb-card { background: var(--nb-surface); border: 1px solid var(--nb-border); border-radius: 10px; padding: 0.8em 0.7em; text-align: center; }
+        .nb-card .icon { font-size: 1.5em; display: block; margin-bottom: 0.2em; }
+        .nb-card .title { font-size: 0.65em; font-weight: 600; color: var(--nb-text); margin-bottom: 0.2em; }
+        .nb-card .desc { font-size: 0.5em; color: var(--nb-dim); line-height: 1.3; }
+        .nb-card-berry { border-color: var(--nb-berry-light); }
+        .nb-card-nexus { border-color: var(--nb-nexus-light); }
+        .nb-card-green { border-color: var(--nb-accent-green); }
+        .nb-card-orange { border-color: var(--nb-accent-orange); }
+
+        /* ===== INFOGRAPHIC: Stat Bars ===== */
+        .nb-stats { margin: 0.6em 0; }
+        .nb-stat { margin-bottom: 0.6em; }
+        .nb-stat .stat-header { display: flex; justify-content: space-between; font-size: 0.6em; margin-bottom: 0.2em; }
+        .nb-stat .stat-label { color: var(--nb-text); }
+        .nb-stat .stat-value { color: var(--nb-berry-light); font-weight: 700; }
+        .nb-stat .stat-track { height: 6px; background: var(--nb-surface); border-radius: 3px; overflow: hidden; }
+        .nb-stat .stat-fill { height: 100%; border-radius: 3px; background: linear-gradient(90deg, var(--nb-nexus-light), var(--nb-berry-light)); }
+        .present .nb-stat .stat-fill { animation: nb-fill-bar var(--nb-duration-slow) var(--nb-ease-out) both; }
+
+        /* ===== INFOGRAPHIC: Callout Boxes ===== */
+        .nb-callout { background: var(--nb-surface); border-left: 4px solid var(--nb-border); border-radius: 0 8px 8px 0; padding: 0.6em 0.8em; margin: 0.6em 0 1.5em 0; text-align: left; font-size: 0.65em; display: flex; align-items: flex-start; gap: 0.5em; }
+        .nb-callout .callout-icon { font-size: 1.1em; flex-shrink: 0; }
+        .nb-callout .callout-text { line-height: 1.4; }
+        .nb-tip { border-color: var(--nb-accent-green); }
+        .nb-warning { border-color: var(--nb-accent-orange); }
+        .nb-error { border-color: var(--nb-accent-red); }
+        .nb-pro { border-color: var(--nb-accent-purple); }
+
+        /* ===== COMPACT TABLES ===== */
+        .reveal table { font-size: 0.6em; margin: 0.5em auto; }
+        .reveal table th, .reveal table td { padding: 0.3em 0.6em; }
+        .reveal table code { font-size: 0.85em; }
+
+        /* ===== CODE BLOCK COPY BUTTON ===== */
+        .reveal pre { position: relative; }
+        .reveal pre code { padding-right: 2.5em; }
+        .copy-btn {
+            position: absolute;
+            top: 0.4em;
+            right: 0.4em;
+            background: var(--nb-surface-2);
+            border: 1px solid var(--nb-border);
+            border-radius: 4px;
+            padding: 0.3em 0.5em;
+            font-size: 0.7em;
+            color: var(--nb-dim);
+            cursor: pointer;
+            opacity: 0;
+            transition: opacity 0.2s, background 0.2s;
+            z-index: 10;
+        }
+        .reveal pre:hover .copy-btn { opacity: 1; }
+        .copy-btn:hover { background: var(--nb-border); color: var(--nb-text); }
+        .copy-btn.copied { background: var(--nb-accent-green); color: var(--nb-bg); }
+
+        /* ===== LOGO WATERMARK ===== */
+        .reveal .slides section:not(.stack)::after {
+            content: '';
+            position: absolute;
+            bottom: 10px;
+            right: 10px;
+            width: 120px;
+            height: 32px;
+            background: url('../../logo/nexusberry-logo-transparent-1712x450.png') no-repeat center / contain;
+            opacity: 0.35;
+            pointer-events: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="reveal">
+        <div class="slides">
+
+            <!-- ===== TITLE SLIDE ===== -->
+            <section>
+                <img src="../../../logo/nexusberry-logo-whitebg-1914x468.png"
+                     alt="NexusBerry Logo" style="width: 200px; margin-bottom: 0.5em; opacity: 0.9;">
+                <p class="part-label">NexusBerry Modern Frontend Course</p>
+                <h1>Lecture 3</h1>
+                <h2>CSS Fundamentals &amp; The Box Model</h2>
+                <p>By Rana M. Ajmal | February 2026</p>
+                <p style="font-size: 0.5em;">
+                    <a href="?print-pdf" target="_blank" style="color: var(--nb-dim);">Export PDF</a>
+                    &nbsp;|&nbsp;
+                    <a href="index.html" target="_blank" style="color: var(--nb-dim);">Open in Browser</a>
+                </p>
+                <footer>www.nexusberry.com</footer>
+            </section>
+
+            <!-- ===== TABLE OF CONTENTS ===== -->
+            <section>
+                <h2>Today's Agenda</h2>
+                <ol>
+                    <li class="fragment fade-up">Why CSS? From Plain HTML to Styled Pages</li>
+                    <li class="fragment fade-up">CSS Selectors &amp; The Cascade</li>
+                    <li class="fragment fade-up">The Box Model</li>
+                    <li class="fragment fade-up">Building the Styled Business Card</li>
+                </ol>
+                <div class="nb-callout nb-pro fragment fade-up" style="margin-bottom: 2em;">
+                    <span class="callout-icon">&#128142;</span>
+                    <span class="callout-text">Your semantic HTML from Lecture 2 is perfect structure &mdash; today we give it style.</span>
+                </div>
+            </section>
+
+            <!-- ===== PART 1: Why CSS? (vertical stack) ===== -->
+            <section>
+                <!-- Part 1 Title -->
+                <section>
+                    <p class="part-label">Part 1</p>
+                    <h2>Why CSS?</h2>
+                    <h3>From Plain HTML to Styled Pages</h3>
+                    <p style="font-size: 0.7em; color: var(--nb-dim);">HTML = skeleton &nbsp;|&nbsp; CSS = skin &amp; clothing</p>
+                </section>
+
+                <!-- Before / After Comparison -->
+                <section>
+                    <h3>The CSS Transformation</h3>
+                    <div class="nb-compare">
+                        <div class="nb-col-a fragment fade-right">
+                            <h4>&#129516; Without CSS</h4>
+                            <p style="font-size: 0.55em; color: var(--nb-dim);">Plain text</p>
+                            <p style="font-size: 0.55em; color: var(--nb-dim);">No colors</p>
+                            <p style="font-size: 0.55em; color: var(--nb-dim);">Default fonts</p>
+                            <p style="font-size: 0.55em; color: var(--nb-dim);">No spacing control</p>
+                        </div>
+                        <div class="nb-vs">VS</div>
+                        <div class="nb-col-b nb-winner fragment fade-left">
+                            <h4>&#127912; With CSS</h4>
+                            <p style="font-size: 0.55em; color: var(--nb-dim);">Custom colors</p>
+                            <p style="font-size: 0.55em; color: var(--nb-dim);">Beautiful typography</p>
+                            <p style="font-size: 0.55em; color: var(--nb-dim);">Precise spacing</p>
+                            <p style="font-size: 0.55em; color: var(--nb-dim);">Professional look</p>
+                        </div>
+                    </div>
+                    <p class="fragment fade-up" style="font-size: 0.6em; color: var(--nb-accent-green);">Same HTML. Not a single tag changed. Only CSS added.</p>
+                </section>
+
+                <!-- CSS Rule Anatomy -->
+                <section>
+                    <h3>CSS Rule Anatomy</h3>
+                    <div class="nb-anatomy">
+                        <pre><code data-trim data-noescape class="language-css">
+<span class="nb-hl-1">h1</span> <span class="nb-hl-4">{</span>
+    <span class="nb-hl-2">color</span><span class="nb-hl-4">:</span> <span class="nb-hl-3">red</span><span class="nb-hl-4">;</span>
+    <span class="nb-hl-2">font-size</span><span class="nb-hl-4">:</span> <span class="nb-hl-3">32px</span><span class="nb-hl-4">;</span>
+<span class="nb-hl-4">}</span>
+                        </code></pre>
+                        <div class="nb-callouts fragment fade-up">
+                            <span class="nb-callout-item"><span class="nb-dot nb-dot-1"></span> Selector (what to style)</span>
+                            <span class="nb-callout-item"><span class="nb-dot nb-dot-2"></span> Property (what to change)</span>
+                            <span class="nb-callout-item"><span class="nb-dot nb-dot-3"></span> Value (how to change it)</span>
+                            <span class="nb-callout-item"><span class="nb-dot nb-dot-4"></span> Syntax (braces, colons, semicolons)</span>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- 3 Ways to Add CSS -->
+                <section>
+                    <h3>3 Ways to Add CSS</h3>
+                    <div class="nb-cards">
+                        <div class="nb-card nb-card-orange fragment fade-up">
+                            <span class="icon">&#9888;</span>
+                            <span class="title">Inline</span>
+                            <span class="desc"><code>style="color: red;"</code><br>Quick testing only</span>
+                        </div>
+                        <div class="nb-card nb-card-nexus fragment fade-up">
+                            <span class="icon">&#128196;</span>
+                            <span class="title">Internal &lt;style&gt;</span>
+                            <span class="desc">In &lt;head&gt; tag<br>Single-page &amp; learning</span>
+                        </div>
+                        <div class="nb-card nb-card-green fragment fade-up">
+                            <span class="icon">&#128279;</span>
+                            <span class="title">External &lt;link&gt;</span>
+                            <span class="desc">Separate .css file<br>Production best practice</span>
+                        </div>
+                    </div>
+                    <div class="nb-callout nb-tip fragment fade-up" style="margin-bottom: 2em;">
+                        <span class="callout-icon">&#9889;</span>
+                        <span class="callout-text">Today we use <strong>internal &lt;style&gt;</strong> &mdash; external files come in later lectures.</span>
+                    </div>
+                </section>
+
+                <!-- First CSS Properties -->
+                <section>
+                    <h3>Your First CSS Properties</h3>
+                    <table>
+                        <thead>
+                            <tr><th>Property</th><th>What It Does</th><th>Example</th></tr>
+                        </thead>
+                        <tbody>
+                            <tr class="fragment fade-up"><td><code>color</code></td><td>Text color</td><td><code>color: red;</code></td></tr>
+                            <tr class="fragment fade-up"><td><code>background-color</code></td><td>Background</td><td><code>background-color: #f5f5f5;</code></td></tr>
+                            <tr class="fragment fade-up"><td><code>font-size</code></td><td>Text size</td><td><code>font-size: 18px;</code></td></tr>
+                            <tr class="fragment fade-up"><td><code>font-family</code></td><td>Typeface</td><td><code>font-family: Arial, sans-serif;</code></td></tr>
+                            <tr class="fragment fade-up"><td><code>text-align</code></td><td>Alignment</td><td><code>text-align: center;</code></td></tr>
+                        </tbody>
+                    </table>
+                </section>
+
+                <!-- Code Transition -->
+                <section>
+                    <p class="code-transition">&#128187; Let's see this in code!</p>
+                    <p style="font-size: 0.7em;">Switch to VS Code &mdash; writing our first CSS rules</p>
+                </section>
+
+                <!-- Interactive Q1: Predict Output -->
+                <section class="interactive-q-slide">
+                    <h3>&#129300; Interactive Question</h3>
+                    <pre><code data-trim class="language-css">
+h1 { color: red; }
+                    </code></pre>
+                    <p>What changes on the page?</p>
+                    <ol class="options">
+                        <li class="fragment fade-up">All text turns red</li>
+                        <li class="fragment fade-up" style="color: var(--nb-accent-green);">Only <code>&lt;h1&gt;</code> elements turn red &#9989;</li>
+                        <li class="fragment fade-up">The background turns red</li>
+                        <li class="fragment fade-up">Nothing &mdash; CSS doesn't change colors</li>
+                    </ol>
+                    <div class="nb-callout nb-tip fragment fade-up" style="margin-bottom: 2em;">
+                        <span class="callout-icon">&#9889;</span>
+                        <span class="callout-text">The selector <code>h1</code> targets ONLY <code>&lt;h1&gt;</code> elements &mdash; nothing else.</span>
+                    </div>
+                </section>
+
+                <!-- Interactive Q2: Spot the Error -->
+                <section class="interactive-q-slide">
+                    <h3>&#128270; Spot the Error</h3>
+                    <pre><code data-trim class="language-css">
+h1 {
+    color: blue
+    font-size: 24px;
+}
+                    </code></pre>
+                    <p class="fragment fade-up" style="color: var(--nb-accent-red);">Missing semicolon after <code>blue</code>!</p>
+                    <div class="nb-callout nb-error fragment fade-up" style="margin-bottom: 2em;">
+                        <span class="callout-icon">&#10060;</span>
+                        <span class="callout-text">CSS won't throw an error &mdash; it silently breaks <code>font-size</code> too!</span>
+                    </div>
+                </section>
+
+                <!-- Interactive Q3: Concept Check -->
+                <section class="interactive-q-slide">
+                    <h3>&#129300; Concept Check</h3>
+                    <p>Where does the <code>&lt;style&gt;</code> tag go?</p>
+                    <ol class="options">
+                        <li class="fragment fade-up">Inside <code>&lt;body&gt;</code></li>
+                        <li class="fragment fade-up" style="color: var(--nb-accent-green);">Inside <code>&lt;head&gt;</code> &#9989;</li>
+                        <li class="fragment fade-up">After <code>&lt;/html&gt;</code></li>
+                        <li class="fragment fade-up">Anywhere &mdash; it doesn't matter</li>
+                    </ol>
+                </section>
+
+                <!-- Part 1 Summary -->
+                <section>
+                    <h3>Part 1 Summary</h3>
+                    <ul>
+                        <li class="fragment fade-up"><strong>Key Concept:</strong> CSS styles HTML &mdash; separation of concerns</li>
+                        <li class="fragment fade-up"><strong>Common Mistake:</strong> Misspelling properties (<code>colour</code> &#8594; silent failure)</li>
+                        <li class="fragment fade-up"><strong>Best Practice:</strong> Use VS Code autocomplete to prevent typos</li>
+                    </ul>
+                    <div class="nb-callout nb-pro fragment fade-up" style="margin-bottom: 2em;">
+                        <span class="callout-icon">&#128142;</span>
+                        <span class="callout-text">CSS's biggest gotcha: it fails silently. No error messages. Use DevTools to verify.</span>
+                    </div>
+                </section>
+            </section>
+
+            <!-- ===== PART 2: CSS Selectors & The Cascade (vertical stack) ===== -->
+            <section>
+                <!-- Part 2 Title -->
+                <section>
+                    <p class="part-label">Part 2</p>
+                    <h2>CSS Selectors &amp; The Cascade</h2>
+                    <p style="font-size: 0.7em; color: var(--nb-dim);">Targeting the right elements with precision</p>
+                </section>
+
+                <!-- Selector Types -->
+                <section>
+                    <h3>CSS Selector Types</h3>
+                    <table>
+                        <thead>
+                            <tr><th>Type</th><th>Syntax</th><th>Targets</th></tr>
+                        </thead>
+                        <tbody>
+                            <tr class="fragment fade-up"><td>Element</td><td><code>p { }</code></td><td>All <code>&lt;p&gt;</code> tags</td></tr>
+                            <tr class="fragment fade-up"><td>Class</td><td><code>.highlight { }</code></td><td>Elements with <code>class="highlight"</code></td></tr>
+                            <tr class="fragment fade-up"><td>ID</td><td><code>#header { }</code></td><td>The ONE element with <code>id="header"</code></td></tr>
+                            <tr class="fragment fade-up"><td>Grouping</td><td><code>h1, h2 { }</code></td><td>Multiple selectors at once</td></tr>
+                            <tr class="fragment fade-up"><td>Pseudo-class</td><td><code>a:hover { }</code></td><td>Elements in a specific state</td></tr>
+                        </tbody>
+                    </table>
+                </section>
+
+                <!-- Class vs ID Comparison -->
+                <section>
+                    <h3>Class vs ID</h3>
+                    <div class="nb-compare">
+                        <div class="nb-col-a nb-winner fragment fade-right">
+                            <h4>.class (Reusable)</h4>
+                            <p style="font-size: 0.5em;">Multiple elements can share it</p>
+                            <p style="font-size: 0.5em;">Specificity: 0-1-0</p>
+                            <p style="font-size: 0.5em;">Use for: styling</p>
+                            <pre style="font-size: 0.8em;"><code data-trim class="language-css">.card { color: blue; }</code></pre>
+                        </div>
+                        <div class="nb-vs">VS</div>
+                        <div class="nb-col-b fragment fade-left">
+                            <h4>#id (Unique)</h4>
+                            <p style="font-size: 0.5em;">Only ONE per page</p>
+                            <p style="font-size: 0.5em;">Specificity: 1-0-0</p>
+                            <p style="font-size: 0.5em;">Save for: JavaScript</p>
+                            <pre style="font-size: 0.8em;"><code data-trim class="language-css">#main { color: red; }</code></pre>
+                        </div>
+                    </div>
+                    <div class="nb-callout nb-pro fragment fade-up" style="margin-bottom: 2em;">
+                        <span class="callout-icon">&#128142;</span>
+                        <span class="callout-text">Professional teams rarely use ID selectors in CSS. Classes are king.</span>
+                    </div>
+                </section>
+
+                <!-- Specificity Scoring -->
+                <section>
+                    <h3>Specificity: The 0-0-0 System</h3>
+                    <div class="nb-anatomy">
+                        <pre><code data-trim data-noescape class="language-text">
+Specificity Score:   <span class="nb-hl-1">ID</span>  -  <span class="nb-hl-2">Class</span>  -  <span class="nb-hl-3">Element</span>
+                     <span class="nb-hl-1"> 0</span>  -  <span class="nb-hl-2">  0  </span>  -  <span class="nb-hl-3">   0   </span>
+                        </code></pre>
+                        <div class="nb-callouts fragment fade-up">
+                            <span class="nb-callout-item"><span class="nb-dot nb-dot-1"></span> ID = 1-0-0</span>
+                            <span class="nb-callout-item"><span class="nb-dot nb-dot-2"></span> Class = 0-1-0</span>
+                            <span class="nb-callout-item"><span class="nb-dot nb-dot-3"></span> Element = 0-0-1</span>
+                        </div>
+                    </div>
+                    <div class="nb-flow fragment fade-up" style="margin-top: 0.5em;">
+                        <div class="nb-flow-step">
+                            <span class="icon" style="font-size: 1em;">&#127937;</span>
+                            <span class="label"><code>p</code></span>
+                            <span class="sublabel">0-0-1</span>
+                        </div>
+                        <span class="nb-flow-arrow">&#8594;</span>
+                        <div class="nb-flow-step">
+                            <span class="icon" style="font-size: 1em;">&#127942;</span>
+                            <span class="label"><code>.card</code></span>
+                            <span class="sublabel">0-1-0</span>
+                        </div>
+                        <span class="nb-flow-arrow">&#8594;</span>
+                        <div class="nb-flow-step nb-active">
+                            <span class="icon" style="font-size: 1em;">&#129351;</span>
+                            <span class="label"><code>#main</code></span>
+                            <span class="sublabel">1-0-0</span>
+                        </div>
+                    </div>
+                    <p class="fragment fade-up" style="font-size: 0.6em; color: var(--nb-dim);">Higher specificity ALWAYS wins. Equal? Last rule wins (the cascade).</p>
+                </section>
+
+                <!-- Code Transition -->
+                <section>
+                    <p class="code-transition">&#128187; Let's see this in code!</p>
+                    <p style="font-size: 0.7em;">Switch to VS Code &mdash; testing selectors &amp; specificity</p>
+                </section>
+
+                <!-- Interactive Q1: Predict Output (specificity) -->
+                <section class="interactive-q-slide">
+                    <h3>&#129300; Predict the Output</h3>
+                    <pre><code data-trim class="language-css">
+p { color: blue; }
+.special { color: red; }
+                    </code></pre>
+                    <pre><code data-trim class="language-html">
+&lt;p class="special"&gt;What color am I?&lt;/p&gt;
+                    </code></pre>
+                    <ol class="options">
+                        <li class="fragment fade-up">Blue (element selector)</li>
+                        <li class="fragment fade-up" style="color: var(--nb-accent-green);">Red (class beats element) &#9989;</li>
+                        <li class="fragment fade-up">Purple (they mix)</li>
+                        <li class="fragment fade-up">Black (conflict = default)</li>
+                    </ol>
+                    <p class="fragment fade-up" style="font-size: 0.55em;">Class (0-1-0) beats element (0-0-1) &mdash; specificity wins!</p>
+                </section>
+
+                <!-- Interactive Q2: Quick-Fire Ranking -->
+                <section class="interactive-q-slide">
+                    <h3>&#9889; Quick-Fire: Rank by Specificity</h3>
+                    <p style="font-size: 0.8em;">Lowest to highest:</p>
+                    <pre><code data-trim class="language-css">
+#header { }     /* ??? */
+.nav-link { }   /* ??? */
+p { }           /* ??? */
+                    </code></pre>
+                    <div class="fragment fade-up">
+                        <p style="color: var(--nb-accent-green);">Answer:</p>
+                        <div class="nb-flow">
+                            <div class="nb-flow-step">
+                                <span class="label"><code>p</code></span>
+                                <span class="sublabel">0-0-1</span>
+                            </div>
+                            <span class="nb-flow-arrow">&#8594;</span>
+                            <div class="nb-flow-step">
+                                <span class="label"><code>.nav-link</code></span>
+                                <span class="sublabel">0-1-0</span>
+                            </div>
+                            <span class="nb-flow-arrow">&#8594;</span>
+                            <div class="nb-flow-step nb-active">
+                                <span class="label"><code>#header</code></span>
+                                <span class="sublabel">1-0-0</span>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Interactive Q3: Spot the Error -->
+                <section class="interactive-q-slide">
+                    <h3>&#128270; Spot the Error</h3>
+                    <pre><code data-trim class="language-html">
+&lt;p class=".highlight"&gt;Styled text&lt;/p&gt;
+                    </code></pre>
+                    <p class="fragment fade-up" style="color: var(--nb-accent-red);">The dot <code>.</code> is CSS syntax, NOT HTML!</p>
+                    <pre class="fragment fade-up"><code data-trim class="language-html">
+&lt;!-- WRONG --&gt;  &lt;p class=".highlight"&gt;
+&lt;!-- CORRECT --&gt; &lt;p class="highlight"&gt;
+                    </code></pre>
+                    <div class="nb-callout nb-error fragment fade-up" style="margin-bottom: 2em;">
+                        <span class="callout-icon">&#10060;</span>
+                        <span class="callout-text">The #1 selector mistake beginners make. Dot belongs in CSS only!</span>
+                    </div>
+                </section>
+
+                <!-- Interactive Q4: Hidden Fact Reveal - The Cascade -->
+                <section class="interactive-q-slide">
+                    <h3>&#128161; The Cascade Revealed</h3>
+                    <pre><code data-trim class="language-css">
+p { color: blue; }
+p { color: red; }
+                    </code></pre>
+                    <p>Same selector, same specificity &mdash; what color?</p>
+                    <p class="fragment fade-up" style="font-size: 1.3em; color: var(--nb-accent-red);">Red!</p>
+                    <p class="fragment fade-up" style="font-size: 0.7em;">Equal specificity &#8594; <strong>last rule wins</strong>. This is the "Cascade" in Cascading Style Sheets.</p>
+                </section>
+
+                <!-- Part 2 Summary -->
+                <section>
+                    <h3>Part 2 Summary</h3>
+                    <ul>
+                        <li class="fragment fade-up"><strong>Use Classes</strong> for styling &mdash; reusable &amp; flexible</li>
+                        <li class="fragment fade-up"><strong>Specificity</strong> decides which rule wins (ID &gt; class &gt; element)</li>
+                        <li class="fragment fade-up"><strong>The Cascade</strong> &mdash; equal specificity? Last rule wins</li>
+                    </ul>
+                    <div class="nb-callout nb-tip fragment fade-up" style="margin-bottom: 2em;">
+                        <span class="callout-icon">&#9889;</span>
+                        <span class="callout-text">When a rule doesn't apply, open DevTools Styles panel &mdash; strikethrough shows what's overridden.</span>
+                    </div>
+                </section>
+            </section>
+
+            <!-- ===== PART 3: The Box Model (vertical stack) ===== -->
+            <section>
+                <!-- Part 3 Title -->
+                <section>
+                    <p class="part-label">Part 3</p>
+                    <h2>The Box Model</h2>
+                    <p style="font-size: 0.7em; color: var(--nb-dim);">Every element is a rectangular box</p>
+                </section>
+
+                <!-- Box Model Anatomy - KEY SLIDE -->
+                <section>
+                    <h3>The 4 Layers</h3>
+                    <div class="nb-anatomy">
+                        <div style="display: inline-block; text-align: center; padding: 0.3em;">
+                            <!-- Box Model Visual -->
+                            <div style="background: rgba(255,140,66,0.15); border: 2px dashed var(--nb-accent-orange); padding: 1em; border-radius: 8px; display: inline-block;">
+                                <span style="font-size: 0.45em; color: var(--nb-accent-orange); display: block; margin-bottom: 0.3em;">MARGIN</span>
+                                <div style="background: rgba(255,76,106,0.15); border: 3px solid var(--nb-accent-red); padding: 0.8em; border-radius: 6px;">
+                                    <span style="font-size: 0.45em; color: var(--nb-accent-red); display: block; margin-bottom: 0.3em;">BORDER</span>
+                                    <div style="background: rgba(0,200,150,0.15); border: 2px dashed var(--nb-accent-green); padding: 0.7em; border-radius: 4px;">
+                                        <span style="font-size: 0.45em; color: var(--nb-accent-green); display: block; margin-bottom: 0.3em;">PADDING</span>
+                                        <div style="background: rgba(77,112,255,0.2); border: 2px solid var(--nb-nexus-light); padding: 0.6em 1.5em; border-radius: 3px;">
+                                            <span style="font-size: 0.5em; color: var(--nb-nexus-light); font-weight: 600;">CONTENT</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="nb-callouts fragment fade-up">
+                            <span class="nb-callout-item"><span class="nb-dot nb-dot-2"></span> Content (text, images)</span>
+                            <span class="nb-callout-item"><span class="nb-dot nb-dot-3"></span> Padding (inner space)</span>
+                            <span class="nb-callout-item"><span class="nb-dot" style="background: var(--nb-accent-red);"></span> Border (the edge)</span>
+                            <span class="nb-callout-item"><span class="nb-dot nb-dot-4"></span> Margin (outer space)</span>
+                        </div>
+                    </div>
+                    <div class="nb-callout nb-tip fragment fade-up" style="margin-bottom: 2em;">
+                        <span class="callout-icon">&#128248;</span>
+                        <span class="callout-text"><strong>Analogy:</strong> Photo (content) &#8594; Matting (padding) &#8594; Frame (border) &#8594; Wall space (margin)</span>
+                    </div>
+                </section>
+
+                <!-- content-box vs border-box -->
+                <section>
+                    <h3>content-box vs border-box</h3>
+                    <div class="nb-compare">
+                        <div class="nb-col-a fragment fade-right">
+                            <h4>content-box (default)</h4>
+                            <p style="font-size: 0.5em;">Width = content only</p>
+                            <p style="font-size: 0.5em;">Total = content + padding + border</p>
+                            <p style="font-size: 0.45em; color: var(--nb-accent-orange);">300 + 40 + 10 = <strong>350px!</strong></p>
+                        </div>
+                        <div class="nb-vs">VS</div>
+                        <div class="nb-col-b nb-winner fragment fade-left">
+                            <h4>border-box (professional)</h4>
+                            <p style="font-size: 0.5em;">Width = everything included</p>
+                            <p style="font-size: 0.5em;">Total = exactly what you set</p>
+                            <p style="font-size: 0.45em; color: var(--nb-accent-green);">Total = <strong>300px</strong></p>
+                        </div>
+                    </div>
+                    <div class="fragment fade-up" style="margin-top: 0.5em;">
+                        <p style="font-size: 0.55em; color: var(--nb-accent-green);">The professional reset:</p>
+                        <pre style="font-size: 0.9em;"><code data-trim class="language-css">
+*, *::before, *::after {
+    box-sizing: border-box;
+}
+                        </code></pre>
+                    </div>
+                </section>
+
+                <!-- Width Calculation Flow -->
+                <section>
+                    <h3>Width Calculation (content-box)</h3>
+                    <p style="font-size: 0.6em; color: var(--nb-dim);">width: 300px; padding: 20px; border: 5px solid;</p>
+                    <div class="nb-flow">
+                        <div class="nb-flow-step fragment fade-up">
+                            <span class="icon" style="font-size: 1em;">&#128206;</span>
+                            <span class="label">Content</span>
+                            <span class="sublabel">300px</span>
+                        </div>
+                        <span class="nb-flow-arrow fragment fade-in">+</span>
+                        <div class="nb-flow-step fragment fade-up">
+                            <span class="icon" style="font-size: 1em;">&#8596;</span>
+                            <span class="label">Padding</span>
+                            <span class="sublabel">20 + 20</span>
+                        </div>
+                        <span class="nb-flow-arrow fragment fade-in">+</span>
+                        <div class="nb-flow-step fragment fade-up">
+                            <span class="icon" style="font-size: 1em;">&#128215;</span>
+                            <span class="label">Border</span>
+                            <span class="sublabel">5 + 5</span>
+                        </div>
+                        <span class="nb-flow-arrow fragment fade-in">=</span>
+                        <div class="nb-flow-step nb-active fragment fade-up">
+                            <span class="icon" style="font-size: 1em;">&#128207;</span>
+                            <span class="label">Total</span>
+                            <span class="sublabel">350px!</span>
+                        </div>
+                    </div>
+                    <div class="nb-callout nb-warning fragment fade-up" style="margin-bottom: 2em;">
+                        <span class="callout-icon">&#9888;</span>
+                        <span class="callout-text">Padding &amp; border are added on BOTH sides! That's why we get 350, not 325.</span>
+                    </div>
+                </section>
+
+                <!-- Code Transition -->
+                <section>
+                    <p class="code-transition">&#128187; Let's see this in code!</p>
+                    <p style="font-size: 0.7em;">Switch to VS Code &mdash; exploring the Box Model in DevTools</p>
+                </section>
+
+                <!-- Interactive Q1: Width Calculation -->
+                <section class="interactive-q-slide">
+                    <h3>&#129300; Width Calculation</h3>
+                    <pre><code data-trim class="language-css">
+.box {
+    width: 200px;
+    padding: 15px;
+    border: 5px solid black;
+    /* default box-sizing: content-box */
+}
+                    </code></pre>
+                    <p>Total width?</p>
+                    <ol class="options">
+                        <li class="fragment fade-up">200px</li>
+                        <li class="fragment fade-up">215px</li>
+                        <li class="fragment fade-up">230px</li>
+                        <li class="fragment fade-up" style="color: var(--nb-accent-green);">240px &#9989;</li>
+                    </ol>
+                    <p class="fragment fade-up" style="font-size: 0.55em;">200 + 15 + 15 + 5 + 5 = 240px (padding &amp; border on BOTH sides)</p>
+                </section>
+
+                <!-- Interactive Q2: Padding vs Margin -->
+                <section class="interactive-q-slide">
+                    <h3>&#129300; Padding vs Margin</h3>
+                    <p>You want space BETWEEN two boxes. Which property?</p>
+                    <ol class="options">
+                        <li class="fragment fade-up">padding</li>
+                        <li class="fragment fade-up" style="color: var(--nb-accent-green);">margin &#9989;</li>
+                        <li class="fragment fade-up">border</li>
+                        <li class="fragment fade-up">width</li>
+                    </ol>
+                    <div class="nb-callout nb-tip fragment fade-up" style="margin-bottom: 2em;">
+                        <span class="callout-icon">&#9889;</span>
+                        <span class="callout-text"><strong>Padding</strong> = inside the border. <strong>Margin</strong> = outside the border (between elements).</span>
+                    </div>
+                </section>
+
+                <!-- Interactive Q3: DevTools Box Model -->
+                <section>
+                    <h3>&#128161; DevTools Box Model Visualizer</h3>
+                    <p style="font-size: 0.7em;">Open DevTools on ANY website &mdash; every element is a box!</p>
+                    <div class="nb-cards" style="grid-template-columns: repeat(4, 1fr);">
+                        <div class="nb-card fragment fade-up" style="border-color: var(--nb-nexus-light);">
+                            <span class="icon" style="font-size: 1.2em;">&#128309;</span>
+                            <span class="title" style="font-size: 0.55em;">Content</span>
+                            <span class="desc">Blue highlight</span>
+                        </div>
+                        <div class="nb-card fragment fade-up" style="border-color: var(--nb-accent-green);">
+                            <span class="icon" style="font-size: 1.2em;">&#128994;</span>
+                            <span class="title" style="font-size: 0.55em;">Padding</span>
+                            <span class="desc">Green highlight</span>
+                        </div>
+                        <div class="nb-card fragment fade-up" style="border-color: var(--nb-accent-orange);">
+                            <span class="icon" style="font-size: 1.2em;">&#128992;</span>
+                            <span class="title" style="font-size: 0.55em;">Border</span>
+                            <span class="desc">Yellow highlight</span>
+                        </div>
+                        <div class="nb-card fragment fade-up" style="border-color: var(--nb-accent-red);">
+                            <span class="icon" style="font-size: 1.2em;">&#128992;</span>
+                            <span class="title" style="font-size: 0.55em;">Margin</span>
+                            <span class="desc">Orange highlight</span>
+                        </div>
+                    </div>
+                    <div class="nb-callout nb-pro fragment fade-up" style="margin-bottom: 2em;">
+                        <span class="callout-icon">&#128142;</span>
+                        <span class="callout-text">Try it on YouTube, Amazon, Google &mdash; everything is boxes! This is your X-ray vision.</span>
+                    </div>
+                </section>
+
+                <!-- Part 3 Summary -->
+                <section>
+                    <h3>Part 3 Summary</h3>
+                    <ul>
+                        <li class="fragment fade-up"><strong>Every element</strong> is a box: content &#8594; padding &#8594; border &#8594; margin</li>
+                        <li class="fragment fade-up"><strong>Always use</strong> <code>box-sizing: border-box</code> (the professional reset)</li>
+                        <li class="fragment fade-up"><strong>Center horizontally:</strong> <code>margin: 0 auto</code> (needs a set width)</li>
+                    </ul>
+                    <div class="nb-callout nb-pro fragment fade-up" style="margin-bottom: 2em;">
+                        <span class="callout-icon">&#128142;</span>
+                        <span class="callout-text">Every CSS framework &mdash; Bootstrap, Tailwind, all of them &mdash; uses border-box as default.</span>
+                    </div>
+                </section>
+            </section>
+
+            <!-- ===== PART 4: Building the Styled Business Card (vertical stack) ===== -->
+            <section>
+                <!-- Part 4 Title -->
+                <section>
+                    <p class="part-label">Part 4</p>
+                    <h2>Building the Styled Business Card</h2>
+                    <p style="font-size: 0.7em; color: var(--nb-dim);">Combining everything into a real project</p>
+                </section>
+
+                <!-- CSS Color Formats -->
+                <section>
+                    <h3>CSS Color Formats</h3>
+                    <div class="nb-cards">
+                        <div class="nb-card nb-card-berry fragment fade-up">
+                            <span class="icon">&#127912;</span>
+                            <span class="title">Named</span>
+                            <span class="desc"><code>color: red;</code><br>140+ built-in colors</span>
+                        </div>
+                        <div class="nb-card nb-card-nexus fragment fade-up">
+                            <span class="icon">#</span>
+                            <span class="title">Hex</span>
+                            <span class="desc"><code>#990147</code><br>Most common in production</span>
+                        </div>
+                        <div class="nb-card nb-card-green fragment fade-up">
+                            <span class="icon">&#127752;</span>
+                            <span class="title">RGB</span>
+                            <span class="desc"><code>rgb(153, 1, 71)</code><br>Red, Green, Blue (0-255)</span>
+                        </div>
+                        <div class="nb-card nb-card-orange fragment fade-up">
+                            <span class="icon">&#128065;</span>
+                            <span class="title">RGBA</span>
+                            <span class="desc"><code>rgba(0,0,0,0.5)</code><br>RGB + transparency</span>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Color Usage Stats -->
+                <section>
+                    <h3>Color Format Usage in Production</h3>
+                    <div class="nb-stats">
+                        <div class="nb-stat fragment fade-up">
+                            <div class="stat-header">
+                                <span class="stat-label">Hex (#RRGGBB)</span>
+                                <span class="stat-value">~70%</span>
+                            </div>
+                            <div class="stat-track">
+                                <div class="stat-fill" style="width: 70%;"></div>
+                            </div>
+                        </div>
+                        <div class="nb-stat fragment fade-up">
+                            <div class="stat-header">
+                                <span class="stat-label">RGB / RGBA</span>
+                                <span class="stat-value">~15%</span>
+                            </div>
+                            <div class="stat-track">
+                                <div class="stat-fill" style="width: 15%;"></div>
+                            </div>
+                        </div>
+                        <div class="nb-stat fragment fade-up">
+                            <div class="stat-header">
+                                <span class="stat-label">Named Colors</span>
+                                <span class="stat-value">~10%</span>
+                            </div>
+                            <div class="stat-track">
+                                <div class="stat-fill" style="width: 10%;"></div>
+                            </div>
+                        </div>
+                        <div class="nb-stat fragment fade-up">
+                            <div class="stat-header">
+                                <span class="stat-label">HSL / Other</span>
+                                <span class="stat-value">~5%</span>
+                            </div>
+                            <div class="stat-track">
+                                <div class="stat-fill" style="width: 5%;"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="nb-callout nb-tip fragment fade-up" style="margin-bottom: 2em;">
+                        <span class="callout-icon">&#9889;</span>
+                        <span class="callout-text">Learn to read hex values &mdash; you'll see them everywhere in professional code.</span>
+                    </div>
+                </section>
+
+                <!-- Visual Polish Properties -->
+                <section>
+                    <h3>Visual Polish Properties</h3>
+                    <table>
+                        <thead>
+                            <tr><th>What You Want</th><th>Property</th><th>Example</th></tr>
+                        </thead>
+                        <tbody>
+                            <tr class="fragment fade-up"><td>Rounded corners</td><td><code>border-radius</code></td><td><code>border-radius: 12px;</code></td></tr>
+                            <tr class="fragment fade-up"><td>Circle shape</td><td><code>border-radius</code></td><td><code>border-radius: 50%;</code></td></tr>
+                            <tr class="fragment fade-up"><td>Drop shadow</td><td><code>box-shadow</code></td><td><code>box-shadow: 0 4px 16px rgba(0,0,0,0.3);</code></td></tr>
+                            <tr class="fragment fade-up"><td>No underline</td><td><code>text-decoration</code></td><td><code>text-decoration: none;</code></td></tr>
+                            <tr class="fragment fade-up"><td>No bullets</td><td><code>list-style</code></td><td><code>list-style: none;</code></td></tr>
+                        </tbody>
+                    </table>
+                </section>
+
+                <!-- Code Transition -->
+                <section>
+                    <p class="code-transition">&#128187; Let's build the business card!</p>
+                    <p style="font-size: 0.7em;">Switch to VS Code &mdash; combining all concepts</p>
+                </section>
+
+                <!-- Interactive Q1: Circular Image -->
+                <section class="interactive-q-slide">
+                    <h3>&#9889; Quick-Fire</h3>
+                    <p>CSS property to make an image circular?</p>
+                    <ol class="options">
+                        <li class="fragment fade-up"><code>shape: circle;</code></li>
+                        <li class="fragment fade-up" style="color: var(--nb-accent-green);"><code>border-radius: 50%;</code> &#9989;</li>
+                        <li class="fragment fade-up"><code>round: true;</code></li>
+                        <li class="fragment fade-up"><code>display: circle;</code></li>
+                    </ol>
+                    <p class="fragment fade-up" style="font-size: 0.55em;">On a square element, 50% border-radius creates a perfect circle.</p>
+                </section>
+
+                <!-- Interactive Q2: box-shadow -->
+                <section class="interactive-q-slide">
+                    <h3>&#129300; Predict the Output</h3>
+                    <pre><code data-trim class="language-css">
+box-shadow: 4px 8px 16px rgba(0, 0, 0, 0.3);
+                    </code></pre>
+                    <p>What do the 4 values mean?</p>
+                    <ol class="options">
+                        <li class="fragment fade-up">top, right, bottom, left</li>
+                        <li class="fragment fade-up" style="color: var(--nb-accent-green);">x-offset, y-offset, blur, color &#9989;</li>
+                        <li class="fragment fade-up">width, height, spread, color</li>
+                        <li class="fragment fade-up">margin on all four sides</li>
+                    </ol>
+                    <p class="fragment fade-up" style="font-size: 0.55em;">4px right, 8px down, 16px blur, 30% opaque black shadow</p>
+                </section>
+
+                <!-- Part 4 Summary -->
+                <section>
+                    <h3>Part 4 Summary</h3>
+                    <ul>
+                        <li class="fragment fade-up"><strong>Colors:</strong> Use hex (#990147) for production code</li>
+                        <li class="fragment fade-up"><strong>Typography:</strong> Always provide font-family fallbacks</li>
+                        <li class="fragment fade-up"><strong>Polish:</strong> border-radius + box-shadow = instant professionalism</li>
+                    </ul>
+                    <div class="nb-callout nb-warning fragment fade-up" style="margin-bottom: 2em;">
+                        <span class="callout-icon">&#9888;</span>
+                        <span class="callout-text">Always check color contrast! Accessibility continues from HTML into CSS.</span>
+                    </div>
+                </section>
+            </section>
+
+            <!-- ===== CHEAT SHEET (ending) ===== -->
+            <section>
+                <!-- Cheat Sheet Slide 1: Rule Anatomy + Selectors -->
+                <section>
+                    <h2>Cheat Sheet</h2>
+                    <h3>CSS Rule &amp; Selectors</h3>
+                    <pre style="font-size: 0.8em;"><code data-trim class="language-css">
+selector { property: value; }
+                    </code></pre>
+                    <table>
+                        <thead>
+                            <tr><th>Selector</th><th>Syntax</th><th>Specificity</th></tr>
+                        </thead>
+                        <tbody>
+                            <tr><td>Element</td><td><code>p { }</code></td><td>0-0-1</td></tr>
+                            <tr><td>Class</td><td><code>.card { }</code></td><td>0-1-0</td></tr>
+                            <tr><td>ID</td><td><code>#main { }</code></td><td>1-0-0</td></tr>
+                            <tr><td>Pseudo-class</td><td><code>a:hover { }</code></td><td>0-1-1</td></tr>
+                        </tbody>
+                    </table>
+                    <p style="font-size: 0.55em; color: var(--nb-dim);">Higher specificity wins. Equal? Last rule wins (cascade).</p>
+                </section>
+
+                <!-- Cheat Sheet Slide 2: Box Model + Colors -->
+                <section>
+                    <h3>Box Model &amp; Colors</h3>
+                    <p style="font-size: 0.55em;">Content &#8594; Padding &#8594; Border &#8594; Margin</p>
+                    <pre style="font-size: 0.8em;"><code data-trim class="language-css">
+*, *::before, *::after { box-sizing: border-box; }
+                    </code></pre>
+                    <table>
+                        <thead>
+                            <tr><th>Format</th><th>Example</th></tr>
+                        </thead>
+                        <tbody>
+                            <tr><td>Named</td><td><code>color: red;</code></td></tr>
+                            <tr><td>Hex</td><td><code>color: #990147;</code></td></tr>
+                            <tr><td>RGB</td><td><code>color: rgb(153, 1, 71);</code></td></tr>
+                            <tr><td>RGBA</td><td><code>color: rgba(0,0,0,0.5);</code></td></tr>
+                        </tbody>
+                    </table>
+                    <p style="font-size: 0.5em;"><em>Full cheat sheet shared after class</em></p>
+                </section>
+            </section>
+
+            <!-- ===== ASSIGNMENT (ending) ===== -->
+            <section>
+                <h2>Home Assignment</h2>
+                <h3>Styled Contact Card</h3>
+                <ul style="font-size: 0.7em;">
+                    <li>Create your own styled contact card using CSS</li>
+                    <li>Must use element selectors, class selectors, and <code>:hover</code></li>
+                    <li>Demonstrate the Box Model (padding, margin, border)</li>
+                    <li>Apply <code>box-sizing: border-box</code> reset</li>
+                    <li>Use at least 3 colors in hex format</li>
+                    <li>Include one creative addition beyond what we covered</li>
+                </ul>
+                <p style="font-size: 0.6em;">Due: Before Lecture 4 | Submit via Google Classroom</p>
+                <p style="font-size: 0.55em; color: var(--nb-dim);">Total: 100 points | See assignment.md for full rubric</p>
+            </section>
+
+            <!-- ===== CLOSING ===== -->
+            <section>
+                <h2>Questions?</h2>
+                <p>Next Lecture: <strong>Modern Dashboard Layout</strong></p>
+                <p style="font-size: 0.7em; color: var(--nb-dim);">Flexbox &amp; CSS Grid &mdash; placing cards side by side!</p>
+                <br>
+                <p class="nexusberry-brand">NexusBerry Training and Solutions</p>
+                <p style="font-size: 0.7em;">
+                    www.nexusberry.com | admin@nexusberry.com<br>
+                    WhatsApp: 0328-4500073
+                </p>
+            </section>
+
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/reveal.js@5/dist/reveal.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/reveal.js@5/plugin/highlight/highlight.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/reveal.js@5/plugin/notes/notes.js"></script>
+    <script>
+        Reveal.initialize({
+            hash: true,
+            slideNumber: true,
+            transition: 'fade',
+            plugins: [RevealHighlight, RevealNotes]
+        });
+
+        // Add copy buttons to all code blocks
+        document.addEventListener('DOMContentLoaded', function() {
+            document.querySelectorAll('pre').forEach(function(pre) {
+                var btn = document.createElement('button');
+                btn.className = 'copy-btn';
+                btn.innerHTML = '&#128203;';
+                btn.title = 'Copy to clipboard';
+                btn.addEventListener('click', function() {
+                    var code = pre.querySelector('code');
+                    var text = code ? code.textContent : pre.textContent;
+                    navigator.clipboard.writeText(text).then(function() {
+                        btn.innerHTML = '&#9989;';
+                        btn.classList.add('copied');
+                        setTimeout(function() {
+                            btn.innerHTML = '&#128203;';
+                            btn.classList.remove('copied');
+                        }, 2000);
+                    });
+                });
+                pre.appendChild(btn);
+            });
+        });
+    </script>
+</body>
+</html>

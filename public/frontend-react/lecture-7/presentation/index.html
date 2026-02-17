@@ -1,0 +1,1113 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lecture 7: Advanced Tailwind &amp; Customization | NexusBerry Modern Frontend Course</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5/dist/reveal.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5/dist/theme/black.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5/plugin/highlight/monokai.css">
+    <style>
+        :root {
+            /* NexusBerry Brand Colors */
+            --nb-berry: #990147;
+            --nb-nexus: #0020C2;
+            --nb-berry-light: #E04A7A;
+            --nb-nexus-light: #4D70FF;
+            --nb-bg: #080D2B;
+            --nb-text: #F0F0F5;
+
+            /* Extended palette for infographics */
+            --nb-accent-green: #00C896;
+            --nb-accent-orange: #FF8C42;
+            --nb-accent-red: #FF4C6A;
+            --nb-accent-purple: #A855F7;
+            --nb-surface: #0F1642;
+            --nb-surface-2: #1A2258;
+            --nb-border: #2A3370;
+            --nb-dim: #6B7094;
+
+            /* Animation timing */
+            --nb-duration-fast: 0.3s;
+            --nb-duration-normal: 0.6s;
+            --nb-duration-slow: 0.9s;
+            --nb-ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .reveal {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        .reveal h1, .reveal h2, .reveal h3 {
+            color: var(--nb-berry-light);
+            text-transform: none;
+        }
+        .reveal .slide-background {
+            background-color: var(--nb-bg);
+        }
+        .reveal pre code {
+            font-size: 0.85em;
+            line-height: 1.4;
+            max-height: 500px;
+        }
+        .reveal .nexusberry-brand {
+            color: var(--nb-berry);
+            font-weight: bold;
+        }
+        .reveal .interactive-q-slide {
+            text-align: left;
+        }
+        .reveal .interactive-q-slide .options {
+            list-style: upper-alpha;
+            font-size: 0.9em;
+        }
+        .reveal .code-transition {
+            font-size: 1.5em;
+            color: var(--nb-berry-light);
+        }
+        .reveal .part-label {
+            font-size: 0.6em;
+            color: var(--nb-nexus-light);
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+        }
+        .reveal footer {
+            position: absolute;
+            bottom: 1em;
+            left: 1em;
+            font-size: 0.5em;
+            color: #8888AA;
+        }
+
+        /* ===== ANIMATION KEYFRAMES ===== */
+        @keyframes nb-rise { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes nb-slide-right { from { opacity: 0; transform: translateX(-30px); } to { opacity: 1; transform: translateX(0); } }
+        @keyframes nb-slide-left { from { opacity: 0; transform: translateX(30px); } to { opacity: 1; transform: translateX(0); } }
+        @keyframes nb-pop { from { opacity: 0; transform: scale(0.8); } to { opacity: 1; transform: scale(1); } }
+        @keyframes nb-draw-h { from { width: 0; } to { width: 100%; } }
+        @keyframes nb-draw-v { from { height: 0; } to { height: 100%; } }
+        @keyframes nb-pulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.05); } }
+        @keyframes nb-glow { 0%, 100% { box-shadow: 0 0 5px var(--nb-berry-light); } 50% { box-shadow: 0 0 20px var(--nb-berry-light); } }
+        @keyframes nb-fill-bar { from { width: 0; } }
+        @keyframes nb-highlight-correct { to { background: rgba(0,200,150,0.2); border-color: var(--nb-accent-green); } }
+        @keyframes nb-highlight-wrong { to { background: rgba(255,76,106,0.15); border-color: var(--nb-accent-red); } }
+
+        /* Animation utility classes */
+        .nb-anim-rise { animation: nb-rise var(--nb-duration-normal) var(--nb-ease-out) both; }
+        .nb-anim-pop { animation: nb-pop var(--nb-duration-normal) var(--nb-ease-out) both; }
+        .nb-anim-pulse { animation: nb-pulse 2s ease-in-out infinite; }
+        .nb-anim-glow { animation: nb-glow 2s ease-in-out infinite; }
+        .nb-delay-1 { animation-delay: 0.1s; } .nb-delay-2 { animation-delay: 0.2s; }
+        .nb-delay-3 { animation-delay: 0.3s; } .nb-delay-4 { animation-delay: 0.4s; }
+        .nb-delay-5 { animation-delay: 0.5s; } .nb-delay-6 { animation-delay: 0.6s; }
+        .nb-delay-7 { animation-delay: 0.7s; } .nb-delay-8 { animation-delay: 0.8s; }
+
+        /* ===== INFOGRAPHIC: Process Flow (Horizontal) ===== */
+        .nb-flow { display: flex; align-items: center; justify-content: center; gap: 0; flex-wrap: wrap; margin: 0.8em 0; }
+        .nb-flow-step { background: var(--nb-surface); border: 1px solid var(--nb-border); border-radius: 10px; padding: 0.5em 0.7em; text-align: center; min-width: 90px; flex-shrink: 1; }
+        .nb-flow-step .icon { font-size: 1.3em; display: block; margin-bottom: 0.2em; }
+        .nb-flow-step .label { font-size: 0.6em; font-weight: 600; color: var(--nb-text); }
+        .nb-flow-step .sublabel { font-size: 0.45em; color: var(--nb-dim); margin-top: 0.1em; }
+        .nb-flow-step.nb-active { border-color: var(--nb-berry-light); box-shadow: 0 0 12px rgba(224,74,122,0.3); }
+        .nb-flow-arrow { font-size: 1em; color: var(--nb-dim); padding: 0 0.2em; flex-shrink: 0; }
+
+        /* ===== INFOGRAPHIC: Process Flow (Vertical) ===== */
+        .nb-flow-v { display: flex; flex-direction: column; align-items: center; gap: 0; margin: 0.5em auto; max-width: 320px; }
+        .nb-flow-v .nb-flow-step { width: 100%; min-width: unset; padding: 0.4em 0.6em; }
+        .nb-flow-v .nb-flow-step .icon { font-size: 1.1em; margin-bottom: 0.1em; }
+        .nb-flow-v .nb-flow-step .label { font-size: 0.55em; }
+        .nb-flow-v .nb-flow-arrow { transform: rotate(90deg); padding: 0.1em 0; font-size: 0.8em; }
+
+        /* ===== INFOGRAPHIC: Comparison / Versus ===== */
+        .nb-compare { display: grid; grid-template-columns: 1fr auto 1fr; gap: 0.6em; align-items: start; margin: 0.6em 0; }
+        .nb-col-a, .nb-col-b { background: var(--nb-surface); border-radius: 10px; padding: 0.7em; border: 2px solid var(--nb-border); }
+        .nb-col-a { border-color: var(--nb-nexus-light); }
+        .nb-col-b { border-color: var(--nb-berry-light); }
+        .nb-col-a h4, .nb-col-b h4 { margin-top: 0; font-size: 0.75em; }
+        .nb-col-a p, .nb-col-b p { margin: 0.3em 0; }
+        .nb-vs { display: flex; align-items: center; font-size: 1.1em; font-weight: 700; color: var(--nb-dim); padding: 0 0.2em; }
+        .nb-winner { border-color: var(--nb-accent-green) !important; box-shadow: 0 0 15px rgba(0,200,150,0.25); }
+
+        /* ===== INFOGRAPHIC: Anatomy / Breakdown ===== */
+        .nb-anatomy { text-align: center; margin: 1em 0; }
+        .nb-anatomy pre { display: inline-block; text-align: left; }
+        .nb-anatomy .nb-callouts { display: flex; justify-content: center; gap: 1.5em; margin-top: 1em; flex-wrap: wrap; }
+        .nb-anatomy .nb-callout-item { font-size: 0.65em; display: flex; align-items: center; gap: 0.4em; }
+        .nb-anatomy .nb-dot { width: 10px; height: 10px; border-radius: 50%; display: inline-block; flex-shrink: 0; }
+        .nb-hl-1 { color: var(--nb-berry-light); } .nb-dot-1 { background: var(--nb-berry-light); }
+        .nb-hl-2 { color: var(--nb-nexus-light); } .nb-dot-2 { background: var(--nb-nexus-light); }
+        .nb-hl-3 { color: var(--nb-accent-green); } .nb-dot-3 { background: var(--nb-accent-green); }
+        .nb-hl-4 { color: var(--nb-accent-orange); } .nb-dot-4 { background: var(--nb-accent-orange); }
+
+        /* ===== INFOGRAPHIC: Timeline ===== */
+        .nb-timeline { display: flex; align-items: flex-start; justify-content: center; position: relative; margin: 2em 0; padding-top: 1.5em; }
+        .nb-timeline::before { content: ''; position: absolute; top: 1.5em; left: 10%; right: 10%; height: 3px; background: var(--nb-border); }
+        .nb-timeline-point { text-align: center; position: relative; z-index: 1; flex: 1; }
+        .nb-timeline-point .dot { width: 14px; height: 14px; border-radius: 50%; background: var(--nb-dim); margin: 0 auto 0.5em; border: 2px solid var(--nb-border); }
+        .nb-timeline-point .label { font-size: 0.65em; color: var(--nb-text); }
+        .nb-timeline-point .sublabel { font-size: 0.5em; color: var(--nb-dim); }
+        .nb-timeline-point.nb-current .dot { background: var(--nb-berry-light); border-color: var(--nb-berry-light); box-shadow: 0 0 10px rgba(224,74,122,0.4); }
+
+        /* ===== INFOGRAPHIC: Tree / Hierarchy ===== */
+        .nb-tree { display: flex; flex-direction: column; align-items: center; gap: 0; margin: 0.6em 0; }
+        .nb-tree-node { background: var(--nb-surface); border: 1px solid var(--nb-border); border-radius: 6px; padding: 0.4em 0.8em; font-size: 0.6em; text-align: center; position: relative; }
+        .nb-tree-node.nb-root { border-color: var(--nb-berry-light); font-weight: 600; }
+        .nb-tree-connector { width: 2px; height: 15px; background: var(--nb-border); }
+        .nb-tree-children { display: flex; gap: 1.5em; position: relative; padding-top: 15px; }
+        .nb-tree-children::before { content: ''; position: absolute; top: 0; left: calc(50% - 1px); width: 2px; height: 15px; background: var(--nb-border); display: none; }
+        .nb-tree-children > * { position: relative; }
+        .nb-tree-h-line { position: absolute; top: 0; height: 2px; background: var(--nb-border); }
+
+        /* ===== INFOGRAPHIC: Icon Cards ===== */
+        .nb-cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 0.7em; margin: 0.8em 0; }
+        .nb-card { background: var(--nb-surface); border: 1px solid var(--nb-border); border-radius: 10px; padding: 0.8em 0.7em; text-align: center; }
+        .nb-card .icon { font-size: 1.5em; display: block; margin-bottom: 0.2em; }
+        .nb-card .title { font-size: 0.65em; font-weight: 600; color: var(--nb-text); margin-bottom: 0.2em; }
+        .nb-card .desc { font-size: 0.5em; color: var(--nb-dim); line-height: 1.3; }
+        .nb-card-berry { border-color: var(--nb-berry-light); }
+        .nb-card-nexus { border-color: var(--nb-nexus-light); }
+        .nb-card-green { border-color: var(--nb-accent-green); }
+        .nb-card-orange { border-color: var(--nb-accent-orange); }
+
+        /* ===== INFOGRAPHIC: Stat Bars ===== */
+        .nb-stats { margin: 0.6em 0; }
+        .nb-stat { margin-bottom: 0.6em; }
+        .nb-stat .stat-header { display: flex; justify-content: space-between; font-size: 0.6em; margin-bottom: 0.2em; }
+        .nb-stat .stat-label { color: var(--nb-text); }
+        .nb-stat .stat-value { color: var(--nb-berry-light); font-weight: 700; }
+        .nb-stat .stat-track { height: 6px; background: var(--nb-surface); border-radius: 3px; overflow: hidden; }
+        .nb-stat .stat-fill { height: 100%; border-radius: 3px; background: linear-gradient(90deg, var(--nb-nexus-light), var(--nb-berry-light)); }
+        .present .nb-stat .stat-fill { animation: nb-fill-bar var(--nb-duration-slow) var(--nb-ease-out) both; }
+
+        /* ===== INFOGRAPHIC: Callout Boxes ===== */
+        .nb-callout { background: var(--nb-surface); border-left: 4px solid var(--nb-border); border-radius: 0 8px 8px 0; padding: 0.6em 0.8em; margin: 0.6em 0 1.5em 0; text-align: left; font-size: 0.65em; display: flex; align-items: flex-start; gap: 0.5em; }
+        .nb-callout .callout-icon { font-size: 1.1em; flex-shrink: 0; }
+        .nb-callout .callout-text { line-height: 1.4; }
+        .nb-tip { border-color: var(--nb-accent-green); }
+        .nb-warning { border-color: var(--nb-accent-orange); }
+        .nb-error { border-color: var(--nb-accent-red); }
+        .nb-pro { border-color: var(--nb-accent-purple); }
+
+        /* ===== COMPACT TABLES ===== */
+        .reveal table { font-size: 0.6em; margin: 0.5em auto; }
+        .reveal table th, .reveal table td { padding: 0.3em 0.6em; }
+        .reveal table code { font-size: 0.85em; }
+
+        /* ===== CODE BLOCK COPY BUTTON ===== */
+        .reveal pre { position: relative; }
+        .reveal pre code { padding-right: 2.5em; }
+        .copy-btn {
+            position: absolute;
+            top: 0.4em;
+            right: 0.4em;
+            background: var(--nb-surface-2);
+            border: 1px solid var(--nb-border);
+            border-radius: 4px;
+            padding: 0.3em 0.5em;
+            font-size: 0.7em;
+            color: var(--nb-dim);
+            cursor: pointer;
+            opacity: 0;
+            transition: opacity 0.2s, background 0.2s;
+            z-index: 10;
+        }
+        .reveal pre:hover .copy-btn { opacity: 1; }
+        .copy-btn:hover { background: var(--nb-border); color: var(--nb-text); }
+        .copy-btn.copied { background: var(--nb-accent-green); color: var(--nb-bg); }
+
+        /* ===== LOGO WATERMARK ===== */
+        .reveal .slides section:not(.stack)::after {
+            content: '';
+            position: absolute;
+            bottom: 10px;
+            right: 10px;
+            width: 120px;
+            height: 32px;
+            background: url('../../logo/nexusberry-logo-transparent-1712x450.png') no-repeat center / contain;
+            opacity: 0.35;
+            pointer-events: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="reveal">
+        <div class="slides">
+
+            <!-- ===== TITLE SLIDE ===== -->
+            <section>
+                <img src="../../../logo/nexusberry-logo-whitebg-1914x468.png"
+                     alt="NexusBerry Logo" style="width: 200px; margin-bottom: 0.5em; opacity: 0.9;">
+                <p class="part-label">NexusBerry Modern Frontend Course</p>
+                <h1>Lecture 7</h1>
+                <h2>Advanced Tailwind &amp; Customization</h2>
+                <p>By Rana M. Ajmal | February 2026</p>
+                <p style="font-size: 0.5em;">
+                    <a href="?print-pdf" target="_blank" style="color: var(--nb-dim);">Export PDF</a>
+                    &nbsp;|&nbsp;
+                    <a href="index.html" target="_blank" style="color: var(--nb-dim);">Open in Browser</a>
+                </p>
+                <footer>www.nexusberry.com</footer>
+            </section>
+
+            <!-- ===== TABLE OF CONTENTS ===== -->
+            <section>
+                <h2>Today's Agenda</h2>
+                <ol>
+                    <li class="fragment fade-up">Custom Theme with <code>@theme</code> Directive</li>
+                    <li class="fragment fade-up">Custom Fonts, Gradients &amp; Dark Mode Intro</li>
+                    <li class="fragment fade-up">Component Extraction with <code>@apply</code></li>
+                    <li class="fragment fade-up">Building the Complete Restaurant Menu</li>
+                </ol>
+                <div class="nb-callout nb-pro fragment fade-up" style="margin-top: 1em;">
+                    <span class="callout-icon">&#128142;</span>
+                    <span class="callout-text">Module 1 Finale &mdash; everything from Lectures 1&ndash;7 comes together in one project!</span>
+                </div>
+            </section>
+
+            <!-- ============================================================ -->
+            <!-- ===== PART 1: Custom Theme with @theme Directive ===== -->
+            <!-- ============================================================ -->
+            <section>
+
+                <!-- Part 1: Title -->
+                <section>
+                    <p class="part-label">Part 1</p>
+                    <h2>Custom Theme with <code>@theme</code></h2>
+                    <p style="font-size: 0.8em;">Your own brand colors &mdash; not amber-500 like everyone else</p>
+                </section>
+
+                <!-- Part 1: Comparison — Defaults vs Custom Brand -->
+                <section>
+                    <h3>Default Palette vs Custom Brand</h3>
+                    <div class="nb-compare">
+                        <div class="nb-col-a fragment fade-right">
+                            <h4>&#127912; Lecture 6 Defaults</h4>
+                            <p style="font-size:0.55em; color:var(--nb-dim);">amber-500, slate-900</p>
+                            <p style="font-size:0.55em; color:var(--nb-dim);">Every Tailwind project looks the same</p>
+                            <div style="display:flex;gap:0.3em;margin-top:0.4em;">
+                                <span style="width:28px;height:28px;border-radius:4px;background:#f59e0b;display:inline-block;"></span>
+                                <span style="width:28px;height:28px;border-radius:4px;background:#0f172a;display:inline-block;"></span>
+                                <span style="width:28px;height:28px;border-radius:4px;background:#1e293b;display:inline-block;"></span>
+                            </div>
+                        </div>
+                        <div class="nb-vs">VS</div>
+                        <div class="nb-col-b nb-winner fragment fade-left">
+                            <h4>&#11088; Custom Brand</h4>
+                            <p style="font-size:0.55em; color:var(--nb-dim);">maroon, sage, cream</p>
+                            <p style="font-size:0.55em; color:var(--nb-dim);">Unique restaurant identity</p>
+                            <div style="display:flex;gap:0.3em;margin-top:0.4em;">
+                                <span style="width:28px;height:28px;border-radius:4px;background:#8B1A1A;display:inline-block;"></span>
+                                <span style="width:28px;height:28px;border-radius:4px;background:#7C9070;display:inline-block;"></span>
+                                <span style="width:28px;height:28px;border-radius:4px;background:#FFF8F0;display:inline-block;border:1px solid #ccc;"></span>
+                            </div>
+                        </div>
+                    </div>
+                    <p class="fragment fade-up" style="font-size:0.6em; color:var(--nb-dim); margin-top:0.5em;">Same framework. Completely different impression.</p>
+                </section>
+
+                <!-- Part 1: Anatomy of @theme -->
+                <section>
+                    <h3>Anatomy of <code>@theme</code></h3>
+                    <div class="nb-anatomy">
+                        <pre><code data-trim data-noescape style="font-size:1em;">
+<span class="nb-hl-1">@theme</span> {
+    <span class="nb-hl-2">--color-</span><span class="nb-hl-3">brand</span>: <span class="nb-hl-4">#8B1A1A</span>;
+}
+                        </code></pre>
+                        <div class="nb-callouts fragment fade-up">
+                            <span class="nb-callout-item"><span class="nb-dot nb-dot-1"></span> Directive</span>
+                            <span class="nb-callout-item"><span class="nb-dot nb-dot-2"></span> Namespace prefix</span>
+                            <span class="nb-callout-item"><span class="nb-dot nb-dot-3"></span> Token name</span>
+                            <span class="nb-callout-item"><span class="nb-dot nb-dot-4"></span> Color value</span>
+                        </div>
+                    </div>
+                    <div class="nb-callout nb-tip fragment fade-up" style="margin-top:0.8em;">
+                        <span class="callout-icon">&#9889;</span>
+                        <span class="callout-text"><code>--color-brand</code> auto-generates: <code>bg-brand</code>, <code>text-brand</code>, <code>border-brand</code>, <code>ring-brand</code> &mdash; the entire utility ecosystem!</span>
+                    </div>
+                </section>
+
+                <!-- Part 1: Process Flow -->
+                <section>
+                    <h3>How <code>@theme</code> Works</h3>
+                    <div class="nb-flow">
+                        <div class="nb-flow-step fragment fade-up">
+                            <span class="icon">&#128221;</span>
+                            <span class="label">Define in @theme</span>
+                            <span class="sublabel">--color-sage: #7C9070</span>
+                        </div>
+                        <span class="nb-flow-arrow fragment fade-in">&#8594;</span>
+                        <div class="nb-flow-step fragment fade-up">
+                            <span class="icon">&#9881;</span>
+                            <span class="label">Tailwind Generates</span>
+                            <span class="sublabel">bg-sage, text-sage, ...</span>
+                        </div>
+                        <span class="nb-flow-arrow fragment fade-in">&#8594;</span>
+                        <div class="nb-flow-step fragment fade-up">
+                            <span class="icon">&#128187;</span>
+                            <span class="label">Use in HTML</span>
+                            <span class="sublabel">class="bg-sage"</span>
+                        </div>
+                        <span class="nb-flow-arrow fragment fade-in">&#8594;</span>
+                        <div class="nb-flow-step nb-active fragment fade-up">
+                            <span class="icon">&#128260;</span>
+                            <span class="label">Change Once</span>
+                            <span class="sublabel">Updates everywhere</span>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Part 1: CDN Setup Code -->
+                <section>
+                    <h3>CDN Setup with <code>@theme</code></h3>
+                    <pre><code class="html" data-trim data-noescape>
+&lt;script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"&gt;&lt;/script&gt;
+&lt;style type="text/tailwindcss"&gt;
+    @theme {
+        --color-brand: #8B1A1A;
+        --color-brand-light: #A52A2A;
+        --color-brand-dark: #6B1010;
+        --color-sage: #7C9070;
+        --color-cream: #FFF8F0;
+        --color-charcoal: #2C2C2C;
+        --color-warm-gray: #6B6360;
+    }
+&lt;/style&gt;
+                    </code></pre>
+                    <div class="nb-callout nb-warning fragment fade-up">
+                        <span class="callout-icon">&#9888;</span>
+                        <span class="callout-text">Must be <code>&lt;style type="text/tailwindcss"&gt;</code> &mdash; regular <code>&lt;style&gt;</code> won't process <code>@theme</code>!</span>
+                    </div>
+                </section>
+
+                <!-- Part 1: Code Transition -->
+                <section>
+                    <p class="code-transition">Let's build with custom colors!</p>
+                    <p>Switch to VS Code &mdash; restaurant project scaffold with <code>@theme</code></p>
+                </section>
+
+                <!-- Part 1: Interactive Q1 — Concept Check -->
+                <section class="interactive-q-slide">
+                    <h3>&#129300; Interactive Question</h3>
+                    <pre><code class="css" data-trim>
+@theme {
+    --color-sage: #7C9070;
+}
+                    </code></pre>
+                    <p>What does this single line do?</p>
+                    <ol class="options">
+                        <li class="fragment fade-up">Creates only a CSS variable named <code>--color-sage</code></li>
+                        <li class="fragment fade-up">Creates a CSS variable AND generates <code>bg-sage</code>, <code>text-sage</code>, <code>border-sage</code>, etc.</li>
+                        <li class="fragment fade-up">Replaces the default green color in Tailwind</li>
+                        <li class="fragment fade-up">Only works with npm, not CDN</li>
+                    </ol>
+                    <p class="fragment highlight-green" style="margin-top:0.5em; font-size:0.7em; color:var(--nb-accent-green);">&#9989; B) Variable + ALL utility classes &mdash; one line, unlimited utilities!</p>
+                </section>
+
+                <!-- Part 1: Interactive Q2 — Spot the Error -->
+                <section class="interactive-q-slide">
+                    <h3>&#128270; Spot the Error</h3>
+                    <pre><code class="css" data-trim>
+@theme {
+    color-brand: #8B1A1A;
+}
+                    </code></pre>
+                    <p>Why won't <code>bg-brand</code> work?</p>
+                    <ol class="options">
+                        <li class="fragment fade-up">The hex code is invalid</li>
+                        <li class="fragment fade-up">Missing <code>--</code> prefix &mdash; must be <code>--color-brand</code></li>
+                        <li class="fragment fade-up"><code>@theme</code> doesn't support colors</li>
+                        <li class="fragment fade-up">Need to use <code>rgb()</code> instead of hex</li>
+                    </ol>
+                    <p class="fragment highlight-green" style="margin-top:0.5em; font-size:0.7em; color:var(--nb-accent-green);">&#9989; B) CSS custom properties ALWAYS require the <code>--</code> prefix!</p>
+                </section>
+
+                <!-- Part 1: Interactive Q3 — Hidden Fact Reveal -->
+                <section>
+                    <h3>:root vs @theme</h3>
+                    <div class="nb-compare">
+                        <div class="nb-col-a fragment fade-right">
+                            <h4>Lecture 5: <code>:root</code></h4>
+                            <p style="font-size:0.5em;">Creates CSS variable</p>
+                            <p style="font-size:0.5em;">Use with <code>var(--brand)</code></p>
+                            <p style="font-size:0.5em; color:var(--nb-accent-red);">No Tailwind utilities</p>
+                        </div>
+                        <div class="nb-vs">VS</div>
+                        <div class="nb-col-b nb-winner fragment fade-left">
+                            <h4>Lecture 7: <code>@theme</code></h4>
+                            <p style="font-size:0.5em;">Creates CSS variable</p>
+                            <p style="font-size:0.5em;">Use with <code>var()</code> too</p>
+                            <p style="font-size:0.5em; color:var(--nb-accent-green);">+ ALL Tailwind utilities!</p>
+                        </div>
+                    </div>
+                    <div class="nb-callout nb-pro fragment fade-up" style="margin-top:0.6em;">
+                        <span class="callout-icon">&#128142;</span>
+                        <span class="callout-text"><code>@theme</code> is <code>:root</code> on steroids &mdash; it speaks Tailwind's language.</span>
+                    </div>
+                </section>
+
+                <!-- Part 1: Summary -->
+                <section>
+                    <h3>Part 1 Summary</h3>
+                    <ul>
+                        <li class="fragment fade-up"><strong>Common Mistake:</strong> Forgetting <code>type="text/tailwindcss"</code> on the style tag</li>
+                        <li class="fragment fade-up"><strong>Best Practice:</strong> Name tokens by purpose: <code>brand</code>, <code>sage</code> &mdash; not <code>dark-red</code></li>
+                        <li class="fragment fade-up"><strong>Pro Tip:</strong> Keep your palette to 5&ndash;7 colors for consistency</li>
+                    </ul>
+                </section>
+
+            </section>
+
+            <!-- ============================================================ -->
+            <!-- ===== PART 2: Custom Fonts, Gradients & Dark Mode ===== -->
+            <!-- ============================================================ -->
+            <section>
+
+                <!-- Part 2: Title -->
+                <section>
+                    <p class="part-label">Part 2</p>
+                    <h2>Custom Fonts, Gradients &amp; Dark Mode</h2>
+                    <p style="font-size: 0.8em;">Typography, color transitions, and light/dark palettes</p>
+                </section>
+
+                <!-- Part 2: Icon Cards — Three Concepts -->
+                <section>
+                    <h3>Three New Powers</h3>
+                    <div class="nb-cards">
+                        <div class="nb-card nb-card-berry fragment fade-up">
+                            <span class="icon">&#128221;</span>
+                            <span class="title">Custom Fonts</span>
+                            <span class="desc"><code>--font-*</code> namespace<br>Google Fonts + Tailwind</span>
+                        </div>
+                        <div class="nb-card nb-card-nexus fragment fade-up">
+                            <span class="icon">&#127912;</span>
+                            <span class="title">Gradients</span>
+                            <span class="desc"><code>bg-gradient-to-*</code><br>from, via, to color stops</span>
+                        </div>
+                        <div class="nb-card nb-card-green fragment fade-up">
+                            <span class="icon">&#127761;</span>
+                            <span class="title">Dark Mode</span>
+                            <span class="desc"><code>dark:</code> variant<br>Same brand, two contexts</span>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Part 2: Font Registration -->
+                <section>
+                    <h3>Custom Fonts in <code>@theme</code></h3>
+                    <pre><code class="css" data-trim data-noescape>
+@theme {
+    --font-display: 'Playfair Display', serif;
+    --font-body: 'Inter', sans-serif;
+}
+                    </code></pre>
+                    <pre class="fragment fade-up"><code class="html" data-trim>
+&lt;body class="font-body"&gt;           &lt;!-- Inter everywhere --&gt;
+&lt;h1 class="font-display"&gt;Title&lt;/h1&gt; &lt;!-- Playfair Display --&gt;
+                    </code></pre>
+                    <div class="nb-callout nb-pro fragment fade-up">
+                        <span class="callout-icon">&#128142;</span>
+                        <span class="callout-text">Typography is 90% of web design. System fonts = student project. Playfair Display = fine dining.</span>
+                    </div>
+                </section>
+
+                <!-- Part 2: Gradient Anatomy Flow -->
+                <section>
+                    <h3>Gradient Anatomy</h3>
+                    <div class="nb-flow">
+                        <div class="nb-flow-step fragment fade-up">
+                            <span class="icon">&#128204;</span>
+                            <span class="label">Direction</span>
+                            <span class="sublabel">to-br (diagonal)</span>
+                        </div>
+                        <span class="nb-flow-arrow fragment fade-in">&#8594;</span>
+                        <div class="nb-flow-step fragment fade-up" style="border-color:#8B1A1A;">
+                            <span class="icon">&#127752;</span>
+                            <span class="label">from-brand</span>
+                            <span class="sublabel">Start color</span>
+                        </div>
+                        <span class="nb-flow-arrow fragment fade-in">&#8594;</span>
+                        <div class="nb-flow-step fragment fade-up" style="border-color:#6B1010;">
+                            <span class="icon">&#127752;</span>
+                            <span class="label">via-brand-dark</span>
+                            <span class="sublabel">Middle color</span>
+                        </div>
+                        <span class="nb-flow-arrow fragment fade-in">&#8594;</span>
+                        <div class="nb-flow-step fragment fade-up" style="border-color:#2C2C2C;">
+                            <span class="icon">&#127752;</span>
+                            <span class="label">to-charcoal</span>
+                            <span class="sublabel">End color</span>
+                        </div>
+                    </div>
+                    <pre class="fragment fade-up"><code class="html" data-trim>
+&lt;section class="bg-gradient-to-br from-brand via-brand-dark to-charcoal"&gt;
+                    </code></pre>
+                </section>
+
+                <!-- Part 2: Light vs Dark Comparison -->
+                <section>
+                    <h3>Light Mode vs Dark Mode</h3>
+                    <div class="nb-compare">
+                        <div class="nb-col-a fragment fade-right">
+                            <h4>&#9728; Light Mode</h4>
+                            <p style="font-size:0.55em;"><code>bg-cream text-charcoal</code></p>
+                            <div style="background:#FFF8F0;color:#2C2C2C;padding:0.5em;border-radius:6px;font-size:0.5em;margin-top:0.3em;">
+                                <strong style="color:#8B1A1A;">Savory Bites</strong><br>Fine dining experience
+                            </div>
+                        </div>
+                        <div class="nb-vs">VS</div>
+                        <div class="nb-col-b fragment fade-left">
+                            <h4>&#127761; Dark Mode</h4>
+                            <p style="font-size:0.55em;"><code>dark:bg-charcoal dark:text-cream</code></p>
+                            <div style="background:#2C2C2C;color:#FFF8F0;padding:0.5em;border-radius:6px;font-size:0.5em;margin-top:0.3em;">
+                                <strong style="color:#A52A2A;">Savory Bites</strong><br>Fine dining experience
+                            </div>
+                        </div>
+                    </div>
+                    <p class="fragment fade-up" style="font-size:0.55em; color:var(--nb-dim);">Same brand, two contexts. Toggle needs JavaScript (Module 2).</p>
+                </section>
+
+                <!-- Part 2: Code Transition -->
+                <section>
+                    <p class="code-transition">Let's add fonts &amp; gradients!</p>
+                    <p>Switch to VS Code &mdash; Google Fonts, hero gradient, nav blur</p>
+                </section>
+
+                <!-- Part 2: Interactive Q4 — Predict Output -->
+                <section class="interactive-q-slide">
+                    <h3>&#129300; Predict the Output</h3>
+                    <pre><code class="css" data-trim>
+@theme {
+    --font-display: 'Playfair Display', serif;
+}
+                    </code></pre>
+                    <p>What Tailwind class applies this font?</p>
+                    <ol class="options">
+                        <li class="fragment fade-up"><code>font-playfair</code></li>
+                        <li class="fragment fade-up"><code>font-display</code></li>
+                        <li class="fragment fade-up"><code>text-display</code></li>
+                        <li class="fragment fade-up"><code>family-display</code></li>
+                    </ol>
+                    <p class="fragment highlight-green" style="margin-top:0.5em; font-size:0.7em; color:var(--nb-accent-green);">&#9989; B) <code>font-display</code> &mdash; same namespace pattern! <code>--font-*</code> &rarr; <code>font-*</code></p>
+                </section>
+
+                <!-- Part 2: Interactive Q5 — Concept Check -->
+                <section class="interactive-q-slide">
+                    <h3>&#129300; Concept Check</h3>
+                    <pre><code class="html" data-trim>
+&lt;section class="bg-gradient-to-br from-brand to-charcoal"&gt;
+                    </code></pre>
+                    <p>What does this create?</p>
+                    <ol class="options">
+                        <li class="fragment fade-up">Horizontal gradient, left to right</li>
+                        <li class="fragment fade-up">Diagonal gradient, top-left to bottom-right (brand &rarr; charcoal)</li>
+                        <li class="fragment fade-up">Solid brand color background</li>
+                        <li class="fragment fade-up">Radial gradient from center</li>
+                    </ol>
+                    <p class="fragment highlight-green" style="margin-top:0.5em; font-size:0.7em; color:var(--nb-accent-green);">&#9989; B) <code>to-br</code> = to bottom-right = diagonal gradient!</p>
+                </section>
+
+                <!-- Part 2: Interactive Q6 — Quick-Fire Namespace -->
+                <section>
+                    <h3>&#9889; Quick-Fire: Namespace Matching</h3>
+                    <table>
+                        <thead><tr><th><code>@theme</code> Variable</th><th>Tailwind Utility</th></tr></thead>
+                        <tbody>
+                            <tr class="fragment fade-up"><td><code>--color-sage</code></td><td><code>bg-sage</code>, <code>text-sage</code>, <code>border-sage</code></td></tr>
+                            <tr class="fragment fade-up"><td><code>--font-display</code></td><td><code>font-display</code></td></tr>
+                            <tr class="fragment fade-up"><td><code>--color-brand-light</code></td><td><code>bg-brand-light</code>, <code>text-brand-light</code></td></tr>
+                            <tr class="fragment fade-up"><td><code>--font-body</code></td><td><code>font-body</code></td></tr>
+                        </tbody>
+                    </table>
+                    <div class="nb-callout nb-tip fragment fade-up" style="margin-top:0.6em;">
+                        <span class="callout-icon">&#9889;</span>
+                        <span class="callout-text">Pattern: namespace prefix (<code>--color-</code>, <code>--font-</code>) becomes the utility prefix</span>
+                    </div>
+                </section>
+
+                <!-- Part 2: Summary -->
+                <section>
+                    <h3>Part 2 Summary</h3>
+                    <ul>
+                        <li class="fragment fade-up"><strong>Common Mistake:</strong> Forgetting Google Fonts <code>&lt;link&gt;</code> tags (font falls back to serif)</li>
+                        <li class="fragment fade-up"><strong>Best Practice:</strong> Two fonts &mdash; one display (headings), one body (text)</li>
+                        <li class="fragment fade-up"><strong>Pro Tip:</strong> Always add <code>via-*</code> for smoother gradients</li>
+                    </ul>
+                </section>
+
+            </section>
+
+            <!-- ============================================================ -->
+            <!-- ===== PART 3: Component Extraction with @apply ===== -->
+            <!-- ============================================================ -->
+            <section>
+
+                <!-- Part 3: Title -->
+                <section>
+                    <p class="part-label">Part 3</p>
+                    <h2>Component Extraction with <code>@apply</code></h2>
+                    <p style="font-size: 0.8em;">Stop repeating yourself &mdash; write once, use everywhere</p>
+                </section>
+
+                <!-- Part 3: The DRY Problem — Comparison -->
+                <section>
+                    <h3>The Repetition Problem</h3>
+                    <div class="nb-compare">
+                        <div class="nb-col-a fragment fade-right">
+                            <h4>&#10060; Without @apply</h4>
+                            <p style="font-size:0.5em;">15 classes &times; 6 cards</p>
+                            <p style="font-size:0.5em;color:var(--nb-accent-red);font-weight:600;">= 90 class instances</p>
+                            <p style="font-size:0.45em; color:var(--nb-dim);">Change hover? Edit 6 places.</p>
+                        </div>
+                        <div class="nb-vs">VS</div>
+                        <div class="nb-col-b nb-winner fragment fade-left">
+                            <h4>&#9989; With @apply</h4>
+                            <p style="font-size:0.5em;">1 <code>.menu-card</code> &times; 6</p>
+                            <p style="font-size:0.5em;color:var(--nb-accent-green);font-weight:600;">= 6 clean references</p>
+                            <p style="font-size:0.45em; color:var(--nb-dim);">Change hover? Edit 1 place.</p>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Part 3: Anatomy of @apply -->
+                <section>
+                    <h3>Anatomy of <code>@apply</code></h3>
+                    <div class="nb-anatomy">
+                        <pre><code data-trim data-noescape style="font-size:0.9em;">
+<span class="nb-hl-1">.menu-card</span> {
+    <span class="nb-hl-2">@apply</span> <span class="nb-hl-3">bg-white rounded-xl shadow-md overflow-hidden</span>
+           <span class="nb-hl-4">hover:-translate-y-1 hover:shadow-xl</span>
+           <span class="nb-hl-3">transition duration-300</span>;
+}
+                        </code></pre>
+                        <div class="nb-callouts fragment fade-up">
+                            <span class="nb-callout-item"><span class="nb-dot nb-dot-1"></span> Class name</span>
+                            <span class="nb-callout-item"><span class="nb-dot nb-dot-2"></span> @apply directive</span>
+                            <span class="nb-callout-item"><span class="nb-dot nb-dot-3"></span> Utility classes</span>
+                            <span class="nb-callout-item"><span class="nb-dot nb-dot-4"></span> Modifiers work too!</span>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Part 3: Vertical Flow — When to @apply -->
+                <section>
+                    <h3>The <code>@apply</code> Workflow</h3>
+                    <div class="nb-flow-v">
+                        <div class="nb-flow-step fragment fade-up">
+                            <span class="icon">&#128269;</span>
+                            <span class="label">Identify repeated pattern</span>
+                        </div>
+                        <span class="nb-flow-arrow fragment fade-in">&#8595;</span>
+                        <div class="nb-flow-step fragment fade-up">
+                            <span class="icon">&#128221;</span>
+                            <span class="label">Create named class</span>
+                        </div>
+                        <span class="nb-flow-arrow fragment fade-in">&#8595;</span>
+                        <div class="nb-flow-step fragment fade-up">
+                            <span class="icon">&#128296;</span>
+                            <span class="label">Use @apply with utilities</span>
+                        </div>
+                        <span class="nb-flow-arrow fragment fade-in">&#8595;</span>
+                        <div class="nb-flow-step fragment fade-up">
+                            <span class="icon">&#128187;</span>
+                            <span class="label">Apply class in HTML</span>
+                        </div>
+                        <span class="nb-flow-arrow fragment fade-in">&#8595;</span>
+                        <div class="nb-flow-step nb-active fragment fade-up">
+                            <span class="icon">&#128260;</span>
+                            <span class="label">Change once, updates everywhere</span>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Part 3: @apply Example Code -->
+                <section>
+                    <h3>Component Examples</h3>
+                    <pre><code class="css" data-trim style="font-size:0.75em;">
+/* Navigation */
+.nav-link {
+    @apply text-warm-gray text-sm uppercase tracking-widest
+           hover:text-brand transition duration-200;
+}
+
+/* Buttons */
+.btn-primary {
+    @apply bg-brand text-cream font-semibold py-3 px-8 rounded-lg
+           hover:bg-brand-light transition duration-300;
+}
+
+/* Badges — base + variants */
+.badge { @apply text-xs font-semibold px-3 py-1 rounded-full uppercase; }
+.badge-spicy { @apply bg-red-100 text-red-700; }
+.badge-veg { @apply bg-green-100 text-green-700; }
+                    </code></pre>
+                    <div class="nb-callout nb-warning fragment fade-up">
+                        <span class="callout-icon">&#9888;</span>
+                        <span class="callout-text"><strong>Rule of 3+:</strong> Only extract if a pattern repeats 3 or more times. Don't <code>@apply</code> everything!</span>
+                    </div>
+                </section>
+
+                <!-- Part 3: Code Transition -->
+                <section>
+                    <p class="code-transition">Let's extract components!</p>
+                    <p>Switch to VS Code &mdash; nav-link, menu-card, badges, buttons</p>
+                </section>
+
+                <!-- Part 3: Interactive Q7 — Concept Check -->
+                <section class="interactive-q-slide">
+                    <h3>&#129300; Concept Check</h3>
+                    <p>Can you use <code>hover:</code> modifiers inside <code>@apply</code>?</p>
+                    <ol class="options">
+                        <li class="fragment fade-up">No &mdash; modifiers only work on inline utility classes</li>
+                        <li class="fragment fade-up">Yes &mdash; ALL Tailwind modifiers work inside <code>@apply</code></li>
+                        <li class="fragment fade-up">Only <code>hover:</code>, not <code>focus:</code> or <code>md:</code></li>
+                        <li class="fragment fade-up">Only with the npm version, not CDN</li>
+                    </ol>
+                    <p class="fragment highlight-green" style="margin-top:0.5em; font-size:0.7em; color:var(--nb-accent-green);">&#9989; B) <code>hover:</code>, <code>focus:</code>, <code>md:</code>, <code>lg:</code>, <code>dark:</code> &mdash; all work inside <code>@apply</code>!</p>
+                </section>
+
+                <!-- Part 3: Interactive Q8 — Predict Output -->
+                <section class="interactive-q-slide">
+                    <h3>&#129300; Predict the Output</h3>
+                    <pre><code class="css" data-trim>
+.btn-primary {
+    @apply bg-brand text-cream py-3 px-8 rounded-lg;
+}
+                    </code></pre>
+                    <p>What HTML applies this?</p>
+                    <ol class="options">
+                        <li class="fragment fade-up"><code>&lt;button class="bg-brand text-cream py-3 px-8 rounded-lg"&gt;</code></li>
+                        <li class="fragment fade-up"><code>&lt;button class="btn-primary"&gt;Order Now&lt;/button&gt;</code></li>
+                        <li class="fragment fade-up"><code>&lt;button apply="btn-primary"&gt;</code></li>
+                        <li class="fragment fade-up"><code>&lt;button style="btn-primary"&gt;</code></li>
+                    </ol>
+                    <p class="fragment highlight-green" style="margin-top:0.5em; font-size:0.7em; color:var(--nb-accent-green);">&#9989; B) Just one class &mdash; all styles applied automatically!</p>
+                </section>
+
+                <!-- Part 3: Interactive Q9 — Quick-Fire When-to-@apply -->
+                <section>
+                    <h3>&#9889; When to <code>@apply</code>?</h3>
+                    <table>
+                        <thead><tr><th>Scenario</th><th>Decision</th></tr></thead>
+                        <tbody>
+                            <tr class="fragment fade-up"><td style="font-size:0.55em;">Nav link used 4+ times</td><td style="color:var(--nb-accent-green);">&#9989; @apply</td></tr>
+                            <tr class="fragment fade-up"><td style="font-size:0.55em;">Unique hero section padding</td><td style="color:var(--nb-accent-red);">&#10060; Keep utility</td></tr>
+                            <tr class="fragment fade-up"><td style="font-size:0.55em;">Menu card used 12 times</td><td style="color:var(--nb-accent-green);">&#9989; @apply</td></tr>
+                            <tr class="fragment fade-up"><td style="font-size:0.55em;">One-off text color</td><td style="color:var(--nb-accent-red);">&#10060; Keep utility</td></tr>
+                        </tbody>
+                    </table>
+                    <div class="nb-callout nb-tip fragment fade-up" style="margin-top:0.6em;">
+                        <span class="callout-icon">&#9889;</span>
+                        <span class="callout-text"><strong>Rule of 3+:</strong> Repeats 3 or more times? Extract. Otherwise, keep inline.</span>
+                    </div>
+                </section>
+
+                <!-- Part 3: Summary -->
+                <section>
+                    <h3>Part 3 Summary</h3>
+                    <ul>
+                        <li class="fragment fade-up"><strong>Common Mistake:</strong> Over-extracting &mdash; <code>.red-text { @apply text-red-500; }</code> is pointless</li>
+                        <li class="fragment fade-up"><strong>Best Practice:</strong> Name by purpose: <code>.nav-link</code>, <code>.menu-card</code> &mdash; not <code>.rounded-shadow-hover</code></li>
+                        <li class="fragment fade-up"><strong>Pro Tip:</strong> Base + variant pattern for families (<code>.badge</code> &rarr; <code>.badge-spicy</code>)</li>
+                    </ul>
+                </section>
+
+            </section>
+
+            <!-- ============================================================ -->
+            <!-- ===== PART 4: Building the Complete Restaurant Menu ===== -->
+            <!-- ============================================================ -->
+            <section>
+
+                <!-- Part 4: Title -->
+                <section>
+                    <p class="part-label">Part 4</p>
+                    <h2>Building the Complete Menu</h2>
+                    <p style="font-size: 0.8em;">Module 1 culmination &mdash; everything in one project</p>
+                </section>
+
+                <!-- Part 4: Page Architecture Tree -->
+                <section>
+                    <h3>Page Architecture</h3>
+                    <div class="nb-tree">
+                        <div class="nb-tree-node nb-root fragment fade-up">&#127860; Restaurant Menu</div>
+                        <div class="nb-tree-connector fragment fade-up"></div>
+                        <div class="nb-tree-children" style="flex-wrap:wrap; justify-content:center; gap:0.8em;">
+                            <div class="fragment fade-up" style="display:flex;flex-direction:column;align-items:center;">
+                                <div class="nb-tree-node" style="font-size:0.5em;">Nav<br><span style="color:var(--nb-dim);font-size:0.8em;">sticky + blur</span></div>
+                            </div>
+                            <div class="fragment fade-up" style="display:flex;flex-direction:column;align-items:center;">
+                                <div class="nb-tree-node" style="font-size:0.5em;">Hero<br><span style="color:var(--nb-dim);font-size:0.8em;">gradient bg</span></div>
+                            </div>
+                            <div class="fragment fade-up" style="display:flex;flex-direction:column;align-items:center;">
+                                <div class="nb-tree-node" style="font-size:0.5em;">Starters<br><span style="color:var(--nb-dim);font-size:0.8em;">@apply cards</span></div>
+                            </div>
+                            <div class="fragment fade-up" style="display:flex;flex-direction:column;align-items:center;">
+                                <div class="nb-tree-node" style="font-size:0.5em;">Mains<br><span style="color:var(--nb-dim);font-size:0.8em;">featured item</span></div>
+                            </div>
+                            <div class="fragment fade-up" style="display:flex;flex-direction:column;align-items:center;">
+                                <div class="nb-tree-node" style="font-size:0.5em;">Desserts<br><span style="color:var(--nb-dim);font-size:0.8em;">3-col grid</span></div>
+                            </div>
+                            <div class="fragment fade-up" style="display:flex;flex-direction:column;align-items:center;">
+                                <div class="nb-tree-node" style="font-size:0.5em;">CTA<br><span style="color:var(--nb-dim);font-size:0.8em;">gradient + btns</span></div>
+                            </div>
+                            <div class="fragment fade-up" style="display:flex;flex-direction:column;align-items:center;">
+                                <div class="nb-tree-node" style="font-size:0.5em;">Footer<br><span style="color:var(--nb-dim);font-size:0.8em;">3-col grid</span></div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Part 4: Featured Item Code -->
+                <section>
+                    <h3>Featured Item Layout</h3>
+                    <pre><code class="html" data-trim style="font-size:0.75em;">
+&lt;!-- Spans 2 columns, horizontal on desktop --&gt;
+&lt;div class="menu-card lg:col-span-2 lg:flex"&gt;
+    &lt;img src="..." class="menu-card-image lg:w-1/2 lg:h-auto"&gt;
+    &lt;div class="p-6 lg:p-8 flex flex-col justify-center"&gt;
+        &lt;span class="badge badge-popular w-fit mb-3"&gt;Chef's Special&lt;/span&gt;
+        &lt;h3 class="font-display text-2xl font-bold"&gt;...&lt;/h3&gt;
+        &lt;p class="text-warm-gray mb-4"&gt;...&lt;/p&gt;
+        &lt;span class="price-tag text-2xl"&gt;PKR 1,200&lt;/span&gt;
+    &lt;/div&gt;
+&lt;/div&gt;
+                    </code></pre>
+                    <div class="nb-callout nb-tip fragment fade-up">
+                        <span class="callout-icon">&#9889;</span>
+                        <span class="callout-text"><code>lg:col-span-2 lg:flex</code> &mdash; spans 2 grid columns AND becomes horizontal on desktop. Stacks on mobile.</span>
+                    </div>
+                </section>
+
+                <!-- Part 4: Override @apply Inline -->
+                <section>
+                    <h3>Overriding <code>@apply</code> with Inline</h3>
+                    <pre><code class="css" data-trim>
+/* @apply default: */
+.btn-primary { @apply bg-brand text-cream ...; }
+                    </code></pre>
+                    <pre class="fragment fade-up"><code class="html" data-trim>
+&lt;!-- Inline override for dark section: --&gt;
+&lt;button class="btn-primary bg-cream text-brand"&gt;
+    Book a Table
+&lt;/button&gt;
+                    </code></pre>
+                    <p class="fragment fade-up" style="font-size:0.65em; color:var(--nb-accent-green);">Inline utilities <strong>always override</strong> <code>@apply</code> defaults &mdash; the base + context pattern.</p>
+                </section>
+
+                <!-- Part 4: Code Transition -->
+                <section>
+                    <p class="code-transition">Let's complete the menu!</p>
+                    <p>Switch to VS Code &mdash; Mains, Desserts, CTA, Footer</p>
+                </section>
+
+                <!-- Part 4: Interactive Q10 — Predict Output -->
+                <section class="interactive-q-slide">
+                    <h3>&#129300; Predict the Output</h3>
+                    <pre><code class="css" data-trim>
+.menu-card { @apply bg-white ...; }
+                    </code></pre>
+                    <pre><code class="html" data-trim>
+&lt;div class="menu-card bg-sage"&gt;Special Card&lt;/div&gt;
+                    </code></pre>
+                    <p>What background color?</p>
+                    <ol class="options">
+                        <li class="fragment fade-up">White &mdash; <code>@apply</code> always wins</li>
+                        <li class="fragment fade-up">Sage &mdash; inline utilities override <code>@apply</code></li>
+                        <li class="fragment fade-up">Both colors mixed together</li>
+                        <li class="fragment fade-up">Error &mdash; can't mix <code>@apply</code> and inline</li>
+                    </ol>
+                    <p class="fragment highlight-green" style="margin-top:0.5em; font-size:0.7em; color:var(--nb-accent-green);">&#9989; B) Sage! Inline utilities override <code>@apply</code> defaults.</p>
+                </section>
+
+                <!-- Part 4: Interactive Q11 — Concept Check -->
+                <section class="interactive-q-slide">
+                    <h3>&#129300; What Makes This "Advanced"?</h3>
+                    <p>Compared to Lecture 6's landing page, what's different?</p>
+                    <ol class="options">
+                        <li class="fragment fade-up">More HTML elements</li>
+                        <li class="fragment fade-up">Custom brand colors (<code>@theme</code>), custom fonts, reusable components (<code>@apply</code>), gradients &mdash; a complete design system</li>
+                        <li class="fragment fade-up">Using a different Tailwind version</li>
+                        <li class="fragment fade-up">More CSS classes per element</li>
+                    </ol>
+                    <p class="fragment highlight-green" style="margin-top:0.5em; font-size:0.7em; color:var(--nb-accent-green);">&#9989; B) A branded design system &mdash; not just default utilities!</p>
+                </section>
+
+                <!-- Part 4: Module 1 Progress Stats -->
+                <section>
+                    <h3>Module 1 Complete! &#127881;</h3>
+                    <div class="nb-stats">
+                        <div class="nb-stat fragment fade-up">
+                            <div class="stat-header"><span class="stat-label">HTML Structure</span><span class="stat-value">100%</span></div>
+                            <div class="stat-track"><div class="stat-fill" style="width:100%;"></div></div>
+                        </div>
+                        <div class="nb-stat fragment fade-up">
+                            <div class="stat-header"><span class="stat-label">CSS Fundamentals</span><span class="stat-value">100%</span></div>
+                            <div class="stat-track"><div class="stat-fill" style="width:100%;"></div></div>
+                        </div>
+                        <div class="nb-stat fragment fade-up">
+                            <div class="stat-header"><span class="stat-label">Responsive Design</span><span class="stat-value">100%</span></div>
+                            <div class="stat-track"><div class="stat-fill" style="width:100%;"></div></div>
+                        </div>
+                        <div class="nb-stat fragment fade-up">
+                            <div class="stat-header"><span class="stat-label">Tailwind Basics</span><span class="stat-value">100%</span></div>
+                            <div class="stat-track"><div class="stat-fill" style="width:100%;"></div></div>
+                        </div>
+                        <div class="nb-stat fragment fade-up">
+                            <div class="stat-header"><span class="stat-label">Tailwind Customization</span><span class="stat-value">100%</span></div>
+                            <div class="stat-track"><div class="stat-fill" style="width:100%;"></div></div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Part 4: Interactive Q12 — Module Journey Reveal -->
+                <section>
+                    <h3>Your Module 1 Journey</h3>
+                    <div class="nb-timeline">
+                        <div class="nb-timeline-point fragment fade-up">
+                            <div class="dot"></div>
+                            <span class="label">L1</span>
+                            <span class="sublabel">Blog Article</span>
+                        </div>
+                        <div class="nb-timeline-point fragment fade-up">
+                            <div class="dot"></div>
+                            <span class="label">L2</span>
+                            <span class="sublabel">Portfolio</span>
+                        </div>
+                        <div class="nb-timeline-point fragment fade-up">
+                            <div class="dot"></div>
+                            <span class="label">L3</span>
+                            <span class="sublabel">Business Card</span>
+                        </div>
+                        <div class="nb-timeline-point fragment fade-up">
+                            <div class="dot"></div>
+                            <span class="label">L4</span>
+                            <span class="sublabel">Dashboard</span>
+                        </div>
+                        <div class="nb-timeline-point fragment fade-up">
+                            <div class="dot"></div>
+                            <span class="label">L5</span>
+                            <span class="sublabel">Auto Dealer</span>
+                        </div>
+                        <div class="nb-timeline-point fragment fade-up">
+                            <div class="dot"></div>
+                            <span class="label">L6</span>
+                            <span class="sublabel">Landing Page</span>
+                        </div>
+                        <div class="nb-timeline-point nb-current fragment fade-up">
+                            <div class="dot"></div>
+                            <span class="label">L7</span>
+                            <span class="sublabel">Restaurant!</span>
+                        </div>
+                    </div>
+                    <div class="nb-callout nb-pro fragment fade-up" style="margin-top:0.6em;">
+                        <span class="callout-icon">&#128142;</span>
+                        <span class="callout-text">7 lectures. Zero to production-quality websites you can sell.</span>
+                    </div>
+                </section>
+
+                <!-- Part 4: Summary -->
+                <section>
+                    <h3>Part 4 Summary</h3>
+                    <ul>
+                        <li class="fragment fade-up"><strong>Common Mistake:</strong> Inconsistent section padding across the page</li>
+                        <li class="fragment fade-up"><strong>Best Practice:</strong> <code>.btn-primary</code> + <code>.btn-outline</code> for CTA pairs</li>
+                        <li class="fragment fade-up"><strong>Pro Tip:</strong> Restaurant digital menus = real freelance money in Pakistan &#128176;</li>
+                    </ul>
+                </section>
+
+            </section>
+
+            <!-- ============================================================ -->
+            <!-- ===== CHEAT SHEET (ending) ===== -->
+            <!-- ============================================================ -->
+            <section>
+                <h2>Cheat Sheet</h2>
+                <table style="font-size:0.5em;">
+                    <thead><tr><th>Concept</th><th>Syntax</th></tr></thead>
+                    <tbody>
+                        <tr><td>Custom color</td><td><code>@theme { --color-brand: #HEX; }</code> &rarr; <code>bg-brand</code></td></tr>
+                        <tr><td>Custom font</td><td><code>@theme { --font-display: 'Font', serif; }</code> &rarr; <code>font-display</code></td></tr>
+                        <tr><td>Extract component</td><td><code>.nav-link { @apply ...; }</code></td></tr>
+                        <tr><td>Gradient</td><td><code>bg-gradient-to-br from-brand via-* to-charcoal</code></td></tr>
+                        <tr><td>Dark mode</td><td><code>dark:bg-charcoal dark:text-cream</code></td></tr>
+                        <tr><td>Override @apply</td><td>Inline utility wins: <code>class="btn-primary bg-cream"</code></td></tr>
+                        <tr><td>Badge pattern</td><td><code>.badge</code> base + <code>.badge-spicy</code> variant &rarr; HTML: <code>&lt;span class="badge badge-spicy"&gt;</code></td></tr>
+                        <tr><td>When to extract</td><td>Rule of 3+ repetitions</td></tr>
+                    </tbody>
+                </table>
+                <p style="font-size:0.55em; color:var(--nb-dim); margin-top:0.5em;"><em>Full cheat sheet shared after class</em></p>
+            </section>
+
+            <!-- ===== ASSIGNMENT (ending) ===== -->
+            <section>
+                <h2>Home Assignment</h2>
+                <h3>Branded Restaurant Website</h3>
+                <ul style="font-size: 0.7em;">
+                    <li><code>@theme</code> custom colors (5+ brand colors) &mdash; 15 pts</li>
+                    <li>Custom fonts (2 Google Fonts) &mdash; 10 pts</li>
+                    <li><code>@apply</code> components (4+ classes) &mdash; 15 pts</li>
+                    <li>Responsive layout + gradients &mdash; 20 pts</li>
+                    <li>Menu cards, badges, semantic HTML &mdash; 25 pts</li>
+                    <li>Visual quality + creative addition &mdash; 15 pts</li>
+                </ul>
+                <p style="font-size: 0.65em;">Total: <strong>100 points</strong> | Due: Before next lecture | Submit via Google Classroom</p>
+                <div class="nb-callout nb-tip" style="margin-top: 0.5em;">
+                    <span class="callout-icon">&#9889;</span>
+                    <span class="callout-text">Use a DIFFERENT restaurant concept than Savory Bites &mdash; your own name, cuisine, and color scheme!</span>
+                </div>
+            </section>
+
+            <!-- ===== CLOSING ===== -->
+            <section>
+                <h2>Module 1 Complete! &#127881;</h2>
+                <p style="font-size: 0.8em;">Next up: <strong>Module Assignment &mdash; Fashion E-commerce Homepage</strong></p>
+                <p style="font-size: 0.7em; color: var(--nb-dim);">Combines everything from Lectures 1&ndash;7</p>
+                <br>
+                <p style="font-size: 0.8em;">Then: <strong>Module 2 &mdash; JavaScript</strong></p>
+                <p style="font-size: 0.65em; color: var(--nb-dim);">Your pages are beautiful but they don't DO anything yet.<br>JavaScript brings them to <strong>life</strong>.</p>
+                <br>
+                <p class="nexusberry-brand">NexusBerry Training and Solutions</p>
+                <p style="font-size: 0.7em;">
+                    www.nexusberry.com | admin@nexusberry.com<br>
+                    WhatsApp: 0328-4500073
+                </p>
+            </section>
+
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/reveal.js@5/dist/reveal.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/reveal.js@5/plugin/highlight/highlight.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/reveal.js@5/plugin/notes/notes.js"></script>
+    <script>
+        Reveal.initialize({
+            hash: true,
+            slideNumber: true,
+            transition: 'fade',
+            plugins: [RevealHighlight, RevealNotes]
+        });
+
+        // Add copy buttons to all code blocks
+        document.addEventListener('DOMContentLoaded', function() {
+            document.querySelectorAll('pre').forEach(function(pre) {
+                var btn = document.createElement('button');
+                btn.className = 'copy-btn';
+                btn.innerHTML = '&#128203;';
+                btn.title = 'Copy to clipboard';
+                btn.addEventListener('click', function() {
+                    var code = pre.querySelector('code');
+                    var text = code ? code.textContent : pre.textContent;
+                    navigator.clipboard.writeText(text).then(function() {
+                        btn.innerHTML = '&#9989;';
+                        btn.classList.add('copied');
+                        setTimeout(function() {
+                            btn.innerHTML = '&#128203;';
+                            btn.classList.remove('copied');
+                        }, 2000);
+                    });
+                });
+                pre.appendChild(btn);
+            });
+        });
+    </script>
+</body>
+</html>
