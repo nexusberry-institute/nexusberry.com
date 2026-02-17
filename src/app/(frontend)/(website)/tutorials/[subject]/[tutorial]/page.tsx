@@ -4,11 +4,10 @@ import { unstable_cache } from 'next/cache'
 import Link from 'next/link'
 import type { Metadata } from 'next/types'
 import ErrorCard from '../../../_components/ErrorCard'
-import RichText from '@/components/RichText'
 import { getServerSideURL } from '@/utilities/getURL'
+import TutorialTabs from './_components/TutorialTabs'
 import { mergeOpenGraph } from '@/utilities/mergeOpenGraph'
 
-export const dynamic = 'force-static'
 export const revalidate = 600
 
 type TutorialSubject = {
@@ -40,32 +39,14 @@ const queryTutorialBySlug = (slug: string) =>
       const result = await payload.find({
         collection: 'tutorials',
         where: { slug: { equals: slug } },
-        depth: 1,
+        depth: 2,
         limit: 1,
       })
       return result.docs[0] || null
     },
     [`tutorial-${slug}`],
-    { tags: ['tutorials'] },
+    { tags: [`tutorial-${slug}`] },
   )()
-
-export async function generateStaticParams() {
-  const payload = await getPayload({ config: configPromise })
-  const result = await payload.find({
-    collection: 'tutorials',
-    pagination: false,
-    limit: 1000,
-    depth: 1,
-    select: { slug: true, subject: true },
-  })
-
-  return result.docs
-    .filter((doc) => doc.slug && doc.subject && typeof doc.subject === 'object')
-    .map((doc) => ({
-      subject: (doc.subject as TutorialSubject).slug || String((doc.subject as TutorialSubject).id),
-      tutorial: doc.slug!,
-    }))
-}
 
 export async function generateMetadata({
   params: paramsPromise,
@@ -334,12 +315,14 @@ export default async function TutorialPage({
           </section>
         )}
 
-        {/* Rich Text Content */}
-        {tutorial.content && (
-          <section className="padding-x max-w-4xl mx-auto pb-16 md:pb-20">
-            <RichText data={tutorial.content} enableGutter={false} />
-          </section>
-        )}
+        {/* Tabbed Content */}
+        <TutorialTabs
+          content={tutorial.content ?? null}
+          quiz={typeof tutorial.quiz === 'object' ? tutorial.quiz : null}
+          assignment={tutorial.assignment ?? null}
+          codeUrl={tutorial.codeUrl ?? null}
+          presentationUrl={tutorial.presentationUrl ?? null}
+        />
 
         {/* Back Navigation */}
         <section className="padding-x max-w-4xl mx-auto pb-12">

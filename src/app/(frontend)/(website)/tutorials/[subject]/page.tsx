@@ -7,7 +7,6 @@ import ErrorCard from '../../_components/ErrorCard'
 import { getServerSideURL } from '@/utilities/getURL'
 import { mergeOpenGraph } from '@/utilities/mergeOpenGraph'
 
-export const dynamic = 'force-static'
 export const revalidate = 600
 
 const querySubjectBySlug = (slug: string) =>
@@ -41,19 +40,8 @@ const queryTutorialsBySubject = (subjectId: number) =>
       return result.docs
     },
     [`tutorials-by-subject-${subjectId}`],
-    { tags: ['tutorials'] },
+    { tags: [`tutorials-subject-${subjectId}`] },
   )()
-
-export async function generateStaticParams() {
-  const payload = await getPayload({ config: configPromise })
-  const result = await payload.find({
-    collection: 'tutorial-subjects',
-    pagination: false,
-    limit: 100,
-    select: { slug: true },
-  })
-  return result.docs.map((doc) => ({ subject: doc.slug || String(doc.id) }))
-}
 
 export async function generateMetadata({
   params: paramsPromise,

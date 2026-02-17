@@ -1,5 +1,6 @@
 import type { CollectionConfig } from "payload";
 import { slugField } from '@/fields/slug'
+import { revalidateTutorial, revalidateDeleteTutorial } from './hooks/revalidateTutorial'
 
 export const Tutorials: CollectionConfig = {
   slug: 'tutorials',
@@ -7,6 +8,10 @@ export const Tutorials: CollectionConfig = {
     useAsTitle: 'title',
     description: 'Tutorials of All Subjects',
     group: "Classwork",
+  },
+  hooks: {
+    afterChange: [revalidateTutorial],
+    afterDelete: [revalidateDeleteTutorial],
   },
   fields: [
     {
@@ -38,38 +43,97 @@ export const Tutorials: CollectionConfig = {
       },
     },
     {
-      name: 'videoSource',
-      type: 'select',
-      label: 'Video Source',
-      defaultValue: 'youtube',
-      options: [
-        { label: 'YouTube', value: 'youtube' },
-        { label: 'Bunny CDN', value: 'bunny' },
+      type: 'tabs',
+      tabs: [
+        {
+          label: 'Video',
+          fields: [
+            {
+              name: 'videoSource',
+              type: 'select',
+              label: 'Video Source',
+              defaultValue: 'youtube',
+              options: [
+                { label: 'YouTube', value: 'youtube' },
+                { label: 'Bunny CDN', value: 'bunny' },
+              ],
+            },
+            {
+              name: 'youtubeUrl',
+              type: 'text',
+              label: 'YouTube Video URL',
+              admin: {
+                placeholder: 'https://www.youtube.com/watch?v=...',
+                condition: (_, siblingData) => siblingData?.videoSource === 'youtube',
+              },
+            },
+            {
+              name: 'bunnyVideoId',
+              type: 'text',
+              label: 'Bunny CDN Video ID',
+              admin: {
+                placeholder: 'e.g. abc123-def456',
+                description: 'The video ID from your Bunny CDN library',
+                condition: (_, siblingData) => siblingData?.videoSource === 'bunny',
+              },
+            },
+          ],
+        },
+        {
+          label: 'Cheatsheet',
+          fields: [
+            {
+              name: 'content',
+              type: 'richText',
+              label: 'Tutorial Content',
+            },
+          ],
+        },
+        {
+          label: 'Quiz',
+          fields: [
+            {
+              name: 'quiz',
+              type: 'relationship',
+              relationTo: 'quizzes',
+              label: 'Quiz',
+            },
+          ],
+        },
+        {
+          label: 'Assignment',
+          fields: [
+            {
+              name: 'assignment',
+              type: 'richText',
+              label: 'Assignment Content',
+            },
+          ],
+        },
+        {
+          label: 'Resources',
+          fields: [
+            {
+              name: 'codeUrl',
+              type: 'text',
+              label: 'Code URL',
+              admin: {
+                placeholder: 'https://codesandbox.io/... or https://github.com/...',
+                description: 'Link to CodeSandbox, StackBlitz, CodePen, or GitHub repository',
+              },
+            },
+            {
+              name: 'presentationUrl',
+              type: 'text',
+              label: 'Presentation URL',
+              admin: {
+                placeholder: 'https://docs.google.com/presentation/d/.../edit',
+                description: 'Link to Google Slides or other presentation',
+              },
+            },
+          ],
+        },
       ],
-    },
-    {
-      name: 'youtubeUrl',
-      type: 'text',
-      label: 'YouTube Video URL',
-      admin: {
-        placeholder: 'https://www.youtube.com/watch?v=...',
-        condition: (_, siblingData) => siblingData?.videoSource === 'youtube',
-      },
-    },
-    {
-      name: 'bunnyVideoId',
-      type: 'text',
-      label: 'Bunny CDN Video ID',
-      admin: {
-        placeholder: 'e.g. abc123-def456',
-        description: 'The video ID from your Bunny CDN library',
-        condition: (_, siblingData) => siblingData?.videoSource === 'bunny',
-      },
-    },
-    {
-      name: 'content',
-      type: 'richText',
-      label: 'Tutorial Content',
     },
   ]
 }

@@ -2065,6 +2065,30 @@ export interface Tutorial {
     };
     [k: string]: unknown;
   } | null;
+  quiz?: (number | null) | Quiz;
+  assignment?: {
+    root: {
+      type: string;
+      children: {
+        type: any;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  } | null;
+  /**
+   * Link to CodeSandbox, StackBlitz, CodePen, or GitHub repository
+   */
+  codeUrl?: string | null;
+  /**
+   * Link to Google Slides or other presentation
+   */
+  presentationUrl?: string | null;
   updatedAt: string;
   createdAt: string;
 }
@@ -3464,6 +3488,10 @@ export interface TutorialsSelect<T extends boolean = true> {
   youtubeUrl?: T;
   bunnyVideoId?: T;
   content?: T;
+  quiz?: T;
+  assignment?: T;
+  codeUrl?: T;
+  presentationUrl?: T;
   updatedAt?: T;
   createdAt?: T;
 }

@@ -5,7 +5,6 @@ import Link from 'next/link'
 import type { Metadata } from 'next/types'
 import ErrorCard from '../_components/ErrorCard'
 
-export const dynamic = 'force-static'
 export const revalidate = 600
 
 const queryTutorialsData = unstable_cache(
@@ -36,7 +35,7 @@ const queryTutorialsData = unstable_cache(
     }
   },
   ['tutorials-listing'],
-  { tags: ['tutorials', 'tutorial-subjects'] },
+  { tags: ['tutorials-listing'] },
 )
 
 export default async function TutorialsPage() {
