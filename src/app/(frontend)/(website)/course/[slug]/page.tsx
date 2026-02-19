@@ -1,7 +1,7 @@
-import React, { cache } from 'react'
 import type { Metadata } from 'next'
 import { getPayload } from 'payload'
 import configPromise from '@payload-config'
+import { unstable_cache } from 'next/cache'
 import { PayloadRedirects } from '@/components/PayloadRedirects'
 import { generateMeta } from '@/utilities/generateMeta'
 import ErrorCard from '../../_components/ErrorCard'
@@ -9,24 +9,11 @@ import View1 from './style-1/view1'
 // import View2 from './style-2/view2'
 // import View3 from './style-3/view3'
 
-export const revalidate = 86400 // 24 hours in seconds
+export const revalidate = false
 
-// export async function generateStaticParams() {
-//   const payload = await getPayload({ config: configPromise })
-//   const courses = await payload.find({
-//     collection: 'web-courses',
-//     limit: 1000,
-//     pagination: false,
-//     select: {
-//       slug: true,
-//     },
-//   })
-
-//   const params = courses.docs.map(({ slug }) => {
-//     return { slug }
-//   })
-//   return params
-// }
+export async function generateStaticParams() {
+  return []
+}
 
 type Props = {
   params: Promise<{
@@ -38,7 +25,7 @@ export default async function Course({ params }: Props) {
   const { slug = '' } = await params
 
   try {
-    const course = await queryCourseBySlug({ slug })
+    const course = await queryCourseBySlug(slug)
     if (!course) {
       return <PayloadRedirects url={'/course/' + slug} />
     }
@@ -55,23 +42,28 @@ export default async function Course({ params }: Props) {
 
 export async function generateMetadata({ params: paramsPromise }: Props): Promise<Metadata> {
   const { slug = '' } = await paramsPromise
-  const course = await queryCourseBySlug({ slug })
+  const course = await queryCourseBySlug(slug)
   return generateMeta({ doc: course })
 }
 
-const queryCourseBySlug = cache(async ({ slug }: { slug: string }) => {
-  const payload = await getPayload({ config: configPromise })
-  const result = await payload.find({
-    collection: 'web-courses',
-    limit: 1,
-    pagination: false,
-    sort: 'orderInCourses',
-    where: {
-      slug: {
-        equals: slug,
-      },
-    },
-  })
+const queryCourseBySlug = (slug: string) =>
+  unstable_cache(
+    async () => {
+      const payload = await getPayload({ config: configPromise })
+      const result = await payload.find({
+        collection: 'web-courses',
+        limit: 1,
+        pagination: false,
+        sort: 'orderInCourses',
+        where: {
+          slug: {
+            equals: slug,
+          },
+        },
+      })
 
-  return result.docs?.[0] || null
-})
+      return result.docs?.[0] || null
+    },
+    [`course-${slug}`],
+    { tags: [`course-${slug}`] },
+  )()

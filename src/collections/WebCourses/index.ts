@@ -11,7 +11,7 @@ export const WebCourses: CollectionConfig = {
     listSearchableFields: ["title", "slug"],
   },
   hooks: {
-    // afterChange: [revalidateCourses],
+    afterChange: [revalidateCourses],
     afterDelete: [revalidateDelete]
   },
   fields: [

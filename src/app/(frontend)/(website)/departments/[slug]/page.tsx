@@ -3,34 +3,64 @@ import type { Metadata } from 'next'
 import Link from 'next/link'
 import configPromise from '@payload-config'
 import { getPayload } from 'payload'
-import React, { cache } from 'react'
+import React from 'react'
+import { unstable_cache } from 'next/cache'
 import { generateMeta } from '@/utilities/generateMeta'
 import ErrorCard from '../../_components/ErrorCard'
 
-export const revalidate = 86400 // 24 hours in seconds
+export const revalidate = false
 
-// export async function generateStaticParams() {
-//   const payload = await getPayload({ config: configPromise })
-//   const departments = await payload.find({
-//     collection: 'departments',
-//     limit: 250,
-//     depth: 4,
-//     select: {
-//       slug: true,
-//     },
-//   })
+export async function generateStaticParams() {
+  return []
+}
 
-//   const params = departments.docs.map(({ slug }) => {
-//     return { slug }
-//   })
+// Cached query for department by slug
+const queryDepartmentBySlug = (slug: string) =>
+  unstable_cache(
+    async () => {
+      const payload = await getPayload({ config: configPromise })
+      const result = await payload.find({
+        collection: 'departments',
+        depth: 4,
+        limit: 250,
+        select: {
+          title: true,
+          slug: true,
+          relatedCourses: true,
+        },
+        joins: {
+          relatedCourses: {
+            sort: 'orderInCourses',
+          },
+        },
+        populate: {
+          "web-courses": {
+            title: true,
+            slug: true,
+            image: true,
+            difficultyLevel: true,
+            price: true,
+            subTitle: true,
+            duration: true,
+          },
+        },
+        where: {
+          slug: {
+            equals: slug,
+          },
+        },
+      })
 
-//   return params
-// }
+      return result.docs || null
+    },
+    [`department-${slug}`],
+    { tags: [`department-${slug}`, 'departments-listing'] },
+  )()
 
 export default async function page({ params }: { params: Promise<{ slug: string }> }) {
   try {
     const { slug } = await params
-    const departments = await queryDepartmentBySlug({ slug })
+    const departments = await queryDepartmentBySlug(slug)
 
     if (!departments.length) {
       return (
@@ -72,44 +102,6 @@ export async function generateMetadata({ params: paramsPromise }: {
   params: Promise<{ slug: string }>
 }): Promise<Metadata> {
   const { slug = '' } = await paramsPromise
-  const departments = await queryDepartmentBySlug({ slug })
+  const departments = await queryDepartmentBySlug(slug)
   return generateMeta({ doc: departments[0] })
 }
-
-const queryDepartmentBySlug = cache(async ({ slug }: { slug: string }) => {
-  const payload = await getPayload({ config: configPromise })
-  const result = await payload.find({
-    collection: 'departments',
-    depth: 4,
-    limit: 250,
-    select: {
-      title: true,
-      slug: true,
-      relatedCourses: true,
-    },
-    joins: {
-      relatedCourses: {
-        sort: 'orderInCourses',
-      },
-    },
-    populate: {
-      "web-courses": {
-        title: true,
-        slug: true,
-        image: true,
-        difficultyLevel: true,
-        price: true,
-        subTitle: true,
-        duration: true,
-      },
-    },
-    where: {
-      slug: {
-        equals: slug,
-      },
-    },
-  })
-
-
-  return result.docs || null
-})

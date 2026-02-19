@@ -1,5 +1,5 @@
 import type { CollectionAfterChangeHook, CollectionAfterDeleteHook } from 'payload'
-import { revalidatePath } from 'next/cache'
+import { revalidateTag } from 'next/cache'
 import type { Post } from '../../../payload-types'
 
 export const revalidatePost: CollectionAfterChangeHook<Post> = ({
@@ -7,26 +7,39 @@ export const revalidatePost: CollectionAfterChangeHook<Post> = ({
   previousDoc,
   req: { payload, context },
 }) => {
-  if (!context.disableRevalidate) {
-    if (doc._status === 'published') {
-      const path = `/blog/${doc.slug}`
-      payload.logger.info(`Revalidating  detail: ${path}`)
-      revalidatePath(path)
-    }
-    // If the blog was previously published, we need to revalidate the old path
-    if (previousDoc._status === 'published' && doc._status !== 'published') {
-      const oldPath = `/blog/${previousDoc.slug}`
-      payload.logger.info(`Revalidating old blog detail: ${oldPath}`)
-      revalidatePath(oldPath)
-    }
+  if (context.disableRevalidate) return doc
+
+  if (doc._status === 'published') {
+    payload.logger.info(`Revalidating blog post: ${doc.slug}`)
+    revalidateTag(`blog-${doc.slug}`)
+    revalidateTag('blog-listing')
   }
+
+  // If unpublished, revalidate old slug + listing
+  if (previousDoc?._status === 'published' && doc._status !== 'published') {
+    payload.logger.info(`Revalidating unpublished blog post: ${previousDoc.slug}`)
+    revalidateTag(`blog-${previousDoc.slug}`)
+    revalidateTag('blog-listing')
+  }
+
+  // If slug changed while published, revalidate old slug
+  if (previousDoc?.slug && previousDoc.slug !== doc.slug && doc._status === 'published') {
+    payload.logger.info(`Revalidating old blog slug: ${previousDoc.slug}`)
+    revalidateTag(`blog-${previousDoc.slug}`)
+  }
+
   return doc
 }
 
-export const revalidateDelete: CollectionAfterDeleteHook<Post> = ({ doc, req: { context } }) => {
-  if (!context.disableRevalidate) {
-    const path = `/blog/${doc?.slug}`
-    revalidatePath(path)
-  }
+export const revalidateDelete: CollectionAfterDeleteHook<Post> = ({
+  doc,
+  req: { payload, context },
+}) => {
+  if (context.disableRevalidate) return doc
+
+  payload.logger.info(`Revalidating deleted blog post: ${doc.slug}`)
+  revalidateTag(`blog-${doc.slug}`)
+  revalidateTag('blog-listing')
+
   return doc
 }

@@ -1,11 +1,12 @@
 import type { Metadata } from 'next'
 
+import { unstable_cache } from 'next/cache'
 import { RelatedPosts } from '@/blocks/RelatedPosts/Component'
 import { PayloadRedirects } from '@/components/PayloadRedirects'
 import configPromise from '@payload-config'
 import { getPayload } from 'payload'
 import { draftMode } from 'next/headers'
-import React, { cache } from 'react'
+import React from 'react'
 import RichText from '@/components/RichText'
 
 import type { Post } from '@/payload-types'
@@ -13,34 +14,58 @@ import type { Post } from '@/payload-types'
 import { PostHero } from '@/heros/PostHero'
 import { generateMeta } from '@/utilities/generateMeta'
 import { LivePreviewListener } from '@/components/LivePreviewListener'
-// import PageClient from './page.client'
 
-export const revalidate = 86400 // 24 hours in seconds
+export const revalidate = false
 
-// export async function generateStaticParams() {
-//   const payload = await getPayload({ config: configPromise })
-//   const posts = await payload.find({
-//     collection: 'posts',
-//     draft: false,
-//     limit: 24,
-//     overrideAccess: false,
-//     pagination: false,
-//     select: {
-//       slug: true,
-//     },
-//   })
-
-//   const params = posts.docs.map(({ slug }) => {
-//     return { slug }
-//   })
-
-//   return params
-// }
+export async function generateStaticParams() {
+  return []
+}
 
 type Args = {
   params: Promise<{
     slug?: string
   }>
+}
+
+// Cached query for published posts
+const queryPostBySlug = (slug: string) =>
+  unstable_cache(
+    async () => {
+      const payload = await getPayload({ config: configPromise })
+      const result = await payload.find({
+        collection: 'posts',
+        draft: false,
+        limit: 1,
+        overrideAccess: false,
+        pagination: false,
+        where: {
+          slug: {
+            equals: slug,
+          },
+        },
+      })
+      return result.docs?.[0] || null
+    },
+    [`blog-${slug}`],
+    { tags: [`blog-${slug}`] },
+  )()
+
+// Uncached query for draft preview
+const queryPostBySlugDraft = async (slug: string) => {
+  const payload = await getPayload({ config: configPromise })
+  const result = await payload.find({
+    collection: 'posts',
+    draft: true,
+    limit: 1,
+    overrideAccess: true,
+    pagination: false,
+    where: {
+      slug: {
+        equals: slug,
+      },
+    },
+  })
+  return result.docs?.[0] || null
 }
 
 export default async function Post({ params: paramsPromise }: Args) {
@@ -49,14 +74,14 @@ export default async function Post({ params: paramsPromise }: Args) {
   // Decode to support slugs with special characters
   const decodedSlug = decodeURIComponent(slug)
   const url = '/posts/' + decodedSlug
-  const post = await queryPostBySlug({ slug: decodedSlug })
+  const post = draft
+    ? await queryPostBySlugDraft(decodedSlug)
+    : await queryPostBySlug(decodedSlug)
 
   if (!post) return <PayloadRedirects url={url} />
 
   return (
     <article className="pt-0 md:pt-16 pb-16 ">
-      {/* <PageClient /> */}
-
       {/* Allows redirects for valid pages too */}
       <PayloadRedirects disableNotFound url={url} />
 
@@ -80,31 +105,13 @@ export default async function Post({ params: paramsPromise }: Args) {
 }
 
 export async function generateMetadata({ params: paramsPromise }: Args): Promise<Metadata> {
+  const { isEnabled: draft } = await draftMode()
   const { slug = '' } = await paramsPromise
   // Decode to support slugs with special characters
   const decodedSlug = decodeURIComponent(slug)
-  const post = await queryPostBySlug({ slug: decodedSlug })
+  const post = draft
+    ? await queryPostBySlugDraft(decodedSlug)
+    : await queryPostBySlug(decodedSlug)
 
   return generateMeta({ doc: post })
 }
-
-const queryPostBySlug = cache(async ({ slug }: { slug: string }) => {
-  const { isEnabled: draft } = await draftMode()
-
-  const payload = await getPayload({ config: configPromise })
-
-  const result = await payload.find({
-    collection: 'posts',
-    draft,
-    limit: 1,
-    overrideAccess: draft,
-    pagination: false,
-    where: {
-      slug: {
-        equals: slug,
-      },
-    },
-  })
-
-  return result.docs?.[0] || null
-})

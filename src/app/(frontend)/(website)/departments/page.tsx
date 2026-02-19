@@ -12,7 +12,7 @@ import CoursesCard from "./_components/CoursesCard"
 import { unstable_cache } from 'next/cache'
 import ErrorCard from '../_components/ErrorCard'
 
-export const dynamic = 'force-static'
+export const revalidate = false
 
 const queryDepartments = unstable_cache(
   async () => {
@@ -49,9 +49,9 @@ const queryDepartments = unstable_cache(
 
     return result.docs || null
   },
-  ['courses'],
+  ['departments-listing'],
   {
-    tags: ['courses', 'departments'],
+    tags: ['departments-listing'],
   }
 )
 
