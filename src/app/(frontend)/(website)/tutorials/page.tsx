@@ -5,7 +5,7 @@ import Link from 'next/link'
 import type { Metadata } from 'next/types'
 import ErrorCard from '../_components/ErrorCard'
 
-export const revalidate = 600
+export const revalidate = false
 
 const queryTutorialsData = unstable_cache(
   async () => {

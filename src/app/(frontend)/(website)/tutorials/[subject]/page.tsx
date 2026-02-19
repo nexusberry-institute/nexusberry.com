@@ -7,7 +7,11 @@ import ErrorCard from '../../_components/ErrorCard'
 import { getServerSideURL } from '@/utilities/getURL'
 import { mergeOpenGraph } from '@/utilities/mergeOpenGraph'
 
-export const revalidate = 600
+export const revalidate = false
+
+export async function generateStaticParams() {
+  return []
+}
 
 const querySubjectBySlug = (slug: string) =>
   unstable_cache(
