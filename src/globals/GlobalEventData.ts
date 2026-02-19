@@ -7,14 +7,14 @@ export const GlobalEventData: GlobalConfig = {
   access: {
     read: () => true, // Public access
   },
-  // hooks: {
-  //   afterChange: [
-  //     ({ req: { payload } }) => {
-  //       payload.logger.info("Revalidation Global Event Data");
-  //       revalidateTag("global-event-data");
-  //     }
-  //   ]
-  // },
+  hooks: {
+    afterChange: [
+      ({ req: { payload } }) => {
+        payload.logger.info("Revalidating Global Event Data");
+        revalidateTag("global-event-data");
+      }
+    ]
+  },
   fields: [
     {
       name: "whatsappCommunity",

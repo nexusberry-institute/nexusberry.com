@@ -1,4 +1,4 @@
-import React, { Suspense } from 'react'
+import { Suspense } from 'react'
 import Hero from './_components/Hero'
 import EventCart from './_components/EventCart'
 import WhatsppCommunity from './_components/WhatsppCommunity'
@@ -11,7 +11,7 @@ import type { Metadata } from 'next/types'
 import { EventsGridSkeleton } from './_components/EventListSkeleton'
 import { Media } from '@/payload-types'
 
-export const dynamic = 'force-dynamic';
+export const revalidate = false
 
 export function generateMetadata(): Metadata {
   return {

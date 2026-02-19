@@ -1,4 +1,4 @@
-import React, { Suspense } from 'react'
+import { Suspense } from 'react'
 import Hero from './_components/Hero'
 import CourseDetail from './_components/CourseDetail'
 import CourseInfo from './_components/CourseInfo'
@@ -11,39 +11,15 @@ import { Media } from '@/payload-types'
 import { unstable_cache } from 'next/cache'
 import { EventsGridSkeleton } from '../_components/EventListSkeleton'
 
-export const dynamic = 'force-dynamic'
+export const revalidate = false
 
-// export const dynamic = 'force-static'
-// export const revalidate = 86400 // 24 hours in seconds
-
-// export async function generateStaticParams() {
-//   const payload = await getPayload({ config: configPromise })
-//   const events = await payload.find({
-//     collection: 'events',
-//     limit: 100,
-//     depth: 2,
-//     select: {
-//       slug: true,
-//     },
-//     where: {
-//       startDateTime: {
-//         greater_than_equal: new Date().toISOString(), // Only future events
-//       },
-//       showInUI: {
-//         equals: true,
-//       },
-//     },
-//   })
-//   const params = events.docs.map(({ slug }) => {
-//     return { slug }
-//   })
-//   return params
-// }
+export async function generateStaticParams() {
+  return []
+}
 
 export default async function SlugPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params
   const { event } = await queryEventsBySlug(slug)
-  console.log("event: ", event);
   // if (error) {
   //   return <ErrorCard error={error} />
   // }

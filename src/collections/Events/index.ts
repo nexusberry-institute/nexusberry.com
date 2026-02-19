@@ -31,9 +31,8 @@ export const Events: CollectionConfig = {
     }
   },
   hooks: {
-    // afterChange: [revalidateEvents],
-    // afterDelete: [revalidateDelete],
-
+    afterChange: [revalidateEvents],
+    afterDelete: [revalidateDelete],
   },
   fields: [
     {

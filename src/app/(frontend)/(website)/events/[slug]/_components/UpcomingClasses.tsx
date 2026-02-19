@@ -1,84 +1,52 @@
-import Image from 'next/image'
-import React from 'react'
-import { Calendar, ChevronRight, Clock } from 'lucide-react'
+import { Calendar, ChevronRight } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import Link from 'next/link'
-import { imageSizes } from '@/app/(frontend)/(website)/_lib/ImageSizes'
 import { unstable_cache } from 'next/cache'
 import { getPayload } from 'payload'
 import configPromise from '@payload-config'
-import { format } from 'date-fns'
 import EventCard from '../../_components/EventCard'
 
-// const queryEvents = unstable_cache(
-//   async (slug: string) => {
-//     const payload = await getPayload({ config: configPromise })
-//     const events = await payload.find({
-//       collection: 'events',
-//       limit: 3,
-//       pagination: false,
-//       select: {
-//         title: true,
-//         image: true,
-//         slug: true,
-//         startDateTime: true,
-//         endTime: true,
-//       },
-//       where: {
-//         slug: {
-//           not_equals: slug,
-//         },
-//         startDateTime: {
-//           greater_than_equal: new Date(),
-//         },
-//         showInUI: {
-//           equals: true,
-//         },
-//       },
-//     })
-//     return events.docs || null
-//   },
-//   ['events'],
-//   { tags: ['events'] }
-// )
+const queryEvents = unstable_cache(
+  async (slug: string) => {
+    try {
+      const payload = await getPayload({ config: configPromise })
 
-const queryEvents = async (slug: string) => {
-  try {
-    const payload = await getPayload({ config: configPromise })
-
-    const events = await payload.find({
-      collection: 'events',
-      limit: 3,
-      pagination: false,
-      select: {
-        title: true,
-        image: true,
-        slug: true,
-        startDateTime: true,
-        endTime: true,
-        label: true,
-        hasCertificate: true,
-        updatedAt: true,
-        createdAt: true
-      },
-      where: {
-        slug: {
-          not_equals: slug,
+      const events = await payload.find({
+        collection: 'events',
+        limit: 3,
+        pagination: false,
+        select: {
+          title: true,
+          image: true,
+          slug: true,
+          startDateTime: true,
+          endTime: true,
+          label: true,
+          hasCertificate: true,
+          updatedAt: true,
+          createdAt: true
         },
-        startDateTime: {
-          greater_than_equal: new Date(),
+        where: {
+          slug: {
+            not_equals: slug,
+          },
+          startDateTime: {
+            greater_than_equal: new Date(),
+          },
+          showInUI: {
+            equals: true,
+          },
         },
-        showInUI: {
-          equals: true,
-        },
-      },
-      sort: 'startDateTime'
-    })
-    return events.docs || []
-  } catch (error) {
-    return [];
-  }
-}
+        sort: 'startDateTime'
+      })
+      return events.docs || []
+    } catch (error) {
+      return [];
+    }
+  },
+  ['upcoming-events'],
+  { tags: ['events-listing'] }
+)
 
 const sizes = {
   '2xl': { padding: 42, cols: 4, gap: 10 },

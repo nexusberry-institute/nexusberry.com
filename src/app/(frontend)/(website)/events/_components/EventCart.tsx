@@ -1,68 +1,59 @@
-import React from 'react'
 import { Event } from '@/payload-types'
 // import EventsFilters from './EventsFilters'
 import EventCard from './EventCard'
 import { getPayload } from 'payload'
 import config from "@/payload.config";
-import { getCurrentPakistanTime } from '../../_lib/utils/date';
+import { unstable_cache } from 'next/cache'
 
-const getEventsList = async ({
-  selectedDepartment = 'all',
-  page = 1,
-  limit = 100
-}: {
-  selectedDepartment?: string;
-  page?: number;
-  limit?: number;
-}) => {
-  const payload = await getPayload({ config });
+const getEventsList = unstable_cache(
+  async ({
+    selectedDepartment = 'all',
+    page = 1,
+    limit = 100
+  }: {
+    selectedDepartment?: string;
+    page?: number;
+    limit?: number;
+  }) => {
+    const payload = await getPayload({ config });
 
-  // Build the where clause conditionally
-  const whereClause: any = {
-    startDateTime: {
-      greater_than_equal: new Date().toISOString(),
-    },
-    // endTime: {
-    //   greater_than: new Date(),
-    // },
-    showInUI: {
-      equals: true,
-    },
-  };
+    // Build the where clause conditionally
+    const whereClause: any = {
+      startDateTime: {
+        greater_than_equal: new Date().toISOString(),
+      },
+      showInUI: {
+        equals: true,
+      },
+    };
 
-  // Add department filter if not 'all'
-  // if (selectedDepartment !== 'all') {
-  //     whereClause.department = {
-  //         equals: selectedDepartment,
-  //     };
-  // }
+    const events = await payload.find({
+      collection: 'events',
+      limit,
+      pagination: false,
+      where: whereClause,
+      sort: 'startDateTime',
+      select: {
+        title: true,
+        label: true,
+        slug: true,
+        image: true,
+        startDateTime: true,
+        endTime: true,
+        hasCertificate: true,
+        updatedAt: true,
+        createdAt: true
+      }
+    });
 
-  const events = await payload.find({
-    collection: 'events',
-    limit,
-    // page,
-    pagination: false,
-    where: whereClause,
-    sort: 'startDateTime', // Sort by start date
-    select: {
-      title: true,
-      label: true,
-      slug: true,
-      image: true,
-      startDateTime: true,
-      endTime: true,
-      hasCertificate: true,
-      updatedAt: true,
-      createdAt: true
-    }
-  });
-
-  return events;
-};
+    return events;
+  },
+  ['events-listing'],
+  { tags: ['events-listing'] }
+);
 
 export default async function EventCart() {
   const events = await getEventsList({});
-  console.log("events: ", events);
   // // Error state
   // if (status === 'error') {
   //   return <Error message={error?.message} />;
