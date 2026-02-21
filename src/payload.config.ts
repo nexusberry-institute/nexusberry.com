@@ -15,7 +15,12 @@ import globals from './globals'
 import { Users } from '@/collections/Users'
 import { getPlugins } from './plugins'
 // import { formBuilderPlugin } from '@payloadcms/plugin-form-builder';
-import { defaultLexical } from '@/fields/defaultLexical'
+import {
+  lexicalEditor,
+  FixedToolbarFeature,
+  EXPERIMENTAL_TableFeature,
+  InlineToolbarFeature,
+} from '@payloadcms/richtext-lexical'
 import { getServerSideURL } from './utilities/getURL'
 // import { googleCallbackEndPoint } from './endpoints/auth'
 
@@ -97,7 +102,14 @@ export default buildConfig({
     },
   },
   // This config helps us configure global or default features that the other editors can inherit
-  editor: defaultLexical,
+  editor: lexicalEditor({
+    features: ({ defaultFeatures }) => [
+      ...defaultFeatures,
+      FixedToolbarFeature(),
+      InlineToolbarFeature(),
+      EXPERIMENTAL_TableFeature()
+    ],
+  }),
   // endpoints: [
   //   // googleCallbackEndPoint,
   // ],
