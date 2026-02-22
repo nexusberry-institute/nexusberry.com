@@ -10,10 +10,7 @@ import path from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { getPayload } from 'payload'
 import config from '../src/payload.config'
-import {
-  convertMarkdownToLexical,
-  editorConfigFactory,
-} from '@payloadcms/richtext-lexical'
+import { convertMarkdownToLexicalJSON } from './markdown-to-lexical'
 
 // --- CONFIGURATION ---
 const MARKDOWN_FILE_PATH = 'public/frontend-react/lecture-2/cheatsheet.md'
@@ -33,13 +30,8 @@ async function main() {
   console.log('Initializing Payload...')
   const payload = await getPayload({ config })
 
-  // 3. Build editor config from the sanitized Payload config
-  const editorConfig = await editorConfigFactory.default({
-    config: payload.config,
-  })
-
-  // 4. Convert markdown → Lexical JSON
-  const lexicalJSON = convertMarkdownToLexical({ editorConfig, markdown })
+  // 3. Convert markdown → Lexical JSON using custom converter
+  const lexicalJSON = convertMarkdownToLexicalJSON(markdown)
   console.log('Converted markdown to Lexical JSON')
 
   // 5. Upsert: update if exists, create if not

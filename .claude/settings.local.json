@@ -38,7 +38,11 @@
       "WebFetch(domain:github.com)",
       "Bash(npx tsx:*)",
       "Bash(pnpm exec tsx:*)",
-      "Bash(pnpm add:*)"
+      "Bash(pnpm add:*)",
+      "mcp__playwright__browser_evaluate",
+      "mcp__playwright__browser_close",
+      "mcp__playwright__browser_console_messages",
+      "Bash(grep:*)"
     ]
   },
   "enableAllProjectMcpServers": true,
