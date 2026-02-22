@@ -33,7 +33,12 @@
       "Bash(head:*)",
       "mcp__ide__getDiagnostics",
       "mcp__playwright__browser_take_screenshot",
-      "Bash(npx shadcn@latest add:*)"
+      "Bash(npx shadcn@latest add:*)",
+      "WebSearch",
+      "WebFetch(domain:github.com)",
+      "Bash(npx tsx:*)",
+      "Bash(pnpm exec tsx:*)",
+      "Bash(pnpm add:*)"
     ]
   },
   "enableAllProjectMcpServers": true,
