@@ -1,7 +1,7 @@
 'use client'
 
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
-import { RichText } from '@payloadcms/richtext-lexical/react'
+import RichText from '@/components/RichText'
 import QuizSection from './QuizSection'
 import CodeViewer from './CodeViewer'
 import PresentationViewer from './PresentationViewer'
@@ -90,7 +90,7 @@ export default function TutorialTabs({ content, quiz, assignment, codeUrl, prese
 
         {content && (
           <TabsContent value="cheatsheet" className="mt-6">
-            <RichText data={content} className="prose md:prose-md max-w-none" />
+            <RichText data={content} enableGutter={false} />
           </TabsContent>
         )}
 
@@ -102,7 +102,7 @@ export default function TutorialTabs({ content, quiz, assignment, codeUrl, prese
 
         {assignment && (
           <TabsContent value="assignment" className="mt-6">
-            <RichText data={assignment} className="prose md:prose-md max-w-none" />
+            <RichText data={assignment} enableGutter={false} />
           </TabsContent>
         )}
 

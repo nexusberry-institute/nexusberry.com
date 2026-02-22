@@ -47,7 +47,7 @@ async function main() {
     await payload.update({
       collection: 'tutorials',
       id: doc.id,
-      data: { content: lexicalJSON },
+      data: { content: lexicalJSON as any },
       overrideAccess: true,
       context: { disableRevalidate: true },
     })
@@ -58,7 +58,7 @@ async function main() {
       data: {
         title: TUTORIAL_TITLE,
         slug: TUTORIAL_SLUG,
-        content: lexicalJSON,
+        content: lexicalJSON as any,
       },
       overrideAccess: true,
       context: { disableRevalidate: true },
