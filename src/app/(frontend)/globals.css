@@ -325,3 +325,23 @@ html[data-theme='light'] {
     @apply bg-background text-foreground;
   }
 }
+
+.payload-richtext hr {
+  border: none;
+  border-top: 1px solid #b0b5bc;
+  margin: 1.5em 0;
+}
+
+.payload-richtext code:not(pre code) {
+  background-color: #dfe3e8;
+  padding: 0.2em 0.4em;
+  border-radius: 0.25rem;
+  font-size: 0.875em;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+  word-break: break-word;
+}
+
+.payload-richtext code:not(pre code)::before,
+.payload-richtext code:not(pre code)::after {
+  content: none;
+}
