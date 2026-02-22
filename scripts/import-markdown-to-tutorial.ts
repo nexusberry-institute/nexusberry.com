@@ -32,9 +32,9 @@ async function main() {
 
   // 3. Convert markdown → Lexical JSON using custom converter
   const lexicalJSON = convertMarkdownToLexicalJSON(markdown)
-  console.log('Converted markdown to Lexical JSON')
+  console.log(`Converted to Lexical JSON (${(lexicalJSON as any).root.children.length} blocks)`)
 
-  // 5. Upsert: update if exists, create if not
+  // 4. Upsert: update if exists, create if not
   const existing = await payload.find({
     collection: 'tutorials',
     where: { slug: { equals: TUTORIAL_SLUG } },

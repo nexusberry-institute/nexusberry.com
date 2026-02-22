@@ -353,7 +353,7 @@ function isSeparatorRow(line: string): boolean {
 // ─── Main converter ──────────────────────────────────────────────────
 
 export function convertMarkdownToLexicalJSON(markdown: string) {
-  const lines = markdown.split('\n')
+  const lines = markdown.split('\n').map((l) => l.replace(/\r$/, ''))
   const blocks: BlockNode[] = []
   let i = 0
 
@@ -472,6 +472,9 @@ export function convertMarkdownToLexicalJSON(markdown: string) {
     }
     if (paraLines.length > 0) {
       blocks.push(paragraphNode(parseInline(paraLines.join(' '))))
+    } else {
+      // Safety: force advance to prevent infinite loop on unrecognised lines
+      i++
     }
   }
 
