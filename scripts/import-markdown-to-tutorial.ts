@@ -51,7 +51,7 @@ async function main() {
   })
 
   if (existing.docs.length > 0) {
-    const doc = existing.docs[0]
+    const doc = existing.docs[0]!
     await payload.update({
       collection: 'tutorials',
       id: doc.id,
