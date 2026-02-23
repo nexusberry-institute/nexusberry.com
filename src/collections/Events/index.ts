@@ -1,15 +1,7 @@
 import { slugField } from '@/fields/slug';
+import { richTextField } from '@/fields/richTextField';
 import { CollectionConfig } from 'payload';
 import { revalidateEvents, revalidateDelete } from './hooks/revalidateEvents'
-import {
-  AlignFeature,
-  FixedToolbarFeature,
-  HeadingFeature,
-  HorizontalRuleFeature,
-  InlineToolbarFeature,
-  lexicalEditor,
-  UnorderedListFeature,
-} from '@payloadcms/richtext-lexical';
 
 import {
   MetaDescriptionField,
@@ -170,23 +162,7 @@ export const Events: CollectionConfig = {
                 allowEdit: false
               }
             },
-            {
-              name: "learningOutcomes",
-              type: "richText",
-              editor: lexicalEditor({
-                features: ({ rootFeatures }) => {
-                  return [
-                    ...rootFeatures,
-                    HeadingFeature({ enabledHeadingSizes: ['h1', 'h2', 'h3', 'h4'] }),
-                    FixedToolbarFeature(),
-                    InlineToolbarFeature(),
-                    HorizontalRuleFeature(),
-                    UnorderedListFeature(),
-                    AlignFeature(),
-                  ]
-                },
-              }),
-            },
+            richTextField({ name: 'learningOutcomes' }),
             {
               name: "instructor",
               type: "relationship",

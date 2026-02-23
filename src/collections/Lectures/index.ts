@@ -1,5 +1,6 @@
 // import { checkAccess } from '@/access/accessControl';
 import { CollectionConfig } from 'payload';
+import { richTextField } from '@/fields/richTextField';
 
 export const Lectures: CollectionConfig = {
   slug: 'lectures',
@@ -56,10 +57,7 @@ export const Lectures: CollectionConfig = {
       name: "videoUrl",
       type: "textarea",
     },
-    {
-      name: "notes",
-      type: "richText",
-    },
+    richTextField({ name: 'notes' }),
     {
       name: "files",
       type: "upload",

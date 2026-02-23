@@ -1,15 +1,7 @@
 import type { CollectionConfig } from "payload";
 import { slugField } from '@/fields/slug'
 import { revalidateTutorial, revalidateDeleteTutorial } from './hooks/revalidateTutorial'
-import {
-  BlocksFeature,
-  FixedToolbarFeature,
-  HeadingFeature,
-  HorizontalRuleFeature,
-  InlineToolbarFeature,
-  lexicalEditor,
-} from '@payloadcms/richtext-lexical'
-import { Code } from '../../blocks/Code/config'
+import { richTextField } from '@/fields/richTextField'
 
 export const Tutorials: CollectionConfig = {
   slug: 'tutorials',
@@ -91,22 +83,7 @@ export const Tutorials: CollectionConfig = {
         {
           label: 'Cheatsheet',
           fields: [
-            {
-              name: 'content',
-              type: 'richText',
-              label: 'Tutorial Content',
-              editor: lexicalEditor({
-                features: ({ defaultFeatures, rootFeatures }) => [
-                  ...defaultFeatures,
-                  ...rootFeatures,
-                  HeadingFeature({ enabledHeadingSizes: ['h1', 'h2', 'h3', 'h4'] }),
-                  BlocksFeature({ blocks: [Code] }),
-                  FixedToolbarFeature(),
-                  InlineToolbarFeature(),
-                  HorizontalRuleFeature(),
-                ],
-              }),
-            },
+            richTextField({ name: 'content', label: 'Tutorial Content' }),
           ],
         },
         {
@@ -123,11 +100,7 @@ export const Tutorials: CollectionConfig = {
         {
           label: 'Assignment',
           fields: [
-            {
-              name: 'assignment',
-              type: 'richText',
-              label: 'Assignment Content',
-            },
+            richTextField({ name: 'assignment', label: 'Assignment Content' }),
           ],
         },
         {

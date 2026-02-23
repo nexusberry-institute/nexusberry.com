@@ -1,4 +1,5 @@
 import { CollectionConfig } from 'payload'
+import { richTextField } from '@/fields/richTextField'
 
 export const Assignments: CollectionConfig = {
   slug: 'assignments',
@@ -60,10 +61,7 @@ export const Assignments: CollectionConfig = {
               name: 'questions',
               type: 'array',
               fields: [
-                {
-                  name: 'question',
-                  type: 'richText'
-                }
+                richTextField({ name: 'question' }),
               ]
             },
           ]

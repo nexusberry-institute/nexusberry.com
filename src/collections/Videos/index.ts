@@ -1,5 +1,6 @@
 import type { CollectionConfig } from 'payload'
 import { slugField } from 'payload'
+import { richTextField } from '@/fields/richTextField'
 
 export const Videos: CollectionConfig = {
   slug: 'videos',
@@ -30,16 +31,8 @@ export const Videos: CollectionConfig = {
       relationTo: 'media',
       label: 'Thumbnail Image',
     },
-    {
-      name: 'notes',
-      type: 'richText',
-      label: 'Notes',
-    },
-    {
-      name: 'assignment',
-      type: 'richText',
-      label: 'Assignment',
-    },
+    richTextField({ name: 'notes', label: 'Notes' }),
+    richTextField({ name: 'assignment', label: 'Assignment' }),
     {
       name: 'qa',
       type: 'array',

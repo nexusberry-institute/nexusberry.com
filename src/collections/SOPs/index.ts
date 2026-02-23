@@ -1,5 +1,5 @@
-import { AlignFeature, FixedToolbarFeature, HeadingFeature, HorizontalRuleFeature, InlineToolbarFeature, lexicalEditor, UnorderedListFeature } from "@payloadcms/richtext-lexical";
 import { CollectionConfig } from "payload";
+import { richTextField } from "@/fields/richTextField";
 
 export const SOPs: CollectionConfig = {
   slug: "sops",
@@ -20,23 +20,6 @@ export const SOPs: CollectionConfig = {
       type: "text",
       hasMany: true
     },
-    {
-      name: "description",
-      type: "richText",
-      required: true,
-      editor: lexicalEditor({
-        features: ({ rootFeatures }) => {
-          return [
-            ...rootFeatures,
-            HeadingFeature({ enabledHeadingSizes: ['h1', 'h2', 'h3', 'h4'] }),
-            FixedToolbarFeature(),
-            InlineToolbarFeature(),
-            UnorderedListFeature(),
-            HorizontalRuleFeature(),
-            AlignFeature(),
-          ]
-        },
-      })
-    },
+    richTextField({ name: 'description', required: true }),
   ]
 }

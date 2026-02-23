@@ -1,17 +1,5 @@
 import { CollectionConfig } from "payload";
-import {
-    BlocksFeature,
-    FixedToolbarFeature,
-    HeadingFeature,
-    HorizontalRuleFeature,
-    InlineToolbarFeature,
-    lexicalEditor,
-    UnorderedListFeature,
-    OrderedListFeature,
-} from '@payloadcms/richtext-lexical'
-import { Banner } from '../../blocks/Banner/config'
-import { Code } from '../../blocks/Code/config'
-import { MediaBlock } from '../../blocks/MediaBlock/config'
+import { richTextField } from "@/fields/richTextField";
 
 
 export const CoursesCollection: CollectionConfig = {
@@ -37,26 +25,7 @@ export const CoursesCollection: CollectionConfig = {
             required: true,
         },
 
-        {
-            name: 'content',
-            type: 'richText',
-            editor: lexicalEditor({
-                features: ({ rootFeatures }) => {
-                    return [
-                        ...rootFeatures,
-                        HeadingFeature({ enabledHeadingSizes: ['h1', 'h2', 'h3', 'h4'] }),
-                        BlocksFeature({ blocks: [Banner, Code, MediaBlock] }),
-                        FixedToolbarFeature(),
-                        InlineToolbarFeature(),
-                        HorizontalRuleFeature(),
-                        OrderedListFeature(),
-                        UnorderedListFeature(),
-                    ]
-                },
-            }),
-            label: 'Content',
-            required: true,
-        },
+        richTextField({ label: 'Content', required: true }),
 
         {
             name: 'contentPosition',

@@ -13,26 +13,37 @@ import config from '../src/payload.config'
 import { convertMarkdownToLexicalJSON } from './markdown-to-lexical'
 
 // --- CONFIGURATION ---
-const MARKDOWN_FILE_PATH = 'public/frontend-react/lecture-2/cheatsheet.md'
+const LECTURE_FOLDER = 'public/frontend-react/lecture-2'
+const CHEATSHEET_PATH = `${LECTURE_FOLDER}/cheatsheet.md`
+const ASSIGNMENT_PATH = `${LECTURE_FOLDER}/assignment.md`
 const TUTORIAL_TITLE = 'Semantic HTML & Accessibility Cheatsheet'
 const TUTORIAL_SLUG = 'semantic-html-accessibility-cheatsheet'
 
 async function main() {
-  // 1. Read markdown
+  // 1. Read markdown files
   const __dirname = path.dirname(fileURLToPath(import.meta.url))
-  const markdown = readFileSync(
-    path.resolve(__dirname, '..', MARKDOWN_FILE_PATH),
+  const cheatsheetMd = readFileSync(
+    path.resolve(__dirname, '..', CHEATSHEET_PATH),
     'utf-8',
   )
-  console.log(`Read ${markdown.length} chars from ${MARKDOWN_FILE_PATH}`)
+  console.log(`Read ${cheatsheetMd.length} chars from ${CHEATSHEET_PATH}`)
+
+  const assignmentMd = readFileSync(
+    path.resolve(__dirname, '..', ASSIGNMENT_PATH),
+    'utf-8',
+  )
+  console.log(`Read ${assignmentMd.length} chars from ${ASSIGNMENT_PATH}`)
 
   // 2. Init Payload (connects to DB)
   console.log('Initializing Payload...')
   const payload = await getPayload({ config })
 
   // 3. Convert markdown → Lexical JSON using custom converter
-  const lexicalJSON = convertMarkdownToLexicalJSON(markdown)
-  console.log(`Converted to Lexical JSON (${(lexicalJSON as any).root.children.length} blocks)`)
+  const cheatsheetJSON = convertMarkdownToLexicalJSON(cheatsheetMd)
+  console.log(`Cheatsheet → Lexical JSON (${(cheatsheetJSON as any).root.children.length} blocks)`)
+
+  const assignmentJSON = convertMarkdownToLexicalJSON(assignmentMd)
+  console.log(`Assignment → Lexical JSON (${(assignmentJSON as any).root.children.length} blocks)`)
 
   // 4. Upsert: update if exists, create if not
   const existing = await payload.find({
@@ -47,9 +58,8 @@ async function main() {
     await payload.update({
       collection: 'tutorials',
       id: doc.id,
-      data: { content: lexicalJSON as any },
+      data: { content: cheatsheetJSON as any, assignment: assignmentJSON as any },
       overrideAccess: true,
-      context: { disableRevalidate: true },
     })
     console.log(`Updated tutorial ID ${doc.id}`)
   } else {
@@ -58,10 +68,10 @@ async function main() {
       data: {
         title: TUTORIAL_TITLE,
         slug: TUTORIAL_SLUG,
-        content: lexicalJSON as any,
+        content: cheatsheetJSON as any,
+        assignment: assignmentJSON as any,
       },
       overrideAccess: true,
-      context: { disableRevalidate: true },
     })
     console.log(`Created tutorial ID ${created.id}`)
   }

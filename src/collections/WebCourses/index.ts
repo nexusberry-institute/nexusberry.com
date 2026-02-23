@@ -1,7 +1,7 @@
 import { revalidateCourses, revalidateDelete } from './hooks/revalidateCourses';
 import { slugField } from "@/fields/slug";
 import { MetaDescriptionField, MetaImageField, MetaTitleField, OverviewField, PreviewField } from '@payloadcms/plugin-seo/fields';
-import { AlignFeature, FixedToolbarFeature, HeadingFeature, HorizontalRuleFeature, InlineToolbarFeature, lexicalEditor, UnorderedListFeature, IndentFeature, ChecklistFeature, BlockquoteFeature } from "@payloadcms/richtext-lexical";
+import { richTextField } from '@/fields/richTextField';
 import { CollectionConfig } from "payload";
 
 export const WebCourses: CollectionConfig = {
@@ -39,40 +39,8 @@ export const WebCourses: CollectionConfig = {
               required: true
 
             },
-            {
-              name: "learningOutcomes",
-              type: "richText",
-              editor: lexicalEditor({
-                features: ({ rootFeatures }) => {
-                  return [
-                    ...rootFeatures,
-                    HeadingFeature({ enabledHeadingSizes: ['h1', 'h2', 'h3', 'h4'] }),
-                    FixedToolbarFeature(),
-                    InlineToolbarFeature(),
-                    UnorderedListFeature(),
-                    HorizontalRuleFeature(),
-                    AlignFeature(),
-                  ]
-                },
-              }),
-            },
-            {
-              name: "description",
-              type: "richText",
-              editor: lexicalEditor({
-                features: ({ rootFeatures }) => {
-                  return [
-                    ...rootFeatures,
-                    HeadingFeature({ enabledHeadingSizes: ['h1', 'h2', 'h3', 'h4'] }),
-                    FixedToolbarFeature(),
-                    InlineToolbarFeature(),
-                    UnorderedListFeature(),
-                    HorizontalRuleFeature(),
-                    AlignFeature(),
-                  ]
-                },
-              }),
-            },
+            richTextField({ name: 'learningOutcomes' }),
+            richTextField({ name: 'description' }),
             {
               name: "modules",
               label: "Modules",
@@ -82,26 +50,7 @@ export const WebCourses: CollectionConfig = {
                   name: "heading",
                   type: "text",
                 },
-                {
-                  name: "content",
-                  type: "richText",
-                  editor: lexicalEditor({
-                    features: ({ rootFeatures }) => {
-                      return [
-                        ...rootFeatures,
-                        HeadingFeature({ enabledHeadingSizes: ['h1', 'h2', 'h3', 'h4'] }),
-                        FixedToolbarFeature(),
-                        InlineToolbarFeature(),
-                        UnorderedListFeature(),
-                        HorizontalRuleFeature(),
-                        AlignFeature(),
-                        IndentFeature(),
-                        ChecklistFeature(),
-                        BlockquoteFeature(),
-                      ]
-                    },
-                  }),
-                }
+                richTextField()
               ]
             },
             {

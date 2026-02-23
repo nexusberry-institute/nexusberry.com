@@ -1,15 +1,5 @@
 import { CollectionConfig } from 'payload';
-
-import {
-  FixedToolbarFeature,
-  HeadingFeature,
-  HorizontalRuleFeature,
-  InlineToolbarFeature,
-  lexicalEditor,
-  SuperscriptFeature,
-  UnorderedListFeature,
-  OrderedListFeature,
-} from '@payloadcms/richtext-lexical';
+import { richTextField } from '@/fields/richTextField';
 
 export const Instructors: CollectionConfig = {
   slug: "instructors",
@@ -38,24 +28,6 @@ export const Instructors: CollectionConfig = {
       type: "number",
       required: true,
     },
-    {
-      name: "biography",
-      type: "richText",
-      editor: lexicalEditor({
-        features: ({ rootFeatures }) => {
-          return [
-            ...rootFeatures,
-            HeadingFeature({ enabledHeadingSizes: ['h1', 'h2', 'h3', 'h4'] }),
-            FixedToolbarFeature(),
-            InlineToolbarFeature(),
-            HorizontalRuleFeature(),
-            SuperscriptFeature(),
-            UnorderedListFeature(),
-            OrderedListFeature(),
-          ]
-        },
-      }),
-      required: true,
-    }
+    richTextField({ name: 'biography', required: true }),
   ]
 }
