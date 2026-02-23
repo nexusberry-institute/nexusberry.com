@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import type { Quiz, QuizQuestion } from '@/payload-types'
+import RichText from '@/components/RichText'
 
 type Props = {
   quiz: Quiz
@@ -58,6 +59,7 @@ export default function QuizSection({ quiz }: Props) {
   }
 
   const current = questions[currentQuestion]
+  if (!current) return null
 
   if (showScore) {
     return (
@@ -98,7 +100,9 @@ export default function QuizSection({ quiz }: Props) {
         </div>
       </div>
 
-      <h2 className="text-lg font-semibold text-foreground whitespace-pre-wrap">{current?.text}</h2>
+      <div className="text-lg font-semibold text-foreground">
+        <RichText data={current.text} enableGutter={false} enableProse={false} />
+      </div>
 
       <div className="space-y-3">
         {current?.options.map((opt, index) => {
@@ -139,7 +143,9 @@ export default function QuizSection({ quiz }: Props) {
       {answered && current?.explanation && (
         <div className="mt-4 p-4 rounded-lg bg-blue-50 border border-blue-200">
           <h3 className="font-semibold text-blue-800 mb-1">Explanation</h3>
-          <p className="text-blue-700 text-sm">{current.explanation}</p>
+          <div className="text-blue-700 text-sm">
+            <RichText data={current.explanation} enableGutter={false} enableProse={false} />
+          </div>
         </div>
       )}
     </div>

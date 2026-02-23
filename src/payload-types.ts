@@ -1959,13 +1959,41 @@ export interface Quiz {
  */
 export interface QuizQuestion {
   id: number;
-  text: string;
+  text: {
+    root: {
+      type: string;
+      children: {
+        type: any;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  };
   options: {
     option?: string | null;
     id?: string | null;
   }[];
   correctAnswer: number;
-  explanation?: string | null;
+  explanation?: {
+    root: {
+      type: string;
+      children: {
+        type: any;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  } | null;
   tags?: string[] | null;
   module?: (number | null) | Module;
   moduleTopic?: (number | null) | ModuleTopic;

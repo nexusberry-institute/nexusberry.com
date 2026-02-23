@@ -1,4 +1,5 @@
 import { CollectionConfig } from 'payload'
+import { richTextField } from '@/fields/richTextField'
 
 export const QuizQuestions: CollectionConfig = {
   slug: 'quiz-questions',
@@ -6,11 +7,7 @@ export const QuizQuestions: CollectionConfig = {
     group: "Classwork",
   },
   fields: [
-    {
-      name: 'text',
-      type: "textarea",
-      required: true
-    },
+    richTextField({ name: 'text', required: true }),
     {
       name: 'options',
       type: "array",
@@ -31,10 +28,7 @@ export const QuizQuestions: CollectionConfig = {
       type: "number", // index in options
       required: true
     },
-    {
-      name: 'explanation',
-      type: "textarea",
-    },
+    richTextField({ name: 'explanation' }),
     {
       name: 'tags',
       type: "text",
