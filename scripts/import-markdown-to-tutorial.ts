@@ -43,13 +43,13 @@ function parseQuizMarkdown(markdown: string): ParsedQuestion[] {
     // Find the **Question:** line
     const questionIdx = lines.findIndex((l) => l.startsWith('**Question:**'))
     if (questionIdx === -1) throw new Error(`Question ${i + 1}: missing **Question:** line`)
-    const questionText = lines[questionIdx].replace('**Question:**', '').trim()
+    const questionText = lines[questionIdx]!.replace('**Question:**', '').trim()
 
     // Collect options (lines starting with "- A)", "- B)", etc.)
     const options: string[] = []
     for (const line of lines) {
       const optMatch = line.match(/^- [A-D]\) (.+)/)
-      if (optMatch) options.push(optMatch[1])
+      if (optMatch) options.push(optMatch[1]!)
     }
     if (options.length !== 4) throw new Error(`Question ${i + 1}: expected 4 options, got ${options.length}`)
 
@@ -58,7 +58,7 @@ function parseQuizMarkdown(markdown: string): ParsedQuestion[] {
     if (!answerLine) throw new Error(`Question ${i + 1}: missing **Answer:** line`)
     const answerLetter = answerLine.match(/\*\*Answer:\*\*\s*([A-D])\)/)?.[1]
     if (!answerLetter) throw new Error(`Question ${i + 1}: could not parse answer letter`)
-    const correctAnswer = ANSWER_LETTER_TO_INDEX[answerLetter]
+    const correctAnswer = ANSWER_LETTER_TO_INDEX[answerLetter]!
 
     // Find **Explanation:** line and grab everything after it until end of block
     const explanationIdx = lines.findIndex((l) => l.startsWith('**Explanation:**'))
@@ -111,7 +111,7 @@ async function main() {
 
   const questionIds: number[] = []
   for (let i = 0; i < parsedQuestions.length; i++) {
-    const q = parsedQuestions[i]
+    const q = parsedQuestions[i]!
     const textJSON = convertMarkdownToLexicalJSON(q.questionText)
     const explanationJSON = convertMarkdownToLexicalJSON(q.explanation)
 
