@@ -65,7 +65,7 @@ export const DiscountCodes: CollectionConfig = {
       name: "code",
       type: "text",
       required: true,
-      defaultValue: generateUniqueCode(),
+      defaultValue: () => generateUniqueCode(),
       unique: true,
       admin: {
         description: "Unique discount code (e.g., SAVE20)"

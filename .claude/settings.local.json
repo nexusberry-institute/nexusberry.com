@@ -44,7 +44,10 @@
       "mcp__playwright__browser_console_messages",
       "Bash(grep:*)",
       "Bash(tail:*)",
-      "Bash(cd /d/github/nexusberry.com && pnpm migrate:status 2>&1)"
+      "Bash(cd /d/github/nexusberry.com && pnpm migrate:status 2>&1)",
+      "Bash(cd /d/github/nexusberry.com && pnpm migrate:create --name claude_md_update 2>&1)",
+      "Bash(cd /d/github/nexusberry.com && pnpm migrate:create --name test_no_diff 2>&1)",
+      "Bash(cd /d/github/nexusberry.com && echo \"y\" | pnpm migrate:run 2>&1)"
     ]
   },
   "enableAllProjectMcpServers": true,

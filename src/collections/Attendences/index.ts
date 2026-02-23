@@ -22,7 +22,7 @@ export const Attendances: CollectionConfig = {
             {
               name: "expiry",
               type: "date",
-              defaultValue: new Date(Date.now() + 2 * 60 * 60 * 1000),
+              defaultValue: () => new Date(Date.now() + 2 * 60 * 60 * 1000),
               admin: {
                 position: "sidebar",
                 description: "After expiry time, the link will automatically be hidden from the student portal",
@@ -138,7 +138,7 @@ export const Attendances: CollectionConfig = {
                 {
                   name: 'date',
                   type: 'date',
-                  defaultValue: new Date(),
+                  defaultValue: () => new Date(),
                   admin: {
                     date: {
                       pickerAppearance: "dayOnly",

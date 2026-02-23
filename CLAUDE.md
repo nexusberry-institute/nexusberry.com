@@ -296,30 +296,64 @@ pool: {
 }
 ```
 
-### Migration Workflow
-1. Make collection/schema changes
-2. Run `pnpm migrate:create` to generate migration
-3. Review generated migration file
-4. Run `pnpm migrate:run` to apply
-5. Commit migration files to version control
+### Migration Workflow (Migrations-Only)
+
+**IMPORTANT:** `push: false` is set in `payload.config.ts`. The dev server will NOT auto-push schema changes. All schema changes must go through migrations.
+
+**Baseline migration:** `src/migrations/20260223_083127.ts` (no-op) + `.json` snapshot. All future migrations diff against this snapshot.
+
+```bash
+# 1. Edit collection files in src/collections/
+
+# 2. Regenerate TypeScript types
+pnpm generate:types
+
+# 3. Create migration (diffs collection changes against .json snapshot — does NOT touch the DB)
+pnpm migrate:create --name descriptive_name
+
+# 4. Review the generated .ts file in src/migrations/ — verify the SQL
+
+# 5. Apply migration to production DB
+pnpm migrate:run
+
+# 6. Check status
+pnpm migrate:status
+
+# 7. Commit everything: collection changes + types + migration files
+git add src/collections/ src/payload-types.ts src/migrations/
+git commit -m "Add migration for [description]"
+
+# 8. Push — Vercel deploys automatically
+git push
+```
+
+**Rollback if needed:** `pnpm migrate:rollback`
 
 ### Debugging
 - Email: `pnpm test:email`
 - Environment: `pnpm test:env`
 - Scripts located in `scripts/` directory
 
-## Local Development Workflow
+## Deployment & Environment
 
-### Dual Environment Architecture
+### Current Setup
 
-The project uses two separate environments:
+| Context | Database | File Storage | Env File |
+|---------|----------|--------------|----------|
+| **Local Dev** | Supabase PostgreSQL (production) | `public/media/` (local) | `.env.local` |
+| **Vercel Deploy** | Supabase PostgreSQL (production) | UploadThing CDN | Vercel env vars |
 
-| Environment | Database | File Storage | Config File |
-|-------------|----------|--------------|-------------|
-| **Local Dev** | Docker PostgreSQL (localhost:5432) | `public/media/` (local) | `.env.local` |
-| **Production** | Supabase PostgreSQL | UploadThing CDN | `.env` |
+**Local dev uses the production database directly.** Both `pnpm dev` and `pnpm migrate:run` hit the same Supabase DB. Be careful with destructive migrations.
 
-**How it works:** Next.js automatically loads `.env.local` with higher priority than `.env`. When running `pnpm dev`, local config is used. In CI/CD (where `.env.local` doesn't exist), production `.env` is used.
+**Vercel build command:** `pnpm ci` (runs `payload migrate && pnpm build`). Set as override in Vercel project settings.
+
+### How Deployment Works
+
+1. Push to `main` triggers Vercel build
+2. Vercel runs `pnpm ci` → `payload migrate` checks `payload_migrations` table
+3. If migration was already applied locally via `pnpm migrate:run`, Vercel skips it
+4. If migration is pending (you didn't run it locally), Vercel applies it during build
+5. `pnpm build` runs after migrations complete
 
 ### Key Environment Variable: PAYLOAD_LOCAL_STORAGE
 
@@ -327,13 +361,25 @@ The project uses two separate environments:
 # .env.local (local development)
 PAYLOAD_LOCAL_STORAGE=true   # Uses public/media/ for uploads
 
-# .env (production)
+# Vercel (production)
 PAYLOAD_LOCAL_STORAGE=false  # Uses UploadThing CDN storage
 ```
 
 The S3 storage plugin is conditionally loaded in `src/plugins/index.ts` based on this variable.
 
-### Docker Commands
+### Local Development Setup
+
+```bash
+# Start dev server (connects to production Supabase DB via .env.local)
+pnpm dev
+
+# Access: http://localhost:3000/admin
+# First run creates superadmin: admin@nexusberry.com / 12345678
+```
+
+### Docker Commands (Optional — for isolated local DB)
+
+If you want a separate local database instead of using production directly:
 
 ```bash
 pnpm docker:up      # Start local PostgreSQL container
@@ -342,67 +388,19 @@ pnpm docker:reset   # Wipe database and restart (destructive!)
 pnpm dev:setup      # Start Docker + dev server in one command
 ```
 
-### Local Development Setup
-
-```bash
-# 1. Start Docker PostgreSQL
-pnpm docker:up
-
-# 2. Start dev server (uses .env.local automatically)
-pnpm dev
-
-# Access: http://localhost:3000/admin
-# First run creates superadmin: admin@nexusberry.com / 12345678
-```
-
-### Migration Workflow (Local → Production)
-
-**IMPORTANT:** Always create and test migrations locally before deploying.
-
-```bash
-# 1. Make collection changes in src/collections/
-
-# 2. Generate migration (uses local Docker PostgreSQL)
-pnpm migrate:create
-
-# 3. Test migration locally
-pnpm migrate:run
-
-# 4. Check status
-pnpm migrate:status
-
-# 5. If issues, rollback
-pnpm migrate:rollback
-
-# 6. Commit migration files
-git add src/migrations/
-git commit -m "Add migration for [description]"
-```
-
-**Why Docker PostgreSQL:** Both local and production use PostgreSQL, so migrations are compatible. This avoids SQL dialect issues that would occur with SQLite.
-
-### Production Build Testing
-
-To test production build locally (uses production `.env`):
-
-```bash
-# Temporarily disable local config
-mv .env.local .env.local.bak
-
-# Run production build
-pnpm build
-
-# Restore local config
-mv .env.local.bak .env.local
-```
+To use Docker DB, update `DATABASE_URI` in `.env.local` to `postgresql://nexusberry:nexusberry@localhost:5432/nexusberry`.
 
 ### File Structure for Environments
 
 ```
 ├── .env                    # Production config (Supabase DB + UploadThing) - gitignored
-├── .env.local              # Local dev config (Docker + local uploads) - gitignored
+├── .env.local              # Local dev config (production DB + local uploads) - gitignored
 ├── .env.example            # Template for new developers - committed
-├── docker-compose.yml      # Local PostgreSQL container
+├── docker-compose.yml      # Optional local PostgreSQL container
+├── src/migrations/         # Migration files (committed to version control)
+│   ├── 20260223_083127.ts  # Baseline migration (no-op)
+│   ├── 20260223_083127.json # Drizzle schema snapshot (DO NOT EDIT)
+│   └── index.ts            # Auto-generated migration registry
 ├── public/media/           # Local uploads directory - gitignored
 │   └── .gitkeep
 └── DEVELOPMENT.md          # Detailed workflow documentation
@@ -421,10 +419,11 @@ if (process.env.PAYLOAD_LOCAL_STORAGE !== 'true') {
 
 When `PAYLOAD_LOCAL_STORAGE=true`, PayloadCMS uses the `staticDir` from `Media.ts` (`public/media/`).
 
-### Important Notes for Development
+### Important Notes
 
-1. **Always start Docker first:** Run `pnpm docker:up` before `pnpm dev`
-2. **Migrations use local DB:** `pnpm migrate:create` generates PostgreSQL-compatible migrations
-3. **Build requires production DB or no .env.local:** The build process connects to the database
-4. **Local uploads are gitignored:** `public/media/*` is in `.gitignore`
-5. **CI/CD runs migrations:** The `pnpm ci` command runs `payload migrate && pnpm build`
+1. **`push: false` is enforced:** All schema changes require migrations. The dev server will not auto-apply changes.
+2. **Local dev hits production DB:** Be careful with `pnpm migrate:run` — it modifies the live database.
+3. **Review migrations before running:** Always check the generated SQL in `src/migrations/` before applying.
+4. **Never edit `.json` snapshot files:** Drizzle uses these to diff future migrations. Only edit the `.ts` files if needed.
+5. **Vercel runs migrations on deploy:** The `pnpm ci` build command handles this automatically.
+6. **Local uploads are gitignored:** `public/media/*` is in `.gitignore`
