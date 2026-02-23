@@ -1940,10 +1940,6 @@ export interface Quiz {
   title: string;
   thumbnail?: (number | null) | Media;
   questions?: (number | QuizQuestion)[] | null;
-  /**
-   * When enabled, this quiz will be displayed on the frontend.
-   */
-  visible?: boolean | null;
   slug?: string | null;
   slugLock?: boolean | null;
   tags?: string[] | null;
@@ -2097,6 +2093,10 @@ export interface Tutorial {
     [k: string]: unknown;
   } | null;
   quiz?: (number | null) | Quiz;
+  /**
+   * When enabled, the quiz tab will be displayed on the frontend.
+   */
+  showQuiz?: boolean | null;
   assignment?: {
     root: {
       type: string;
@@ -3443,7 +3443,6 @@ export interface QuizzesSelect<T extends boolean = true> {
   title?: T;
   thumbnail?: T;
   questions?: T;
-  visible?: T;
   slug?: T;
   slugLock?: T;
   tags?: T;
@@ -3513,6 +3512,7 @@ export interface TutorialsSelect<T extends boolean = true> {
   bunnyVideoId?: T;
   content?: T;
   quiz?: T;
+  showQuiz?: T;
   assignment?: T;
   codeUrl?: T;
   presentationUrl?: T;

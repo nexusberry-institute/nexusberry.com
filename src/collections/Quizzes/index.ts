@@ -25,16 +25,6 @@ export const Quizzes: CollectionConfig = {
       hasMany: true
     },
     // Sidebar fields
-    {
-      name: 'visible',
-      type: 'checkbox',
-      defaultValue: false,
-      label: 'Visible on Frontend',
-      admin: {
-        position: 'sidebar',
-        description: 'When enabled, this quiz will be displayed on the frontend.',
-      }
-    },
 ...slugField(),
     {
       name: 'tags',

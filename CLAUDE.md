@@ -427,3 +427,35 @@ When `PAYLOAD_LOCAL_STORAGE=true`, PayloadCMS uses the `staticDir` from `Media.t
 4. **Never edit `.json` snapshot files:** Drizzle uses these to diff future migrations. Only edit the `.ts` files if needed.
 5. **Vercel runs migrations on deploy:** The `pnpm ci` build command handles this automatically.
 6. **Local uploads are gitignored:** `public/media/*` is in `.gitignore`
+
+### Gotchas & Lessons Learned
+
+**Vercel build command must be `pnpm run ci`, not `pnpm ci`:**
+pnpm interprets `pnpm ci` as its own built-in command (which doesn't exist), not the `ci` script in package.json. Always use `pnpm run ci` to explicitly run the script.
+
+**Never use dynamic values as `defaultValue` directly — use a function:**
+```typescript
+// BAD — evaluated once at import time, bakes a static value into the DB schema
+defaultValue: new Date()
+defaultValue: generateCode()
+
+// GOOD — called fresh per document creation, no DB-level default
+defaultValue: () => new Date()
+defaultValue: () => generateCode()
+```
+Static `defaultValue` causes `migrate:create` to generate noise migrations every time (changing the frozen timestamp/code). Function defaults are handled by Payload at runtime, not at the DB schema level.
+
+**Baseline migration must be a no-op when DB already has the schema:**
+When switching from `push` mode to migrations, the generated baseline will contain CREATE TABLE statements for all tables. Replace `up()` and `down()` with empty functions — the `.json` snapshot is the critical piece that Drizzle diffs against. Running the generated SQL would fail since tables already exist.
+
+**Watch for column name mismatches after refactoring collection field grouping:**
+If a collection previously had fields inside a `tabs` or `group` with a name (e.g., `basicInfo`), Payload prefixes DB columns (e.g., `basic_info_title`). Removing the named group changes the expected column to `title`, but the DB still has `basic_info_title`. The Drizzle snapshot captures the *current* collection definition, not the actual DB state. A manual migration is needed to rename or recreate the table.
+
+**`batch = -1` in `payload_migrations` means dev push was used:**
+This row causes an interactive confirmation prompt during `payload migrate`. On Vercel (non-interactive), this hangs the build. Fix by deleting the row from Supabase SQL editor: `DELETE FROM payload_migrations WHERE batch = -1;`
+
+**`DROP TABLE ... CASCADE` only drops foreign key constraints, not dependent tables:**
+When dropping a parent table with CASCADE, child tables that reference it via foreign keys are NOT dropped — only the FK constraints are removed. Always explicitly drop child tables (`_texts`, `_rels`) if they need to be recreated.
+
+**Always use `DROP TABLE IF EXISTS` and `CREATE TABLE IF NOT EXISTS` in manual migrations:**
+When writing migration SQL by hand (not auto-generated), use defensive SQL to handle partially-applied states from failed migration runs. Payload doesn't auto-rollback failed migrations.

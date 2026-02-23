@@ -95,6 +95,15 @@ export const Tutorials: CollectionConfig = {
               relationTo: 'quizzes',
               label: 'Quiz',
             },
+            {
+              name: 'showQuiz',
+              type: 'checkbox',
+              defaultValue: true,
+              label: 'Show Quiz',
+              admin: {
+                description: 'When enabled, the quiz tab will be displayed on the frontend.',
+              },
+            },
           ],
         },
         {

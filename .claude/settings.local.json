@@ -47,7 +47,13 @@
       "Bash(cd /d/github/nexusberry.com && pnpm migrate:status 2>&1)",
       "Bash(cd /d/github/nexusberry.com && pnpm migrate:create --name claude_md_update 2>&1)",
       "Bash(cd /d/github/nexusberry.com && pnpm migrate:create --name test_no_diff 2>&1)",
-      "Bash(cd /d/github/nexusberry.com && echo \"y\" | pnpm migrate:run 2>&1)"
+      "Bash(cd /d/github/nexusberry.com && echo \"y\" | pnpm migrate:run 2>&1)",
+      "Bash(cd /d/github/nexusberry.com && echo \"y\" | pnpm migrate:rollback 2>&1)",
+      "Bash(cd /d/github/nexusberry.com && pnpm migrate:create --name drop_dynamic_defaults 2>&1)",
+      "Bash(cd /d/github/nexusberry.com && pnpm migrate:create --name remove_quizzes_status 2>&1)",
+      "Bash(cd:*)",
+      "Bash(cd /d/github/nexusberry.com && pnpm migrate:create --name move_quiz_visible_to_tutorials 2>&1)",
+      "Bash(cd /d/github/nexusberry.com && pnpm migrate:run 2>&1)"
     ]
   },
   "enableAllProjectMcpServers": true,

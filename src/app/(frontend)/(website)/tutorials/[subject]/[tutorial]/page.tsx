@@ -323,6 +323,7 @@ export default async function TutorialPage({
         <TutorialTabs
           content={tutorial.content ?? null}
           quiz={typeof tutorial.quiz === 'object' ? tutorial.quiz : null}
+          showQuiz={tutorial.showQuiz}
           assignment={tutorial.assignment ?? null}
           codeUrl={tutorial.codeUrl ?? null}
           presentationUrl={tutorial.presentationUrl ?? null}

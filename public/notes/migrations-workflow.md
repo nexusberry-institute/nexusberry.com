@@ -1,3 +1,7 @@
+From now on, every schema change follows: edit collection → pnpm generate:types → pnpm migrate:create --name name → review SQL → pnpm migrate:run → commit & push.
+
+---
+
 ● Exact workflow now:
 
   1. Edit collection — e.g. add a field in src/collections/Quizzes/index.ts

@@ -11,6 +11,7 @@ import type { DefaultTypedEditorState } from '@payloadcms/richtext-lexical'
 type Props = {
   content?: DefaultTypedEditorState | null
   quiz?: Quiz | null
+  showQuiz?: boolean | null
   assignment?: DefaultTypedEditorState | null
   codeUrl?: string | null
   presentationUrl?: string | null
@@ -61,11 +62,11 @@ const PresentationIcon = (
   </svg>
 )
 
-export default function TutorialTabs({ content, quiz, assignment, codeUrl, presentationUrl }: Props) {
+export default function TutorialTabs({ content, quiz, showQuiz, assignment, codeUrl, presentationUrl }: Props) {
   const tabs: TabConfig[] = []
 
   if (content) tabs.push({ id: 'cheatsheet', label: 'Cheatsheet', icon: CheatsheetIcon })
-  if (quiz?.visible) tabs.push({ id: 'quiz', label: 'Quiz', icon: QuizIcon })
+  if (showQuiz && quiz) tabs.push({ id: 'quiz', label: 'Quiz', icon: QuizIcon })
   if (assignment) tabs.push({ id: 'assignment', label: 'Assignment', icon: AssignmentIcon })
   if (codeUrl) tabs.push({ id: 'code', label: 'Code', icon: CodeIcon })
   if (presentationUrl) tabs.push({ id: 'presentation', label: 'Presentation', icon: PresentationIcon })
@@ -94,7 +95,7 @@ export default function TutorialTabs({ content, quiz, assignment, codeUrl, prese
           </TabsContent>
         )}
 
-        {quiz?.visible && (
+        {showQuiz && quiz && (
           <TabsContent value="quiz" className="mt-6">
             <QuizSection quiz={quiz} />
           </TabsContent>

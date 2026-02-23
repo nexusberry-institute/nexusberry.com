@@ -181,6 +181,7 @@ async function main() {
         quiz: quizId,
       },
       overrideAccess: true,
+      context: { disableRevalidate: true },
     })
     console.log(`Updated tutorial ID ${doc.id}`)
   } else {
@@ -194,6 +195,7 @@ async function main() {
         quiz: quizId,
       },
       overrideAccess: true,
+      context: { disableRevalidate: true },
     })
     console.log(`Created tutorial ID ${created.id}`)
   }
