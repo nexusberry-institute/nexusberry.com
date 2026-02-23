@@ -1940,6 +1940,10 @@ export interface Quiz {
   title: string;
   thumbnail?: (number | null) | Media;
   questions?: (number | QuizQuestion)[] | null;
+  /**
+   * When enabled, this quiz will be displayed on the frontend.
+   */
+  visible?: boolean | null;
   status?: boolean | null;
   slug?: string | null;
   slugLock?: boolean | null;
@@ -3440,6 +3444,7 @@ export interface QuizzesSelect<T extends boolean = true> {
   title?: T;
   thumbnail?: T;
   questions?: T;
+  visible?: T;
   status?: T;
   slug?: T;
   slugLock?: T;

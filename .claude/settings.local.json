@@ -43,7 +43,8 @@
       "mcp__playwright__browser_close",
       "mcp__playwright__browser_console_messages",
       "Bash(grep:*)",
-      "Bash(tail:*)"
+      "Bash(tail:*)",
+      "Bash(cd /d/github/nexusberry.com && pnpm migrate:status 2>&1)"
     ]
   },
   "enableAllProjectMcpServers": true,

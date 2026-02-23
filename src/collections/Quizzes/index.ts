@@ -26,6 +26,16 @@ export const Quizzes: CollectionConfig = {
     },
     // Sidebar fields
     {
+      name: 'visible',
+      type: 'checkbox',
+      defaultValue: false,
+      label: 'Visible on Frontend',
+      admin: {
+        position: 'sidebar',
+        description: 'When enabled, this quiz will be displayed on the frontend.',
+      }
+    },
+    {
       name: 'status',
       type: 'checkbox',
       defaultValue: false,
