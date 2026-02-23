@@ -35,15 +35,7 @@ export const Quizzes: CollectionConfig = {
         description: 'When enabled, this quiz will be displayed on the frontend.',
       }
     },
-    {
-      name: 'status',
-      type: 'checkbox',
-      defaultValue: false,
-      admin: {
-        position: 'sidebar',
-      }
-    },
-    ...slugField(),
+...slugField(),
     {
       name: 'tags',
       type: 'text',

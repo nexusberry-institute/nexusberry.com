@@ -1944,7 +1944,6 @@ export interface Quiz {
    * When enabled, this quiz will be displayed on the frontend.
    */
   visible?: boolean | null;
-  status?: boolean | null;
   slug?: string | null;
   slugLock?: boolean | null;
   tags?: string[] | null;
@@ -3445,7 +3444,6 @@ export interface QuizzesSelect<T extends boolean = true> {
   thumbnail?: T;
   questions?: T;
   visible?: T;
-  status?: T;
   slug?: T;
   slugLock?: T;
   tags?: T;
