@@ -1,78 +1,70 @@
 import { CollectionConfig } from 'payload'
+import { slugField } from '@/fields/slug'
 
 export const Quizzes: CollectionConfig = {
   slug: 'quizzes',
   admin: {
     group: "Classwork",
+    useAsTitle: 'title'
   },
   fields: [
+    {
+      name: 'title',
+      type: 'text',
+      required: true,
+    },
+    {
+      name: 'thumbnail',
+      type: 'upload',
+      relationTo: 'media'
+    },
+    {
+      name: 'questions',
+      type: 'relationship',
+      relationTo: 'quiz-questions',
+      hasMany: true
+    },
+    // Sidebar fields
     {
       name: 'status',
       type: 'checkbox',
       defaultValue: false,
       admin: {
-        position: 'sidebar'
+        position: 'sidebar',
       }
     },
+    ...slugField(),
     {
-      name: 'slug',
+      name: 'tags',
       type: 'text',
-      required: true,
-      unique: true,
+      hasMany: true,
       admin: {
-        position: 'sidebar'
+        position: 'sidebar',
       }
     },
     {
-      type: 'tabs',
-      tabs: [
-        {
-          name: 'Basic Info',
-          fields: [
-            {
-              name: 'title',
-              type: 'text',
-              required: true,
-            },
-            {
-              name: 'thumbnail',
-              type: 'upload',
-              relationTo: 'media'
-            },
-            {
-              name: 'tags',
-              type: 'text',
-              hasMany: true
-            },
-            {
-              name: "module",
-              type: "relationship",
-              relationTo: "modules",
-            },
-            {
-              name: "moduleTopic",
-              type: "relationship",
-              relationTo: "module-topics",
-            },
-            {
-              name: "lecture",
-              type: "relationship",
-              relationTo: "lectures",
-            }
-          ]
-        },
-        {
-          name: 'Questions',
-          fields: [
-            {
-              name: 'questions',
-              type: 'relationship',
-              relationTo: 'quiz-questions',
-              hasMany: true
-            },
-          ]
-        },
-      ]
+      name: "module",
+      type: "relationship",
+      relationTo: "modules",
+      admin: {
+        position: 'sidebar',
+      }
+    },
+    {
+      name: "moduleTopic",
+      type: "relationship",
+      relationTo: "module-topics",
+      admin: {
+        position: 'sidebar',
+      }
+    },
+    {
+      name: "lecture",
+      type: "relationship",
+      relationTo: "lectures",
+      admin: {
+        position: 'sidebar',
+      }
     },
   ]
 }

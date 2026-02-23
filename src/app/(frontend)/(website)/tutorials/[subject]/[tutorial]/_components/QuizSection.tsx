@@ -9,8 +9,7 @@ type Props = {
 }
 
 export default function QuizSection({ quiz }: Props) {
-  const rawQuestions = quiz.Questions?.questions ?? []
-  const questions = rawQuestions.filter(
+  const questions = (quiz.questions ?? []).filter(
     (q): q is QuizQuestion => typeof q === 'object' && q !== null,
   )
 
@@ -37,17 +36,17 @@ export default function QuizSection({ quiz }: Props) {
     if (selectedOption === questions[currentQuestion]?.correctAnswer) {
       setScore((s) => s + 1)
     }
+  }
 
-    setTimeout(() => {
-      const nextQuestion = currentQuestion + 1
-      if (nextQuestion < questions.length) {
-        setCurrentQuestion(nextQuestion)
-        setAnswered(false)
-        setSelectedAnswer(null)
-      } else {
-        setShowScore(true)
-      }
-    }, 2000)
+  const handleNext = () => {
+    const nextQuestion = currentQuestion + 1
+    if (nextQuestion < questions.length) {
+      setCurrentQuestion(nextQuestion)
+      setAnswered(false)
+      setSelectedAnswer(null)
+    } else {
+      setShowScore(true)
+    }
   }
 
   const resetQuiz = () => {
@@ -146,6 +145,17 @@ export default function QuizSection({ quiz }: Props) {
           <div className="text-blue-700 text-sm">
             <RichText data={current.explanation} enableGutter={false} enableProse={false} />
           </div>
+        </div>
+      )}
+
+      {answered && (
+        <div className="flex justify-end">
+          <button
+            onClick={handleNext}
+            className="bg-primary text-primary-foreground px-6 py-2.5 rounded-lg font-medium hover:bg-primary/90 transition-colors"
+          >
+            {currentQuestion + 1 < questions.length ? 'Next Question' : 'See Results'}
+          </button>
         </div>
       )}
     </div>

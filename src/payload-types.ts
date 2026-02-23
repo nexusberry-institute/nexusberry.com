@@ -1937,19 +1937,16 @@ export interface Assignment {
  */
 export interface Quiz {
   id: number;
+  title: string;
+  thumbnail?: (number | null) | Media;
+  questions?: (number | QuizQuestion)[] | null;
   status?: boolean | null;
-  slug: string;
-  'Basic Info': {
-    title: string;
-    thumbnail?: (number | null) | Media;
-    tags?: string[] | null;
-    module?: (number | null) | Module;
-    moduleTopic?: (number | null) | ModuleTopic;
-    lecture?: (number | null) | Lecture;
-  };
-  Questions?: {
-    questions?: (number | QuizQuestion)[] | null;
-  };
+  slug?: string | null;
+  slugLock?: boolean | null;
+  tags?: string[] | null;
+  module?: (number | null) | Module;
+  moduleTopic?: (number | null) | ModuleTopic;
+  lecture?: (number | null) | Lecture;
   updatedAt: string;
   createdAt: string;
 }
@@ -1978,6 +1975,9 @@ export interface QuizQuestion {
     option?: string | null;
     id?: string | null;
   }[];
+  /**
+   * Zero-based index of the correct option (e.g., 0 for first, 1 for second)
+   */
   correctAnswer: number;
   explanation?: {
     root: {
@@ -3437,23 +3437,16 @@ export interface AssignmentsSelect<T extends boolean = true> {
  * via the `definition` "quizzes_select".
  */
 export interface QuizzesSelect<T extends boolean = true> {
+  title?: T;
+  thumbnail?: T;
+  questions?: T;
   status?: T;
   slug?: T;
-  'Basic Info'?:
-    | T
-    | {
-        title?: T;
-        thumbnail?: T;
-        tags?: T;
-        module?: T;
-        moduleTopic?: T;
-        lecture?: T;
-      };
-  Questions?:
-    | T
-    | {
-        questions?: T;
-      };
+  slugLock?: T;
+  tags?: T;
+  module?: T;
+  moduleTopic?: T;
+  lecture?: T;
   updatedAt?: T;
   createdAt?: T;
 }
