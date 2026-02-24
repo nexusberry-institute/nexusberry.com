@@ -1,4 +1,4 @@
-import { getFieldsToSign, getPayload, jwtSign } from "payload"
+import { getPayload } from "payload"
 import configPromise from "@payload-config"
 import { Media, User } from "@/payload-types"
 import { randomBytes } from "node:crypto"
@@ -77,21 +77,33 @@ export const loginWith = async (user: User) => {
     throw new Error("Collection is not used for authentication")
   }
 
-  const fieldsToSign = getFieldsToSign({
-    collectionConfig,
-    email: user.email,
-    user: { ...user, collection: 'users' },
+  // Use payload.login() — the exact same code path as local login
+  // Set a temp password since we can't read the hashed one
+  const tempPassword = randomBytes(32).toString("hex")
+
+  await payload.update({
+    collection: 'users',
+    id: user.id,
+    data: { password: tempPassword },
+    overrideAccess: true,
   })
 
-  const { token } = await jwtSign({
-    fieldsToSign,
-    secret: payload.secret,
-    tokenExpiration: collectionConfig.auth.tokenExpiration,
+  const result = await payload.login({
+    collection: 'users',
+    data: {
+      email: user.email,
+      password: tempPassword,
+    },
+    overrideAccess: true,
   })
+
+  if (!result.token) {
+    throw new Error("Failed to generate authentication token")
+  }
 
   return {
     name: `${payload.config.cookiePrefix}-token`,
-    value: token,
+    value: result.token,
     tokenExpiration: collectionConfig.auth.tokenExpiration,
   }
 }
