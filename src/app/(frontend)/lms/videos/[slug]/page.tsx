@@ -4,12 +4,11 @@ import { Video } from '@/payload-types'
 import Tabs from '../_components/Tabs'
 import { RichText } from '@payloadcms/richtext-lexical/react'
 import type { SerializedEditorState } from '@payloadcms/richtext-lexical/lexical'
-import { extractYouTubeId } from '@/utilities/youtube'
-import SecureVideoPlayer from '@/components/SecureVideoPlayer'
+import LmsVideoPlayer from './_components/LmsVideoPlayer'
 
 async function getVideoBySlug(slug: string): Promise<Video | null> {
   const res = await fetch(
-    `${process.env.NEXT_PUBLIC_SERVER_URL}/api/videos?where[slug][equals]=${slug}`,
+    `${process.env.NEXT_PUBLIC_SERVER_URL}/api/videos?where[slug][equals]=${slug}&select[title]=true&select[notes]=true&select[assignment]=true&select[qa]=true&select[poster]=true&select[slug]=true`,
   )
   if (!res.ok) return null
   const data = await res.json()
@@ -51,10 +50,6 @@ export default async function VideoDetailPage({ params }: { params: Promise<{ sl
       </div>
     )
   }
-
-  const youtubeId = extractYouTubeId(video.videoUrl)
-
-  //   console.log('YouTube ID extracted:', youtubeId, 'from URL:', video.videoUrl)
 
   // Tabs ke data
   const tabs = [
@@ -148,36 +143,7 @@ export default async function VideoDetailPage({ params }: { params: Promise<{ sl
 
       {/* Video Player */}
       <div className="relative overflow-hidden rounded-xl bg-black shadow-2xl">
-        {youtubeId ? (
-          <SecureVideoPlayer type="youtube" videoId={youtubeId} title={video.title} />
-        ) : (
-          <div className="aspect-video flex items-center justify-center bg-gray-900">
-            <div className="text-center p-8">
-              <div className="mb-4">
-                <svg
-                  className="w-16 h-16 mx-auto text-gray-400"
-                  fill="currentColor"
-                  viewBox="0 0 20 20"
-                >
-                  <path
-                    fillRule="evenodd"
-                    d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z"
-                    clipRule="evenodd"
-                  />
-                </svg>
-              </div>
-              <p className="text-white mb-4">External Video Link</p>
-              <a
-                href={video.videoUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-block bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg transition-colors text-lg"
-              >
-                Watch Video
-              </a>
-            </div>
-          </div>
-        )}
+        <LmsVideoPlayer slug={slug} title={video.title} />
       </div>
 
       {/* Tabs */}

@@ -31,6 +31,21 @@ const queryTutorialBySlug = (slug: string) =>
         where: { slug: { equals: slug } },
         depth: 2,
         limit: 1,
+        select: {
+          title: true,
+          slug: true,
+          subject: true,
+          label: true,
+          showVideos: true,
+          showQuiz: true,
+          showAssignment: true,
+          description: true,
+          content: true,
+          quiz: true,
+          assignment: true,
+          codeUrl: true,
+          presentationUrl: true,
+        },
       })
       return result.docs[0] || null
     },
@@ -180,8 +195,6 @@ export default async function TutorialPage({
       )
     }
 
-    const videos = tutorial.videos ?? []
-
     return (
       <div>
         {/* Hero Section */}
@@ -273,8 +286,8 @@ export default async function TutorialPage({
         )}
 
         {/* Video Section */}
-        {tutorial.showVideos !== false && videos.length > 0 && (
-          <VideoPlayer videos={videos} title={tutorial.title} />
+        {tutorial.showVideos !== false && (
+          <VideoPlayer slug={tutorialSlug} title={tutorial.title} />
         )}
 
         {/* Tabbed Content */}

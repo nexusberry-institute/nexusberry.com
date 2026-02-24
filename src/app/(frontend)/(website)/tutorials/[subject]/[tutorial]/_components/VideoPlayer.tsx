@@ -1,38 +1,37 @@
 'use client'
 
 import { useState } from 'react'
-import { extractYouTubeId } from '@/utilities/youtube'
+import { useTutorialVideos } from '@/hooks/useSecureVideo'
 import SecureVideoPlayer from '@/components/SecureVideoPlayer'
 
-type Video = {
-  videoSource?: 'youtube' | 'bunny' | null
-  youtubeUrl?: string | null
-  bunnyVideoId?: string | null
-  id?: string | null
-}
-
 type Props = {
-  videos: Video[]
+  slug: string
   title: string
 }
 
-function getVideoEmbed(video: Video): { type: 'youtube' | 'bunny'; id: string } | null {
-  if (video.videoSource === 'youtube' && video.youtubeUrl) {
-    const id = extractYouTubeId(video.youtubeUrl)
-    if (id) return { type: 'youtube', id }
-  }
-  if (video.videoSource === 'bunny' && video.bunnyVideoId) {
-    return { type: 'bunny', id: video.bunnyVideoId }
-  }
-  return null
-}
-
-export default function VideoPlayer({ videos, title }: Props) {
+export default function VideoPlayer({ slug, title }: Props) {
   const [activeIndex, setActiveIndex] = useState(0)
+  const { data: playableVideos, isLoading, error } = useTutorialVideos(slug)
 
-  const playableVideos = videos
-    .map((v, i) => ({ video: v, embed: getVideoEmbed(v), originalIndex: i }))
-    .filter((v): v is { video: Video; embed: NonNullable<ReturnType<typeof getVideoEmbed>>; originalIndex: number } => v.embed !== null)
+  if (isLoading) {
+    return (
+      <section className="padding-x max-w-5xl mx-auto py-10 md:py-14">
+        <div className="relative w-full overflow-hidden rounded-xl shadow-lg border border-border bg-black aspect-video flex items-center justify-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-white" />
+        </div>
+      </section>
+    )
+  }
+
+  if (error) {
+    return (
+      <section className="padding-x max-w-5xl mx-auto py-10 md:py-14">
+        <div className="relative w-full overflow-hidden rounded-xl shadow-lg border border-border bg-black aspect-video flex items-center justify-center">
+          <p className="text-gray-400">Failed to load videos</p>
+        </div>
+      </section>
+    )
+  }
 
   if (playableVideos.length === 0) return null
 
@@ -43,8 +42,8 @@ export default function VideoPlayer({ videos, title }: Props) {
       {/* Main Video */}
       <div className="relative w-full overflow-hidden rounded-xl shadow-lg border border-border bg-black">
         <SecureVideoPlayer
-          type={active.embed.type}
-          videoId={active.embed.id}
+          type={active.type}
+          videoId={active.id}
           title={title}
         />
       </div>
@@ -54,7 +53,7 @@ export default function VideoPlayer({ videos, title }: Props) {
         <div className="mt-4 flex gap-3 overflow-x-auto pb-2">
           {playableVideos.map((v, idx) => (
             <button
-              key={v.video.id ?? idx}
+              key={`${v.type}-${v.id}-${idx}`}
               onClick={() => setActiveIndex(idx)}
               className={`flex-shrink-0 w-40 rounded-lg border-2 overflow-hidden transition-colors ${idx === activeIndex
                   ? 'border-primary shadow-md'
