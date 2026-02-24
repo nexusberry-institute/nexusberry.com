@@ -14,17 +14,13 @@ import { Staffs } from './Staffs'
 import Campaigns from './Campaigns'
 import { Messages } from './Messages'
 import { Teachers } from './Teachers'
-import { TrainingCourses } from './TrainingCourses'
 import { Batches } from './Batches'
 import { TimeTable } from './TimeTable'
 import { Students } from './Students'
-import { Enrollments } from './Enrollments'
 import { FeeReceipts } from './FeeReceipts'
 import { Attendances } from './Attendences'
 import { AttendanceDetails } from './AttendanceDetails'
 import { Leads } from './Leads'
-import { PaymentPlans } from './PaymentPlans'
-import { DiscountCodes } from './DiscountCodes'
 import { SOPs } from './SOPs'
 import { CoursesCollection } from './CoursesCollection'
 import { ContactMessages } from './ContactMessages'
@@ -53,13 +49,9 @@ const collections = [
    Staffs,
    Messages,
    Teachers,
-   TrainingCourses,
-   PaymentPlans, //payment plan for training courses
-   DiscountCodes, //discount Code for payment plans
    Batches,
    TimeTable,
    Students,
-   Enrollments,
    FeeReceipts,
    Attendances,
    AttendanceDetails,

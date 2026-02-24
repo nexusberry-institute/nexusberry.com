@@ -10,6 +10,7 @@ import * as migration_20260224_add_show_code_presentation_flags from './20260224
 import * as migration_20260224_drop_lectures from './20260224_drop_lectures';
 import * as migration_20260224_drop_videos_assignments from './20260224_drop_videos_assignments';
 import * as migration_20260224_172300_drop_coursework_modules_moduletopics from './20260224_172300_drop_coursework_modules_moduletopics';
+import * as migration_20260224_180000_drop_training_courses_payment_plans_discount_codes_enrollments from './20260224_180000_drop_training_courses_payment_plans_discount_codes_enrollments';
 
 export const migrations = [
   {
@@ -71,5 +72,10 @@ export const migrations = [
     up: migration_20260224_172300_drop_coursework_modules_moduletopics.up,
     down: migration_20260224_172300_drop_coursework_modules_moduletopics.down,
     name: '20260224_172300_drop_coursework_modules_moduletopics',
+  },
+  {
+    up: migration_20260224_180000_drop_training_courses_payment_plans_discount_codes_enrollments.up,
+    down: migration_20260224_180000_drop_training_courses_payment_plans_discount_codes_enrollments.down,
+    name: '20260224_180000_drop_training_courses_payment_plans_discount_codes_enrollments',
   },
 ];

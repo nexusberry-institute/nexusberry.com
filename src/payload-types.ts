@@ -82,13 +82,9 @@ export interface Config {
     staffs: Staff;
     messages: Message;
     teachers: Teacher;
-    'training-courses': TrainingCourse;
-    'payment-plans': PaymentPlan;
-    'discount-codes': DiscountCode;
     batches: Batch;
     'time-table': TimeTable;
     students: Student;
-    enrollments: Enrollment;
     'fee-receipts': FeeReceipt;
     attendance: Attendance;
     'attendance-details': AttendanceDetail;
@@ -127,18 +123,8 @@ export interface Config {
     campaigns: {
       campaignLeads: 'leads';
     };
-    'training-courses': {
-      relatedPaymentPlans: 'payment-plans';
-    };
     batches: {
-      relatedEnrollments: 'enrollments';
       batchTimeTable: 'time-table';
-    };
-    students: {
-      studentEnrollments: 'enrollments';
-    };
-    enrollments: {
-      relatedFeeReciepts: 'fee-receipts';
     };
     attendance: {
       relatedAttendanceDetails: 'attendance-details';
@@ -159,13 +145,9 @@ export interface Config {
     staffs: StaffsSelect<false> | StaffsSelect<true>;
     messages: MessagesSelect<false> | MessagesSelect<true>;
     teachers: TeachersSelect<false> | TeachersSelect<true>;
-    'training-courses': TrainingCoursesSelect<false> | TrainingCoursesSelect<true>;
-    'payment-plans': PaymentPlansSelect<false> | PaymentPlansSelect<true>;
-    'discount-codes': DiscountCodesSelect<false> | DiscountCodesSelect<true>;
     batches: BatchesSelect<false> | BatchesSelect<true>;
     'time-table': TimeTableSelect<false> | TimeTableSelect<true>;
     students: StudentsSelect<false> | StudentsSelect<true>;
-    enrollments: EnrollmentsSelect<false> | EnrollmentsSelect<true>;
     'fee-receipts': FeeReceiptsSelect<false> | FeeReceiptsSelect<true>;
     attendance: AttendanceSelect<false> | AttendanceSelect<true>;
     'attendance-details': AttendanceDetailsSelect<false> | AttendanceDetailsSelect<true>;
@@ -1305,247 +1287,10 @@ export interface Student {
     state?: string | null;
     country?: string | null;
   };
-  studentEnrollments?: {
-    docs?: (number | Enrollment)[];
-    hasNextPage?: boolean;
-    totalDocs?: number;
-  };
   profilePicture?: (number | null) | Media;
   otpVerified?: boolean | null;
   otp?: string | null;
   otpGeneratedAt?: string | null;
-  updatedAt: string;
-  createdAt: string;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "enrollments".
- */
-export interface Enrollment {
-  id: number;
-  student: number | Student;
-  'training-course': number | TrainingCourse;
-  slug: string;
-  batchEnrollments?:
-    | {
-        batch?: (number | null) | Batch;
-        mode?: ('ONLINE' | 'PHYSICAL' | 'HYBRID') | null;
-        id?: string | null;
-      }[]
-    | null;
-  selectedPaymentPlan: number | PaymentPlan;
-  discountCode?: (number | null) | DiscountCode;
-  admissionDate?: string | null;
-  admissionFee?: number | null;
-  freezeDate?: string | null;
-  unfreezeDate?: string | null;
-  completionState?: ('CONTINUE' | 'COMPLETED' | 'LEFT' | 'FREEZE') | null;
-  certificateStatus?: ('ISSUED' | 'PENDING') | null;
-  isSuspended?: boolean | null;
-  note?: string | null;
-  relatedFeeReciepts?: {
-    docs?: (number | FeeReceipt)[];
-    hasNextPage?: boolean;
-    totalDocs?: number;
-  };
-  updatedAt: string;
-  createdAt: string;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "training-courses".
- */
-export interface TrainingCourse {
-  id: number;
-  status?: ('active' | 'inactive') | null;
-  title: string;
-  slug: string;
-  slugLock?: boolean | null;
-  description?: string | null;
-  departments?: (number | Department)[] | null;
-  /**
-   * Full price of the course
-   */
-  fullPrice: number;
-  relatedPaymentPlans?: {
-    docs?: (number | PaymentPlan)[];
-    hasNextPage?: boolean;
-    totalDocs?: number;
-  };
-  updatedAt: string;
-  createdAt: string;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "payment-plans".
- */
-export interface PaymentPlan {
-  id: number;
-  '_payment-plans_relatedPaymentPlans_order'?: string | null;
-  'training-course': number | TrainingCourse;
-  /**
-   * Full Price of selected course
-   */
-  totalPrice?: number | null;
-  name: string;
-  /**
-   * Mark one of the payment plans as popular
-   */
-  is_popular?: boolean | null;
-  description: string;
-  installments: {
-    amount: number;
-    /**
-     * Number of days for next Due Date
-     */
-    due_after_days?: number | null;
-    id?: string | null;
-  }[];
-  updatedAt: string;
-  createdAt: string;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "batches".
- */
-export interface Batch {
-  id: number;
-  medium: 'ONLINE' | 'PHYSICAL' | 'HYBRID';
-  active?: boolean | null;
-  note?: string | null;
-  courseTitle: string;
-  /**
-   * Pattern: Batch/StartDate/MMMYY.Teacher/nick.module/nick.TimeTable/Days/D.TimeTable/Time/HH:MM AM|PM
-   */
-  slug: string;
-  teachers?: (number | Teacher)[] | null;
-  /**
-   * Duration in weeks
-   */
-  duration: number;
-  startDate?: string | null;
-  endDate?: string | null;
-  relatedEnrollments?: {
-    docs?: (number | Enrollment)[];
-    hasNextPage?: boolean;
-    totalDocs?: number;
-  };
-  batchTimeTable?: {
-    docs?: (number | TimeTable)[];
-    hasNextPage?: boolean;
-    totalDocs?: number;
-  };
-  updatedAt: string;
-  createdAt: string;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "teachers".
- */
-export interface Teacher {
-  id: number;
-  user: number | User;
-  fullName: string;
-  nick: string;
-  dateOfBirth?: string | null;
-  phoneNumber?: string | null;
-  address?: {
-    street?: string | null;
-    city?: string | null;
-    state?: string | null;
-    zipCode?: string | null;
-    country?: string | null;
-  };
-  profilePicture?: (number | null) | Media;
-  payMode?: ('FIX' | 'PER_LECTURE') | null;
-  payPerLecture?: number | null;
-  fixPay?: number | null;
-  note?: string | null;
-  updatedAt: string;
-  createdAt: string;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "time-table".
- */
-export interface TimeTable {
-  id: number;
-  batch: number | Batch;
-  day: 'MONDAY' | 'TUESDAY' | 'WEDNESDAY' | 'THURSDAY' | 'FRIDAY' | 'SATURDAY' | 'SUNDAY';
-  startTime: string;
-  endTime: string;
-  room?: string | null;
-  updatedAt: string;
-  createdAt: string;
-}
-/**
- * Manage discount codes for training courses
- *
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "discount-codes".
- */
-export interface DiscountCode {
-  id: number;
-  /**
-   * Unique discount code (e.g., SAVE20)
-   */
-  code: string;
-  /**
-   * Link to the specific training course
-   */
-  'training-course': number | TrainingCourse;
-  /**
-   * Link to the payment plan of the training Course (e.g., Lump Sum or Installment)
-   */
-  paymentPlan: number | PaymentPlan;
-  /**
-   * Type of discount
-   */
-  discountType: 'percentage' | 'fixed';
-  /**
-   * Discount value (e.g., 20% or Rs 20 based on the discount type). This will be applied to each installment if there is more than one.
-   */
-  discountValue: number;
-  /**
-   * Maximum number of times this code can be used. Set to 0 if there is no usage limit.
-   */
-  usageLimit?: number | null;
-  /**
-   * Tracks how many times the code has been used
-   */
-  timesUsed?: number | null;
-  /**
-   * Expiry date and time of the discount code
-   */
-  expiryAt?: string | null;
-  /**
-   * Whether the code is currently valid (Will be auto changed, based on usage limit and time used)
-   */
-  isValid?: boolean | null;
-  /**
-   * Email of the specific user eligible for this discount code (this will sets usage_limit to 1)
-   */
-  userEmail?: string | null;
-  updatedAt: string;
-  createdAt: string;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "fee-receipts".
- */
-export interface FeeReceipt {
-  id: number;
-  student: number | Student;
-  enrollment: number | Enrollment;
-  amount: number;
-  verified?: boolean | null;
-  paidMethod?: ('BANK' | 'CASH' | 'JAZZCASH' | 'EASYPAISA') | null;
-  status?: ('RECEIVED' | 'PENDING' | 'DEAD') | null;
-  payDate?: string | null;
-  dueDate: string;
-  proofText?: string | null;
-  proofImage?: (number | null) | Media;
-  note?: string | null;
   updatedAt: string;
   createdAt: string;
 }
@@ -1577,6 +1322,94 @@ export interface Message {
   type?: ('GENERAL' | 'WHATSAPP') | null;
   hasPlaceholder?: boolean | null;
   staffNote?: string | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "teachers".
+ */
+export interface Teacher {
+  id: number;
+  user: number | User;
+  fullName: string;
+  nick: string;
+  dateOfBirth?: string | null;
+  phoneNumber?: string | null;
+  address?: {
+    street?: string | null;
+    city?: string | null;
+    state?: string | null;
+    zipCode?: string | null;
+    country?: string | null;
+  };
+  profilePicture?: (number | null) | Media;
+  payMode?: ('FIX' | 'PER_LECTURE') | null;
+  payPerLecture?: number | null;
+  fixPay?: number | null;
+  note?: string | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "batches".
+ */
+export interface Batch {
+  id: number;
+  medium: 'ONLINE' | 'PHYSICAL' | 'HYBRID';
+  active?: boolean | null;
+  note?: string | null;
+  courseTitle: string;
+  /**
+   * Pattern: Batch/StartDate/MMMYY.Teacher/nick.module/nick.TimeTable/Days/D.TimeTable/Time/HH:MM AM|PM
+   */
+  slug: string;
+  teachers?: (number | Teacher)[] | null;
+  /**
+   * Duration in weeks
+   */
+  duration: number;
+  startDate?: string | null;
+  endDate?: string | null;
+  batchTimeTable?: {
+    docs?: (number | TimeTable)[];
+    hasNextPage?: boolean;
+    totalDocs?: number;
+  };
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "time-table".
+ */
+export interface TimeTable {
+  id: number;
+  batch: number | Batch;
+  day: 'MONDAY' | 'TUESDAY' | 'WEDNESDAY' | 'THURSDAY' | 'FRIDAY' | 'SATURDAY' | 'SUNDAY';
+  startTime: string;
+  endTime: string;
+  room?: string | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "fee-receipts".
+ */
+export interface FeeReceipt {
+  id: number;
+  student: number | Student;
+  amount: number;
+  verified?: boolean | null;
+  paidMethod?: ('BANK' | 'CASH' | 'JAZZCASH' | 'EASYPAISA') | null;
+  status?: ('RECEIVED' | 'PENDING' | 'DEAD') | null;
+  payDate?: string | null;
+  dueDate: string;
+  proofText?: string | null;
+  proofImage?: (number | null) | Media;
+  note?: string | null;
   updatedAt: string;
   createdAt: string;
 }
@@ -1624,7 +1457,6 @@ export interface AttendanceDetail {
   id: number;
   attendance: number | Attendance;
   medium?: ('PHYSICAL' | 'ONLINE') | null;
-  enrollment: number | Enrollment;
   status?: ('PRESENT' | 'ABSENT' | 'LEAVE') | null;
   updatedAt: string;
   createdAt: string;
@@ -2190,18 +2022,6 @@ export interface PayloadLockedDocument {
         value: number | Teacher;
       } | null)
     | ({
-        relationTo: 'training-courses';
-        value: number | TrainingCourse;
-      } | null)
-    | ({
-        relationTo: 'payment-plans';
-        value: number | PaymentPlan;
-      } | null)
-    | ({
-        relationTo: 'discount-codes';
-        value: number | DiscountCode;
-      } | null)
-    | ({
         relationTo: 'batches';
         value: number | Batch;
       } | null)
@@ -2212,10 +2032,6 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'students';
         value: number | Student;
-      } | null)
-    | ({
-        relationTo: 'enrollments';
-        value: number | Enrollment;
       } | null)
     | ({
         relationTo: 'fee-receipts';
@@ -2810,61 +2626,6 @@ export interface TeachersSelect<T extends boolean = true> {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "training-courses_select".
- */
-export interface TrainingCoursesSelect<T extends boolean = true> {
-  status?: T;
-  title?: T;
-  slug?: T;
-  slugLock?: T;
-  description?: T;
-  departments?: T;
-  fullPrice?: T;
-  relatedPaymentPlans?: T;
-  updatedAt?: T;
-  createdAt?: T;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "payment-plans_select".
- */
-export interface PaymentPlansSelect<T extends boolean = true> {
-  '_payment-plans_relatedPaymentPlans_order'?: T;
-  'training-course'?: T;
-  totalPrice?: T;
-  name?: T;
-  is_popular?: T;
-  description?: T;
-  installments?:
-    | T
-    | {
-        amount?: T;
-        due_after_days?: T;
-        id?: T;
-      };
-  updatedAt?: T;
-  createdAt?: T;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "discount-codes_select".
- */
-export interface DiscountCodesSelect<T extends boolean = true> {
-  code?: T;
-  'training-course'?: T;
-  paymentPlan?: T;
-  discountType?: T;
-  discountValue?: T;
-  usageLimit?: T;
-  timesUsed?: T;
-  expiryAt?: T;
-  isValid?: T;
-  userEmail?: T;
-  updatedAt?: T;
-  createdAt?: T;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "batches_select".
  */
 export interface BatchesSelect<T extends boolean = true> {
@@ -2877,7 +2638,6 @@ export interface BatchesSelect<T extends boolean = true> {
   duration?: T;
   startDate?: T;
   endDate?: T;
-  relatedEnrollments?: T;
   batchTimeTable?: T;
   updatedAt?: T;
   createdAt?: T;
@@ -2917,7 +2677,6 @@ export interface StudentsSelect<T extends boolean = true> {
         state?: T;
         country?: T;
       };
-  studentEnrollments?: T;
   profilePicture?: T;
   otpVerified?: T;
   otp?: T;
@@ -2927,40 +2686,10 @@ export interface StudentsSelect<T extends boolean = true> {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "enrollments_select".
- */
-export interface EnrollmentsSelect<T extends boolean = true> {
-  student?: T;
-  'training-course'?: T;
-  slug?: T;
-  batchEnrollments?:
-    | T
-    | {
-        batch?: T;
-        mode?: T;
-        id?: T;
-      };
-  selectedPaymentPlan?: T;
-  discountCode?: T;
-  admissionDate?: T;
-  admissionFee?: T;
-  freezeDate?: T;
-  unfreezeDate?: T;
-  completionState?: T;
-  certificateStatus?: T;
-  isSuspended?: T;
-  note?: T;
-  relatedFeeReciepts?: T;
-  updatedAt?: T;
-  createdAt?: T;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "fee-receipts_select".
  */
 export interface FeeReceiptsSelect<T extends boolean = true> {
   student?: T;
-  enrollment?: T;
   amount?: T;
   verified?: T;
   paidMethod?: T;
@@ -2999,7 +2728,6 @@ export interface AttendanceSelect<T extends boolean = true> {
 export interface AttendanceDetailsSelect<T extends boolean = true> {
   attendance?: T;
   medium?: T;
-  enrollment?: T;
   status?: T;
   updatedAt?: T;
   createdAt?: T;

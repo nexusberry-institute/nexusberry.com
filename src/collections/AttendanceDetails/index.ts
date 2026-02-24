@@ -38,13 +38,6 @@ export const AttendanceDetails: CollectionConfig = {
       type: 'row',
       fields: [
         {
-          name: "enrollment",
-          type: "relationship",
-          relationTo: "enrollments",
-          hasMany: false,
-          required: true
-        },
-        {
           name: "status",
           type: "select",
           options: [

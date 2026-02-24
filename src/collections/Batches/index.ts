@@ -1,4 +1,4 @@
-import { CollectionConfig, PayloadRequest, CustomComponent } from 'payload'
+import { CollectionConfig } from 'payload'
 
 export const Batches: CollectionConfig = {
   slug: "batches",
@@ -6,11 +6,6 @@ export const Batches: CollectionConfig = {
   admin: {
     useAsTitle: "courseTitle",
     group: "Academic Operations",
-    components: {
-      edit: {
-        beforeDocumentControls: ['@/components/ExportButtons/ExportBatchEmails#ExportBatchContacts'],
-      },
-    }
   },
 
   access: {
@@ -137,18 +132,6 @@ export const Batches: CollectionConfig = {
                 },
               ]
             },
-          ]
-        },
-        {
-          label: "Batch Enrollments",
-          fields: [
-            {
-              name: "relatedEnrollments",
-              label: "Enrollments In This Batch",
-              type: "join",
-              collection: "enrollments",
-              on: "batchEnrollments.batch",
-            }
           ]
         },
         {

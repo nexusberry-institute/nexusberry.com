@@ -296,17 +296,6 @@ export const Students: CollectionConfig = {
             },
           ],
         },
-        {
-          label: "Enrollments",
-          fields: [
-            {
-              name: "studentEnrollments",
-              type: "join",
-              collection: "enrollments",
-              on: "student",
-            },
-          ],
-        },
       ],
     },
     // --- Sidebar fields ---

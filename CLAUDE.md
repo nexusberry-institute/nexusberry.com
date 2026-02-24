@@ -109,7 +109,7 @@ src/app/
 - Email currently disabled but configured
 
 **Key Notes:**
-1. **Collections (40+):** Data models defined in `src/collections/`. See `src/collections/index.ts` for full list.
+1. **Collections (30+):** Data models defined in `src/collections/`. See `src/collections/index.ts` for full list.
 2. **Globals:** Site-wide settings in `src/globals/`
 3. **Blocks:** Reusable content blocks in `src/blocks/` (Banner, CTA, Content, Media, Code, etc.)
 4. **Plugins:** Configured in `src/plugins/index.ts`
@@ -148,23 +148,20 @@ src/app/
 - `protectRoles`: Prevents role escalation/modification
 - `checkAndCreateUser`: Auto-creates user accounts (used in student/teacher flows)
 - `revalidateRedirects`: Revalidates Next.js cache when redirects change
-- `createAttendanceDetails`: Auto-generates attendance detail records
-
 **Usage:** Hooks are attached to collections via `beforeChange`, `afterChange`, `beforeValidate`, etc.
 
 ### Collections Organization
 
-**40+ Collections in `src/collections/`:**
+**30+ Collections in `src/collections/`:**
 
 **Academic Content:**
-- TrainingCourses, WebCourses, Quizzes, QuizQuestions
+- WebCourses, Quizzes, QuizQuestions
 
 **People Management:**
 - Users, Students, Teachers, Staffs, Employees, Instructors
 
 **Operations:**
-- Batches, Enrollments, FeeReceipts, PaymentPlans, DiscountCodes
-- TimeTable, ClassRecords, Attendances, AttendanceDetails
+- Batches, FeeReceipts, TimeTable, ClassRecords, Attendances, AttendanceDetails
 
 **Marketing & Outreach:**
 - Leads, Campaigns, Events, EventFeedbacks, ContactMessages, Inquiries

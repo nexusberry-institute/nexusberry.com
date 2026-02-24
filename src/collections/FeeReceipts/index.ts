@@ -1,72 +1,22 @@
-import { CollectionConfig, getPayload } from 'payload';
-import config from "@payload-config"
+import { CollectionConfig } from 'payload';
 
 export const FeeReceipts: CollectionConfig = {
   slug: 'fee-receipts',
   defaultSort: 'dueDate',
   admin: {
-    useAsTitle: 'enrollment',
+    useAsTitle: 'student',
     group: 'Academic Operations',
   },
   fields: [
     {
-      type: "row",
-      fields: [
-        {
-          name: 'student',
-          type: 'relationship',
-          relationTo: 'students',
-          hasMany: false,
-          required: true,
-          admin: {
-            allowCreate: false
-          }
-        },
-        {
-          name: 'enrollment',
-          type: 'relationship',
-          relationTo: 'enrollments',
-          hasMany: false,
-          required: true,
-          admin: {
-            allowCreate: false
-            // sortOptions: "-createdAt"
-          },
-          filterOptions: async ({ data }) => {
-
-            if (data.student) {
-              const payload = await getPayload({ config })
-
-              const enrollments = await payload.find({
-                collection: "enrollments",
-                select: {
-                  student: true
-                },
-                where: {
-                  student: {
-                    equals: data.student
-                  }
-                },
-                depth: 0
-              })
-
-              const enrollmentsId = enrollments.docs.map(({ id }) => id)
-
-              if (enrollmentsId.length) {
-                return {
-                  id: {
-                    in: enrollmentsId
-                  }
-                }
-              } else {
-                return false
-              }
-            }
-
-            return true
-          }
-        },
-      ]
+      name: 'student',
+      type: 'relationship',
+      relationTo: 'students',
+      hasMany: false,
+      required: true,
+      admin: {
+        allowCreate: false
+      }
     },
     {
       type: "row",
