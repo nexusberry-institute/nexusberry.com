@@ -58,7 +58,7 @@ export const LoginForm: React.FC = () => {
         if (redirect?.current) {
           router.push(redirect.current)
         } else {
-          const primaryRole = Object.keys(roleDefaultPaths).find(role => user?.roles?.includes(role as keyof typeof roleDefaultPaths)) || 'user'
+          const primaryRole = Object.keys(roleDefaultPaths).find(role => user?.roles?.includes(role as keyof typeof roleDefaultPaths)) || 'authenticated'
           const redirectPath = roleDefaultPaths[primaryRole as keyof typeof roleDefaultPaths]
           router.push(redirectPath)
         }

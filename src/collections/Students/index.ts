@@ -264,6 +264,20 @@ export const Students: CollectionConfig = {
           ],
         },
         {
+          label: "Trial Access",
+          fields: [
+            {
+              name: 'trialTutorials',
+              type: 'relationship',
+              relationTo: 'tutorials',
+              hasMany: true,
+              admin: {
+                description: 'Protected tutorials this student can access on a trial basis.',
+              },
+            },
+          ],
+        },
+        {
           label: "Address",
           fields: [
             {

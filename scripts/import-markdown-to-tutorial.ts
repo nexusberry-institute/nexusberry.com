@@ -190,6 +190,7 @@ async function main() {
       data: {
         title: TUTORIAL_TITLE,
         slug: TUTORIAL_SLUG,
+        accessType: 'public',
         content: cheatsheetJSON as any,
         assignment: assignmentJSON as any,
         quiz: quizId,

@@ -100,6 +100,7 @@ export interface Config {
     'quiz-questions': QuizQuestion;
     tutorials: Tutorial;
     'tutorial-subjects': TutorialSubject;
+    enrollments: Enrollment;
     redirects: Redirect;
     forms: Form;
     'form-submissions': FormSubmission;
@@ -125,6 +126,7 @@ export interface Config {
     };
     batches: {
       batchTimeTable: 'time-table';
+      batchEnrollments: 'enrollments';
     };
     attendance: {
       relatedAttendanceDetails: 'attendance-details';
@@ -163,6 +165,7 @@ export interface Config {
     'quiz-questions': QuizQuestionsSelect<false> | QuizQuestionsSelect<true>;
     tutorials: TutorialsSelect<false> | TutorialsSelect<true>;
     'tutorial-subjects': TutorialSubjectsSelect<false> | TutorialSubjectsSelect<true>;
+    enrollments: EnrollmentsSelect<false> | EnrollmentsSelect<true>;
     redirects: RedirectsSelect<false> | RedirectsSelect<true>;
     forms: FormsSelect<false> | FormsSelect<true>;
     'form-submissions': FormSubmissionsSelect<false> | FormSubmissionsSelect<true>;
@@ -257,7 +260,17 @@ export interface User {
   gmail_username?: string | null;
   photo?: (number | null) | Media;
   roles?:
-    | ('superadmin' | 'admin' | 'developer' | 'operations' | 'accountant' | 'csr' | 'teacher' | 'student' | 'user')[]
+    | (
+        | 'superadmin'
+        | 'admin'
+        | 'developer'
+        | 'operations'
+        | 'accountant'
+        | 'csr'
+        | 'teacher'
+        | 'student'
+        | 'authenticated'
+      )[]
     | null;
   provider?: ('local' | 'google') | null;
   is_active?: boolean | null;
@@ -1281,6 +1294,10 @@ export interface Student {
   education?: string | null;
   dateOfBirth?: string | null;
   gender?: ('male' | 'female') | null;
+  /**
+   * Protected tutorials this student can access on a trial basis.
+   */
+  trialTutorials?: (number | Tutorial)[] | null;
   address?: {
     homeAddress?: string | null;
     city?: string | null;
@@ -1295,33 +1312,161 @@ export interface Student {
   createdAt: string;
 }
 /**
+ * Tutorials of All Subjects
+ *
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "event-feedbacks".
+ * via the `definition` "tutorials".
  */
-export interface EventFeedback {
+export interface Tutorial {
   id: number;
-  lead: number | Lead;
-  event: number | Event;
-  rating: number;
-  reason?:
-    | ('topic-interest' | 'mentor-preference' | 'mentorship-program-interest' | 'field-specific-interest' | 'others')
+  title: string;
+  slug?: string | null;
+  slugLock?: boolean | null;
+  position?: number | null;
+  subject?: (number | null) | TutorialSubject;
+  label?: string | null;
+  /**
+   * When enabled, videos will be displayed on the frontend.
+   */
+  showVideos?: boolean | null;
+  /**
+   * When enabled, the quiz tab will be displayed on the frontend.
+   */
+  showQuiz?: boolean | null;
+  /**
+   * When enabled, the assignment tab will be displayed on the frontend.
+   */
+  showAssignment?: boolean | null;
+  /**
+   * When enabled, the code tab will be displayed on the frontend.
+   */
+  showCode?: boolean | null;
+  /**
+   * When enabled, the presentation tab will be displayed on the frontend.
+   */
+  showPresentation?: boolean | null;
+  /**
+   * Public tutorials are open to everyone. Protected tutorials require enrollment or trial access.
+   */
+  accessType: 'public' | 'protected';
+  /**
+   * Batches that have access to this protected tutorial.
+   */
+  batches?: (number | Batch)[] | null;
+  description?: {
+    root: {
+      type: string;
+      children: {
+        type: any;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  } | null;
+  content?: {
+    root: {
+      type: string;
+      children: {
+        type: any;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  } | null;
+  videos?:
+    | {
+        videoSource?: ('youtube' | 'bunny') | null;
+        youtubeUrl?: string | null;
+        /**
+         * The video ID from your Bunny CDN library
+         */
+        bunnyVideoId?: string | null;
+        id?: string | null;
+      }[]
     | null;
-  otherReason?: string | null;
-  mentorship?: ('yes' | 'no') | null;
+  quiz?: (number | null) | Quiz;
+  assignment?: {
+    root: {
+      type: string;
+      children: {
+        type: any;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  } | null;
+  /**
+   * Link to CodeSandbox, StackBlitz, CodePen, or GitHub repository
+   */
+  codeUrl?: string | null;
+  /**
+   * Link to Google Slides or other presentation
+   */
+  presentationUrl?: string | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * Subjects Categories for Tutorials
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "tutorial-subjects".
+ */
+export interface TutorialSubject {
+  id: number;
+  title: string;
+  slug?: string | null;
+  slugLock?: boolean | null;
+  position?: number | null;
   updatedAt: string;
   createdAt: string;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "messages".
+ * via the `definition` "batches".
  */
-export interface Message {
+export interface Batch {
   id: number;
-  title: string;
-  content: string;
-  type?: ('GENERAL' | 'WHATSAPP') | null;
-  hasPlaceholder?: boolean | null;
-  staffNote?: string | null;
+  medium: 'ONLINE' | 'PHYSICAL' | 'HYBRID';
+  active?: boolean | null;
+  note?: string | null;
+  courseTitle: string;
+  /**
+   * Pattern: Batch/StartDate/MMMYY.Teacher/nick.module/nick.TimeTable/Days/D.TimeTable/Time/HH:MM AM|PM
+   */
+  slug: string;
+  teachers?: (number | Teacher)[] | null;
+  /**
+   * Duration in weeks
+   */
+  duration: number;
+  startDate?: string | null;
+  endDate?: string | null;
+  batchTimeTable?: {
+    docs?: (number | TimeTable)[];
+    hasNextPage?: boolean;
+    totalDocs?: number;
+  };
+  batchEnrollments?: {
+    docs?: (number | Enrollment)[];
+    hasNextPage?: boolean;
+    totalDocs?: number;
+  };
   updatedAt: string;
   createdAt: string;
 }
@@ -1353,35 +1498,6 @@ export interface Teacher {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "batches".
- */
-export interface Batch {
-  id: number;
-  medium: 'ONLINE' | 'PHYSICAL' | 'HYBRID';
-  active?: boolean | null;
-  note?: string | null;
-  courseTitle: string;
-  /**
-   * Pattern: Batch/StartDate/MMMYY.Teacher/nick.module/nick.TimeTable/Days/D.TimeTable/Time/HH:MM AM|PM
-   */
-  slug: string;
-  teachers?: (number | Teacher)[] | null;
-  /**
-   * Duration in weeks
-   */
-  duration: number;
-  startDate?: string | null;
-  endDate?: string | null;
-  batchTimeTable?: {
-    docs?: (number | TimeTable)[];
-    hasNextPage?: boolean;
-    totalDocs?: number;
-  };
-  updatedAt: string;
-  createdAt: string;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "time-table".
  */
 export interface TimeTable {
@@ -1391,6 +1507,130 @@ export interface TimeTable {
   startTime: string;
   endTime: string;
   room?: string | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "enrollments".
+ */
+export interface Enrollment {
+  id: number;
+  student: number | Student;
+  batch: number | Batch;
+  note?: string | null;
+  status?: ('active' | 'completed' | 'frozen' | 'dropped') | null;
+  mode?: ('ONLINE' | 'PHYSICAL' | 'HYBRID') | null;
+  admissionDate?: string | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "quizzes".
+ */
+export interface Quiz {
+  id: number;
+  title: string;
+  thumbnail?: (number | null) | Media;
+  questions?: (number | QuizQuestion)[] | null;
+  instructions?: {
+    root: {
+      type: string;
+      children: {
+        type: any;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  } | null;
+  slug?: string | null;
+  slugLock?: boolean | null;
+  tags?: string[] | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "quiz-questions".
+ */
+export interface QuizQuestion {
+  id: number;
+  text: {
+    root: {
+      type: string;
+      children: {
+        type: any;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  };
+  options: {
+    option?: string | null;
+    id?: string | null;
+  }[];
+  /**
+   * Zero-based index of the correct option (e.g., 0 for first, 1 for second)
+   */
+  correctAnswer: number;
+  explanation?: {
+    root: {
+      type: string;
+      children: {
+        type: any;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  } | null;
+  tags?: string[] | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "event-feedbacks".
+ */
+export interface EventFeedback {
+  id: number;
+  lead: number | Lead;
+  event: number | Event;
+  rating: number;
+  reason?:
+    | ('topic-interest' | 'mentor-preference' | 'mentorship-program-interest' | 'field-specific-interest' | 'others')
+    | null;
+  otherReason?: string | null;
+  mentorship?: ('yes' | 'no') | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "messages".
+ */
+export interface Message {
+  id: number;
+  title: string;
+  content: string;
+  type?: ('GENERAL' | 'WHATSAPP') | null;
+  hasPlaceholder?: boolean | null;
+  staffNote?: string | null;
   updatedAt: string;
   createdAt: string;
 }
@@ -1598,201 +1838,6 @@ export interface PlatformRedirect {
    */
   clicks?: number | null;
   description?: string | null;
-  updatedAt: string;
-  createdAt: string;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "quizzes".
- */
-export interface Quiz {
-  id: number;
-  title: string;
-  thumbnail?: (number | null) | Media;
-  questions?: (number | QuizQuestion)[] | null;
-  instructions?: {
-    root: {
-      type: string;
-      children: {
-        type: any;
-        version: number;
-        [k: string]: unknown;
-      }[];
-      direction: ('ltr' | 'rtl') | null;
-      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
-      indent: number;
-      version: number;
-    };
-    [k: string]: unknown;
-  } | null;
-  slug?: string | null;
-  slugLock?: boolean | null;
-  tags?: string[] | null;
-  updatedAt: string;
-  createdAt: string;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "quiz-questions".
- */
-export interface QuizQuestion {
-  id: number;
-  text: {
-    root: {
-      type: string;
-      children: {
-        type: any;
-        version: number;
-        [k: string]: unknown;
-      }[];
-      direction: ('ltr' | 'rtl') | null;
-      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
-      indent: number;
-      version: number;
-    };
-    [k: string]: unknown;
-  };
-  options: {
-    option?: string | null;
-    id?: string | null;
-  }[];
-  /**
-   * Zero-based index of the correct option (e.g., 0 for first, 1 for second)
-   */
-  correctAnswer: number;
-  explanation?: {
-    root: {
-      type: string;
-      children: {
-        type: any;
-        version: number;
-        [k: string]: unknown;
-      }[];
-      direction: ('ltr' | 'rtl') | null;
-      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
-      indent: number;
-      version: number;
-    };
-    [k: string]: unknown;
-  } | null;
-  tags?: string[] | null;
-  updatedAt: string;
-  createdAt: string;
-}
-/**
- * Tutorials of All Subjects
- *
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "tutorials".
- */
-export interface Tutorial {
-  id: number;
-  title: string;
-  slug?: string | null;
-  slugLock?: boolean | null;
-  position?: number | null;
-  subject?: (number | null) | TutorialSubject;
-  label?: string | null;
-  /**
-   * When enabled, videos will be displayed on the frontend.
-   */
-  showVideos?: boolean | null;
-  /**
-   * When enabled, the quiz tab will be displayed on the frontend.
-   */
-  showQuiz?: boolean | null;
-  /**
-   * When enabled, the assignment tab will be displayed on the frontend.
-   */
-  showAssignment?: boolean | null;
-  /**
-   * When enabled, the code tab will be displayed on the frontend.
-   */
-  showCode?: boolean | null;
-  /**
-   * When enabled, the presentation tab will be displayed on the frontend.
-   */
-  showPresentation?: boolean | null;
-  description?: {
-    root: {
-      type: string;
-      children: {
-        type: any;
-        version: number;
-        [k: string]: unknown;
-      }[];
-      direction: ('ltr' | 'rtl') | null;
-      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
-      indent: number;
-      version: number;
-    };
-    [k: string]: unknown;
-  } | null;
-  content?: {
-    root: {
-      type: string;
-      children: {
-        type: any;
-        version: number;
-        [k: string]: unknown;
-      }[];
-      direction: ('ltr' | 'rtl') | null;
-      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
-      indent: number;
-      version: number;
-    };
-    [k: string]: unknown;
-  } | null;
-  videos?:
-    | {
-        videoSource?: ('youtube' | 'bunny') | null;
-        youtubeUrl?: string | null;
-        /**
-         * The video ID from your Bunny CDN library
-         */
-        bunnyVideoId?: string | null;
-        id?: string | null;
-      }[]
-    | null;
-  quiz?: (number | null) | Quiz;
-  assignment?: {
-    root: {
-      type: string;
-      children: {
-        type: any;
-        version: number;
-        [k: string]: unknown;
-      }[];
-      direction: ('ltr' | 'rtl') | null;
-      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
-      indent: number;
-      version: number;
-    };
-    [k: string]: unknown;
-  } | null;
-  /**
-   * Link to CodeSandbox, StackBlitz, CodePen, or GitHub repository
-   */
-  codeUrl?: string | null;
-  /**
-   * Link to Google Slides or other presentation
-   */
-  presentationUrl?: string | null;
-  updatedAt: string;
-  createdAt: string;
-}
-/**
- * Subjects Categories for Tutorials
- *
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "tutorial-subjects".
- */
-export interface TutorialSubject {
-  id: number;
-  title: string;
-  slug?: string | null;
-  slugLock?: boolean | null;
-  position?: number | null;
   updatedAt: string;
   createdAt: string;
 }
@@ -2092,6 +2137,10 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'tutorial-subjects';
         value: number | TutorialSubject;
+      } | null)
+    | ({
+        relationTo: 'enrollments';
+        value: number | Enrollment;
       } | null)
     | ({
         relationTo: 'redirects';
@@ -2639,6 +2688,7 @@ export interface BatchesSelect<T extends boolean = true> {
   startDate?: T;
   endDate?: T;
   batchTimeTable?: T;
+  batchEnrollments?: T;
   updatedAt?: T;
   createdAt?: T;
 }
@@ -2669,6 +2719,7 @@ export interface StudentsSelect<T extends boolean = true> {
   education?: T;
   dateOfBirth?: T;
   gender?: T;
+  trialTutorials?: T;
   address?:
     | T
     | {
@@ -2921,6 +2972,8 @@ export interface TutorialsSelect<T extends boolean = true> {
   showAssignment?: T;
   showCode?: T;
   showPresentation?: T;
+  accessType?: T;
+  batches?: T;
   description?: T;
   content?: T;
   videos?:
@@ -2947,6 +3000,20 @@ export interface TutorialSubjectsSelect<T extends boolean = true> {
   slug?: T;
   slugLock?: T;
   position?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "enrollments_select".
+ */
+export interface EnrollmentsSelect<T extends boolean = true> {
+  student?: T;
+  batch?: T;
+  note?: T;
+  status?: T;
+  mode?: T;
+  admissionDate?: T;
   updatedAt?: T;
   createdAt?: T;
 }

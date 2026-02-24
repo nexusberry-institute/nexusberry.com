@@ -93,7 +93,7 @@ export const Users: CollectionConfig = {
         { label: 'CSR', value: 'csr' },
         { label: 'Teacher', value: 'teacher' },
         { label: 'Student', value: 'student' },
-        { label: 'User', value: 'user' },
+        { label: 'Authenticated', value: 'authenticated' },
       ],
       admin: {
         position: 'sidebar',

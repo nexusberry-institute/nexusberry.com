@@ -146,6 +146,19 @@ export const Batches: CollectionConfig = {
               maxDepth: 1,
             }
           ]
+        },
+        {
+          label: "Enrolled Students",
+          fields: [
+            {
+              name: "batchEnrollments",
+              label: "Enrollments",
+              type: "join",
+              collection: "enrollments",
+              on: "batch",
+              maxDepth: 1,
+            }
+          ]
         }
       ],
     },

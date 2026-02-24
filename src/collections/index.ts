@@ -32,6 +32,7 @@ import { Quizzes } from './Quizzes'
 import { QuizQuestions } from './QuizQuestions'
 import { Tutorials } from './Tutorials'
 import { TutorialSubjects } from './TutorialSubjects'
+import { Enrollments } from './Enrollments'
 
 const collections = [
    Users, Media, Pages,
@@ -68,7 +69,8 @@ const collections = [
    QuizQuestions,
    // Tutorials
    Tutorials,
-   TutorialSubjects
+   TutorialSubjects,
+   Enrollments
 ];
 
 export default collections;

@@ -5,12 +5,14 @@ import * as migration_20260223_113137 from './20260223_113137';
 import * as migration_20260223_122039 from './20260223_122039';
 import * as migration_20260223_192200_tutorials_quizzes_enhancements from './20260223_192200_tutorials_quizzes_enhancements';
 import * as migration_20260224_165047 from './20260224_165047';
+import * as migration_20260224_172300_drop_coursework_modules_moduletopics from './20260224_172300_drop_coursework_modules_moduletopics';
+import * as migration_20260224_180000_drop_training_courses_payment_plans_discount_codes_enrollments from './20260224_180000_drop_training_courses_payment_plans_discount_codes_enrollments';
+import * as migration_20260224_192756 from './20260224_192756';
 import * as migration_20260224_add_show_assignment from './20260224_add_show_assignment';
 import * as migration_20260224_add_show_code_presentation_flags from './20260224_add_show_code_presentation_flags';
 import * as migration_20260224_drop_lectures from './20260224_drop_lectures';
 import * as migration_20260224_drop_videos_assignments from './20260224_drop_videos_assignments';
-import * as migration_20260224_172300_drop_coursework_modules_moduletopics from './20260224_172300_drop_coursework_modules_moduletopics';
-import * as migration_20260224_180000_drop_training_courses_payment_plans_discount_codes_enrollments from './20260224_180000_drop_training_courses_payment_plans_discount_codes_enrollments';
+import * as migration_20260225_add_enrollments_tutorial_access_rename_user_role from './20260225_add_enrollments_tutorial_access_rename_user_role';
 
 export const migrations = [
   {
@@ -49,6 +51,21 @@ export const migrations = [
     name: '20260224_165047',
   },
   {
+    up: migration_20260224_172300_drop_coursework_modules_moduletopics.up,
+    down: migration_20260224_172300_drop_coursework_modules_moduletopics.down,
+    name: '20260224_172300_drop_coursework_modules_moduletopics',
+  },
+  {
+    up: migration_20260224_180000_drop_training_courses_payment_plans_discount_codes_enrollments.up,
+    down: migration_20260224_180000_drop_training_courses_payment_plans_discount_codes_enrollments.down,
+    name: '20260224_180000_drop_training_courses_payment_plans_discount_codes_enrollments',
+  },
+  {
+    up: migration_20260224_192756.up,
+    down: migration_20260224_192756.down,
+    name: '20260224_192756',
+  },
+  {
     up: migration_20260224_add_show_assignment.up,
     down: migration_20260224_add_show_assignment.down,
     name: '20260224_add_show_assignment',
@@ -66,16 +83,11 @@ export const migrations = [
   {
     up: migration_20260224_drop_videos_assignments.up,
     down: migration_20260224_drop_videos_assignments.down,
-    name: '20260224_drop_videos_assignments'
+    name: '20260224_drop_videos_assignments',
   },
   {
-    up: migration_20260224_172300_drop_coursework_modules_moduletopics.up,
-    down: migration_20260224_172300_drop_coursework_modules_moduletopics.down,
-    name: '20260224_172300_drop_coursework_modules_moduletopics',
-  },
-  {
-    up: migration_20260224_180000_drop_training_courses_payment_plans_discount_codes_enrollments.up,
-    down: migration_20260224_180000_drop_training_courses_payment_plans_discount_codes_enrollments.down,
-    name: '20260224_180000_drop_training_courses_payment_plans_discount_codes_enrollments',
+    up: migration_20260225_add_enrollments_tutorial_access_rename_user_role.up,
+    down: migration_20260225_add_enrollments_tutorial_access_rename_user_role.down,
+    name: '20260225_add_enrollments_tutorial_access_rename_user_role'
   },
 ];

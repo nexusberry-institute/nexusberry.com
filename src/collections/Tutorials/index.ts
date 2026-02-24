@@ -2,6 +2,8 @@ import type { CollectionConfig } from "payload";
 import { slugField } from '@/fields/slug'
 import { revalidateTutorial, revalidateDeleteTutorial } from './hooks/revalidateTutorial'
 import { richTextField } from '@/fields/richTextField'
+import { checkRole } from '@/access/checkRole'
+import { tutorialReadAccess } from '@/access/tutorialAccess'
 
 export const Tutorials: CollectionConfig = {
   slug: 'tutorials',
@@ -9,6 +11,12 @@ export const Tutorials: CollectionConfig = {
     useAsTitle: 'title',
     description: 'Tutorials of All Subjects',
     group: "Classwork",
+  },
+  access: {
+    create: ({ req: { user } }) => checkRole(['superadmin', 'admin'], user),
+    read: tutorialReadAccess,
+    update: ({ req: { user } }) => checkRole(['superadmin', 'admin'], user),
+    delete: ({ req: { user } }) => checkRole(['superadmin', 'admin'], user),
   },
   hooks: {
     afterChange: [revalidateTutorial],
@@ -91,6 +99,31 @@ export const Tutorials: CollectionConfig = {
       admin: {
         position: 'sidebar',
         description: 'When enabled, the presentation tab will be displayed on the frontend.',
+      },
+    },
+    {
+      name: 'accessType',
+      type: 'select',
+      required: true,
+      defaultValue: 'public',
+      options: [
+        { label: 'Public', value: 'public' },
+        { label: 'Protected', value: 'protected' },
+      ],
+      admin: {
+        position: 'sidebar',
+        description: 'Public tutorials are open to everyone. Protected tutorials require enrollment or trial access.',
+      },
+    },
+    {
+      name: 'batches',
+      type: 'relationship',
+      relationTo: 'batches',
+      hasMany: true,
+      admin: {
+        position: 'sidebar',
+        description: 'Batches that have access to this protected tutorial.',
+        condition: (data) => data?.accessType === 'protected',
       },
     },
     {

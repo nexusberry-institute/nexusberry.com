@@ -16,5 +16,5 @@ export const roleDefaultPaths = {
   'accountant': '/accounts',
   'csr': '/cms',
   'student': '/lms/dashboard',
-  'user': '/logout',
+  'authenticated': '/logout',
 }

@@ -1,8 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server'
+import { headers as nextHeaders } from 'next/headers'
 import configPromise from '@payload-config'
 import { getPayload } from 'payload'
 import { extractYouTubeId } from '@/utilities/youtube'
 import { encodeVideoPayload } from '@/utilities/videoObfuscation'
+import { canAccessTutorial } from '@/utilities/tutorialAccess'
 
 const headers = {
   'Cache-Control': 'private, no-store',
@@ -31,18 +33,30 @@ export async function GET(
     const payload = await getPayload({ config: configPromise })
     const result = await payload.find({
       collection: 'tutorials',
+      overrideAccess: true,
       where: { slug: { equals: slug } },
       limit: 1,
       depth: 0,
       select: {
         showVideos: true,
         videos: true,
+        accessType: true,
+        batches: true,
       },
     })
 
     const tutorial = result.docs[0]
     if (!tutorial || tutorial.showVideos === false) {
       return NextResponse.json({ d: encodeVideoPayload({ videos: [] }) }, { headers })
+    }
+
+    // Access check for protected tutorials
+    if (tutorial.accessType === 'protected') {
+      const { user } = await payload.auth({ headers: await nextHeaders() })
+      const accessResult = await canAccessTutorial(payload, user as any, tutorial as any)
+      if (!accessResult.hasAccess) {
+        return NextResponse.json({ d: encodeVideoPayload({ videos: [] }) }, { headers })
+      }
     }
 
     const videos = (tutorial.videos ?? [])

@@ -19,6 +19,7 @@ const querySubjectBySlug = (slug: string) =>
       const payload = await getPayload({ config: configPromise })
       const result = await payload.find({
         collection: 'tutorial-subjects',
+        overrideAccess: true,
         where: { slug: { equals: slug } },
         limit: 1,
         select: { title: true, slug: true, position: true },
@@ -35,11 +36,12 @@ const queryTutorialsBySubject = (subjectId: number) =>
       const payload = await getPayload({ config: configPromise })
       const result = await payload.find({
         collection: 'tutorials',
+        overrideAccess: true,
         where: { subject: { equals: subjectId } },
         sort: 'position',
         pagination: false,
         limit: 500,
-        select: { title: true, slug: true, position: true, label: true },
+        select: { title: true, slug: true, position: true, label: true, accessType: true },
       })
       return result.docs
     },
@@ -262,11 +264,22 @@ export default async function TutorialSubjectPage({
                     href={`/tutorials/${subjectSlug}/${tutorialSlug}`}
                     className="group bg-card border border-border rounded-lg p-4 hover:shadow-md hover:border-primary-300 transition-all duration-200"
                   >
-                    {tutorial.label && (
-                      <span className="inline-block bg-primary-50 text-primary-600 text-xs font-medium px-2.5 py-1 rounded-full mb-3">
-                        {tutorial.label}
-                      </span>
-                    )}
+                    <div className="flex items-center gap-2 mb-3">
+                      {tutorial.label && (
+                        <span className="inline-block bg-primary-50 text-primary-600 text-xs font-medium px-2.5 py-1 rounded-full">
+                          {tutorial.label}
+                        </span>
+                      )}
+                      {tutorial.accessType === 'protected' && (
+                        <span className="inline-flex items-center gap-1 bg-amber-50 text-amber-700 text-xs font-medium px-2.5 py-1 rounded-full border border-amber-200">
+                          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                            <rect width="18" height="11" x="3" y="11" rx="2" ry="2" />
+                            <path d="M7 11V7a5 5 0 0 1 10 0v4" />
+                          </svg>
+                          Enrolled
+                        </span>
+                      )}
+                    </div>
                     <h4 className="text-base font-medium text-foreground line-clamp-2 mb-3">
                       {tutorial.title}
                     </h4>
