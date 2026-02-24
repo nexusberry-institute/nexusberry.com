@@ -32,7 +32,7 @@ export default function QuizSection({ quiz }: Props) {
   if (!quizStarted && hasInstructions) {
     return (
       <div className="max-w-2xl mx-auto py-6 space-y-6">
-        <RichText data={quiz.instructions} enableGutter={false} />
+        <RichText data={quiz.instructions!} enableGutter={false} />
         <div className="flex justify-center pt-2">
           <button
             onClick={() => setQuizStarted(true)}
