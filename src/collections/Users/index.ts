@@ -76,7 +76,7 @@ export const Users: CollectionConfig = {
       type: 'select',
       hasMany: true,
       saveToJWT: true,
-      defaultValue: ['student'],
+      defaultValue: ['authenticated'],
       access: {
         create: ({ req: { user } }) => checkRole(['superadmin', 'admin'], user),
         update: ({ req: { user } }) => checkRole(['superadmin', 'admin'], user),
