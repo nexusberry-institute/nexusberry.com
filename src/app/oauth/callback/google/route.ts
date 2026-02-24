@@ -70,7 +70,7 @@ export async function GET(req: NextRequest) {
       );
     }
 
-    let cookieData: { name: string; value: string; expires: Date }
+    let cookieData: { name: string; value: string; tokenExpiration: number }
     try {
       const user = await getUserByEmail(googleUser)
       cookieData = await loginWith(user)
@@ -91,10 +91,9 @@ export async function GET(req: NextRequest) {
     )
 
     response.cookies.set(cookieData.name, cookieData.value, {
-      expires: cookieData.expires,
       httpOnly: true,
+      maxAge: cookieData.tokenExpiration,
       path: '/',
-      sameSite: 'none',
       secure: true,
     })
 

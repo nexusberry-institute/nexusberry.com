@@ -1,7 +1,6 @@
-import { getCookieExpiration, getFieldsToSign, getPayload } from "payload"
+import { getFieldsToSign, getPayload, jwtSign } from "payload"
 import configPromise from "@payload-config"
 import { Media, User } from "@/payload-types"
-import { SignJWT } from "jose"
 import { randomBytes } from "node:crypto"
 
 export type UserProps = {
@@ -30,8 +29,23 @@ export const getUserByEmail = async (data: UserProps): Promise<User> => {
     },
   })
 
-  const user = result.totalDocs === 0 ? await createUser(data) : result.docs.at(0)!
-  return user
+  if (result.totalDocs === 0) {
+    return await createUser(data)
+  }
+
+  const existingUser = result.docs[0]!
+
+  // Ensure Google-authenticated users are verified
+  if (!existingUser._verified) {
+    const updated = await payload.update({
+      collection: 'users',
+      id: existingUser.id,
+      data: { _verified: true },
+    })
+    return updated
+  }
+
+  return existingUser
 }
 
 export const createUser = async (props: UserProps) => {
@@ -43,7 +57,6 @@ export const createUser = async (props: UserProps) => {
   const user = await payload.create({
     collection: "users",
     data: {
-      id: Number(props.id),
       // photo: profilePicture,
       gmail_username: props.name,
       provider: "google",
@@ -56,45 +69,31 @@ export const createUser = async (props: UserProps) => {
   return user
 }
 
-export type UserWithCollection = User & { collection: "users" }
-
 export const loginWith = async (user: User) => {
   const payload = await getPayload({ config: configPromise })
-  const userWithCollection: UserWithCollection = {
-    ...user,
-    collection: "users",
-  }
-
-  const collectionConfig =
-    payload.collections[userWithCollection.collection].config
+  const collectionConfig = payload.collections['users'].config
 
   if (!collectionConfig.auth) {
     throw new Error("Collection is not used for authentication")
   }
 
-  const secret = payload.secret
   const fieldsToSign = getFieldsToSign({
     collectionConfig,
-    email: userWithCollection.email,
-    user: userWithCollection,
+    email: user.email,
+    user: { ...user, collection: 'users' },
   })
 
-  const name = `${payload.config.cookiePrefix}-token`
-  const expires = getCookieExpiration({
-    seconds: collectionConfig.auth.tokenExpiration,
+  const { token } = await jwtSign({
+    fieldsToSign,
+    secret: payload.secret,
+    tokenExpiration: collectionConfig.auth.tokenExpiration,
   })
 
-  const secretKey = new TextEncoder().encode(secret)
-  const issuedAt = Math.floor(Date.now() / 1000)
-  const exp = issuedAt + collectionConfig.auth.tokenExpiration
-
-  const token = await new SignJWT(fieldsToSign)
-    .setProtectedHeader({ alg: "HS256", typ: "JWT" })
-    .setIssuedAt(issuedAt)
-    .setExpirationTime(exp)
-    .sign(secretKey)
-
-  return { name, value: token, expires }
+  return {
+    name: `${payload.config.cookiePrefix}-token`,
+    value: token,
+    tokenExpiration: collectionConfig.auth.tokenExpiration,
+  }
 }
 
 export const uploadImageByUrl = async (imageUrl?: string): Promise<Media | null> => {
