@@ -1,73 +1,39 @@
-"use client"
-import { useRouter } from "next/navigation"
+import Link from "next/link"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
-import { FileText, MessageSquare, UserCheck, Building, Shield, Award } from "lucide-react"
+import { MessageSquare, UserCheck, Award } from "lucide-react"
+
+const formCards = [
+    {
+        id: "certificate-application",
+        title: "Certificate Application",
+        description: "Apply for official certificates and documentation with our streamlined application process.",
+        icon: <Award className="h-8 w-8 text-blue-600" />,
+        route: "/forms/certificate",
+        buttonText: "Apply Now",
+        category: "Official Documents",
+    },
+    {
+        id: "support",
+        title: "General Inquiry",
+        description: "Submit your questions and inquiries. Our team will respond within 24 hours.",
+        icon: <MessageSquare className="h-8 w-8 text-green-600" />,
+        route: "/forms/support",
+        buttonText: "Submit Inquiry",
+        category: "Support",
+    },
+    {
+        id: "admission",
+        title: "Admission Form",
+        description: "Apply for admission to our programs and courses with a quick and easy application.",
+        icon: <UserCheck className="h-8 w-8 text-purple-600" />,
+        route: "/forms/admission",
+        buttonText: "Apply Now",
+        category: "Admissions",
+    },
+]
 
 const FormsPage = () => {
-    const router = useRouter()
-
-    const formCards = [
-        {
-            id: "certificate-application",
-            title: "Certificate Application",
-            description: "Apply for official certificates and documentation with our streamlined application process.",
-            icon: <Award className="h-8 w-8 text-blue-600" />,
-            route: "/forms/certificate",
-            buttonText: "Apply Now",
-            category: "Official Documents",
-        },
-        {
-            id: "inquiry-form",
-            title: "General Inquiry",
-            description: "Submit your questions and inquiries. Our team will respond within 24 hours.",
-            icon: <MessageSquare className="h-8 w-8 text-green-600" />,
-            route: "/forms/inquiry-form",
-            buttonText: "Submit Inquiry",
-            category: "Support",
-        },
-        {
-            id: "registration",
-            title: "User Registration",
-            description: "Create your account to access exclusive features and personalized services.",
-            icon: <UserCheck className="h-8 w-8 text-purple-600" />,
-            route: "#",
-            buttonText: "Register",
-            category: "Account",
-        },
-        {
-            id: "business-application",
-            title: "Business Application",
-            description: "Apply for business licenses and permits through our comprehensive application system.",
-            icon: <Building className="h-8 w-8 text-orange-600" />,
-            route: "#",
-            buttonText: "Apply for Business",
-            category: "Business",
-        },
-        {
-            id: "compliance-form",
-            title: "Compliance Report",
-            description: "Submit compliance reports and regulatory documentation securely and efficiently.",
-            icon: <Shield className="h-8 w-8 text-red-600" />,
-            route: "#",
-            buttonText: "Submit Report",
-            category: "Compliance",
-        },
-        {
-            id: "document-request",
-            title: "Document Request",
-            description: "Request official documents, transcripts, and records with fast processing times.",
-            icon: <FileText className="h-8 w-8 text-teal-600" />,
-            route: "#",
-            buttonText: "Request Documents",
-            category: "Documents",
-        },
-    ]
-
-    const handleNavigation = (route: string) => {
-        router.push(route)
-    }
-
     return (
         <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 py-12 px-4 sm:px-6 lg:px-8">
             <div className="max-w-7xl mx-auto">
@@ -103,11 +69,12 @@ const FormsPage = () => {
                             </CardContent>
                             <CardFooter className="pt-0">
                                 <Button
-                                    onClick={() => handleNavigation(form.route)}
-                                    className="w-full bg-primary hover:bg-primary text-white font-medium py-2.5 transition-colors duration-200"
-                                    aria-label={`Navigate to ${form.title}`}
+                                    asChild
+                                    className="w-full bg-primary hover:bg-primary/90 text-white font-medium py-2.5 transition-colors duration-200"
                                 >
-                                    {form.buttonText}
+                                    <Link href={form.route} aria-label={`Navigate to ${form.title}`}>
+                                        {form.buttonText}
+                                    </Link>
                                 </Button>
                             </CardFooter>
                         </Card>
@@ -121,12 +88,8 @@ const FormsPage = () => {
                         <p className="text-gray-600 mb-4">
                             If you can not find the form you are looking for or need assistance, our support team is here to help.
                         </p>
-                        <Button
-                            variant="outline"
-                            onClick={() => handleNavigation("/contact-us")}
-                            className="border-primary-600 text-primary-600 hover:bg-primary-50"
-                        >
-                            Contact Support
+                        <Button asChild variant="outline" className="border-primary-600 text-primary-600 hover:bg-primary-50">
+                            <Link href="/contact-us">Contact Support</Link>
                         </Button>
                     </div>
                 </div>

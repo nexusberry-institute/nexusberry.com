@@ -11,14 +11,26 @@ interface FormField {
     required?: boolean;
     options?: { label: string; value: string }[];
     width?: number;
-    defaultValue?: any;
+    defaultValue?: string;
     placeholder?: string;
-    rows?: number; // For textarea
+    rows?: number;
 }
 
-
-
 type FormData = Record<string, string>;
+
+interface PayloadField {
+    id?: string;
+    name: string;
+    label: string;
+    blockType?: string;
+    type?: string;
+    required?: boolean;
+    options?: { label: string; value: string }[];
+    width?: number;
+    defaultValue?: string;
+    placeholder?: string;
+    rows?: number;
+}
 
 const CertificateApplicationForm = () => {
     const [formData, setFormData] = useState<FormData>({});
@@ -32,8 +44,7 @@ const CertificateApplicationForm = () => {
 
     const router = useRouter();
 
-    // Convert Payload field to our FormField format
-    const convertPayloadField = (payloadField: any): FormField => {
+    const convertPayloadField = (payloadField: PayloadField): FormField => {
         const field: FormField = {
             id: payloadField.id,
             name: payloadField.name,
@@ -50,7 +61,7 @@ const CertificateApplicationForm = () => {
             case 'select':
             case 'radio':
                 if (payloadField.options) {
-                    field.options = payloadField.options.map((opt: any) => ({
+                    field.options = payloadField.options.map((opt) => ({
                         label: opt.label,
                         value: opt.value
                     }));
@@ -89,9 +100,6 @@ const CertificateApplicationForm = () => {
         return field;
     };
 
-
-
-    // Initialize form data based on fields
     const initializeFormData = (fields: FormField[]) => {
         const initialData: FormData = {};
         fields.forEach(field => {
@@ -106,7 +114,6 @@ const CertificateApplicationForm = () => {
             setIsLoading(true);
 
             try {
-                // console.log('Fetching form from Payload CMS...');
                 const response = await fetch('/api/forms?where[slug][equals]=certificate-application');
 
                 if (!response.ok) {
@@ -114,7 +121,6 @@ const CertificateApplicationForm = () => {
                 }
 
                 const result = await response.json();
-                // console.log('Payload response:', result);
 
                 if (result.docs && result.docs.length > 0) {
                     const form = result.docs[0];
@@ -128,19 +134,13 @@ const CertificateApplicationForm = () => {
                     const convertedFields: FormField[] = [];
 
                     if (form.fields && Array.isArray(form.fields)) {
-                        form.fields.forEach((field: any) => {
-                            // Handle different Payload field structures
-                            if (field.blockType) {
-                                // Block-based fields
-                                convertedFields.push(convertPayloadField(field));
-                            } else if (field.type) {
-                                // Direct field type
+                        form.fields.forEach((field: PayloadField) => {
+                            if (field.blockType || field.type) {
                                 convertedFields.push(convertPayloadField(field));
                             }
                         });
                     }
 
-                    // console.log('Converted fields:', convertedFields);
                     setFormFields(convertedFields);
                     initializeFormData(convertedFields);
 
@@ -165,9 +165,6 @@ const CertificateApplicationForm = () => {
     }, []);
 
 
-
-
-
     // Handle input changes
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
         const { name, value, type } = e.target;
@@ -190,7 +187,7 @@ const CertificateApplicationForm = () => {
 
         for (const field of requiredFields) {
             const fieldValue = formData[field.name];
-            if (!fieldValue || fieldValue.trim() === '') {
+            if (!fieldValue || (typeof fieldValue === 'string' && fieldValue.trim() === '')) {
                 return `${field.label} is required`;
             }
         }
@@ -223,14 +220,12 @@ const CertificateApplicationForm = () => {
         const payload = {
             form: formId,
             submissionData: Object.entries(formData)
-                .filter(([, value]) => value.trim() !== '')
+                .filter(([, value]) => typeof value === 'string' && value.trim() !== '')
                 .map(([field, value]) => ({
                     field,
                     value,
                 })),
         };
-
-        console.log('Sending payload:', payload);
 
         try {
             const response = await fetch('/api/form-submissions', {
@@ -260,10 +255,13 @@ const CertificateApplicationForm = () => {
                 description: result?.message || 'Your form was submitted successfully.',
                 variant: 'success',
             });
+            const redirect = typeof result.redirect === 'string' && result.redirect.startsWith('/')
+                ? result.redirect
+                : '/forms/success';
             setTimeout(() => {
-                router.push(result.redirect || '/forms/success');
+                router.push(redirect);
             }, 1500);
-        } catch (err) {
+        } catch {
             setStatus('error');
             setError('Something went wrong. Please try again later.');
             toast({
@@ -411,7 +409,7 @@ const CertificateApplicationForm = () => {
                 <div className="max-w-2xl mx-auto bg-white rounded-lg shadow-md p-8">
                     <div className="text-center">
                         <div className="animate-spin rounded-full h-8 w-8 border-2 border-blue-500 border-t-transparent mx-auto mb-4"></div>
-                        <p className="text-gray-600">Loading form from Payload CMS...</p>
+                        <p className="text-gray-600">Loading form...</p>
                     </div>
                 </div>
             </div>
@@ -420,7 +418,7 @@ const CertificateApplicationForm = () => {
 
     return (
         <div className="min-h-screen bg-gray-50 py-8 px-4">
-            <div className="max-w-4xl mx-auto bg-white  p-5 md:p-8 shadow-[10px_20px_10px] shadow-foreground/30 border-2 border-dashed border-primary-400 rounded-2xl">
+            <div className="max-w-4xl mx-auto bg-white p-5 md:p-8 shadow-[10px_20px_10px] shadow-foreground/30 border-2 border-dashed border-primary-400 rounded-2xl">
                 <h2 className="text-base md:text-3xl font-bold mb-2 text-center text-gray-800">
                     {formTitle}
                 </h2>
@@ -446,7 +444,7 @@ const CertificateApplicationForm = () => {
                             className={`w-full sm:w-auto py-4 px-2 md:px-6 rounded-lg font-medium text-white text-base md:text-lg transition-colors
                             ${status === 'loading' || formFields.length === 0
                                     ? 'bg-gray-500 cursor-not-allowed'
-                                    : 'bg-primary hover:bg-primary active:bg-primary'
+                                    : 'bg-primary hover:bg-primary/90 active:bg-primary/80'
                                 }`}
                         >
                             {status === 'loading' ? (

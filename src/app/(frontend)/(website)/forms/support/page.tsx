@@ -12,8 +12,9 @@ import { toast } from '@/hooks/use-toast'
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import { useRouter } from "next/navigation"
 
-export default function InquiryForm() {
-    const [showSuccessModal, setShowSuccessModal] = useState(false);
+export default function SupportForm() {
+    const [showSuccessModal, setShowSuccessModal] = useState(false)
+    const [isSubmitting, setIsSubmitting] = useState(false)
     const [formData, setFormData] = useState({
         name: "",
         email: "",
@@ -21,67 +22,61 @@ export default function InquiryForm() {
         subject: "",
         query: "",
     })
-    const router = useRouter();
+    const router = useRouter()
+
     const handleSubmit = async (e: React.FormEvent) => {
-        e.preventDefault();
+        e.preventDefault()
+        setIsSubmitting(true)
+
         try {
             const res = await fetch('/api/inquiries', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(formData),
-            });
+            })
 
-            const data = await res.json();
-            // console.log("Full API Response:", data);
-            // console.log("Response status:", res.status);
+            const data = await res.json()
 
-            // Status 200-299 range successful hoti hai
             if (res.ok && data.message) {
-                // toast({
-                //     title: "✅ Inquiry Submitted",
-                //     description: "Thank you! We have received your inquiry and will get back to you soon.",
-                //     variant: "default",
-                //     duration: 3000,
-                // })
-                setShowSuccessModal(true);
-
-                // Form reset
+                setShowSuccessModal(true)
                 setFormData({
                     name: '',
                     email: '',
                     contact: '',
                     subject: '',
                     query: '',
-                });
+                })
             } else {
                 toast({
-                    title: "❌ Submission Failed",
+                    title: "Submission Failed",
                     description: data.message || "Something went wrong while submitting your inquiry. Please try again.",
                     variant: "destructive",
-                });
+                })
             }
-        } catch (err) {
-            console.error("Error:", err);
+        } catch {
             toast({
-                title: "⚠️ Error",
+                title: "Error",
                 description: "An unexpected error occurred. Please try again later.",
                 variant: "destructive",
-            });
+            })
+        } finally {
+            setIsSubmitting(false)
         }
-    };
+    }
 
     const handleCloseAndNavigate = () => {
-        setShowSuccessModal(false);
-        // Navigate to another form or page
-        router.push('/forms');
-    };
+        setShowSuccessModal(false)
+        router.push('/forms')
+    }
 
     const handleInputChange = (field: string, value: string) => {
         setFormData((prev) => ({ ...prev, [field]: value }))
     }
 
+    const inputClassName = "w-full px-4 py-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-primary focus:border-transparent"
+
     return (
-        <div className=" max-w-3xl mx-3 md:mx-auto  mt-10 mb-20 py-12 px-3  md:px-15 bg-card  shadow-[10px_20px_10px] shadow-foreground/30 border-2 border-dashed border-primary-400 rounded-2xl ">
+        <div className="max-w-3xl mx-3 md:mx-auto mt-10 mb-20 py-12 px-3 md:px-16 bg-card shadow-[10px_20px_10px] shadow-foreground/30 border-2 border-dashed border-primary-400 rounded-2xl">
             <div className="text-center mb-8">
                 <h1 className="text-3xl font-bold text-gray-800 mb-2">Inquiry Form</h1>
                 <p className="text-gray-600">Please fill out all the required fields to submit your inquiry</p>
@@ -100,7 +95,7 @@ export default function InquiryForm() {
                         value={formData.name}
                         onChange={(e) => handleInputChange("name", e.target.value)}
                         required
-                        className="w-full px-4 py-3 border border-gray-300 rounded-md focus:primary-2 focus:ring-primary-500 focus:border-transparent"
+                        className={inputClassName}
                     />
                 </div>
 
@@ -116,7 +111,7 @@ export default function InquiryForm() {
                         value={formData.email}
                         onChange={(e) => handleInputChange("email", e.target.value)}
                         required
-                        className="w-full px-4 py-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                        className={inputClassName}
                     />
                 </div>
 
@@ -132,7 +127,7 @@ export default function InquiryForm() {
                         value={formData.contact}
                         onChange={(e) => handleInputChange("contact", e.target.value)}
                         required
-                        className="w-full px-4 py-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                        className={inputClassName}
                     />
                 </div>
 
@@ -142,7 +137,7 @@ export default function InquiryForm() {
                         Subject <span className="text-red-500">*</span>
                     </Label>
                     <Select onValueChange={(value) => handleInputChange("subject", value)} required>
-                        <SelectTrigger className="w-full px-4 py-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-primary-500 focus:border-transparent">
+                        <SelectTrigger className={inputClassName}>
                             <SelectValue placeholder="Select inquiry subject" />
                         </SelectTrigger>
                         <SelectContent>
@@ -168,7 +163,7 @@ export default function InquiryForm() {
                         onChange={(e) => handleInputChange("query", e.target.value)}
                         required
                         rows={5}
-                        className="w-full px-4 py-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none"
+                        className={`${inputClassName} resize-none`}
                     />
                 </div>
 
@@ -176,18 +171,16 @@ export default function InquiryForm() {
                 <div className="flex justify-center pt-4">
                     <Button
                         type="submit"
-                        className="bg-primary hover:bg-blue-900 text-white px-8 py-3 rounded-md font-medium transition-colors duration-200"
+                        disabled={isSubmitting}
+                        className="bg-primary hover:bg-primary/90 text-white px-8 py-3 rounded-md font-medium transition-colors duration-200"
                     >
-                        Submit Inquiry
+                        {isSubmitting ? 'Submitting...' : 'Submit Inquiry'}
                     </Button>
                 </div>
             </form>
 
-            {/* model-box */}
-
-            <Dialog open={showSuccessModal} onOpenChange={setShowSuccessModal}>
+            <Dialog open={showSuccessModal} onOpenChange={handleCloseAndNavigate}>
                 <DialogContent className="flex flex-col items-center justify-center space-y-4 py-8">
-                    {/* Success Check Animation */}
                     <div className="w-16 h-16 rounded-full bg-green-500 flex items-center justify-center animate-bounce">
                         <svg
                             xmlns="http://www.w3.org/2000/svg"
@@ -212,9 +205,6 @@ export default function InquiryForm() {
                     </Button>
                 </DialogContent>
             </Dialog>
-
-            {/* model-box-end */}
-
         </div>
     )
 }
