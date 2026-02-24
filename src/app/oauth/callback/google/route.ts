@@ -1,5 +1,4 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { cookies } from 'next/headers';
 import { getUserByEmail, loginWith } from './serverActions';
 
 // app/oauth/callback/google/route.ts
@@ -84,27 +83,19 @@ export async function GET(req: NextRequest) {
       )
     }
 
-    const cookieOptions = {
-      httpOnly: true,
-      maxAge: cookieData.tokenExpiration,
-      path: '/',
-      secure: true,
-    } as const
-
-    // Set cookie via cookies() API — same mechanism as local login in payloadLogin()
-    const cookieStore = await cookies()
-    cookieStore.set(cookieData.name, cookieData.value, cookieOptions)
-
-    // Also set on the redirect response as a fallback
-    const response = NextResponse.redirect(
-      new URL(
-        `/?toast=${encodeURIComponent("Successfully logged In")}&toastType=success`,
-        process.env.NEXT_PUBLIC_SERVER_URL
-      )
+    // Use raw HTTP response to set cookie — bypasses Next.js abstraction issues
+    const redirectUrl = new URL(
+      `/?toast=${encodeURIComponent("Successfully logged In")}&toastType=success`,
+      process.env.NEXT_PUBLIC_SERVER_URL
     )
-    response.cookies.set(cookieData.name, cookieData.value, cookieOptions)
 
-    return response
+    return new Response(null, {
+      status: 302,
+      headers: {
+        'Location': redirectUrl.toString(),
+        'Set-Cookie': `${cookieData.name}=${cookieData.value}; HttpOnly; Max-Age=${cookieData.tokenExpiration}; Path=/; Secure; SameSite=Lax`,
+      },
+    })
   } catch (error) {
     return NextResponse.redirect(
       new URL(`/login?toast=${encodeURIComponent("toast=Something went wrong with your sign-in. Please try again later.")}&toastType=error`, process.env.NEXT_PUBLIC_SERVER_URL!)
