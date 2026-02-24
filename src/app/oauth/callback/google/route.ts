@@ -94,6 +94,8 @@ export async function GET(req: NextRequest) {
       expires: cookieData.expires,
       httpOnly: true,
       path: '/',
+      sameSite: 'none',
+      secure: true,
     })
 
     return response
