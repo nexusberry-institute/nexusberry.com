@@ -39,6 +39,8 @@ const queryTutorialBySlug = (slug: string) =>
           showVideos: true,
           showQuiz: true,
           showAssignment: true,
+          showCode: true,
+          showPresentation: true,
           description: true,
           content: true,
           quiz: true,
@@ -298,7 +300,9 @@ export default async function TutorialPage({
           assignment={tutorial.assignment ?? null}
           showAssignment={tutorial.showAssignment}
           codeUrl={tutorial.codeUrl ?? null}
+          showCode={tutorial.showCode}
           presentationUrl={tutorial.presentationUrl ?? null}
+          showPresentation={tutorial.showPresentation}
         />
 
         {/* Back Navigation */}

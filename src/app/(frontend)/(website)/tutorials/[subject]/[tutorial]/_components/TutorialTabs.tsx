@@ -15,7 +15,9 @@ type Props = {
   assignment?: DefaultTypedEditorState | null
   showAssignment?: boolean | null
   codeUrl?: string | null
+  showCode?: boolean | null
   presentationUrl?: string | null
+  showPresentation?: boolean | null
 }
 
 type TabConfig = {
@@ -63,14 +65,14 @@ const PresentationIcon = (
   </svg>
 )
 
-export default function TutorialTabs({ content, quiz, showQuiz, assignment, showAssignment, codeUrl, presentationUrl }: Props) {
+export default function TutorialTabs({ content, quiz, showQuiz, assignment, showAssignment, codeUrl, showCode, presentationUrl, showPresentation }: Props) {
   const tabs: TabConfig[] = []
 
   if (content) tabs.push({ id: 'cheatsheet', label: 'Cheatsheet', icon: CheatsheetIcon })
   if (showQuiz && quiz) tabs.push({ id: 'quiz', label: 'Quiz', icon: QuizIcon })
   if (showAssignment !== false && assignment) tabs.push({ id: 'assignment', label: 'Assignment', icon: AssignmentIcon })
-  if (codeUrl) tabs.push({ id: 'code', label: 'Code', icon: CodeIcon })
-  if (presentationUrl) tabs.push({ id: 'presentation', label: 'Presentation', icon: PresentationIcon })
+  if (showCode !== false && codeUrl) tabs.push({ id: 'code', label: 'Code', icon: CodeIcon })
+  if (showPresentation !== false && presentationUrl) tabs.push({ id: 'presentation', label: 'Presentation', icon: PresentationIcon })
 
   if (tabs.length === 0) return null
 
@@ -108,13 +110,13 @@ export default function TutorialTabs({ content, quiz, showQuiz, assignment, show
           </TabsContent>
         )}
 
-        {codeUrl && (
+        {showCode !== false && codeUrl && (
           <TabsContent value="code" className="mt-6">
             <CodeViewer url={codeUrl} />
           </TabsContent>
         )}
 
-        {presentationUrl && (
+        {showPresentation !== false && presentationUrl && (
           <TabsContent value="presentation" className="mt-6">
             <PresentationViewer url={presentationUrl} />
           </TabsContent>

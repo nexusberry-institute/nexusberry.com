@@ -1948,6 +1948,14 @@ export interface Tutorial {
    * When enabled, the assignment tab will be displayed on the frontend.
    */
   showAssignment?: boolean | null;
+  /**
+   * When enabled, the code tab will be displayed on the frontend.
+   */
+  showCode?: boolean | null;
+  /**
+   * When enabled, the presentation tab will be displayed on the frontend.
+   */
+  showPresentation?: boolean | null;
   description?: {
     root: {
       type: string;
@@ -3319,6 +3327,8 @@ export interface TutorialsSelect<T extends boolean = true> {
   showVideos?: T;
   showQuiz?: T;
   showAssignment?: T;
+  showCode?: T;
+  showPresentation?: T;
   description?: T;
   content?: T;
   videos?:

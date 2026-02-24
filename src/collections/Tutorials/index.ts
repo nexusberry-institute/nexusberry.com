@@ -74,6 +74,26 @@ export const Tutorials: CollectionConfig = {
       },
     },
     {
+      name: 'showCode',
+      type: 'checkbox',
+      defaultValue: true,
+      label: 'Show Code',
+      admin: {
+        position: 'sidebar',
+        description: 'When enabled, the code tab will be displayed on the frontend.',
+      },
+    },
+    {
+      name: 'showPresentation',
+      type: 'checkbox',
+      defaultValue: true,
+      label: 'Show Presentation',
+      admin: {
+        position: 'sidebar',
+        description: 'When enabled, the presentation tab will be displayed on the frontend.',
+      },
+    },
+    {
       type: 'tabs',
       tabs: [
         {
