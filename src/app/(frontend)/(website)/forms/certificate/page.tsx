@@ -49,7 +49,7 @@ const CertificateApplicationForm = () => {
             id: payloadField.id,
             name: payloadField.name,
             label: payloadField.label,
-            type: payloadField.blockType || payloadField.type,
+            type: payloadField.blockType || payloadField.type || 'text',
             required: payloadField.required || false,
             width: payloadField.width,
             defaultValue: payloadField.defaultValue,

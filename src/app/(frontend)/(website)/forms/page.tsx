@@ -15,7 +15,7 @@ const formCards = [
     },
     {
         id: "support",
-        title: "General Inquiry",
+        title: "General Support",
         description: "Submit your questions and inquiries. Our team will respond within 24 hours.",
         icon: <MessageSquare className="h-8 w-8 text-green-600" />,
         route: "/forms/support",
@@ -81,18 +81,6 @@ const FormsPage = () => {
                     ))}
                 </div>
 
-                {/* Footer Section */}
-                <div className="mt-16 text-center">
-                    <div className="bg-white rounded-lg shadow-md p-8 max-w-2xl mx-auto">
-                        <h3 className="text-lg font-semibold text-gray-900 mb-2">Need Help?</h3>
-                        <p className="text-gray-600 mb-4">
-                            If you can not find the form you are looking for or need assistance, our support team is here to help.
-                        </p>
-                        <Button asChild variant="outline" className="border-primary-600 text-primary-600 hover:bg-primary-50">
-                            <Link href="/contact-us">Contact Support</Link>
-                        </Button>
-                    </div>
-                </div>
             </div>
         </div>
     )
