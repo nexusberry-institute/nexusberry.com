@@ -4,6 +4,8 @@ import { Video } from '@/payload-types'
 import Tabs from '../_components/Tabs'
 import { RichText } from '@payloadcms/richtext-lexical/react'
 import type { SerializedEditorState } from '@payloadcms/richtext-lexical/lexical'
+import { extractYouTubeId } from '@/utilities/youtube'
+import SecureVideoPlayer from '@/components/SecureVideoPlayer'
 
 async function getVideoBySlug(slug: string): Promise<Video | null> {
   const res = await fetch(
@@ -147,35 +149,8 @@ export default async function VideoDetailPage({ params }: { params: Promise<{ sl
       {/* Video Player */}
       <div className="relative overflow-hidden rounded-xl bg-black shadow-2xl">
         {youtubeId ? (
-          // YouTube Embed with proper parameters
-          <div className="relative aspect-video">
-            <iframe
-              src={`https://www.youtube-nocookie.com/embed/${youtubeId}?modestbranding=1&rel=0&showinfo=0&autoplay=0}`}
-              title={video.title}
-              className="absolute top-0 left-0 w-full h-full"
-              frameBorder="0"
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-              allowFullScreen
-              referrerPolicy="strict-origin-when-cross-origin"
-            ></iframe>
-
-            {/* Alternative if iframe doesn't work */}
-            {/* <div className="absolute bottom-4 right-4 z-10">
-                  <a 
-                    href={video.videoUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg flex items-center gap-2 text-sm"
-                  >
-                    <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
-                      <path d="M19.615 3.184c-3.604-.246-11.631-.245-15.23 0-3.897.266-4.356 2.62-4.385 8.816.029 6.185.484 8.549 4.385 8.816 3.6.245 11.626.246 15.23 0 3.897-.266 4.356-2.62 4.385-8.816-.029-6.185-.484-8.549-4.385-8.816zm-10.615 12.816v-8l8 3.993-8 4.007z"/>
-                    </svg>
-                    Watch on YouTube
-                  </a>
-                </div> */}
-          </div>
+          <SecureVideoPlayer type="youtube" videoId={youtubeId} title={video.title} />
         ) : (
-          // Direct video or other URL
           <div className="aspect-video flex items-center justify-center bg-gray-900">
             <div className="text-center p-8">
               <div className="mb-4">
@@ -270,25 +245,3 @@ export default async function VideoDetailPage({ params }: { params: Promise<{ sl
   )
 }
 
-// Function to extract YouTube ID from various URL formats
-const extractYouTubeId = (url: string): string | null => {
-  if (!url) return null
-
-  // Different YouTube URL patterns
-  const patterns = [
-    /(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/i,
-    /youtube\.com\/watch\?v=([^"&?\/\s]{11})/i,
-    /youtu\.be\/([^"&?\/\s]{11})/i,
-    /youtube\.com\/embed\/([^"&?\/\s]{11})/i,
-    /youtube\.com\/v\/([^"&?\/\s]{11})/i,
-  ]
-
-  for (const pattern of patterns) {
-    const match = url.match(pattern)
-    if (match && match[1]) {
-      return match[1]
-    }
-  }
-
-  return null
-}

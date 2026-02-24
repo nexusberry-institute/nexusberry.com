@@ -1,6 +1,8 @@
 'use client'
 
 import { useState } from 'react'
+import { extractYouTubeId } from '@/utilities/youtube'
+import SecureVideoPlayer from '@/components/SecureVideoPlayer'
 
 type Video = {
   videoSource?: 'youtube' | 'bunny' | null
@@ -14,22 +16,6 @@ type Props = {
   title: string
 }
 
-const extractYouTubeId = (url: string): string | null => {
-  if (!url) return null
-  const patterns = [
-    /(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/i,
-    /youtube\.com\/watch\?v=([^"&?\/\s]{11})/i,
-    /youtu\.be\/([^"&?\/\s]{11})/i,
-    /youtube\.com\/embed\/([^"&?\/\s]{11})/i,
-    /youtube\.com\/v\/([^"&?\/\s]{11})/i,
-  ]
-  for (const pattern of patterns) {
-    const match = url.match(pattern)
-    if (match && match[1]) return match[1]
-  }
-  return null
-}
-
 function getVideoEmbed(video: Video): { type: 'youtube' | 'bunny'; id: string } | null {
   if (video.videoSource === 'youtube' && video.youtubeUrl) {
     const id = extractYouTubeId(video.youtubeUrl)
@@ -39,11 +25,6 @@ function getVideoEmbed(video: Video): { type: 'youtube' | 'bunny'; id: string } 
     return { type: 'bunny', id: video.bunnyVideoId }
   }
   return null
-}
-
-function getEmbedUrl(embed: { type: 'youtube' | 'bunny'; id: string }): string {
-  if (embed.type === 'youtube') return `https://www.youtube.com/embed/${embed.id}`
-  return `https://iframe.mediadelivery.net/embed/348450/${embed.id}`
 }
 
 export default function VideoPlayer({ videos, title }: Props) {
@@ -60,14 +41,11 @@ export default function VideoPlayer({ videos, title }: Props) {
   return (
     <section className="padding-x max-w-5xl mx-auto py-10 md:py-14">
       {/* Main Video */}
-      <div className="relative w-full overflow-hidden rounded-xl shadow-lg border border-border bg-black aspect-video">
-        <iframe
-          src={getEmbedUrl(active.embed)}
+      <div className="relative w-full overflow-hidden rounded-xl shadow-lg border border-border bg-black">
+        <SecureVideoPlayer
+          type={active.embed.type}
+          videoId={active.embed.id}
           title={title}
-          loading="lazy"
-          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-          allowFullScreen
-          className="absolute inset-0 w-full h-full"
         />
       </div>
 
@@ -78,11 +56,10 @@ export default function VideoPlayer({ videos, title }: Props) {
             <button
               key={v.video.id ?? idx}
               onClick={() => setActiveIndex(idx)}
-              className={`flex-shrink-0 w-40 rounded-lg border-2 overflow-hidden transition-colors ${
-                idx === activeIndex
+              className={`flex-shrink-0 w-40 rounded-lg border-2 overflow-hidden transition-colors ${idx === activeIndex
                   ? 'border-primary shadow-md'
                   : 'border-border hover:border-primary/50'
-              }`}
+                }`}
             >
               <div className="aspect-video bg-muted flex items-center justify-center relative">
                 <svg
@@ -99,7 +76,7 @@ export default function VideoPlayer({ videos, title }: Props) {
                 )}
               </div>
               <div className="px-2 py-1.5 text-xs font-medium text-muted-foreground truncate">
-                {v.embed.type === 'youtube' ? 'YouTube' : 'Bunny CDN'} #{idx + 1}
+                Video #{idx + 1}
               </div>
             </button>
           ))}
