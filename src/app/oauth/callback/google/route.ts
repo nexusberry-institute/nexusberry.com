@@ -84,7 +84,7 @@ export async function GET(req: NextRequest) {
 
     return NextResponse.redirect(
       new URL(
-        `/lms?toast=${encodeURIComponent("Successfully logged In")}&toastType=success`,
+        `/?toast=${encodeURIComponent("Successfully logged In")}&toastType=success`,
         process.env.NEXT_PUBLIC_SERVER_URL
       )
     )

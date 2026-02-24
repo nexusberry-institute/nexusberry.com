@@ -50,7 +50,6 @@ export const createUser = async (props: UserProps) => {
       provider: "google",
       email: props.email,
       password: props.password ?? password,
-      roles: ["student"],
       _verified: true,
     },
   })
