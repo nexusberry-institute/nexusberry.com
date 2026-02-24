@@ -33,12 +33,6 @@ export const Modules: CollectionConfig = {
       required: true,
     },
     {
-      name: "lectures",
-      type: "relationship",
-      relationTo: "lectures",
-      hasMany: true,
-    },
-    {
       name: "description",
       type: "text",
       required: false,

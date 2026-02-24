@@ -103,11 +103,8 @@ export interface Config {
     coursework: Coursework;
     modules: Module;
     'module-topics': ModuleTopic;
-    lectures: Lecture;
-    assignments: Assignment;
     quizzes: Quiz;
     'quiz-questions': QuizQuestion;
-    videos: Video;
     tutorials: Tutorial;
     'tutorial-subjects': TutorialSubject;
     redirects: Redirect;
@@ -186,11 +183,8 @@ export interface Config {
     coursework: CourseworkSelect<false> | CourseworkSelect<true>;
     modules: ModulesSelect<false> | ModulesSelect<true>;
     'module-topics': ModuleTopicsSelect<false> | ModuleTopicsSelect<true>;
-    lectures: LecturesSelect<false> | LecturesSelect<true>;
-    assignments: AssignmentsSelect<false> | AssignmentsSelect<true>;
     quizzes: QuizzesSelect<false> | QuizzesSelect<true>;
     'quiz-questions': QuizQuestionsSelect<false> | QuizQuestionsSelect<true>;
-    videos: VideosSelect<false> | VideosSelect<true>;
     tutorials: TutorialsSelect<false> | TutorialsSelect<true>;
     'tutorial-subjects': TutorialSubjectsSelect<false> | TutorialSubjectsSelect<true>;
     redirects: RedirectsSelect<false> | RedirectsSelect<true>;
@@ -1399,52 +1393,36 @@ export interface Module {
   slug?: string | null;
   slugLock?: boolean | null;
   nick: string;
-  lectures?: (number | Lecture)[] | null;
   description?: string | null;
   updatedAt: string;
   createdAt: string;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "lectures".
+ * via the `definition` "payment-plans".
  */
-export interface Lecture {
+export interface PaymentPlan {
   id: number;
-  title: string;
-  module?: (number | null) | Module;
-  batches?: (number | Batch)[] | null;
-  teacher?: (number | null) | Teacher;
+  '_payment-plans_relatedPaymentPlans_order'?: string | null;
+  'training-course': number | TrainingCourse;
   /**
-   * pattern: Batchslug/moduleSlug/Topicslug
+   * Full Price of selected course
    */
-  slug: string;
-  videoUrl?: string | null;
-  notes?: {
-    root: {
-      type: string;
-      children: {
-        type: any;
-        version: number;
-        [k: string]: unknown;
-      }[];
-      direction: ('ltr' | 'rtl') | null;
-      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
-      indent: number;
-      version: number;
-    };
-    [k: string]: unknown;
-  } | null;
-  files?: (number | null) | Media;
-  rating?: number | null;
-  qa?:
-    | {
-        [k: string]: unknown;
-      }
-    | unknown[]
-    | string
-    | number
-    | boolean
-    | null;
+  totalPrice?: number | null;
+  name: string;
+  /**
+   * Mark one of the payment plans as popular
+   */
+  is_popular?: boolean | null;
+  description: string;
+  installments: {
+    amount: number;
+    /**
+     * Number of days for next Due Date
+     */
+    due_after_days?: number | null;
+    id?: string | null;
+  }[];
   updatedAt: string;
   createdAt: string;
 }
@@ -1523,35 +1501,6 @@ export interface TimeTable {
   startTime: string;
   endTime: string;
   room?: string | null;
-  updatedAt: string;
-  createdAt: string;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "payment-plans".
- */
-export interface PaymentPlan {
-  id: number;
-  '_payment-plans_relatedPaymentPlans_order'?: string | null;
-  'training-course': number | TrainingCourse;
-  /**
-   * Full Price of selected course
-   */
-  totalPrice?: number | null;
-  name: string;
-  /**
-   * Mark one of the payment plans as popular
-   */
-  is_popular?: boolean | null;
-  description: string;
-  installments: {
-    amount: number;
-    /**
-     * Number of days for next Due Date
-     */
-    due_after_days?: number | null;
-    id?: string | null;
-  }[];
   updatedAt: string;
   createdAt: string;
 }
@@ -1893,46 +1842,6 @@ export interface ModuleTopic {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "assignments".
- */
-export interface Assignment {
-  id: number;
-  status?: boolean | null;
-  'Basic Info': {
-    title: string;
-    files?: (number | Media)[] | null;
-    tags?: string[] | null;
-    module?: (number | null) | Module;
-    moduleTopic?: (number | null) | ModuleTopic;
-    lecture?: (number | null) | Lecture;
-  };
-  Questions?: {
-    questions?:
-      | {
-          question?: {
-            root: {
-              type: string;
-              children: {
-                type: any;
-                version: number;
-                [k: string]: unknown;
-              }[];
-              direction: ('ltr' | 'rtl') | null;
-              format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
-              indent: number;
-              version: number;
-            };
-            [k: string]: unknown;
-          } | null;
-          id?: string | null;
-        }[]
-      | null;
-  };
-  updatedAt: string;
-  createdAt: string;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "quizzes".
  */
 export interface Quiz {
@@ -1960,7 +1869,6 @@ export interface Quiz {
   tags?: string[] | null;
   module?: (number | null) | Module;
   moduleTopic?: (number | null) | ModuleTopic;
-  lecture?: (number | null) | Lecture;
   updatedAt: string;
   createdAt: string;
 }
@@ -2011,64 +1919,6 @@ export interface QuizQuestion {
   tags?: string[] | null;
   module?: (number | null) | Module;
   moduleTopic?: (number | null) | ModuleTopic;
-  lecture?: (number | null) | Lecture;
-  updatedAt: string;
-  createdAt: string;
-}
-/**
- * Manage the videos
- *
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "videos".
- */
-export interface Video {
-  id: number;
-  title: string;
-  videoUrl: string;
-  poster?: (number | null) | Media;
-  notes?: {
-    root: {
-      type: string;
-      children: {
-        type: any;
-        version: number;
-        [k: string]: unknown;
-      }[];
-      direction: ('ltr' | 'rtl') | null;
-      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
-      indent: number;
-      version: number;
-    };
-    [k: string]: unknown;
-  } | null;
-  assignment?: {
-    root: {
-      type: string;
-      children: {
-        type: any;
-        version: number;
-        [k: string]: unknown;
-      }[];
-      direction: ('ltr' | 'rtl') | null;
-      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
-      indent: number;
-      version: number;
-    };
-    [k: string]: unknown;
-  } | null;
-  qa?:
-    | {
-        question?: string | null;
-        answer?: string | null;
-        timestamp?: string | null;
-        id?: string | null;
-      }[]
-    | null;
-  /**
-   * When enabled, the slug will auto-generate from the title field on save and autosave.
-   */
-  generateSlug?: boolean | null;
-  slug: string;
   updatedAt: string;
   createdAt: string;
 }
@@ -2491,24 +2341,12 @@ export interface PayloadLockedDocument {
         value: number | ModuleTopic;
       } | null)
     | ({
-        relationTo: 'lectures';
-        value: number | Lecture;
-      } | null)
-    | ({
-        relationTo: 'assignments';
-        value: number | Assignment;
-      } | null)
-    | ({
         relationTo: 'quizzes';
         value: number | Quiz;
       } | null)
     | ({
         relationTo: 'quiz-questions';
         value: number | QuizQuestion;
-      } | null)
-    | ({
-        relationTo: 'videos';
-        value: number | Video;
       } | null)
     | ({
         relationTo: 'tutorials';
@@ -3416,7 +3254,6 @@ export interface ModulesSelect<T extends boolean = true> {
   slug?: T;
   slugLock?: T;
   nick?: T;
-  lectures?: T;
   description?: T;
   updatedAt?: T;
   createdAt?: T;
@@ -3428,53 +3265,6 @@ export interface ModulesSelect<T extends boolean = true> {
 export interface ModuleTopicsSelect<T extends boolean = true> {
   title?: T;
   modules?: T;
-  updatedAt?: T;
-  createdAt?: T;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "lectures_select".
- */
-export interface LecturesSelect<T extends boolean = true> {
-  title?: T;
-  module?: T;
-  batches?: T;
-  teacher?: T;
-  slug?: T;
-  videoUrl?: T;
-  notes?: T;
-  files?: T;
-  rating?: T;
-  qa?: T;
-  updatedAt?: T;
-  createdAt?: T;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "assignments_select".
- */
-export interface AssignmentsSelect<T extends boolean = true> {
-  status?: T;
-  'Basic Info'?:
-    | T
-    | {
-        title?: T;
-        files?: T;
-        tags?: T;
-        module?: T;
-        moduleTopic?: T;
-        lecture?: T;
-      };
-  Questions?:
-    | T
-    | {
-        questions?:
-          | T
-          | {
-              question?: T;
-              id?: T;
-            };
-      };
   updatedAt?: T;
   createdAt?: T;
 }
@@ -3492,7 +3282,6 @@ export interface QuizzesSelect<T extends boolean = true> {
   tags?: T;
   module?: T;
   moduleTopic?: T;
-  lecture?: T;
   updatedAt?: T;
   createdAt?: T;
 }
@@ -3513,30 +3302,6 @@ export interface QuizQuestionsSelect<T extends boolean = true> {
   tags?: T;
   module?: T;
   moduleTopic?: T;
-  lecture?: T;
-  updatedAt?: T;
-  createdAt?: T;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "videos_select".
- */
-export interface VideosSelect<T extends boolean = true> {
-  title?: T;
-  videoUrl?: T;
-  poster?: T;
-  notes?: T;
-  assignment?: T;
-  qa?:
-    | T
-    | {
-        question?: T;
-        answer?: T;
-        timestamp?: T;
-        id?: T;
-      };
-  generateSlug?: T;
-  slug?: T;
   updatedAt?: T;
   createdAt?: T;
 }

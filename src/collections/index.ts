@@ -16,7 +16,6 @@ import { Messages } from './Messages'
 import { Teachers } from './Teachers'
 import { TrainingCourses } from './TrainingCourses'
 import { Modules } from './Modules'
-import { Lectures } from './Lectures'
 import { Batches } from './Batches'
 import { TimeTable } from './TimeTable'
 import { Coursework } from './Coursework'
@@ -38,8 +37,6 @@ import { PlatformRedirects } from './PlatformRedirects'
 import { ModuleTopics } from './ModuleTopics';
 import { Quizzes } from './Quizzes'
 import { QuizQuestions } from './QuizQuestions'
-import { Assignments } from './Assignments'
-import { Videos } from './Videos'
 import { Tutorials } from './Tutorials'
 import { TutorialSubjects } from './TutorialSubjects'
 
@@ -81,11 +78,8 @@ const collections = [
    Coursework,
    Modules,
    ModuleTopics,
-   Lectures,
-   Assignments,
    Quizzes,
    QuizQuestions,
-   Videos,
    // Tutorials
    Tutorials,
    TutorialSubjects

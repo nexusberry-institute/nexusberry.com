@@ -1,12 +1,17 @@
 import { CollectionConfig } from 'payload'
 import { slugField } from '@/fields/slug'
 import { richTextField } from '@/fields/richTextField'
+import { revalidateQuiz, revalidateDeleteQuiz } from './hooks/revalidateQuiz'
 
 export const Quizzes: CollectionConfig = {
   slug: 'quizzes',
   admin: {
     group: "Classwork",
     useAsTitle: 'title'
+  },
+  hooks: {
+    afterChange: [revalidateQuiz],
+    afterDelete: [revalidateDeleteQuiz],
   },
   fields: [
     {
@@ -48,14 +53,6 @@ export const Quizzes: CollectionConfig = {
       name: "moduleTopic",
       type: "relationship",
       relationTo: "module-topics",
-      admin: {
-        position: 'sidebar',
-      }
-    },
-    {
-      name: "lecture",
-      type: "relationship",
-      relationTo: "lectures",
       admin: {
         position: 'sidebar',
       }

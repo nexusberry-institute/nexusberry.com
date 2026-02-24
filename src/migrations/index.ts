@@ -5,6 +5,8 @@ import * as migration_20260223_113137 from './20260223_113137';
 import * as migration_20260223_122039 from './20260223_122039';
 import * as migration_20260223_192200_tutorials_quizzes_enhancements from './20260223_192200_tutorials_quizzes_enhancements';
 import * as migration_20260224_add_show_assignment from './20260224_add_show_assignment';
+import * as migration_20260224_drop_videos_assignments from './20260224_drop_videos_assignments';
+import * as migration_20260224_drop_lectures from './20260224_drop_lectures';
 
 export const migrations = [
   {
@@ -41,5 +43,15 @@ export const migrations = [
     up: migration_20260224_add_show_assignment.up,
     down: migration_20260224_add_show_assignment.down,
     name: '20260224_add_show_assignment',
+  },
+  {
+    up: migration_20260224_drop_videos_assignments.up,
+    down: migration_20260224_drop_videos_assignments.down,
+    name: '20260224_drop_videos_assignments',
+  },
+  {
+    up: migration_20260224_drop_lectures.up,
+    down: migration_20260224_drop_lectures.down,
+    name: '20260224_drop_lectures',
   },
 ];
