@@ -1,15 +1,10 @@
-// import { checkAccess } from '@/access/accessControl';
-// import { CollectionConfig } from 'payload';
-// import { message } from 'antd';
-import { getPayload } from "payload";
-import config from '@payload-config'
 import { CollectionConfig, PayloadRequest, CustomComponent } from 'payload'
 
 export const Batches: CollectionConfig = {
   slug: "batches",
 
   admin: {
-    useAsTitle: "slug",
+    useAsTitle: "courseTitle",
     group: "Academic Operations",
     components: {
       edit: {
@@ -25,15 +20,49 @@ export const Batches: CollectionConfig = {
     // delete: checkAccess('batches', 'delete'),
   },
 
-
-
   fields: [
+    // Sidebar fields
+    {
+      name: "medium",
+      type: "select",
+      required: true,
+      options: [
+        "ONLINE",
+        "PHYSICAL",
+        "HYBRID",
+      ],
+      admin: {
+        position: "sidebar",
+      }
+    },
+    {
+      name: "active",
+      type: "checkbox",
+      defaultValue: true,
+      admin: {
+        position: "sidebar",
+      }
+    },
+    {
+      name: "note",
+      type: "textarea",
+      admin: {
+        position: "sidebar",
+      }
+    },
+
+    // Main content
     {
       type: "tabs",
       tabs: [
         {
           label: "Batch Details",
           fields: [
+            {
+              name: "courseTitle",
+              type: "text",
+              required: true,
+            },
             {
               name: "slug",
               type: "text",
@@ -53,62 +82,10 @@ export const Batches: CollectionConfig = {
               type: "row",
               fields: [
                 {
-                  name: "training-courses",
-                  type: "relationship",
-                  required: true,
-                  relationTo: "training-courses",
-                  hasMany: false,
-                },
-                {
                   name: "teachers",
                   type: "relationship",
                   relationTo: "teachers",
                   hasMany: true,
-                }
-              ]
-            },
-            {
-              name: "modules",
-              type: "relationship",
-              relationTo: "modules",
-              hasMany: true,
-              filterOptions: async ({ data }) => {
-
-                if (data["training-courses"]) {
-
-                  const payload = await getPayload({ config })
-
-                  const course = await payload.findByID({
-                    collection: "training-courses",
-                    id: data["training-courses"],
-                    select: {
-                      modules: true
-                    },
-                    depth: 0
-                  })
-
-                  return {
-                    id: {
-                      in: course.modules
-                    }
-                  }
-                }
-
-                return true
-              }
-            },
-            {
-              type: "row",
-              fields: [
-                {
-                  name: "startDate",
-                  type: "date",
-                  admin: {
-                    date: {
-                      pickerAppearance: "dayOnly",
-                      displayFormat: "MMM dd, yyyy",
-                    }
-                  }
                 },
                 {
                   name: "duration",
@@ -126,19 +103,24 @@ export const Batches: CollectionConfig = {
                     return true
                   }
                 },
+              ]
+            },
+            {
+              type: "row",
+              fields: [
+                {
+                  name: "startDate",
+                  type: "date",
+                  admin: {
+                    date: {
+                      pickerAppearance: "dayOnly",
+                      displayFormat: "MMM dd, yyyy",
+                    }
+                  }
+                },
                 {
                   name: "endDate",
                   type: "date",
-                  // hooks: {
-                  //   beforeChange: [
-                  //     ({ data }: any) => {
-                  //       if(data.duration) {
-                  //         return new Date(data.startDate.getTime() + data.duration * 7 * 24 * 60 * 60 * 1000)
-                  //       }
-                  //       return data.endDate
-                  //     }
-                  //   ]
-                  // },
                   admin: {
                     date: {
                       pickerAppearance: "dayOnly",
@@ -155,49 +137,6 @@ export const Batches: CollectionConfig = {
                 },
               ]
             },
-            {
-              type: "row",
-              fields: [
-                {
-                  name: "medium",
-                  type: "select",
-                  required: true,
-                  options: [
-                    "ONLINE",
-                    "PHYSICAL",
-                    "HYBRID",
-                  ]
-                },
-                {
-                  name: "canEnroll",
-                  type: "checkbox",
-                  defaultValue: true,
-                  admin: {
-                    style: { paddingTop: "25px" }
-                  }
-                },
-                {
-                  name: "active",
-                  type: "checkbox",
-                  defaultValue: true,
-                  admin: {
-                    style: { paddingTop: "25px" }
-                  }
-                },
-              ]
-            },
-            {
-              name: "note",
-              type: "text",
-            },
-            {
-              name: "waGroupLink",
-              type: "text",
-            },
-            {
-              name: "gcrLink",
-              type: "text",
-            },
           ]
         },
         {
@@ -209,7 +148,6 @@ export const Batches: CollectionConfig = {
               type: "join",
               collection: "enrollments",
               on: "batchEnrollments.batch",
-              // relationTo: "enrollments",
             }
           ]
         },
@@ -227,25 +165,6 @@ export const Batches: CollectionConfig = {
           ]
         }
       ],
-      // admin: {
-      //   components: {
-      //     Field: {
-      //       path: "@/components/BatchCSVExport"
-      //     },
-      //   }
-      // }
     },
-
-    // {
-    //   name: "TimeTable",
-    //   type: "ui",
-    //   admin: {
-    //     components: {
-    //       Field: {
-    //         path: "@/components/BatchTimeTable"
-    //       },
-    //     }
-    //   }
-    // }
   ],
 };

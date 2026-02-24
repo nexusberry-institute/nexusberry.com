@@ -1432,25 +1432,21 @@ export interface PaymentPlan {
  */
 export interface Batch {
   id: number;
+  medium: 'ONLINE' | 'PHYSICAL' | 'HYBRID';
+  active?: boolean | null;
+  note?: string | null;
+  courseTitle: string;
   /**
    * Pattern: Batch/StartDate/MMMYY.Teacher/nick.module/nick.TimeTable/Days/D.TimeTable/Time/HH:MM AM|PM
    */
   slug: string;
-  'training-courses': number | TrainingCourse;
   teachers?: (number | Teacher)[] | null;
-  modules?: (number | Module)[] | null;
-  startDate?: string | null;
   /**
    * Duration in weeks
    */
   duration: number;
+  startDate?: string | null;
   endDate?: string | null;
-  medium: 'ONLINE' | 'PHYSICAL' | 'HYBRID';
-  canEnroll?: boolean | null;
-  active?: boolean | null;
-  note?: string | null;
-  waGroupLink?: string | null;
-  gcrLink?: string | null;
   relatedEnrollments?: {
     docs?: (number | Enrollment)[];
     hasNextPage?: boolean;
@@ -2956,19 +2952,15 @@ export interface DiscountCodesSelect<T extends boolean = true> {
  * via the `definition` "batches_select".
  */
 export interface BatchesSelect<T extends boolean = true> {
-  slug?: T;
-  'training-courses'?: T;
-  teachers?: T;
-  modules?: T;
-  startDate?: T;
-  duration?: T;
-  endDate?: T;
   medium?: T;
-  canEnroll?: T;
   active?: T;
   note?: T;
-  waGroupLink?: T;
-  gcrLink?: T;
+  courseTitle?: T;
+  slug?: T;
+  teachers?: T;
+  duration?: T;
+  startDate?: T;
+  endDate?: T;
   relatedEnrollments?: T;
   batchTimeTable?: T;
   updatedAt?: T;
