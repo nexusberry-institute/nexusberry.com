@@ -3,6 +3,7 @@ import { Montserrat } from 'next/font/google'
 import { Open_Sans } from 'next/font/google'
 import { cn } from 'src/utilities/cn'
 import { Providers } from '@/providers'
+import { AuthProvider } from './(auth)/_providers/Auth'
 import { InitTheme } from '@/providers/Theme/InitTheme'
 import { Toaster } from '@/components/ui/toaster'
 import WhatsappButton from '../(frontend)/(website)/_components/WhatsappButton'
@@ -40,7 +41,9 @@ export default async function RootLayout({ children }: { children: React.ReactNo
       <body>
         <Toaster />
         <Providers>
+          <AuthProvider>
           {children}
+          </AuthProvider>
           <WhatsappButton
             phoneNumber={settings.whatsappPhoneNumber ?? ''}
             enabled={settings.enableWhatsappButton ?? false}

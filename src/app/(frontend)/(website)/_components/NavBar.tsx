@@ -8,9 +8,10 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuLabel, DropdownMenuTrigg
 import Link from 'next/link'
 import { Sidebar } from './Sidebar'
 import { Sheet, SheetTrigger } from '@/components/ui/sheet'
+import { useAuth } from '@/app/(frontend)/(auth)/_providers/Auth'
 
 
-const NavBar = ({ departments, isLoggedIn }: {
+const NavBar = ({ departments, isLoggedIn: serverIsLoggedIn }: {
     departments: {
         slug?: string | null;
         title: string;
@@ -19,6 +20,9 @@ const NavBar = ({ departments, isLoggedIn }: {
 }) => {
     const [open, setOpen] = useState(false)
     const [dropdownOpen, setDropdownOpen] = useState(false)
+    const { user } = useAuth()
+    // Use client-side auth context as primary source; fall back to server prop during initial hydration
+    const isLoggedIn = user !== undefined ? !!user : serverIsLoggedIn
 
     return (
         <div className='flex sticky justify-between top-0 bg-primary items-center z-50 px-16 max-md:px-10 max-sm:px-8 max-xs:px-2 py-4'>
