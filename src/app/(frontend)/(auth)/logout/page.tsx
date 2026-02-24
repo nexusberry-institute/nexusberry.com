@@ -1,7 +1,6 @@
 "use client"
 
 import { useEffect } from "react"
-import { useRouter } from "next/navigation"
 import { useToast } from "@/hooks/use-toast"
 import { useAuth } from "../_providers/Auth"
 import { motion } from "framer-motion"
@@ -10,11 +9,8 @@ import { Loader } from "lucide-react"
 export default function Logout() {
   const { logout } = useAuth()
   const { toast } = useToast()
-  const router = useRouter()
 
   useEffect(() => {
-    const previousPage = document.referrer || "/"
-
     logout().then(res => {
       if (res.success) {
         toast({
@@ -22,14 +18,15 @@ export default function Logout() {
           description: "You have been logged out of your account.",
           variant: "success",
         })
-        router.push("/")
+        // Hard navigation so the server re-renders the header with isLoggedIn=false
+        window.location.href = "/"
       } else {
         toast({
           title: "Logout Failed",
           description: res.message || "There was an issue logging you out.",
           variant: "destructive",
         })
-        router.push(previousPage)
+        window.location.href = document.referrer || "/"
       }
     }).catch(() => {
       toast({
@@ -37,9 +34,9 @@ export default function Logout() {
         description: "An unexpected error occurred during logout.",
         variant: "destructive",
       })
-      router.push(previousPage)
+      window.location.href = document.referrer || "/"
     })
-  }, [logout, toast, router])
+  }, [logout, toast])
 
   const dotsVariants = {
     animate: {

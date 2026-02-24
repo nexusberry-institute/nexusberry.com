@@ -1,7 +1,7 @@
 'use client'
 
 import Link from 'next/link'
-import { useRouter, useSearchParams, redirect as nextRedirect } from 'next/navigation'
+import { useSearchParams, redirect as nextRedirect } from 'next/navigation'
 import React, { useCallback, useRef } from 'react'
 import { useForm } from 'react-hook-form'
 import { motion } from 'framer-motion'
@@ -26,7 +26,6 @@ export const LoginForm: React.FC = () => {
   const allParams = searchParams.toString() ? `?${searchParams.toString()}` : ''
   const redirect = useRef(searchParams.get('redirect'))
   const { login } = useAuth()
-  const router = useRouter()
   const { toast } = useToast()
 
   const {
@@ -56,11 +55,11 @@ export const LoginForm: React.FC = () => {
         }
 
         if (redirect?.current) {
-          router.push(redirect.current)
+          window.location.href = redirect.current
         } else {
           const primaryRole = Object.keys(roleDefaultPaths).find(role => user?.roles?.includes(role as keyof typeof roleDefaultPaths)) || 'authenticated'
           const redirectPath = roleDefaultPaths[primaryRole as keyof typeof roleDefaultPaths]
-          router.push(redirectPath)
+          window.location.href = redirectPath
         }
 
       } catch (_) {
@@ -71,7 +70,7 @@ export const LoginForm: React.FC = () => {
         })
       }
     },
-    [router],
+    [login, toast],
   )
 
   const handleGoogleLogin = useCallback(async () => {

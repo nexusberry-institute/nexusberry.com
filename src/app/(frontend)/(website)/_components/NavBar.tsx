@@ -10,11 +10,12 @@ import { Sidebar } from './Sidebar'
 import { Sheet, SheetTrigger } from '@/components/ui/sheet'
 
 
-const NavBar = ({ departments }: {
+const NavBar = ({ departments, isLoggedIn }: {
     departments: {
         slug?: string | null;
         title: string;
-    }[]
+    }[];
+    isLoggedIn: boolean;
 }) => {
     const [open, setOpen] = useState(false)
     const [dropdownOpen, setDropdownOpen] = useState(false)
@@ -68,10 +69,17 @@ const NavBar = ({ departments }: {
                 <Link href='/contact-us'>
                     <Button className='text-lg text-card hover:underline'>Contact us</Button>
                 </Link>
-                <Link href='/login'>
-                    <Button className='border-2 rounded-xl text-lg p-6 hover:bg-card hover:text-foreground focus-visible:ring-card focus-visible:ring-0'>
-                        Login</Button>
-                </Link>
+                {isLoggedIn ? (
+                    <Link href='/logout'>
+                        <Button className='border-2 rounded-xl text-lg p-6 hover:bg-card hover:text-foreground focus-visible:ring-card focus-visible:ring-0'>
+                            Logout</Button>
+                    </Link>
+                ) : (
+                    <Link href='/login'>
+                        <Button className='border-2 rounded-xl text-lg p-6 hover:bg-card hover:text-foreground focus-visible:ring-card focus-visible:ring-0'>
+                            Login</Button>
+                    </Link>
+                )}
             </div>
 
             {/* Burger Menu on Mobile Screens */}
@@ -81,7 +89,7 @@ const NavBar = ({ departments }: {
                     aria-controls="radix-«Rdnatb»">
                     <Menu size={32} className='lg:hidden text-card mt-2 max-sm:size-7' />
                 </SheetTrigger>
-                <Sidebar setOpen={setOpen} courseLinks={departments} />
+                <Sidebar setOpen={setOpen} courseLinks={departments} isLoggedIn={isLoggedIn} />
             </Sheet>
 
         </div>

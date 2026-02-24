@@ -17,9 +17,10 @@ type SidebarProps = {
         slug?: string | null;
         title: string;
     }[];
+    isLoggedIn: boolean;
 }
 
-export function Sidebar({ setOpen, courseLinks }: SidebarProps) {
+export function Sidebar({ setOpen, courseLinks, isLoggedIn }: SidebarProps) {
     const handleLinkClick = () => {
         setOpen(false)
     }
@@ -63,9 +64,15 @@ export function Sidebar({ setOpen, courseLinks }: SidebarProps) {
                     </div>
                 </div>
                 <div className='flex justify-center max-xs:*:px-4 *:py-4 *:border *:rounded-xl *:text-xs *:px-8'>
-                    <Link href='/login'>
-                        <Button >Login</Button>
-                    </Link>
+                    {isLoggedIn ? (
+                        <Link href='/logout' onClick={handleLinkClick}>
+                            <Button>Logout</Button>
+                        </Link>
+                    ) : (
+                        <Link href='/login' onClick={handleLinkClick}>
+                            <Button>Login</Button>
+                        </Link>
+                    )}
                 </div>
             </Collapsible>
         </SheetContent>
