@@ -4,6 +4,7 @@ import * as migration_20260223_112919 from './20260223_112919';
 import * as migration_20260223_113137 from './20260223_113137';
 import * as migration_20260223_122039 from './20260223_122039';
 import * as migration_20260223_192200_tutorials_quizzes_enhancements from './20260223_192200_tutorials_quizzes_enhancements';
+import * as migration_20260224_add_show_assignment from './20260224_add_show_assignment';
 
 export const migrations = [
   {
@@ -35,5 +36,10 @@ export const migrations = [
     up: migration_20260223_192200_tutorials_quizzes_enhancements.up,
     down: migration_20260223_192200_tutorials_quizzes_enhancements.down,
     name: '20260223_192200_tutorials_quizzes_enhancements',
+  },
+  {
+    up: migration_20260224_add_show_assignment.up,
+    down: migration_20260224_add_show_assignment.down,
+    name: '20260224_add_show_assignment',
   },
 ];

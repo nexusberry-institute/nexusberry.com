@@ -54,12 +54,38 @@ export const Tutorials: CollectionConfig = {
       },
     },
     {
+      name: 'showQuiz',
+      type: 'checkbox',
+      defaultValue: true,
+      label: 'Show Quiz',
+      admin: {
+        position: 'sidebar',
+        description: 'When enabled, the quiz tab will be displayed on the frontend.',
+      },
+    },
+    {
+      name: 'showAssignment',
+      type: 'checkbox',
+      defaultValue: true,
+      label: 'Show Assignment',
+      admin: {
+        position: 'sidebar',
+        description: 'When enabled, the assignment tab will be displayed on the frontend.',
+      },
+    },
+    {
       type: 'tabs',
       tabs: [
         {
           label: 'Description',
           fields: [
             richTextField({ name: 'description', label: 'Description' }),
+          ],
+        },
+        {
+          label: 'Cheatsheet',
+          fields: [
+            richTextField({ name: 'content', label: 'Tutorial Content' }),
           ],
         },
         {
@@ -104,12 +130,6 @@ export const Tutorials: CollectionConfig = {
           ],
         },
         {
-          label: 'Cheatsheet',
-          fields: [
-            richTextField({ name: 'content', label: 'Tutorial Content' }),
-          ],
-        },
-        {
           label: 'Quiz',
           fields: [
             {
@@ -117,15 +137,6 @@ export const Tutorials: CollectionConfig = {
               type: 'relationship',
               relationTo: 'quizzes',
               label: 'Quiz',
-            },
-            {
-              name: 'showQuiz',
-              type: 'checkbox',
-              defaultValue: true,
-              label: 'Show Quiz',
-              admin: {
-                description: 'When enabled, the quiz tab will be displayed on the frontend.',
-              },
             },
           ],
         },

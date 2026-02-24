@@ -2090,7 +2090,30 @@ export interface Tutorial {
    * When enabled, videos will be displayed on the frontend.
    */
   showVideos?: boolean | null;
+  /**
+   * When enabled, the quiz tab will be displayed on the frontend.
+   */
+  showQuiz?: boolean | null;
+  /**
+   * When enabled, the assignment tab will be displayed on the frontend.
+   */
+  showAssignment?: boolean | null;
   description?: {
+    root: {
+      type: string;
+      children: {
+        type: any;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  } | null;
+  content?: {
     root: {
       type: string;
       children: {
@@ -2116,26 +2139,7 @@ export interface Tutorial {
         id?: string | null;
       }[]
     | null;
-  content?: {
-    root: {
-      type: string;
-      children: {
-        type: any;
-        version: number;
-        [k: string]: unknown;
-      }[];
-      direction: ('ltr' | 'rtl') | null;
-      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
-      indent: number;
-      version: number;
-    };
-    [k: string]: unknown;
-  } | null;
   quiz?: (number | null) | Quiz;
-  /**
-   * When enabled, the quiz tab will be displayed on the frontend.
-   */
-  showQuiz?: boolean | null;
   assignment?: {
     root: {
       type: string;
@@ -3548,7 +3552,10 @@ export interface TutorialsSelect<T extends boolean = true> {
   subject?: T;
   label?: T;
   showVideos?: T;
+  showQuiz?: T;
+  showAssignment?: T;
   description?: T;
+  content?: T;
   videos?:
     | T
     | {
@@ -3557,9 +3564,7 @@ export interface TutorialsSelect<T extends boolean = true> {
         bunnyVideoId?: T;
         id?: T;
       };
-  content?: T;
   quiz?: T;
-  showQuiz?: T;
   assignment?: T;
   codeUrl?: T;
   presentationUrl?: T;

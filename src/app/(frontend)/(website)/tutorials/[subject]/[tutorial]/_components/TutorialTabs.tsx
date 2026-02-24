@@ -13,6 +13,7 @@ type Props = {
   quiz?: Quiz | null
   showQuiz?: boolean | null
   assignment?: DefaultTypedEditorState | null
+  showAssignment?: boolean | null
   codeUrl?: string | null
   presentationUrl?: string | null
 }
@@ -62,12 +63,12 @@ const PresentationIcon = (
   </svg>
 )
 
-export default function TutorialTabs({ content, quiz, showQuiz, assignment, codeUrl, presentationUrl }: Props) {
+export default function TutorialTabs({ content, quiz, showQuiz, assignment, showAssignment, codeUrl, presentationUrl }: Props) {
   const tabs: TabConfig[] = []
 
   if (content) tabs.push({ id: 'cheatsheet', label: 'Cheatsheet', icon: CheatsheetIcon })
   if (showQuiz && quiz) tabs.push({ id: 'quiz', label: 'Quiz', icon: QuizIcon })
-  if (assignment) tabs.push({ id: 'assignment', label: 'Assignment', icon: AssignmentIcon })
+  if (showAssignment !== false && assignment) tabs.push({ id: 'assignment', label: 'Assignment', icon: AssignmentIcon })
   if (codeUrl) tabs.push({ id: 'code', label: 'Code', icon: CodeIcon })
   if (presentationUrl) tabs.push({ id: 'presentation', label: 'Presentation', icon: PresentationIcon })
 
@@ -101,7 +102,7 @@ export default function TutorialTabs({ content, quiz, showQuiz, assignment, code
           </TabsContent>
         )}
 
-        {assignment && (
+        {showAssignment !== false && assignment && (
           <TabsContent value="assignment" className="mt-6">
             <RichText data={assignment} enableGutter={false} />
           </TabsContent>
