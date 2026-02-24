@@ -70,9 +70,10 @@ export async function GET(req: NextRequest) {
       );
     }
 
+    let cookieData: { name: string; value: string; expires: Date }
     try {
       const user = await getUserByEmail(googleUser)
-      await loginWith(user)
+      cookieData = await loginWith(user)
     } catch (error) {
       return NextResponse.redirect(
         new URL(
@@ -82,12 +83,20 @@ export async function GET(req: NextRequest) {
       )
     }
 
-    return NextResponse.redirect(
+    const response = NextResponse.redirect(
       new URL(
         `/?toast=${encodeURIComponent("Successfully logged In")}&toastType=success`,
         process.env.NEXT_PUBLIC_SERVER_URL
       )
     )
+
+    response.cookies.set(cookieData.name, cookieData.value, {
+      expires: cookieData.expires,
+      httpOnly: true,
+      path: '/',
+    })
+
+    return response
   } catch (error) {
     return NextResponse.redirect(
       new URL(`/login?toast=${encodeURIComponent("toast=Something went wrong with your sign-in. Please try again later.")}&toastType=error`, process.env.NEXT_PUBLIC_SERVER_URL!)

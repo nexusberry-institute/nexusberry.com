@@ -1,7 +1,6 @@
-import payload, { getCookieExpiration, getFieldsToSign, getPayload } from "payload"
+import { getCookieExpiration, getFieldsToSign, getPayload } from "payload"
 import configPromise from "@payload-config"
 import { Media, User } from "@/payload-types"
-import { cookies } from "next/headers"
 import { SignJWT } from "jose"
 import { randomBytes } from "node:crypto"
 
@@ -60,7 +59,6 @@ export const createUser = async (props: UserProps) => {
 export type UserWithCollection = User & { collection: "users" }
 
 export const loginWith = async (user: User) => {
-  const cookieStore = await cookies()
   const payload = await getPayload({ config: configPromise })
   const userWithCollection: UserWithCollection = {
     ...user,
@@ -96,12 +94,7 @@ export const loginWith = async (user: User) => {
     .setExpirationTime(exp)
     .sign(secretKey)
 
-  cookieStore.set({
-    name,
-    value: token,
-    expires,
-    httpOnly: true,
-  })
+  return { name, value: token, expires }
 }
 
 export const uploadImageByUrl = async (imageUrl?: string): Promise<Media | null> => {
@@ -152,6 +145,7 @@ export const uploadImageByUrl = async (imageUrl?: string): Promise<Media | null>
     }
 
     // Upload to Payload CMS
+    const payload = await getPayload({ config: configPromise })
     const uploaded = await payload.create({
       collection: 'media',
       data: {
