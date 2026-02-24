@@ -1,6 +1,6 @@
 'use client'
 import Image from 'next/image'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import logo from '@/app/(frontend)/(website)/_assets/logo/reverse-logo.png'
 import { Button } from '@/components/ui/button'
 import { ArrowRight, ChevronsDown, Menu } from 'lucide-react'
@@ -19,6 +19,24 @@ const NavBar = ({ departments, isLoggedIn }: {
 }) => {
     const [open, setOpen] = useState(false)
     const [dropdownOpen, setDropdownOpen] = useState(false)
+    const [authState, setAuthState] = useState(isLoggedIn)
+
+    useEffect(() => {
+        const verifyAuth = async () => {
+            try {
+                const res = await fetch('/api/users/me', { credentials: 'include' })
+                if (res.ok) {
+                    const data = await res.json()
+                    setAuthState(!!data.user)
+                } else {
+                    setAuthState(false)
+                }
+            } catch {
+                // On error, keep server-provided value
+            }
+        }
+        verifyAuth()
+    }, [])
 
     return (
         <div className='flex sticky justify-between top-0 bg-primary items-center z-50 px-16 max-md:px-10 max-sm:px-8 max-xs:px-2 py-4'>
@@ -69,7 +87,7 @@ const NavBar = ({ departments, isLoggedIn }: {
                 <Link href='/contact-us'>
                     <Button className='text-lg text-card hover:underline'>Contact us</Button>
                 </Link>
-                {isLoggedIn ? (
+                {authState ? (
                     <Link href='/logout'>
                         <Button className='border-2 rounded-xl text-lg p-6 hover:bg-card hover:text-foreground focus-visible:ring-card focus-visible:ring-0'>
                             Logout</Button>
@@ -89,7 +107,7 @@ const NavBar = ({ departments, isLoggedIn }: {
                     aria-controls="radix-«Rdnatb»">
                     <Menu size={32} className='lg:hidden text-card mt-2 max-sm:size-7' />
                 </SheetTrigger>
-                <Sidebar setOpen={setOpen} courseLinks={departments} isLoggedIn={isLoggedIn} />
+                <Sidebar setOpen={setOpen} courseLinks={departments} isLoggedIn={authState} />
             </Sheet>
 
         </div>
