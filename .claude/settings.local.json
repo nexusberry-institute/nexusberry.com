@@ -59,7 +59,9 @@
       "Bash(cd /d/my-github/nexusberry.com && yes \"\" | pnpm migrate:create --name tutorials_quizzes_enhancements 2>&1)",
       "Bash(cd /d/my-github/nexusberry.com && printf '\\\\n' | pnpm migrate:create --name snapshot_update 2>&1)",
       "Bash(cd /d/my-github/nexusberry.com && pnpm migrate:run 2>&1)",
-      "Bash(cd /d/my-github/nexusberry.com && pnpm migrate:status 2>&1)"
+      "Bash(cd /d/my-github/nexusberry.com && pnpm migrate:status 2>&1)",
+      "WebFetch(domain:support.google.com)",
+      "WebFetch(domain:brandee.edu.vn)"
     ]
   },
   "enableAllProjectMcpServers": true,

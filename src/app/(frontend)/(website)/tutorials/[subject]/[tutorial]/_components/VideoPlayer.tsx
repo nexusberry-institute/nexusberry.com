@@ -13,9 +13,11 @@ export default function VideoPlayer({ slug, title }: Props) {
   const [activeIndex, setActiveIndex] = useState(0)
   const { data: playableVideos, isLoading, error } = useTutorialVideos(slug)
 
+  const blockContextMenu = (e: React.MouseEvent) => e.preventDefault()
+
   if (isLoading) {
     return (
-      <section className="padding-x max-w-5xl mx-auto py-10 md:py-14">
+      <section className="padding-x max-w-5xl mx-auto py-10 md:py-14" onContextMenu={blockContextMenu}>
         <div className="relative w-full overflow-hidden rounded-xl shadow-lg border border-border bg-black aspect-video flex items-center justify-center">
           <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-white" />
         </div>
@@ -25,7 +27,7 @@ export default function VideoPlayer({ slug, title }: Props) {
 
   if (error) {
     return (
-      <section className="padding-x max-w-5xl mx-auto py-10 md:py-14">
+      <section className="padding-x max-w-5xl mx-auto py-10 md:py-14" onContextMenu={blockContextMenu}>
         <div className="relative w-full overflow-hidden rounded-xl shadow-lg border border-border bg-black aspect-video flex items-center justify-center">
           <p className="text-gray-400">Failed to load videos</p>
         </div>
@@ -38,7 +40,7 @@ export default function VideoPlayer({ slug, title }: Props) {
   const active = playableVideos[activeIndex] ?? playableVideos[0]!
 
   return (
-    <section className="padding-x max-w-5xl mx-auto py-10 md:py-14">
+    <section className="padding-x max-w-5xl mx-auto py-10 md:py-14 select-none" onContextMenu={blockContextMenu}>
       {/* Main Video */}
       <div className="relative w-full overflow-hidden rounded-xl shadow-lg border border-border bg-black">
         <SecureVideoPlayer

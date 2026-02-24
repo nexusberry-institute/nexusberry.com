@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
+import { decodeVideoPayload } from '@/utilities/videoObfuscation'
 
 type VideoEmbed = { type: 'youtube' | 'bunny'; id: string }
 
@@ -20,8 +21,9 @@ export function useTutorialVideos(slug: string) {
         return res.json()
       })
       .then((json) => {
+        const decoded = decodeVideoPayload(json.d) as { videos: VideoEmbed[] }
         if (!cancelled) {
-          setData(json.videos ?? [])
+          setData(decoded.videos ?? [])
           setIsLoading(false)
         }
       })
@@ -56,8 +58,9 @@ export function useLmsVideo(slug: string) {
         return res.json()
       })
       .then((json) => {
+        const decoded = decodeVideoPayload(json.d) as { type: string; id: string }
         if (!cancelled) {
-          setData(json)
+          setData(decoded)
           setIsLoading(false)
         }
       })

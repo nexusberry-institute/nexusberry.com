@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import configPromise from '@payload-config'
 import { getPayload } from 'payload'
 import { extractYouTubeId } from '@/utilities/youtube'
+import { encodeVideoPayload } from '@/utilities/videoObfuscation'
 
 const headers = {
   'Cache-Control': 'private, no-store',
@@ -45,10 +46,10 @@ export async function GET(
 
     const youtubeId = extractYouTubeId(video.videoUrl)
     if (youtubeId) {
-      return NextResponse.json({ type: 'youtube', id: youtubeId }, { headers })
+      return NextResponse.json({ d: encodeVideoPayload({ type: 'youtube', id: youtubeId }) }, { headers })
     }
 
-    return NextResponse.json({ type: 'external', id: video.videoUrl }, { headers })
+    return NextResponse.json({ d: encodeVideoPayload({ type: 'external', id: video.videoUrl }) }, { headers })
   } catch {
     return NextResponse.json({ error: 'Internal error' }, { status: 500, headers })
   }
