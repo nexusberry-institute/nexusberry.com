@@ -109,7 +109,7 @@ src/app/
 - Email currently disabled but configured
 
 **Key Notes:**
-1. **Collections (43+):** Data models defined in `src/collections/`. See `src/collections/index.ts` for full list.
+1. **Collections (40+):** Data models defined in `src/collections/`. See `src/collections/index.ts` for full list.
 2. **Globals:** Site-wide settings in `src/globals/`
 3. **Blocks:** Reusable content blocks in `src/blocks/` (Banner, CTA, Content, Media, Code, etc.)
 4. **Plugins:** Configured in `src/plugins/index.ts`
@@ -154,11 +154,10 @@ src/app/
 
 ### Collections Organization
 
-**43+ Collections in `src/collections/`:**
+**40+ Collections in `src/collections/`:**
 
 **Academic Content:**
-- TrainingCourses, WebCourses, Modules, ModuleTopics, Lectures, Videos
-- Coursework, Assignments, Quizzes, QuizQuestions
+- TrainingCourses, WebCourses, Quizzes, QuizQuestions
 
 **People Management:**
 - Users, Students, Teachers, Staffs, Employees, Instructors

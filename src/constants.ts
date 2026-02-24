@@ -5,7 +5,6 @@ export const routePermissions = {
   '/accounts': ['superadmin', 'admin', 'developer', 'operations', 'accountant'],
   '/lms': ['developer', 'student', 'teacher'],
   '/reports': ['superadmin', 'admin', 'operations'],
-  '/coursework': ['developer', 'student', 'teacher'],
 }
 
 // Default redirect paths based on primary role

@@ -41,22 +41,6 @@ export const Quizzes: CollectionConfig = {
         position: 'sidebar',
       }
     },
-    {
-      name: "module",
-      type: "relationship",
-      relationTo: "modules",
-      admin: {
-        position: 'sidebar',
-      }
-    },
-    {
-      name: "moduleTopic",
-      type: "relationship",
-      relationTo: "module-topics",
-      admin: {
-        position: 'sidebar',
-      }
-    },
   ]
 }
 

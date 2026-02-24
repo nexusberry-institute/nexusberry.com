@@ -15,10 +15,8 @@ import Campaigns from './Campaigns'
 import { Messages } from './Messages'
 import { Teachers } from './Teachers'
 import { TrainingCourses } from './TrainingCourses'
-import { Modules } from './Modules'
 import { Batches } from './Batches'
 import { TimeTable } from './TimeTable'
-import { Coursework } from './Coursework'
 import { Students } from './Students'
 import { Enrollments } from './Enrollments'
 import { FeeReceipts } from './FeeReceipts'
@@ -34,7 +32,6 @@ import { Inquiries } from './InquiriesForm'
 import { Employees } from './Employees'
 import { ClassRecords } from './ClassRecords'
 import { PlatformRedirects } from './PlatformRedirects'
-import { ModuleTopics } from './ModuleTopics';
 import { Quizzes } from './Quizzes'
 import { QuizQuestions } from './QuizQuestions'
 import { Tutorials } from './Tutorials'
@@ -75,9 +72,6 @@ const collections = [
    ClassRecords,
    PlatformRedirects,
    // Classwork
-   Coursework,
-   Modules,
-   ModuleTopics,
    Quizzes,
    QuizQuestions,
    // Tutorials

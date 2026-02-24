@@ -100,9 +100,6 @@ export interface Config {
     'classes-employee': ClassesEmployee;
     'class-records': ClassRecord;
     'platform-redirects': PlatformRedirect;
-    coursework: Coursework;
-    modules: Module;
-    'module-topics': ModuleTopic;
     quizzes: Quiz;
     'quiz-questions': QuizQuestion;
     tutorials: Tutorial;
@@ -180,9 +177,6 @@ export interface Config {
     'classes-employee': ClassesEmployeeSelect<false> | ClassesEmployeeSelect<true>;
     'class-records': ClassRecordsSelect<false> | ClassRecordsSelect<true>;
     'platform-redirects': PlatformRedirectsSelect<false> | PlatformRedirectsSelect<true>;
-    coursework: CourseworkSelect<false> | CourseworkSelect<true>;
-    modules: ModulesSelect<false> | ModulesSelect<true>;
-    'module-topics': ModuleTopicsSelect<false> | ModuleTopicsSelect<true>;
     quizzes: QuizzesSelect<false> | QuizzesSelect<true>;
     'quiz-questions': QuizQuestionsSelect<false> | QuizQuestionsSelect<true>;
     tutorials: TutorialsSelect<false> | TutorialsSelect<true>;
@@ -278,14 +272,14 @@ export interface PayloadMcpApiKeyAuthOperations {
  */
 export interface User {
   id: number;
-  blocked?: boolean | null;
   gmail_username?: string | null;
-  provider?: ('local' | 'google') | null;
+  photo?: (number | null) | Media;
   roles?:
     | ('superadmin' | 'admin' | 'developer' | 'operations' | 'accountant' | 'csr' | 'teacher' | 'student' | 'user')[]
     | null;
-  photo?: (number | null) | Media;
+  provider?: ('local' | 'google') | null;
   is_active?: boolean | null;
+  blocked?: boolean | null;
   updatedAt: string;
   createdAt: string;
   email: string;
@@ -1299,27 +1293,27 @@ export interface Student {
   fullName?: string | null;
   phoneNumber?: string | null;
   gmail_username?: string | null;
-  dateOfBirth?: string | null;
-  gender?: ('male' | 'female') | null;
   /**
    * Highest Student Education
    */
   education?: string | null;
-  otp?: string | null;
-  otpVerified?: boolean | null;
-  otpGeneratedAt?: string | null;
+  dateOfBirth?: string | null;
+  gender?: ('male' | 'female') | null;
   address?: {
     homeAddress?: string | null;
     city?: string | null;
     state?: string | null;
     country?: string | null;
   };
-  profilePicture?: (number | null) | Media;
   studentEnrollments?: {
     docs?: (number | Enrollment)[];
     hasNextPage?: boolean;
     totalDocs?: number;
   };
+  profilePicture?: (number | null) | Media;
+  otpVerified?: boolean | null;
+  otp?: string | null;
+  otpGeneratedAt?: string | null;
   updatedAt: string;
   createdAt: string;
 }
@@ -1335,7 +1329,6 @@ export interface Enrollment {
   batchEnrollments?:
     | {
         batch?: (number | null) | Batch;
-        modules?: (number | Module)[] | null;
         mode?: ('ONLINE' | 'PHYSICAL' | 'HYBRID') | null;
         id?: string | null;
       }[]
@@ -1369,7 +1362,6 @@ export interface TrainingCourse {
   slug: string;
   slugLock?: boolean | null;
   description?: string | null;
-  modules?: (number | Module)[] | null;
   departments?: (number | Department)[] | null;
   /**
    * Full price of the course
@@ -1380,20 +1372,6 @@ export interface TrainingCourse {
     hasNextPage?: boolean;
     totalDocs?: number;
   };
-  updatedAt: string;
-  createdAt: string;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "modules".
- */
-export interface Module {
-  id: number;
-  title: string;
-  slug?: string | null;
-  slugLock?: boolean | null;
-  nick: string;
-  description?: string | null;
   updatedAt: string;
   createdAt: string;
 }
@@ -1619,10 +1597,6 @@ export interface Attendance {
    */
   batches: (number | Batch)[];
   /**
-   * only modules from selected batches will be available
-   */
-  module?: (number | null) | Module;
-  /**
    * Selected users can access this class regardless of enrollment status and restrictions
    */
   users?: (number | User)[] | null;
@@ -1797,47 +1771,6 @@ export interface PlatformRedirect {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "coursework".
- */
-export interface Coursework {
-  id: number;
-  slug?: string | null;
-  slugLock?: boolean | null;
-  module: number | Module;
-  topicGroup?: string | null;
-  topic: string;
-  parts?: (number | null) | Coursework;
-  content: {
-    root: {
-      type: string;
-      children: {
-        type: any;
-        version: number;
-        [k: string]: unknown;
-      }[];
-      direction: ('ltr' | 'rtl') | null;
-      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
-      indent: number;
-      version: number;
-    };
-    [k: string]: unknown;
-  };
-  updatedAt: string;
-  createdAt: string;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "module-topics".
- */
-export interface ModuleTopic {
-  id: number;
-  title: string;
-  modules?: (number | null) | Module;
-  updatedAt: string;
-  createdAt: string;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "quizzes".
  */
 export interface Quiz {
@@ -1863,8 +1796,6 @@ export interface Quiz {
   slug?: string | null;
   slugLock?: boolean | null;
   tags?: string[] | null;
-  module?: (number | null) | Module;
-  moduleTopic?: (number | null) | ModuleTopic;
   updatedAt: string;
   createdAt: string;
 }
@@ -1913,8 +1844,6 @@ export interface QuizQuestion {
     [k: string]: unknown;
   } | null;
   tags?: string[] | null;
-  module?: (number | null) | Module;
-  moduleTopic?: (number | null) | ModuleTopic;
   updatedAt: string;
   createdAt: string;
 }
@@ -2333,18 +2262,6 @@ export interface PayloadLockedDocument {
         value: number | PlatformRedirect;
       } | null)
     | ({
-        relationTo: 'coursework';
-        value: number | Coursework;
-      } | null)
-    | ({
-        relationTo: 'modules';
-        value: number | Module;
-      } | null)
-    | ({
-        relationTo: 'module-topics';
-        value: number | ModuleTopic;
-      } | null)
-    | ({
         relationTo: 'quizzes';
         value: number | Quiz;
       } | null)
@@ -2437,12 +2354,12 @@ export interface PayloadMigration {
  * via the `definition` "users_select".
  */
 export interface UsersSelect<T extends boolean = true> {
-  blocked?: T;
   gmail_username?: T;
-  provider?: T;
-  roles?: T;
   photo?: T;
+  roles?: T;
+  provider?: T;
   is_active?: T;
+  blocked?: T;
   updatedAt?: T;
   createdAt?: T;
   email?: T;
@@ -2901,7 +2818,6 @@ export interface TrainingCoursesSelect<T extends boolean = true> {
   slug?: T;
   slugLock?: T;
   description?: T;
-  modules?: T;
   departments?: T;
   fullPrice?: T;
   relatedPaymentPlans?: T;
@@ -2990,12 +2906,9 @@ export interface StudentsSelect<T extends boolean = true> {
   fullName?: T;
   phoneNumber?: T;
   gmail_username?: T;
+  education?: T;
   dateOfBirth?: T;
   gender?: T;
-  education?: T;
-  otp?: T;
-  otpVerified?: T;
-  otpGeneratedAt?: T;
   address?:
     | T
     | {
@@ -3004,8 +2917,11 @@ export interface StudentsSelect<T extends boolean = true> {
         state?: T;
         country?: T;
       };
-  profilePicture?: T;
   studentEnrollments?: T;
+  profilePicture?: T;
+  otpVerified?: T;
+  otp?: T;
+  otpGeneratedAt?: T;
   updatedAt?: T;
   createdAt?: T;
 }
@@ -3021,7 +2937,6 @@ export interface EnrollmentsSelect<T extends boolean = true> {
     | T
     | {
         batch?: T;
-        modules?: T;
         mode?: T;
         id?: T;
       };
@@ -3067,7 +2982,6 @@ export interface AttendanceSelect<T extends boolean = true> {
   expiry?: T;
   visible?: T;
   batches?: T;
-  module?: T;
   users?: T;
   teacher?: T;
   date?: T;
@@ -3232,44 +3146,6 @@ export interface PlatformRedirectsSelect<T extends boolean = true> {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "coursework_select".
- */
-export interface CourseworkSelect<T extends boolean = true> {
-  slug?: T;
-  slugLock?: T;
-  module?: T;
-  topicGroup?: T;
-  topic?: T;
-  parts?: T;
-  content?: T;
-  updatedAt?: T;
-  createdAt?: T;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "modules_select".
- */
-export interface ModulesSelect<T extends boolean = true> {
-  title?: T;
-  slug?: T;
-  slugLock?: T;
-  nick?: T;
-  description?: T;
-  updatedAt?: T;
-  createdAt?: T;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "module-topics_select".
- */
-export interface ModuleTopicsSelect<T extends boolean = true> {
-  title?: T;
-  modules?: T;
-  updatedAt?: T;
-  createdAt?: T;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "quizzes_select".
  */
 export interface QuizzesSelect<T extends boolean = true> {
@@ -3280,8 +3156,6 @@ export interface QuizzesSelect<T extends boolean = true> {
   slug?: T;
   slugLock?: T;
   tags?: T;
-  module?: T;
-  moduleTopic?: T;
   updatedAt?: T;
   createdAt?: T;
 }
@@ -3300,8 +3174,6 @@ export interface QuizQuestionsSelect<T extends boolean = true> {
   correctAnswer?: T;
   explanation?: T;
   tags?: T;
-  module?: T;
-  moduleTopic?: T;
   updatedAt?: T;
   createdAt?: T;
 }

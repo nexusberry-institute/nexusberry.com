@@ -85,19 +85,6 @@ export const Attendances: CollectionConfig = {
                     description: "When Class Type is set to 'Class', only batches with a scheduled class for today will be shown"
                   }
                 },
-                {
-                  name: "module",
-                  type: "relationship",
-                  relationTo: "modules",
-                  filterOptions: ({ data }) => {
-                    return {
-                      id: { in: data.batch }
-                    }
-                  },
-                  admin: {
-                    description: "only modules from selected batches will be available"
-                  }
-                },
               ]
             },
             {

@@ -52,12 +52,6 @@ export const TrainingCourses: CollectionConfig = {
       required: false,
     },
     {
-      name: "modules",
-      type: "relationship",
-      relationTo: "modules",
-      hasMany: true,
-    },
-    {
       name: "departments",
       type: "relationship",
       relationTo: "departments",

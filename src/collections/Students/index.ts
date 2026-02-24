@@ -1,5 +1,5 @@
 // import { checkAccess } from '@/access/accessControl';
-import { CollectionConfig, PayloadRequest, CustomComponent } from 'payload'
+import { CollectionConfig } from 'payload'
 import { checkAndCreateUser } from '@/hooks/checkAndCreateUser'
 // import type { NextApiRequest, NextApiResponse } from 'next'
 import { trackNewStudentAdmission } from "./hooks/track";
@@ -160,7 +160,7 @@ export const Students: CollectionConfig = {
       type: "tabs",
       tabs: [
         {
-          label: "Student Information",
+          label: "Personal Info",
           fields: [
             {
               name: 'user',
@@ -169,8 +169,8 @@ export const Students: CollectionConfig = {
               hasMany: false,
               unique: true,
               access: {
-                create: () => false
-              }
+                create: () => false,
+              },
             },
             {
               type: "row",
@@ -178,111 +178,94 @@ export const Students: CollectionConfig = {
                 {
                   name: "studentEmail",
                   type: "email",
+                  label: "Email",
                   virtual: true,
                   validate: (value, { data }) => {
-                    if (value) {
-                      return true
-                    }
+                    if (value) return true
                     return "Please Enter Student Email"
                   },
                   admin: {
-                    condition: (data) => {
-                      if (data.user) {
-                        return false
-                      }
-                      return true
-                    }
-                  }
+                    condition: (data) => !data.user,
+                  },
                 },
                 {
                   name: "studentPassword",
                   type: "text",
+                  label: "Password",
                   virtual: true,
                   validate: (value: any, { data }: any) => {
-                    if (value) {
-                      return true
-                    }
-                    if (data?.user) {
-                      return true
-                    }
+                    if (value || data?.user) return true
                     return "Please Enter Student Password"
                   },
                   admin: {
-                    condition: (data) => {
-                      if (data.user) {
-                        return false
-                      }
-                      return true
-                    }
-                  }
+                    condition: (data) => !data.user,
+                  },
                 },
-              ]
+              ],
             },
             {
-              name: 'fullName',
-              type: 'text',
-              minLength: 3
-            },
-            {
-              name: 'phoneNumber',
-              type: 'text',
-            },
-            {
-              name: "gmail_username",
-              type: "text",
-            },
-            {
-              name: 'dateOfBirth',
-              type: 'date',
-              admin: {
-                date: {
-                  pickerAppearance: 'dayOnly',
-                  displayFormat: 'dd/MM/yyyy',
-                },
-              },
-            },
-            {
-              name: 'gender',
-              type: 'select',
-              options: [
+              type: "row",
+              fields: [
                 {
-                  label: 'Male',
-                  value: 'male',
+                  name: 'fullName',
+                  type: 'text',
+                  label: 'Full Name',
+                  minLength: 3,
                 },
                 {
-                  label: 'Female',
-                  value: 'female',
-                }
-              ]
-            },
-            {
-              name: 'education',
-              type: 'text',
-              admin: {
-                description: "Highest Student Education"
-              }
-            },
-            {
-              name: "otp",
-              type: "text",
-              admin: {
-                readOnly: true,
-              },
-            },
-            {
-              name: "otpVerified",
-              type: "checkbox",
-            },
-            {
-              name: "otpGeneratedAt",
-              type: "date",
-              admin: {
-                readOnly: true,
-                date: {
-                  pickerAppearance: 'dayAndTime',
+                  name: 'phoneNumber',
+                  type: 'text',
+                  label: 'Phone Number',
                 },
-              },
+              ],
             },
+            {
+              type: "row",
+              fields: [
+                {
+                  name: "gmail_username",
+                  type: "text",
+                  label: "Gmail Username",
+                },
+                {
+                  name: 'education',
+                  type: 'text',
+                  label: 'Education',
+                  admin: {
+                    description: "Highest Student Education",
+                  },
+                },
+              ],
+            },
+            {
+              type: "row",
+              fields: [
+                {
+                  name: 'dateOfBirth',
+                  type: 'date',
+                  label: 'Date of Birth',
+                  admin: {
+                    date: {
+                      pickerAppearance: 'dayOnly',
+                      displayFormat: 'dd/MM/yyyy',
+                    },
+                  },
+                },
+                {
+                  name: 'gender',
+                  type: 'select',
+                  options: [
+                    { label: 'Male', value: 'male' },
+                    { label: 'Female', value: 'female' },
+                  ],
+                },
+              ],
+            },
+          ],
+        },
+        {
+          label: "Address",
+          fields: [
             {
               name: 'address',
               type: 'group',
@@ -290,14 +273,20 @@ export const Students: CollectionConfig = {
                 {
                   name: 'homeAddress',
                   type: 'text',
+                  label: 'Home Address',
                 },
                 {
-                  name: 'city',
-                  type: 'text',
-                },
-                {
-                  name: 'state',
-                  type: 'text',
+                  type: "row",
+                  fields: [
+                    {
+                      name: 'city',
+                      type: 'text',
+                    },
+                    {
+                      name: 'state',
+                      type: 'text',
+                    },
+                  ],
                 },
                 {
                   name: 'country',
@@ -305,26 +294,59 @@ export const Students: CollectionConfig = {
                 },
               ],
             },
-            {
-              name: 'profilePicture',
-              type: 'upload',
-              relationTo: 'media',
-            },
           ],
         },
         {
-          label: "Student Enrollments",
+          label: "Enrollments",
           fields: [
             {
               name: "studentEnrollments",
               type: "join",
               collection: "enrollments",
               on: "student",
-            }
-          ]
-        }
-      ]
-    }
+            },
+          ],
+        },
+      ],
+    },
+    // --- Sidebar fields ---
+    {
+      name: 'profilePicture',
+      type: 'upload',
+      relationTo: 'media',
+      admin: {
+        position: 'sidebar',
+      },
+    },
+    {
+      name: "otpVerified",
+      type: "checkbox",
+      label: "OTP Verified",
+      admin: {
+        position: 'sidebar',
+      },
+    },
+    {
+      name: "otp",
+      type: "text",
+      label: "OTP Code",
+      admin: {
+        readOnly: true,
+        position: 'sidebar',
+      },
+    },
+    {
+      name: "otpGeneratedAt",
+      type: "date",
+      label: "OTP Generated At",
+      admin: {
+        readOnly: true,
+        position: 'sidebar',
+        date: {
+          pickerAppearance: 'dayAndTime',
+        },
+      },
+    },
   ]
 };
 

@@ -9,6 +9,7 @@ import * as migration_20260224_add_show_assignment from './20260224_add_show_ass
 import * as migration_20260224_add_show_code_presentation_flags from './20260224_add_show_code_presentation_flags';
 import * as migration_20260224_drop_lectures from './20260224_drop_lectures';
 import * as migration_20260224_drop_videos_assignments from './20260224_drop_videos_assignments';
+import * as migration_20260224_172300_drop_coursework_modules_moduletopics from './20260224_172300_drop_coursework_modules_moduletopics';
 
 export const migrations = [
   {
@@ -65,5 +66,10 @@ export const migrations = [
     up: migration_20260224_drop_videos_assignments.up,
     down: migration_20260224_drop_videos_assignments.down,
     name: '20260224_drop_videos_assignments'
+  },
+  {
+    up: migration_20260224_172300_drop_coursework_modules_moduletopics.up,
+    down: migration_20260224_172300_drop_coursework_modules_moduletopics.down,
+    name: '20260224_172300_drop_coursework_modules_moduletopics',
   },
 ];

@@ -49,26 +49,28 @@ export const Users: CollectionConfig = {
   timestamps: true,
   fields: [
     {
-      name: '_verified',
-      type: 'checkbox',
-      saveToJWT: true,
+      type: 'tabs',
+      tabs: [
+        {
+          label: 'Profile',
+          fields: [
+            {
+              name: "gmail_username",
+              type: "text",
+              label: "Gmail Username",
+              defaultValue: "N/A",
+            },
+            {
+              name: 'photo',
+              label: 'User Photo',
+              type: 'upload',
+              relationTo: 'media',
+            },
+          ],
+        },
+      ],
     },
-    {
-      name: 'blocked',
-      type: 'checkbox',
-      defaultValue: false,
-    },
-    {
-      name: "gmail_username",
-      type: "text",
-      defaultValue: "N/A"
-    },
-    {
-      name: "provider",
-      type: "select",
-      options: ["local", "google"],
-      defaultValue: "local"
-    },
+    // --- Sidebar fields ---
     {
       name: 'roles',
       type: 'select',
@@ -80,57 +82,57 @@ export const Users: CollectionConfig = {
         update: ({ req: { user } }) => checkRole(['superadmin', 'admin'], user),
       },
       hooks: {
-        beforeChange: [protectRoles], // apply above update access rules here
+        beforeChange: [protectRoles],
       },
       options: [
-        {
-          label: 'Super Admin',
-          value: 'superadmin',
-        },
-        {
-          label: 'Admin',
-          value: 'admin',
-        },
-        {
-          label: 'Developer',
-          value: 'developer',
-        },
-        {
-          label: 'Operations',
-          value: 'operations',
-        },
-        {
-          label: 'Accountant',
-          value: 'accountant',
-        },
-        {
-          label: 'CSR',
-          value: 'csr',
-        },
-        {
-          label: 'Teacher',
-          value: 'teacher',
-        },
-        {
-          label: 'Student',
-          value: 'student',
-        },
-        {
-          label: 'User',
-          value: 'user',
-        },
+        { label: 'Super Admin', value: 'superadmin' },
+        { label: 'Admin', value: 'admin' },
+        { label: 'Developer', value: 'developer' },
+        { label: 'Operations', value: 'operations' },
+        { label: 'Accountant', value: 'accountant' },
+        { label: 'CSR', value: 'csr' },
+        { label: 'Teacher', value: 'teacher' },
+        { label: 'Student', value: 'student' },
+        { label: 'User', value: 'user' },
       ],
+      admin: {
+        position: 'sidebar',
+      },
     },
     {
-      name: 'photo',
-      label: 'User Photo',
-      type: 'upload',
-      relationTo: 'media',
+      name: "provider",
+      type: "select",
+      options: ["local", "google"],
+      defaultValue: "local",
+      admin: {
+        position: 'sidebar',
+      },
     },
     {
       name: 'is_active',
       type: 'checkbox',
+      label: 'Active',
       defaultValue: true,
+      admin: {
+        position: 'sidebar',
+      },
+    },
+    {
+      name: '_verified',
+      type: 'checkbox',
+      label: 'Email Verified',
+      saveToJWT: true,
+      admin: {
+        position: 'sidebar',
+      },
+    },
+    {
+      name: 'blocked',
+      type: 'checkbox',
+      defaultValue: false,
+      admin: {
+        position: 'sidebar',
+      },
     },
   ],
 }

@@ -1,6 +1,5 @@
-import config from '@payload-config';
 // import { checkAccess } from '@/access/accessControl';
-import { CollectionConfig, getPayload } from 'payload';
+import { CollectionConfig } from 'payload';
 
 
 export const Enrollments: CollectionConfig = {
@@ -121,63 +120,6 @@ export const Enrollments: CollectionConfig = {
                       admin: {
                         allowCreate: false,
                       },
-                      filterOptions: async ({ data }) => {
-
-                        if (data["training-course"]) {
-
-                          const payload = await getPayload({ config })
-
-                          const course = await payload.findByID({
-                            collection: "training-courses",
-                            id: data["training-course"],
-                            select: {
-                              modules: true
-                            },
-                            depth: 0
-                          })
-
-                          return {
-                            modules: {
-                              in: course.modules
-                            }
-                          }
-                        }
-
-                        return true
-                      }
-                    },
-                    {
-                      name: 'modules',
-                      type: 'relationship',
-                      relationTo: 'modules',
-                      hasMany: true,
-                      admin: {
-                        allowCreate: false,
-                      },
-                      filterOptions: async ({ data }) => {
-
-                        if (data["training-course"]) {
-
-                          const payload = await getPayload({ config })
-
-                          const course = await payload.findByID({
-                            collection: "training-courses",
-                            id: data["training-course"],
-                            select: {
-                              modules: true
-                            },
-                            depth: 0
-                          })
-
-                          return {
-                            id: {
-                              in: course.modules
-                            }
-                          }
-                        }
-
-                        return true
-                      }
                     },
                     {
                       name: "mode",
