@@ -1940,6 +1940,21 @@ export interface Quiz {
   title: string;
   thumbnail?: (number | null) | Media;
   questions?: (number | QuizQuestion)[] | null;
+  instructions?: {
+    root: {
+      type: string;
+      children: {
+        type: any;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  } | null;
   slug?: string | null;
   slugLock?: boolean | null;
   tags?: string[] | null;
@@ -2071,12 +2086,36 @@ export interface Tutorial {
   position?: number | null;
   subject?: (number | null) | TutorialSubject;
   label?: string | null;
-  videoSource?: ('youtube' | 'bunny') | null;
-  youtubeUrl?: string | null;
   /**
-   * The video ID from your Bunny CDN library
+   * When enabled, videos will be displayed on the frontend.
    */
-  bunnyVideoId?: string | null;
+  showVideos?: boolean | null;
+  description?: {
+    root: {
+      type: string;
+      children: {
+        type: any;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  } | null;
+  videos?:
+    | {
+        videoSource?: ('youtube' | 'bunny') | null;
+        youtubeUrl?: string | null;
+        /**
+         * The video ID from your Bunny CDN library
+         */
+        bunnyVideoId?: string | null;
+        id?: string | null;
+      }[]
+    | null;
   content?: {
     root: {
       type: string;
@@ -3443,6 +3482,7 @@ export interface QuizzesSelect<T extends boolean = true> {
   title?: T;
   thumbnail?: T;
   questions?: T;
+  instructions?: T;
   slug?: T;
   slugLock?: T;
   tags?: T;
@@ -3507,9 +3547,16 @@ export interface TutorialsSelect<T extends boolean = true> {
   position?: T;
   subject?: T;
   label?: T;
-  videoSource?: T;
-  youtubeUrl?: T;
-  bunnyVideoId?: T;
+  showVideos?: T;
+  description?: T;
+  videos?:
+    | T
+    | {
+        videoSource?: T;
+        youtubeUrl?: T;
+        bunnyVideoId?: T;
+        id?: T;
+      };
   content?: T;
   quiz?: T;
   showQuiz?: T;

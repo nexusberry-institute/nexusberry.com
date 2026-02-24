@@ -1,5 +1,6 @@
 import { CollectionConfig } from 'payload'
 import { slugField } from '@/fields/slug'
+import { richTextField } from '@/fields/richTextField'
 
 export const Quizzes: CollectionConfig = {
   slug: 'quizzes',
@@ -24,8 +25,9 @@ export const Quizzes: CollectionConfig = {
       relationTo: 'quiz-questions',
       hasMany: true
     },
+    richTextField({ name: 'instructions', label: 'Instructions' }),
     // Sidebar fields
-...slugField(),
+    ...slugField(),
     {
       name: 'tags',
       type: 'text',

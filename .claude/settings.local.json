@@ -53,7 +53,13 @@
       "Bash(cd /d/github/nexusberry.com && pnpm migrate:create --name remove_quizzes_status 2>&1)",
       "Bash(cd:*)",
       "Bash(cd /d/github/nexusberry.com && pnpm migrate:create --name move_quiz_visible_to_tutorials 2>&1)",
-      "Bash(cd /d/github/nexusberry.com && pnpm migrate:run 2>&1)"
+      "Bash(cd /d/github/nexusberry.com && pnpm migrate:run 2>&1)",
+      "Bash(cd /d/my-github/nexusberry.com && pnpm migrate:create --name tutorials_quizzes_enhancements 2>&1)",
+      "Bash(cd /d/my-github/nexusberry.com && echo \"\" | pnpm migrate:create --name tutorials_quizzes_enhancements 2>&1)",
+      "Bash(cd /d/my-github/nexusberry.com && yes \"\" | pnpm migrate:create --name tutorials_quizzes_enhancements 2>&1)",
+      "Bash(cd /d/my-github/nexusberry.com && printf '\\\\n' | pnpm migrate:create --name snapshot_update 2>&1)",
+      "Bash(cd /d/my-github/nexusberry.com && pnpm migrate:run 2>&1)",
+      "Bash(cd /d/my-github/nexusberry.com && pnpm migrate:status 2>&1)"
     ]
   },
   "enableAllProjectMcpServers": true,

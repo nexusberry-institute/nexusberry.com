@@ -13,6 +13,8 @@ export default function QuizSection({ quiz }: Props) {
     (q): q is QuizQuestion => typeof q === 'object' && q !== null,
   )
 
+  const hasInstructions = quiz.instructions && typeof quiz.instructions === 'object'
+  const [quizStarted, setQuizStarted] = useState(!hasInstructions)
   const [currentQuestion, setCurrentQuestion] = useState(0)
   const [score, setScore] = useState(0)
   const [showScore, setShowScore] = useState(false)
@@ -23,6 +25,22 @@ export default function QuizSection({ quiz }: Props) {
     return (
       <div className="text-center py-8 text-muted-foreground">
         No questions available for this quiz.
+      </div>
+    )
+  }
+
+  if (!quizStarted && hasInstructions) {
+    return (
+      <div className="max-w-2xl mx-auto py-6 space-y-6">
+        <RichText data={quiz.instructions} enableGutter={false} />
+        <div className="flex justify-center pt-2">
+          <button
+            onClick={() => setQuizStarted(true)}
+            className="bg-primary text-primary-foreground px-8 py-3 rounded-lg font-medium hover:bg-primary/90 transition-colors text-lg"
+          >
+            Start Quiz
+          </button>
+        </div>
       </div>
     )
   }
@@ -55,6 +73,7 @@ export default function QuizSection({ quiz }: Props) {
     setShowScore(false)
     setAnswered(false)
     setSelectedAnswer(null)
+    if (hasInstructions) setQuizStarted(false)
   }
 
   const current = questions[currentQuestion]

@@ -44,39 +44,62 @@ export const Tutorials: CollectionConfig = {
       },
     },
     {
+      name: 'showVideos',
+      type: 'checkbox',
+      defaultValue: true,
+      label: 'Show Videos',
+      admin: {
+        position: 'sidebar',
+        description: 'When enabled, videos will be displayed on the frontend.',
+      },
+    },
+    {
       type: 'tabs',
       tabs: [
+        {
+          label: 'Description',
+          fields: [
+            richTextField({ name: 'description', label: 'Description' }),
+          ],
+        },
         {
           label: 'Video',
           fields: [
             {
-              name: 'videoSource',
-              type: 'select',
-              label: 'Video Source',
-              defaultValue: 'youtube',
-              options: [
-                { label: 'YouTube', value: 'youtube' },
-                { label: 'Bunny CDN', value: 'bunny' },
+              name: 'videos',
+              type: 'array',
+              label: 'Videos',
+              fields: [
+                {
+                  name: 'videoSource',
+                  type: 'select',
+                  label: 'Video Source',
+                  defaultValue: 'youtube',
+                  options: [
+                    { label: 'YouTube', value: 'youtube' },
+                    { label: 'Bunny CDN', value: 'bunny' },
+                  ],
+                },
+                {
+                  name: 'youtubeUrl',
+                  type: 'text',
+                  label: 'YouTube Video URL',
+                  admin: {
+                    placeholder: 'https://www.youtube.com/watch?v=...',
+                    condition: (_, siblingData) => siblingData?.videoSource === 'youtube',
+                  },
+                },
+                {
+                  name: 'bunnyVideoId',
+                  type: 'text',
+                  label: 'Bunny CDN Video ID',
+                  admin: {
+                    placeholder: 'e.g. abc123-def456',
+                    description: 'The video ID from your Bunny CDN library',
+                    condition: (_, siblingData) => siblingData?.videoSource === 'bunny',
+                  },
+                },
               ],
-            },
-            {
-              name: 'youtubeUrl',
-              type: 'text',
-              label: 'YouTube Video URL',
-              admin: {
-                placeholder: 'https://www.youtube.com/watch?v=...',
-                condition: (_, siblingData) => siblingData?.videoSource === 'youtube',
-              },
-            },
-            {
-              name: 'bunnyVideoId',
-              type: 'text',
-              label: 'Bunny CDN Video ID',
-              admin: {
-                placeholder: 'e.g. abc123-def456',
-                description: 'The video ID from your Bunny CDN library',
-                condition: (_, siblingData) => siblingData?.videoSource === 'bunny',
-              },
             },
           ],
         },

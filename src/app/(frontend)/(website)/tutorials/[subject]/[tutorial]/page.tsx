@@ -6,6 +6,8 @@ import type { Metadata } from 'next/types'
 import ErrorCard from '../../../_components/ErrorCard'
 import { getServerSideURL } from '@/utilities/getURL'
 import TutorialTabs from './_components/TutorialTabs'
+import VideoPlayer from './_components/VideoPlayer'
+import RichText from '@/components/RichText'
 import { mergeOpenGraph } from '@/utilities/mergeOpenGraph'
 
 export const revalidate = false
@@ -18,22 +20,6 @@ type TutorialSubject = {
   id: number
   title: string
   slug: string | null
-}
-
-const extractYouTubeId = (url: string): string | null => {
-  if (!url) return null
-  const patterns = [
-    /(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/i,
-    /youtube\.com\/watch\?v=([^"&?\/\s]{11})/i,
-    /youtu\.be\/([^"&?\/\s]{11})/i,
-    /youtube\.com\/embed\/([^"&?\/\s]{11})/i,
-    /youtube\.com\/v\/([^"&?\/\s]{11})/i,
-  ]
-  for (const pattern of patterns) {
-    const match = url.match(pattern)
-    if (match && match[1]) return match[1]
-  }
-  return null
 }
 
 const queryTutorialBySlug = (slug: string) =>
@@ -194,14 +180,7 @@ export default async function TutorialPage({
       )
     }
 
-    // Determine video embed
-    const youtubeId =
-      tutorial.videoSource === 'youtube' && tutorial.youtubeUrl
-        ? extractYouTubeId(tutorial.youtubeUrl)
-        : null
-    const bunnyId =
-      tutorial.videoSource === 'bunny' && tutorial.bunnyVideoId ? tutorial.bunnyVideoId : null
-    const hasVideo = !!youtubeId || !!bunnyId
+    const videos = tutorial.videos ?? []
 
     return (
       <div>
@@ -277,12 +256,6 @@ export default async function TutorialPage({
                   {tutorial.label}
                 </span>
               )}
-              <Link
-                href={subjectHref}
-                className="text-primary-300 text-sm font-medium hover:text-white transition-colors"
-              >
-                {subjectName}
-              </Link>
             </div>
 
             <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold text-white mb-4">
@@ -292,31 +265,16 @@ export default async function TutorialPage({
           </div>
         </section>
 
-        {/* Video Section */}
-        {hasVideo && (
+        {/* Description Section */}
+        {tutorial.description && (
           <section className="padding-x max-w-5xl mx-auto py-10 md:py-14">
-            <div className="relative w-full overflow-hidden rounded-xl shadow-lg border border-border bg-black aspect-video">
-              {youtubeId ? (
-                <iframe
-                  src={`https://www.youtube.com/embed/${youtubeId}`}
-                  title={tutorial.title}
-                  loading="lazy"
-                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                  allowFullScreen
-                  className="absolute inset-0 w-full h-full"
-                />
-              ) : bunnyId ? (
-                <iframe
-                  src={`https://iframe.mediadelivery.net/embed/348450/${bunnyId}`}
-                  title={tutorial.title}
-                  loading="lazy"
-                  allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
-                  allowFullScreen
-                  className="absolute inset-0 w-full h-full"
-                />
-              ) : null}
-            </div>
+            <RichText data={tutorial.description} enableGutter={false} />
           </section>
+        )}
+
+        {/* Video Section */}
+        {tutorial.showVideos !== false && videos.length > 0 && (
+          <VideoPlayer videos={videos} title={tutorial.title} />
         )}
 
         {/* Tabbed Content */}
