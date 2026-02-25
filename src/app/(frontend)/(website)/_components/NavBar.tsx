@@ -75,9 +75,10 @@ const NavBar = ({ departments }: {
                     <Button className='text-lg text-card hover:underline'>Contact us</Button>
                 </Link>
                 {isLoggedIn ? (
-                    <Link href='/logout'>
-                        <Button className='text-lg text-card/70 hover:text-card hover:underline'>
-                            Logout</Button>
+                    <Link href='/logout' className='flex flex-col items-center leading-tight text-card/70 hover:text-card'>
+                        <span className='text-[10px] uppercase tracking-wide opacity-70'>{user?.roles?.[0] ?? 'user'}</span>
+                        <span className='text-base font-medium'>Logout</span>
+                        <span className='text-[10px] opacity-70 truncate max-w-[160px]'>{user?.email}</span>
                     </Link>
                 ) : (
                     <Link href='/login'>
@@ -94,7 +95,7 @@ const NavBar = ({ departments }: {
                     aria-controls="radix-«Rdnatb»">
                     <Menu size={32} className='lg:hidden text-card mt-2 max-sm:size-7' />
                 </SheetTrigger>
-                <Sidebar setOpen={setOpen} courseLinks={departments} isLoggedIn={isLoggedIn} />
+                <Sidebar setOpen={setOpen} courseLinks={departments} user={user} />
             </Sheet>
 
         </div>

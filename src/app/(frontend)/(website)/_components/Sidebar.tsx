@@ -17,10 +17,11 @@ type SidebarProps = {
         slug?: string | null;
         title: string;
     }[];
-    isLoggedIn: boolean;
+    user: { roles?: ('superadmin' | 'admin' | 'developer' | 'writer' | 'eventmgr')[] | null; email?: string | null } | null | undefined;
 }
 
-export function Sidebar({ setOpen, courseLinks, isLoggedIn }: SidebarProps) {
+export function Sidebar({ setOpen, courseLinks, user }: SidebarProps) {
+    const isLoggedIn = !!user
     const handleLinkClick = () => {
         setOpen(false)
     }
@@ -68,8 +69,10 @@ export function Sidebar({ setOpen, courseLinks, isLoggedIn }: SidebarProps) {
                 </div>
                 <div className='flex justify-center'>
                     {isLoggedIn ? (
-                        <Link href='/logout' onClick={handleLinkClick}>
-                            <Button className='text-xs text-card/70 hover:text-card hover:underline px-8 py-4'>Logout</Button>
+                        <Link href='/logout' onClick={handleLinkClick} className='flex flex-col items-center leading-tight text-card/70 hover:text-card'>
+                            <span className='text-[10px] uppercase tracking-wide opacity-70'>{user?.roles?.[0] ?? 'user'}</span>
+                            <span className='text-sm font-medium'>Logout</span>
+                            <span className='text-[10px] opacity-70 truncate max-w-[140px]'>{user?.email}</span>
                         </Link>
                     ) : (
                         <Link href='/login' onClick={handleLinkClick}>
