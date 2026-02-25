@@ -186,12 +186,12 @@ export const Leads: CollectionConfig = {
                     },
                   },
                 },
+                {
+                  name: "email",
+                  type: "email",
+                  label: "Email Address",
+                },
               ]
-            },
-            {
-              name: "email",
-              type: "email",
-              label: "Email Address",
             },
             {
               type: "row",
@@ -208,27 +208,51 @@ export const Leads: CollectionConfig = {
             // 4. Non-tech professional — seeking career change to development
             // 5. Freelancer — want to offer complete web solutions
             {
-              name: 'currentBackground',
-              type: 'text',
-              label: 'Current Status / Background',
-              admin: {
-                placeholder: 'e.g., Student, Freelancer, or Non-tech Professional',
-                description: 'The user\'s current professional or academic standing.',
-              },
+              type: "row",
+              fields: [
+                {
+                  name: 'currentBackground',
+                  type: 'text',
+                  label: 'Current Status / Background',
+                  admin: {
+                    placeholder: 'e.g., Student, Freelancer, or Non-tech Professional',
+                    description: 'The user\'s current professional or academic standing.',
+                  },
+                },
+                {
+                  name: 'priorExperience',
+                  type: 'text',
+                  label: 'Current Technical Knowledge',
+                  admin: {
+                    placeholder: 'Describe your level with course prerequisites',
+                    description: 'Current grasp of relevant tools (e.g., HTML/JS for Web or Python/Math for AI).',
+                  },
+                },
+              ]
             },
-            // What is your current knowledge of HTML, CSS, and JavaScript? (sample question in mern lead form)
-            // 1. No knowledge — complete beginner in web development
-            // 2. Know HTML & basic CSS — can build simple static pages
-            // 3. Know HTML, CSS & basic JavaScript — can add interactivity
-            // 4. Comfortable with HTML, CSS & JavaScript — built small projects
             {
-              name: 'priorExperience',
-              type: 'text',
-              label: 'Current Technical Knowledge',
-              admin: {
-                placeholder: 'Describe your level with course prerequisites',
-                description: 'Current grasp of relevant tools (e.g., HTML/JS for Web or Python/Math for AI).',
-              },
+              type: "row",
+              fields: [
+                {
+                  name: "payment_plan",
+                  type: "text",
+                  label: "Payment Plan",
+                  admin: {
+                    description: "Preferred payment plan discussed with lead",
+                  }
+                },
+                {
+                  name: "batch",
+                  type: "relationship",
+                  relationTo: "batches",
+                  label: "Batch",
+                  hasMany: false,
+                  admin: {
+                    description: "Batch assigned to this lead",
+                    allowCreate: false,
+                  }
+                },
+              ]
             },
             {
               name: 'extraInfo',
@@ -245,14 +269,6 @@ export const Leads: CollectionConfig = {
         {
           label: "Engagement",
           fields: [
-            {
-              name: "payment_plan",
-              type: "text",
-              label: "Payment Plan",
-              admin: {
-                description: "Preferred payment plan discussed with lead",
-              }
-            },
             {
               name: "courseDemoBookings",
               type: "array",
@@ -402,15 +418,6 @@ export const Leads: CollectionConfig = {
                   }
                 },
               ]
-            },
-            {
-              name: "student",
-              type: "relationship",
-              relationTo: "students",
-              label: "Converted to Student",
-              admin: {
-                description: "Link to student record after enrollment",
-              }
             },
           ]
         },
