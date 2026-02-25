@@ -1,16 +1,15 @@
 import configPromise from '@payload-config'
 import { getPayload } from 'payload'
 import { unstable_cache } from 'next/cache'
-import { headers as nextHeaders } from 'next/headers'
 import Link from 'next/link'
 import type { Metadata } from 'next/types'
 import ErrorCard from '../../../_components/ErrorCard'
 import { getServerSideURL } from '@/utilities/getURL'
 import TutorialTabs from './_components/TutorialTabs'
 import VideoPlayer from './_components/VideoPlayer'
+import TutorialAccessGate from './_components/TutorialAccessGate'
 import RichText from '@/components/RichText'
 import { mergeOpenGraph } from '@/utilities/mergeOpenGraph'
-import { canAccessTutorial } from '@/utilities/tutorialAccess'
 
 export const revalidate = false
 
@@ -164,19 +163,6 @@ export default async function TutorialPage({
     const subjectName = subject?.title || 'Unknown Subject'
     const subjectHref = `/tutorials/${subject?.slug || subjectSlug}`
 
-    // Check access for protected tutorials
-    let hasAccess = true
-    if (tutorial.accessType === 'protected') {
-      try {
-        const payload = await getPayload({ config: configPromise })
-        const { user } = await payload.auth({ headers: await nextHeaders() })
-        const accessResult = await canAccessTutorial(payload, user as any, tutorial as any)
-        hasAccess = accessResult.hasAccess
-      } catch {
-        hasAccess = false
-      }
-    }
-
     // Validate subject slug matches
     if (subject?.slug && subject.slug !== subjectSlug) {
       return (
@@ -309,58 +295,25 @@ export default async function TutorialPage({
           </section>
         )}
 
-        {hasAccess ? (
-          <>
-            {/* Video Section */}
-            {tutorial.showVideos !== false && (
-              <VideoPlayer slug={tutorialSlug} title={tutorial.title} />
-            )}
+        <TutorialAccessGate accessType={tutorial.accessType} tutorialSlug={tutorialSlug}>
+          {/* Video Section */}
+          {tutorial.showVideos !== false && (
+            <VideoPlayer slug={tutorialSlug} title={tutorial.title} />
+          )}
 
-            {/* Tabbed Content */}
-            <TutorialTabs
-              content={tutorial.content ?? null}
-              quiz={typeof tutorial.quiz === 'object' ? tutorial.quiz : null}
-              showQuiz={tutorial.showQuiz}
-              assignment={tutorial.assignment ?? null}
-              showAssignment={tutorial.showAssignment}
-              codeUrl={tutorial.codeUrl ?? null}
-              showCode={tutorial.showCode}
-              presentationUrl={tutorial.presentationUrl ?? null}
-              showPresentation={tutorial.showPresentation}
-            />
-          </>
-        ) : (
-          <section className="padding-x max-w-3xl mx-auto py-12">
-            <div className="bg-card rounded-xl border border-amber-200 shadow-md p-8 text-center space-y-5">
-              <div className="flex justify-center">
-                <svg width="56" height="56" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="text-amber-500">
-                  <rect width="18" height="11" x="3" y="11" rx="2" ry="2" />
-                  <path d="M7 11V7a5 5 0 0 1 10 0v4" />
-                </svg>
-              </div>
-              <h2 className="text-xl md:text-2xl font-semibold text-foreground">
-                This Tutorial Requires Enrollment
-              </h2>
-              <p className="text-muted-foreground max-w-md mx-auto">
-                This is a protected tutorial available to enrolled students. Log in to your account or explore our courses to gain access.
-              </p>
-              <div className="flex flex-col sm:flex-row items-center justify-center gap-3 pt-2">
-                <Link
-                  href="/login"
-                  className="rounded-md bg-primary px-6 py-3 text-card font-medium shadow-sm hover:bg-primary/90 transition-colors"
-                >
-                  Log In
-                </Link>
-                <Link
-                  href="/course"
-                  className="rounded-md border border-border px-6 py-3 text-foreground font-medium hover:bg-muted transition-colors"
-                >
-                  Explore Courses
-                </Link>
-              </div>
-            </div>
-          </section>
-        )}
+          {/* Tabbed Content */}
+          <TutorialTabs
+            content={tutorial.content ?? null}
+            quiz={typeof tutorial.quiz === 'object' ? tutorial.quiz : null}
+            showQuiz={tutorial.showQuiz}
+            assignment={tutorial.assignment ?? null}
+            showAssignment={tutorial.showAssignment}
+            codeUrl={tutorial.codeUrl ?? null}
+            showCode={tutorial.showCode}
+            presentationUrl={tutorial.presentationUrl ?? null}
+            showPresentation={tutorial.showPresentation}
+          />
+        </TutorialAccessGate>
 
         {/* Back Navigation */}
         <section className="padding-x max-w-4xl mx-auto pb-12">
