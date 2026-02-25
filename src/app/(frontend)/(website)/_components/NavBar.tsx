@@ -61,7 +61,7 @@ const NavBar = ({ departments }: {
             </div>
 
             {/* Menu on Computer Screen */}
-            <div className='space-x-4 max-lg:hidden'>
+            <div className='flex items-center space-x-4 max-lg:hidden'>
                 <Link href='/events'>
                     <Button className='text-lg text-card hover:underline'>Events</Button>
                 </Link>
