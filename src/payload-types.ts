@@ -128,6 +128,9 @@ export interface Config {
       batchTimeTable: 'time-table';
       batchEnrollments: 'enrollments';
     };
+    students: {
+      enrollments: 'enrollments';
+    };
     attendance: {
       relatedAttendanceDetails: 'attendance-details';
     };
@@ -273,7 +276,9 @@ export interface User {
       )[]
     | null;
   provider?: ('local' | 'google') | null;
-  is_active?: boolean | null;
+  /**
+   * Staff can block this user temporarily, e.g. if defaulter
+   */
   blocked?: boolean | null;
   updatedAt: string;
   createdAt: string;
@@ -1325,31 +1330,39 @@ export interface Enrollment {
 export interface Student {
   id: number;
   user?: (number | null) | User;
-  studentEmail?: string | null;
-  studentPassword?: string | null;
   fullName?: string | null;
   phoneNumber?: string | null;
-  gmail_username?: string | null;
+  /**
+   * National Identity Card number
+   */
+  cnic?: string | null;
+  /**
+   * Emergency / parent contact number
+   */
+  guardianPhone?: string | null;
   /**
    * Highest Student Education
    */
   education?: string | null;
-  dateOfBirth?: string | null;
   gender?: ('male' | 'female') | null;
+  dateOfBirth?: string | null;
+  address?: {
+    homeAddress?: string | null;
+    city?: string | null;
+    province?: string | null;
+    country?: string | null;
+  };
+  enrollments?: {
+    docs?: (number | Enrollment)[];
+    hasNextPage?: boolean;
+    totalDocs?: number;
+  };
+  status?: ('active' | 'on-hold' | 'withdrawn' | 'graduated') | null;
+  admissionDate?: string | null;
   /**
    * Protected tutorials this student can access on a trial basis.
    */
   trialTutorials?: (number | Tutorial)[] | null;
-  address?: {
-    homeAddress?: string | null;
-    city?: string | null;
-    state?: string | null;
-    country?: string | null;
-  };
-  profilePicture?: (number | null) | Media;
-  otpVerified?: boolean | null;
-  otp?: string | null;
-  otpGeneratedAt?: string | null;
   updatedAt: string;
   createdAt: string;
 }
@@ -2223,7 +2236,6 @@ export interface UsersSelect<T extends boolean = true> {
   photo?: T;
   roles?: T;
   provider?: T;
-  is_active?: T;
   blocked?: T;
   updatedAt?: T;
   createdAt?: T;
@@ -2711,27 +2723,25 @@ export interface TimeTableSelect<T extends boolean = true> {
  */
 export interface StudentsSelect<T extends boolean = true> {
   user?: T;
-  studentEmail?: T;
-  studentPassword?: T;
   fullName?: T;
   phoneNumber?: T;
-  gmail_username?: T;
+  cnic?: T;
+  guardianPhone?: T;
   education?: T;
-  dateOfBirth?: T;
   gender?: T;
-  trialTutorials?: T;
+  dateOfBirth?: T;
   address?:
     | T
     | {
         homeAddress?: T;
         city?: T;
-        state?: T;
+        province?: T;
         country?: T;
       };
-  profilePicture?: T;
-  otpVerified?: T;
-  otp?: T;
-  otpGeneratedAt?: T;
+  enrollments?: T;
+  status?: T;
+  admissionDate?: T;
+  trialTutorials?: T;
   updatedAt?: T;
   createdAt?: T;
 }

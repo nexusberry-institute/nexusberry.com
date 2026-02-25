@@ -14,6 +14,7 @@ import * as migration_20260224_drop_lectures from './20260224_drop_lectures';
 import * as migration_20260224_drop_videos_assignments from './20260224_drop_videos_assignments';
 import * as migration_20260225_add_enrollments_tutorial_access_rename_user_role from './20260225_add_enrollments_tutorial_access_rename_user_role';
 import * as migration_20260225_add_batch_to_leads from './20260225_add_batch_to_leads';
+import * as migration_20260225_users_students_cleanup from './20260225_users_students_cleanup';
 
 export const migrations = [
   {
@@ -95,5 +96,10 @@ export const migrations = [
     up: migration_20260225_add_batch_to_leads.up,
     down: migration_20260225_add_batch_to_leads.down,
     name: '20260225_add_batch_to_leads',
+  },
+  {
+    up: migration_20260225_users_students_cleanup.up,
+    down: migration_20260225_users_students_cleanup.down,
+    name: '20260225_users_students_cleanup',
   },
 ];

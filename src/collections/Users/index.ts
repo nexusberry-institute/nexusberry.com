@@ -4,8 +4,6 @@ import { authenticated } from '@/access/authenticated'
 import { generateSetPasswordEmailHTML, generateSetPasswordEmailSubject } from '@/utilities/emailTemplates'
 import { adminOrSelf, superadminOrAdminDelete } from '@/access'
 import { protectRoles } from '@/hooks/protectRoles'
-// import { admin } from '@/access/admin'
-
 
 export const Users: CollectionConfig = {
   slug: 'users',
@@ -34,14 +32,14 @@ export const Users: CollectionConfig = {
   },
   access: {
     read: authenticated, // Only logged in users can read
-    // create: admin, // only admin can create accounts
     create: () => true, // anyone can create an account
     update: adminOrSelf, // everyone can update self row, admins can update any user except superadmin, superadmin can update any user
     delete: superadminOrAdminDelete, // admin can delete all except superadmin, superadmin can delete any user
     admin: ({ req: { user } }) => checkRole(['superadmin', 'admin'], user),
   },
   admin: {
-    defaultColumns: ['username', 'email', 'roles', 'createdAt'],
+    defaultColumns: ['id', 'email', 'gmail_username', 'provider', 'roles', 'blocked', 'createdAt'],
+    listSearchableFields: ['email', 'gmail_username'],
     useAsTitle: 'email',
     group: "People Management"
   },
@@ -109,15 +107,6 @@ export const Users: CollectionConfig = {
       },
     },
     {
-      name: 'is_active',
-      type: 'checkbox',
-      label: 'Active',
-      defaultValue: true,
-      admin: {
-        position: 'sidebar',
-      },
-    },
-    {
       name: '_verified',
       type: 'checkbox',
       label: 'Email Verified',
@@ -132,6 +121,7 @@ export const Users: CollectionConfig = {
       defaultValue: false,
       admin: {
         position: 'sidebar',
+        description: 'Staff can block this user temporarily, e.g. if defaulter',
       },
     },
   ],

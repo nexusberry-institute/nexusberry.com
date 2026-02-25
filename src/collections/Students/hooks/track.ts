@@ -1,6 +1,3 @@
-// import these hooks into payload collections.
-// Hooks call Next.js API: /api/track
-
 import type { TrackPayload } from "@/app/api/track/route";
 import type { CollectionAfterChangeHook } from 'payload';
 
@@ -21,20 +18,38 @@ async function postTrack(payload: TrackPayload) {
 
 // Students Collection: Admission: fire when new record created
 export const trackNewStudentAdmission: CollectionAfterChangeHook =
-  async ({ operation, doc }) => {
+  async ({ operation, doc, req }) => {
     if (operation !== "create") return
+
+    // Fetch email from the related User if available
+    let email: string | undefined
+    if (doc?.user) {
+      try {
+        const userId = typeof doc.user === 'object' ? doc.user.id : doc.user
+        const user = await req.payload.findByID({
+          collection: 'users',
+          id: userId,
+          select: { email: true },
+          depth: 0,
+        })
+        email = user?.email
+      } catch (_e) {
+        // Swallow — tracking shouldn't block operations
+      }
+    }
+
     await postTrack({
       eventName: "purchase",
       eventSourceUrl: process.env.NEXT_PUBLIC_SERVER_URL,
       actionSource: "system_generated",
       campaignId: doc?.campaignId,
       user: {
-        fullName: doc?.name,
-        phone: doc?.mobile,
-        email: doc?.email,
-        city: doc?.city,
-        state: doc?.province,
-        country: doc?.country,
+        fullName: doc?.fullName,
+        phone: doc?.phoneNumber,
+        email,
+        city: doc?.address?.city,
+        state: doc?.address?.province,
+        country: doc?.address?.country,
         externalId: doc?.id ? String(doc.id) : undefined,
       },
       customData: {
