@@ -73,7 +73,6 @@ export const RegisterForm: React.FC = () => {
       try {
         // Remove confirmPassword before sending to API
         const { confirmPassword, ...registerData } = data
-        console.log(registerData)
         // await registerUser(registerData)
 
         toast({

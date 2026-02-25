@@ -11,18 +11,16 @@ import { Sheet, SheetTrigger } from '@/components/ui/sheet'
 import { useAuth } from '@/app/(frontend)/(auth)/_providers/Auth'
 
 
-const NavBar = ({ departments, isLoggedIn: serverIsLoggedIn }: {
+const NavBar = ({ departments }: {
     departments: {
         slug?: string | null;
         title: string;
     }[];
-    isLoggedIn: boolean;
 }) => {
     const [open, setOpen] = useState(false)
     const [dropdownOpen, setDropdownOpen] = useState(false)
     const { user } = useAuth()
-    // Trust client when user is confirmed; otherwise trust server prop (always correct after full page loads)
-    const isLoggedIn = user ? true : serverIsLoggedIn
+    const isLoggedIn = !!user
 
     return (
         <div className='flex sticky justify-between top-0 bg-primary items-center z-50 px-16 max-md:px-10 max-sm:px-8 max-xs:px-2 py-4'>

@@ -2,7 +2,6 @@ import NavBar from './NavBar'
 import { unstable_cache } from 'next/cache'
 import configPromise from '@payload-config'
 import { getPayload } from 'payload'
-import { headers } from 'next/headers'
 
 export const queryDepartments = unstable_cache(
   async () => {
@@ -29,26 +28,12 @@ export const queryDepartments = unstable_cache(
   },
 )
 
-const getIsLoggedIn = async (): Promise<boolean> => {
-  try {
-    const reqHeaders = await headers()
-    const payload = await getPayload({ config: configPromise })
-    const { user } = await payload.auth({ headers: reqHeaders })
-    return !!user
-  } catch {
-    return false
-  }
-}
-
 const Header = async () => {
   try {
-    const [results, isLoggedIn] = await Promise.all([
-      queryDepartments(),
-      getIsLoggedIn(),
-    ])
-    return <NavBar departments={results} isLoggedIn={isLoggedIn} />
+    const results = await queryDepartments()
+    return <NavBar departments={results} />
   } catch (error) {
-    return <NavBar departments={[{ title: "Not Available, Try Refreshing Browser", slug: "/" }]} isLoggedIn={false} />
+    return <NavBar departments={[{ title: "Not Available, Try Refreshing Browser", slug: "/" }]} />
   }
 
 }
