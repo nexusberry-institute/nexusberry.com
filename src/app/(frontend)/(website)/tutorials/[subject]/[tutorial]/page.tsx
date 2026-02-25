@@ -65,39 +65,43 @@ export async function generateMetadata({
 }: {
   params: Promise<{ subject: string; tutorial: string }>
 }): Promise<Metadata> {
-  const { tutorial: slug, subject: subjectSlug } = await paramsPromise
-  const tutorial = await queryTutorialBySlug(slug)
+  try {
+    const { tutorial: slug, subject: subjectSlug } = await paramsPromise
+    const tutorial = await queryTutorialBySlug(slug)
 
-  if (!tutorial) {
-    return { title: 'Tutorial Not Found | NexusBerry' }
-  }
+    if (!tutorial) {
+      return { title: 'Tutorial Not Found | NexusBerry' }
+    }
 
-  const subjectTitle =
-    tutorial.subject && typeof tutorial.subject === 'object'
-      ? (tutorial.subject as TutorialSubject).title
-      : ''
+    const subjectTitle =
+      tutorial.subject && typeof tutorial.subject === 'object'
+        ? (tutorial.subject as TutorialSubject).title
+        : ''
 
-  const title = `${tutorial.title} | ${subjectTitle} Tutorial | NexusBerry`
-  const description = `Learn ${tutorial.title} in our ${subjectTitle} tutorial series at NexusBerry Training & Solutions.`
+    const title = `${tutorial.title} | ${subjectTitle} Tutorial | NexusBerry`
+    const description = `Learn ${tutorial.title} in our ${subjectTitle} tutorial series at NexusBerry Training & Solutions.`
 
-  return {
-    title,
-    description,
-    keywords: [
-      tutorial.title?.toLowerCase() || '',
-      subjectTitle?.toLowerCase() || '',
-      'tutorial',
-      'guide',
-      'nexusberry',
-    ],
-    alternates: {
-      canonical: `${getServerSideURL()}/tutorials/${subjectSlug}/${tutorial.slug}`,
-    },
-    openGraph: mergeOpenGraph({
+    return {
       title,
       description,
-      url: `${getServerSideURL()}/tutorials/${subjectSlug}/${tutorial.slug}`,
-    }),
+      keywords: [
+        tutorial.title?.toLowerCase() || '',
+        subjectTitle?.toLowerCase() || '',
+        'tutorial',
+        'guide',
+        'nexusberry',
+      ],
+      alternates: {
+        canonical: `${getServerSideURL()}/tutorials/${subjectSlug}/${tutorial.slug}`,
+      },
+      openGraph: mergeOpenGraph({
+        title,
+        description,
+        url: `${getServerSideURL()}/tutorials/${subjectSlug}/${tutorial.slug}`,
+      }),
+    }
+  } catch {
+    return { title: 'Tutorial | NexusBerry' }
   }
 }
 
@@ -163,10 +167,14 @@ export default async function TutorialPage({
     // Check access for protected tutorials
     let hasAccess = true
     if (tutorial.accessType === 'protected') {
-      const payload = await getPayload({ config: configPromise })
-      const { user } = await payload.auth({ headers: await nextHeaders() })
-      const accessResult = await canAccessTutorial(payload, user as any, tutorial as any)
-      hasAccess = accessResult.hasAccess
+      try {
+        const payload = await getPayload({ config: configPromise })
+        const { user } = await payload.auth({ headers: await nextHeaders() })
+        const accessResult = await canAccessTutorial(payload, user as any, tutorial as any)
+        hasAccess = accessResult.hasAccess
+      } catch {
+        hasAccess = false
+      }
     }
 
     // Validate subject slug matches
@@ -380,6 +388,7 @@ export default async function TutorialPage({
       </div>
     )
   } catch (error) {
-    return <ErrorCard error={error} />
+    const message = error instanceof Error ? error.message : 'An unexpected error occurred'
+    return <ErrorCard error={message} />
   }
 }
