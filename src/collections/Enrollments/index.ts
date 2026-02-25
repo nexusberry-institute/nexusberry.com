@@ -49,6 +49,9 @@ export const Enrollments: CollectionConfig = {
       relationTo: 'batches',
       required: true,
       index: true,
+      filterOptions: {
+        active: { equals: true },
+      },
     },
     {
       name: 'note',

@@ -250,7 +250,10 @@ export const Leads: CollectionConfig = {
                   admin: {
                     description: "Batch assigned to this lead",
                     allowCreate: false,
-                  }
+                  },
+                  filterOptions: {
+                    active: { equals: true },
+                  },
                 },
               ]
             },
