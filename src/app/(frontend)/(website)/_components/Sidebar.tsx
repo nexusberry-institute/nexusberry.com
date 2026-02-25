@@ -9,6 +9,7 @@ import Image from "next/image"
 import Link from "next/link"
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible"
 import { ChevronDown } from "lucide-react"
+import type { User } from "@/payload-types"
 
 
 type SidebarProps = {
@@ -17,7 +18,7 @@ type SidebarProps = {
         slug?: string | null;
         title: string;
     }[];
-    user: { roles?: ('superadmin' | 'admin' | 'developer' | 'writer' | 'eventmgr')[] | null; email?: string | null } | null | undefined;
+    user: User | null | undefined;
 }
 
 export function Sidebar({ setOpen, courseLinks, user }: SidebarProps) {
