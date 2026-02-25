@@ -74,7 +74,9 @@ function ProtectedGate({
     return <>{children}</>
   }
 
-  // Access denied — show enrollment UI
+  // Access denied — show appropriate message based on auth state
+  const isLoggedIn = user !== null
+
   return (
     <section className="padding-x max-w-3xl mx-auto py-12">
       <div className="bg-card rounded-xl border border-amber-200 shadow-md p-8 text-center space-y-5">
@@ -95,24 +97,19 @@ function ProtectedGate({
           </svg>
         </div>
         <h2 className="text-xl md:text-2xl font-semibold text-foreground">
-          This Tutorial Requires Enrollment
+          {isLoggedIn ? 'Access Restricted' : 'Login Required'}
         </h2>
         <p className="text-muted-foreground max-w-md mx-auto">
-          This is a protected tutorial available to enrolled students. Log in to your account or
-          explore our courses to gain access.
+          {isLoggedIn
+            ? 'You don\u2019t have permission to view this tutorial. It is only available to enrolled students in the associated batch.'
+            : 'Please log in to access this tutorial. If you don\u2019t have an account, contact us to enroll.'}
         </p>
-        <div className="flex flex-col sm:flex-row items-center justify-center gap-3 pt-2">
+        <div className="pt-2">
           <Link
-            href="/login"
-            className="rounded-md bg-primary px-6 py-3 text-card font-medium shadow-sm hover:bg-primary/90 transition-colors"
-          >
-            Log In
-          </Link>
-          <Link
-            href="/course"
+            href="/"
             className="rounded-md border border-border px-6 py-3 text-foreground font-medium hover:bg-muted transition-colors"
           >
-            Explore Courses
+            Go to Home
           </Link>
         </div>
       </div>
