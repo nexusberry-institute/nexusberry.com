@@ -106,10 +106,10 @@ function ProtectedGate({
         </p>
         <div className="pt-2">
           <Link
-            href="/"
+            href="/tutorials"
             className="rounded-md border border-border px-6 py-3 text-foreground font-medium hover:bg-muted transition-colors"
           >
-            Go to Home
+            Go to Tutorials
           </Link>
         </div>
       </div>

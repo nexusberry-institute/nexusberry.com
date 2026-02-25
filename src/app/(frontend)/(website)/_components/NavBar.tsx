@@ -63,7 +63,10 @@ const NavBar = ({ departments }: {
             {/* Menu on Computer Screen */}
             <div className='space-x-4 max-lg:hidden'>
                 <Link href='/events'>
-                    <Button className='text-lg text-card hover:underline'>Upcoming Events</Button>
+                    <Button className='text-lg text-card hover:underline'>Events</Button>
+                </Link>
+                <Link href='/tutorials'>
+                    <Button className='text-lg text-card hover:underline'>Tutorials</Button>
                 </Link>
                 <Link href='/blog'>
                     <Button className='text-lg text-card hover:underline'>Blog</Button>
@@ -73,7 +76,7 @@ const NavBar = ({ departments }: {
                 </Link>
                 {isLoggedIn ? (
                     <Link href='/logout'>
-                        <Button className='border-2 rounded-xl text-lg p-6 hover:bg-card hover:text-foreground focus-visible:ring-card focus-visible:ring-0'>
+                        <Button className='text-lg text-card/70 hover:text-card hover:underline'>
                             Logout</Button>
                     </Link>
                 ) : (

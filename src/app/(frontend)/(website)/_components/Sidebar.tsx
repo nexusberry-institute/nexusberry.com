@@ -53,7 +53,10 @@ export function Sidebar({ setOpen, courseLinks, isLoggedIn }: SidebarProps) {
                             </CollapsibleContent>
                         </div>
                         <Link href='/events' onClick={handleLinkClick}>
-                            <Button>Upcoming Events</Button>
+                            <Button>Events</Button>
+                        </Link>
+                        <Link href='/tutorials' onClick={handleLinkClick}>
+                            <Button>Tutorials</Button>
                         </Link>
                         <Link href='/blog' onClick={handleLinkClick}>
                             <Button>Blog</Button>
@@ -63,14 +66,14 @@ export function Sidebar({ setOpen, courseLinks, isLoggedIn }: SidebarProps) {
                         </Link>
                     </div>
                 </div>
-                <div className='flex justify-center max-xs:*:px-4 *:py-4 *:border *:rounded-xl *:text-xs *:px-8'>
+                <div className='flex justify-center'>
                     {isLoggedIn ? (
                         <Link href='/logout' onClick={handleLinkClick}>
-                            <Button>Logout</Button>
+                            <Button className='text-xs text-card/70 hover:text-card hover:underline px-8 py-4'>Logout</Button>
                         </Link>
                     ) : (
                         <Link href='/login' onClick={handleLinkClick}>
-                            <Button>Login</Button>
+                            <Button className='text-xs border rounded-xl px-8 py-4'>Login</Button>
                         </Link>
                     )}
                 </div>
