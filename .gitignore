@@ -1,5 +1,5 @@
 build
-dist / media
+dist
 node_modules
 .DS_Store
 .env
@@ -9,3 +9,24 @@ node_modules
 
 # Payload default media upload directory
 public/media/
+
+# Claude Code local settings
+.claude/settings.local.json
+
+# Playwright MCP logs
+.playwright-mcp/
+
+# IDE / Editor
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS files
+Thumbs.db
+Desktop.ini
+
+# Debug / logs
+*.log
+npm-debug.log*
+pnpm-debug.log*
