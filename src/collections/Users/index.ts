@@ -22,8 +22,8 @@ export const Users: CollectionConfig = {
       requireUsername: false, // default: false. If set to true, a username is required when creating a new user. If set to false, username is not required upon creation
     },
     cookies: {
-      sameSite: 'None',
-      secure: true,
+      sameSite: process.env.NODE_ENV === 'production' ? 'None' : 'Lax',
+      secure: process.env.NODE_ENV === 'production',
     },
   },
   hooks: {

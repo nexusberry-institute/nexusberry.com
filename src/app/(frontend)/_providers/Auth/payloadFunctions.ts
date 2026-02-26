@@ -68,7 +68,7 @@ export const payloadLogin = async (args: Login) => {
         httpOnly: true,
         maxAge: typeof Users.auth === "object" ? Users.auth.tokenExpiration : 7200,  //set the max age of token as in users collection. default is 7200s (2 hours)
         path: "/",
-        secure: true,
+        secure: process.env.NODE_ENV === "production",
       })
 
       return {
