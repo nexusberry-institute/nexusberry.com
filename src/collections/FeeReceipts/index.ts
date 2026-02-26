@@ -35,6 +35,7 @@ export const FeeReceipts: CollectionConfig = {
           type: "checkbox",
           defaultValue: false,
           admin: {
+            condition: (_, siblingData) => siblingData?.status !== 'PENDING',
             style: {
               marginTop: "2rem"
             }
@@ -54,7 +55,10 @@ export const FeeReceipts: CollectionConfig = {
             "CASH",
             "JAZZCASH",
             "EASYPAISA",
-          ]
+          ],
+          admin: {
+            condition: (_, siblingData) => siblingData?.status !== 'PENDING',
+          }
         },
         {
           name: "status",
@@ -76,6 +80,7 @@ export const FeeReceipts: CollectionConfig = {
           type: 'date',
           defaultValue: () => new Date(),
           admin: {
+            condition: (_, siblingData) => siblingData?.status !== 'PENDING',
             date: {
               pickerAppearance: 'dayOnly',
               displayFormat: "MMM dd, yyyy",
@@ -101,12 +106,18 @@ export const FeeReceipts: CollectionConfig = {
         {
           name: "proofText",
           type: "text",
+          admin: {
+            condition: (_, siblingData) => siblingData?.status !== 'PENDING',
+          }
         },
         {
           name: "proofImage",
           type: "upload",
           relationTo: "media",
-          displayPreview: true
+          displayPreview: true,
+          admin: {
+            condition: (_, siblingData) => siblingData?.status !== 'PENDING',
+          }
         }
       ]
     },
