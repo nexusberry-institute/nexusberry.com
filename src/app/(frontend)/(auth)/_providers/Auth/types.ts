@@ -34,6 +34,7 @@ export type Login = (args: { email: string; password: string }) => Promise<{
   success: boolean;
   message: string;
   user?: User | null;
+  redirectTo?: string;
 }>
 
 export type Logout = () => Promise<{

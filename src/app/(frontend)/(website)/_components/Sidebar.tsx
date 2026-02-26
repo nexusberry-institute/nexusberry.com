@@ -10,7 +10,6 @@ import Link from "next/link"
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible"
 import { ChevronDown } from "lucide-react"
 import type { User } from "@/payload-types"
-import { rolePriority } from '@/constants'
 
 
 type SidebarProps = {
@@ -72,7 +71,7 @@ export function Sidebar({ setOpen, courseLinks, user }: SidebarProps) {
                 <div className='flex justify-center'>
                     {isLoggedIn ? (
                         <Link href='/logout' onClick={handleLinkClick} className='flex flex-col items-center leading-tight text-card/70 hover:text-card'>
-                            <span className='text-[10px] uppercase tracking-wide opacity-70'>{rolePriority.find(r => user?.roles?.includes(r)) ?? 'user'}</span>
+                            <span className='text-[10px] uppercase tracking-wide opacity-70'>{user?.roles?.find(r => r !== 'authenticated') ?? 'user'}</span>
                             <span className='text-sm font-medium'>Logout</span>
                             <span className='text-[10px] opacity-70 truncate max-w-[140px]'>{user?.email}</span>
                         </Link>

@@ -14,7 +14,6 @@ import { Label } from '@/components/ui/label'
 
 import { useToast } from '@/hooks/use-toast'
 import { useAuth } from '../../_providers/Auth'
-import { roleDefaultPaths } from '@/constants'
 
 type FormData = {
   email: string
@@ -42,7 +41,7 @@ export const LoginForm: React.FC = () => {
   const onSubmit = useCallback(
     async (data: FormData) => {
       try {
-        const { success, message, user } = await login(data)
+        const { success, message, redirectTo } = await login(data)
 
         toast({
           title: success ? "Successfully Logged In" : "Login Failed!",
@@ -54,13 +53,7 @@ export const LoginForm: React.FC = () => {
           return;
         }
 
-        if (redirect?.current) {
-          window.location.href = redirect.current
-        } else {
-          const primaryRole = Object.keys(roleDefaultPaths).find(role => user?.roles?.includes(role as keyof typeof roleDefaultPaths)) || 'authenticated'
-          const redirectPath = roleDefaultPaths[primaryRole as keyof typeof roleDefaultPaths]
-          window.location.href = redirectPath
-        }
+        window.location.href = redirect?.current || redirectTo || '/dashboard'
 
       } catch (_) {
         toast({

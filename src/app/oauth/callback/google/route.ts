@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getUserByEmail, loginWith } from './serverActions';
+import { getDefaultRedirect } from '@/utilities/getDefaultRedirect';
 
 // app/oauth/callback/google/route.ts
 export async function GET(req: NextRequest) {
@@ -71,8 +72,10 @@ export async function GET(req: NextRequest) {
     }
 
     let cookieData: { name: string; value: string; tokenExpiration: number }
+    let userRoles: string[] = []
     try {
       const user = await getUserByEmail(googleUser)
+      userRoles = (user.roles as string[]) ?? []
       cookieData = await loginWith(user)
     } catch (error) {
       return NextResponse.redirect(
@@ -86,7 +89,9 @@ export async function GET(req: NextRequest) {
     // Use `state` param (echoed back by Google) as redirect destination
     const state = url.searchParams.get('state')
     // Validate: must be a relative path to prevent open redirect
-    const redirectTo = (state && state.startsWith('/') && !state.startsWith('//')) ? state : '/'
+    const redirectTo = (state && state.startsWith('/') && !state.startsWith('//'))
+      ? state
+      : getDefaultRedirect(userRoles)
 
     // Use raw HTTP response to set cookie — bypasses Next.js abstraction issues
     const redirectUrl = new URL(

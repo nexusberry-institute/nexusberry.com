@@ -4,6 +4,7 @@ import { getPayload } from "payload"
 import config from "@/payload.config"
 import { cookies, headers } from "next/headers";
 import { Users } from "@/collections/Users";
+import { getDefaultRedirect } from "@/utilities/getDefaultRedirect";
 
 interface Login {
   email: string;
@@ -128,7 +129,10 @@ export const payloadLogin = async (args: Login) => {
       })
 
       return {
-        success: true, message: "Welcome back! You've successfully logged in.", user: result.user
+        success: true,
+        message: "Welcome back! You've successfully logged in.",
+        user: result.user,
+        redirectTo: getDefaultRedirect(result.user.roles as string[]),
       }
     } else {
       return { success: false, message: "The password you entered is incorrect. Please try again. " }

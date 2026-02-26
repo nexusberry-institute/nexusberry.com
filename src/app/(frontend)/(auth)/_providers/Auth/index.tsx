@@ -49,6 +49,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
         success: result.success,
         message: result.message,
         user: result.user,
+        redirectTo: result.redirectTo,
       }
     },
     [],
