@@ -708,7 +708,7 @@ export default function AdmissionForm() {
                       </div>
                       <div className="space-y-1.5">
                         <Label htmlFor="remainingInstallments">
-                          Remaining Installments <span className="text-red-500">*</span>
+                          Payable in how many installments <span className="text-red-500">*</span>
                         </Label>
                         <Input
                           id="remainingInstallments"
@@ -716,7 +716,7 @@ export default function AdmissionForm() {
                           min={1}
                           max={24}
                           step={1}
-                          placeholder="e.g. 3"
+                          placeholder="e.g. 1 (one-time), 2, 3"
                           onChange={(e) =>
                             setValue(
                               'remainingInstallments',

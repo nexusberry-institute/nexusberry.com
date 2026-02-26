@@ -254,10 +254,11 @@ export const AdmissionRequests: CollectionConfig = {
                   required: true,
                   min: 1,
                   max: 24,
-                  label: 'Remaining Installments',
+                  label: 'Payable in how many installments',
                   admin: {
                     step: 1,
-                    description: 'Number of installments for remaining amount as decided with CSR.',
+                    placeholder: 'e.g. 1 (one-time), 2, 3',
+                    description: 'Total number of installments the fee will be paid in, as decided with CSR.',
                   },
                 },
               ],

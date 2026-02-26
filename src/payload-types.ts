@@ -1590,22 +1590,22 @@ export interface FeeReceipt {
   id: number;
   student: number | Student;
   amount: number;
-  verified?: boolean | null;
   paidMethod?: ('BANK' | 'CASH' | 'JAZZCASH' | 'EASYPAISA') | null;
-  status?: ('RECEIVED' | 'PENDING' | 'DEAD') | null;
   payDate?: string | null;
   dueDate: string;
   proofText?: string | null;
   proofImage?: (number | null) | Media;
   note?: string | null;
-  /**
-   * Which enrollment this receipt is for.
-   */
-  enrollment?: (number | null) | Enrollment;
+  status?: ('RECEIVED' | 'PENDING' | 'DEAD') | null;
+  verified?: boolean | null;
   /**
    * Installment sequence number (1 = first payment, 2 = second, etc.)
    */
   installmentNumber?: number | null;
+  /**
+   * Which enrollment this receipt is for.
+   */
+  enrollment?: (number | null) | Enrollment;
   /**
    * The admission request that generated this receipt (if auto-created).
    */
@@ -1668,7 +1668,7 @@ export interface AdmissionRequest {
    */
   totalFeePackage: number;
   /**
-   * Number of installments for remaining amount as decided with CSR.
+   * Total number of installments the fee will be paid in, as decided with CSR.
    */
   remainingInstallments: number;
   /**
@@ -2904,16 +2904,16 @@ export interface StudentsSelect<T extends boolean = true> {
 export interface FeeReceiptsSelect<T extends boolean = true> {
   student?: T;
   amount?: T;
-  verified?: T;
   paidMethod?: T;
-  status?: T;
   payDate?: T;
   dueDate?: T;
   proofText?: T;
   proofImage?: T;
   note?: T;
-  enrollment?: T;
+  status?: T;
+  verified?: T;
   installmentNumber?: T;
+  enrollment?: T;
   admissionRequest?: T;
   updatedAt?: T;
   createdAt?: T;

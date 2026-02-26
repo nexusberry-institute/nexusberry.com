@@ -8,6 +8,7 @@ export const FeeReceipts: CollectionConfig = {
     group: 'Academic Operations',
   },
   fields: [
+    // — Main area —
     {
       name: 'student',
       type: 'relationship',
@@ -31,22 +32,6 @@ export const FeeReceipts: CollectionConfig = {
           }
         },
         {
-          name: "verified",
-          type: "checkbox",
-          defaultValue: false,
-          admin: {
-            condition: (_, siblingData) => siblingData?.status !== 'PENDING',
-            style: {
-              marginTop: "2rem"
-            }
-          }
-        }
-      ]
-    },
-    {
-      type: "row",
-      fields: [
-        {
           name: 'paidMethod',
           type: 'select',
           defaultValue: "BANK",
@@ -60,16 +45,6 @@ export const FeeReceipts: CollectionConfig = {
             condition: (_, siblingData) => siblingData?.status !== 'PENDING',
           }
         },
-        {
-          name: "status",
-          type: "select",
-          defaultValue: "PENDING",
-          options: [
-            "RECEIVED",
-            "PENDING",
-            "DEAD",
-          ]
-        }
       ]
     },
     {
@@ -125,23 +100,47 @@ export const FeeReceipts: CollectionConfig = {
       name: 'note',
       type: 'text',
     },
-    // Enrollment & admission tracking
+    // — Sidebar —
     {
-      name: 'enrollment',
-      type: 'relationship',
-      relationTo: 'enrollments',
-      hasMany: false,
+      name: "status",
+      type: "select",
+      defaultValue: "PENDING",
+      options: [
+        "RECEIVED",
+        "PENDING",
+        "DEAD",
+      ],
       admin: {
-        allowCreate: false,
-        description: 'Which enrollment this receipt is for.',
-      },
+        position: 'sidebar',
+      }
+    },
+    {
+      name: "verified",
+      type: "checkbox",
+      defaultValue: false,
+      admin: {
+        position: 'sidebar',
+        condition: (_, siblingData) => siblingData?.status !== 'PENDING',
+      }
     },
     {
       name: 'installmentNumber',
       type: 'number',
       min: 1,
       admin: {
+        position: 'sidebar',
         description: 'Installment sequence number (1 = first payment, 2 = second, etc.)',
+      },
+    },
+    {
+      name: 'enrollment',
+      type: 'relationship',
+      relationTo: 'enrollments',
+      hasMany: false,
+      admin: {
+        position: 'sidebar',
+        allowCreate: false,
+        description: 'Which enrollment this receipt is for.',
       },
     },
     {
@@ -150,6 +149,7 @@ export const FeeReceipts: CollectionConfig = {
       relationTo: 'admission-requests',
       hasMany: false,
       admin: {
+        position: 'sidebar',
         readOnly: true,
         description: 'The admission request that generated this receipt (if auto-created).',
       },
