@@ -1664,6 +1664,14 @@ export interface AdmissionRequest {
   course: number | WebCourse;
   preferredMedium?: ('ONLINE' | 'PHYSICAL' | 'HYBRID') | null;
   /**
+   * Total fee amount as decided with CSR.
+   */
+  totalFeePackage: number;
+  /**
+   * Number of installments for remaining amount as decided with CSR.
+   */
+  remainingInstallments: number;
+  /**
    * Amount of first installment paid by student.
    */
   firstPaymentAmount?: number | null;
@@ -1677,11 +1685,11 @@ export interface AdmissionRequest {
    */
   paymentProofImage?: (number | null) | Media;
   /**
-   * Transaction ID or reference number.
+   * Transaction ID or reference number. Max 50 characters.
    */
   paymentProofText?: string | null;
   /**
-   * Any message from the student.
+   * Any message from the student. Max 500 characters.
    */
   studentNote?: string | null;
   /**
@@ -3205,6 +3213,8 @@ export interface AdmissionRequestsSelect<T extends boolean = true> {
   department?: T;
   course?: T;
   preferredMedium?: T;
+  totalFeePackage?: T;
+  remainingInstallments?: T;
   firstPaymentAmount?: T;
   payDate?: T;
   paidMethod?: T;

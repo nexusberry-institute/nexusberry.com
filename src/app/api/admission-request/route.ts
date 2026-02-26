@@ -91,6 +91,8 @@ export async function POST(request: NextRequest) {
         course: body.course,
         department: body.department || undefined,
         preferredMedium: body.preferredMedium || undefined,
+        totalFeePackage: body.totalFeePackage,
+        remainingInstallments: body.remainingInstallments,
         firstPaymentAmount: body.firstPaymentAmount || undefined,
         payDate: body.payDate || undefined,
         paidMethod: body.paidMethod || undefined,

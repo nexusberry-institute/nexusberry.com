@@ -77,7 +77,7 @@ export default function AdmissionForm() {
         country: 'Pakistan',
       },
       payDate: '',
-      paidMethod: 'BANK',
+      paidMethod: undefined,
       paymentProofText: '',
       studentNote: '',
     },
@@ -129,7 +129,7 @@ export default function AdmissionForm() {
     ['fullName', 'email', 'phoneNumber', 'gender', 'education'],
     ['address'],
     ['department', 'course', 'preferredMedium'],
-    ['firstPaymentAmount', 'payDate'],
+    ['totalFeePackage', 'remainingInstallments', 'firstPaymentAmount', 'payDate', 'paidMethod'],
   ]
 
   const nextStep = useCallback(async () => {
@@ -310,7 +310,7 @@ export default function AdmissionForm() {
   // Filter courses by selected department
   const filteredCourses = selectedDepartment
     ? courses.filter((c) => c.department === selectedDepartment)
-    : courses
+    : []
 
   return (
     <div className="max-w-3xl mx-4 md:mx-auto mt-10 mb-20">
@@ -617,9 +617,10 @@ export default function AdmissionForm() {
                                 shouldValidate: true,
                               })
                             }
+                            disabled={!selectedDepartment}
                           >
                             <SelectTrigger>
-                              <SelectValue placeholder="Select a course" />
+                              <SelectValue placeholder={selectedDepartment ? "Select a course" : "Select a department first"} />
                             </SelectTrigger>
                             <SelectContent>
                               {filteredCourses.map((c) => (
@@ -680,6 +681,62 @@ export default function AdmissionForm() {
                   <>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       <div className="space-y-1.5">
+                        <Label htmlFor="totalFeePackage">
+                          Total Fee Package (Rs.) <span className="text-red-500">*</span>
+                        </Label>
+                        <Input
+                          id="totalFeePackage"
+                          type="number"
+                          min={1}
+                          step={500}
+                          placeholder="e.g. 25000"
+                          onChange={(e) =>
+                            setValue(
+                              'totalFeePackage',
+                              e.target.value
+                                ? parseInt(e.target.value, 10)
+                                : (undefined as unknown as number),
+                              { shouldValidate: true },
+                            )
+                          }
+                        />
+                        {errors.totalFeePackage && (
+                          <p className="text-xs text-red-500">
+                            {errors.totalFeePackage.message}
+                          </p>
+                        )}
+                      </div>
+                      <div className="space-y-1.5">
+                        <Label htmlFor="remainingInstallments">
+                          Remaining Installments <span className="text-red-500">*</span>
+                        </Label>
+                        <Input
+                          id="remainingInstallments"
+                          type="number"
+                          min={1}
+                          max={24}
+                          step={1}
+                          placeholder="e.g. 3"
+                          onChange={(e) =>
+                            setValue(
+                              'remainingInstallments',
+                              e.target.value
+                                ? parseInt(e.target.value, 10)
+                                : (undefined as unknown as number),
+                              { shouldValidate: true },
+                            )
+                          }
+                        />
+                        {errors.remainingInstallments && (
+                          <p className="text-xs text-red-500">
+                            {errors.remainingInstallments.message}
+                          </p>
+                        )}
+                      </div>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div className="space-y-1.5">
                         <Label htmlFor="firstPaymentAmount">
                           First Payment Amount (Rs.) <span className="text-red-500">*</span>
                         </Label>
@@ -723,28 +780,35 @@ export default function AdmissionForm() {
                     </div>
 
                     <div className="space-y-1.5">
-                      <Label>Payment Method</Label>
+                      <Label>
+                        Payment Method <span className="text-red-500">*</span>
+                      </Label>
                       <Select
-                        defaultValue="BANK"
                         onValueChange={(v) =>
                           setValue(
                             'paidMethod',
                             v as 'BANK' | 'CASH' | 'JAZZCASH' | 'EASYPAISA',
+                            { shouldValidate: true },
                           )
                         }
                       >
                         <SelectTrigger>
-                          <SelectValue />
+                          <SelectValue placeholder="Select payment method" />
                         </SelectTrigger>
                         <SelectContent>
                           <SelectItem value="BANK">Bank Transfer</SelectItem>
-                          <SelectItem value="CASH">Cash</SelectItem>
                           <SelectItem value="JAZZCASH">JazzCash</SelectItem>
                           <SelectItem value="EASYPAISA">
                             Easypaisa
                           </SelectItem>
+                          <SelectItem value="CASH">Cash</SelectItem>
                         </SelectContent>
                       </Select>
+                      {errors.paidMethod && (
+                        <p className="text-xs text-red-500">
+                          {errors.paidMethod.message}
+                        </p>
+                      )}
                     </div>
 
                     <div className="space-y-1.5">
@@ -787,13 +851,24 @@ export default function AdmissionForm() {
 
                     <div className="space-y-1.5">
                       <Label htmlFor="paymentProofText">
-                        Transaction ID / Reference
+                        Transaction ID / Reference (Optional)
                       </Label>
                       <Input
                         id="paymentProofText"
                         placeholder="e.g. TRX-123456"
+                        maxLength={50}
                         {...register('paymentProofText')}
                       />
+                      <div className="flex justify-between">
+                        {errors.paymentProofText ? (
+                          <p className="text-xs text-red-500">
+                            {errors.paymentProofText.message}
+                          </p>
+                        ) : <span />}
+                        <p className="text-xs text-muted-foreground">
+                          {watch('paymentProofText')?.length || 0}/50
+                        </p>
+                      </div>
                     </div>
 
                     <div className="space-y-1.5">
@@ -804,9 +879,20 @@ export default function AdmissionForm() {
                         id="studentNote"
                         className="flex w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
                         rows={3}
+                        maxLength={500}
                         placeholder="Optional notes..."
                         {...register('studentNote')}
                       />
+                      <div className="flex justify-between">
+                        {errors.studentNote ? (
+                          <p className="text-xs text-red-500">
+                            {errors.studentNote.message}
+                          </p>
+                        ) : <span />}
+                        <p className="text-xs text-muted-foreground">
+                          {watch('studentNote')?.length || 0}/500
+                        </p>
+                      </div>
                     </div>
                   </>
                 )}

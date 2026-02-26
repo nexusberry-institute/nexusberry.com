@@ -238,6 +238,34 @@ export const AdmissionRequests: CollectionConfig = {
               type: 'row',
               fields: [
                 {
+                  name: 'totalFeePackage',
+                  type: 'number',
+                  required: true,
+                  min: 1,
+                  label: 'Total Fee Package (Rs.)',
+                  admin: {
+                    step: 500,
+                    description: 'Total fee amount as decided with CSR.',
+                  },
+                },
+                {
+                  name: 'remainingInstallments',
+                  type: 'number',
+                  required: true,
+                  min: 1,
+                  max: 24,
+                  label: 'Remaining Installments',
+                  admin: {
+                    step: 1,
+                    description: 'Number of installments for remaining amount as decided with CSR.',
+                  },
+                },
+              ],
+            },
+            {
+              type: 'row',
+              fields: [
+                {
                   name: 'firstPaymentAmount',
                   type: 'number',
                   min: 0,
@@ -283,9 +311,10 @@ export const AdmissionRequests: CollectionConfig = {
                 {
                   name: 'paymentProofText',
                   type: 'text',
-                  label: 'Transaction ID',
+                  maxLength: 50,
+                  label: 'Transaction ID / Reference',
                   admin: {
-                    description: 'Transaction ID or reference number.',
+                    description: 'Transaction ID or reference number. Max 50 characters.',
                   },
                 },
               ],
@@ -293,9 +322,10 @@ export const AdmissionRequests: CollectionConfig = {
             {
               name: 'studentNote',
               type: 'textarea',
+              maxLength: 500,
               label: 'Student Note',
               admin: {
-                description: 'Any message from the student.',
+                description: 'Any message from the student. Max 500 characters.',
               },
             },
           ],

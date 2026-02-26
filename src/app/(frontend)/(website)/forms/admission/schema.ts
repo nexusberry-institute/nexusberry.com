@@ -29,14 +29,23 @@ export const admissionSchema = z.object({
   }),
 
   // Step 4: Payment Details
+  totalFeePackage: z
+    .number({ required_error: 'Total fee package is required' })
+    .min(1, 'Total fee must be greater than 0'),
+  remainingInstallments: z
+    .number({ required_error: 'Number of installments is required' })
+    .min(1, 'Must be at least 1 installment')
+    .max(24, 'Maximum 24 installments'),
   firstPaymentAmount: z
     .number({ required_error: 'First payment amount is required' })
     .min(0),
   payDate: z.string().min(1, 'Pay date is required'),
-  paidMethod: z.enum(['BANK', 'CASH', 'JAZZCASH', 'EASYPAISA']).optional(),
+  paidMethod: z.enum(['BANK', 'CASH', 'JAZZCASH', 'EASYPAISA'], {
+    required_error: 'Please select a payment method',
+  }),
   paymentProofImage: z.number().optional(), // Media ID after upload
-  paymentProofText: z.string().optional(),
-  studentNote: z.string().optional(),
+  paymentProofText: z.string().max(50, 'Maximum 50 characters').optional(),
+  studentNote: z.string().max(500, 'Maximum 500 characters').optional(),
 })
 
 export type AdmissionFormData = z.infer<typeof admissionSchema>
@@ -64,6 +73,8 @@ export const step3Schema = admissionSchema.pick({
 })
 
 export const step4Schema = admissionSchema.pick({
+  totalFeePackage: true,
+  remainingInstallments: true,
   firstPaymentAmount: true,
   payDate: true,
   paidMethod: true,
