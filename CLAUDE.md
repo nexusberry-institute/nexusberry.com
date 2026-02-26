@@ -42,6 +42,10 @@ Local development connects to the **Supabase production database**. There is no 
 
 Never skip steps. Fix any errors before proceeding to the next step.
 
+## CLI Tools
+- **gh** — GitHub CLI, authenticated as `nexusberry-institute`. Use for PRs, issues, deployment checks.
+- **vercel** — Vercel CLI (v50.23.2). Requires `vercel login` if token expires.
+
 ## Key Commands
 - `pnpm generate:types` — Regenerate `payload-types.ts`
 - `pnpm payload migrate:create` — Create a new migration
