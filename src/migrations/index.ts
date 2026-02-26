@@ -17,6 +17,7 @@ import * as migration_20260225_add_batch_to_leads from './20260225_add_batch_to_
 import * as migration_20260225_add_enrollments_tutorial_access_rename_user_role from './20260225_add_enrollments_tutorial_access_rename_user_role';
 import * as migration_20260225_users_students_cleanup from './20260225_users_students_cleanup';
 import * as migration_20260226_005946 from './20260226_005946';
+import * as migration_20260226_143743 from './20260226_143743';
 
 export const migrations = [
   {
@@ -112,6 +113,11 @@ export const migrations = [
   {
     up: migration_20260226_005946.up,
     down: migration_20260226_005946.down,
-    name: '20260226_005946'
+    name: '20260226_005946',
+  },
+  {
+    up: migration_20260226_143743.up,
+    down: migration_20260226_143743.down,
+    name: '20260226_143743'
   },
 ];

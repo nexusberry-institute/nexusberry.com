@@ -3,6 +3,7 @@ import { checkRole } from '@/access/checkRole'
 import { authenticated } from '@/access/authenticated'
 import { adminOrSelf, superadminOrAdminDelete } from '@/access'
 import { protectRoles } from '@/hooks/protectRoles'
+import { trackLogin } from '@/hooks/trackLogin'
 
 export const Users: CollectionConfig = {
   slug: 'users',
@@ -25,6 +26,9 @@ export const Users: CollectionConfig = {
       secure: true,
     },
   },
+  hooks: {
+    afterLogin: [trackLogin],
+  },
   access: {
     read: authenticated, // Only logged in users can read
     create: () => true, // anyone can create an account
@@ -33,7 +37,7 @@ export const Users: CollectionConfig = {
     admin: ({ req: { user } }) => checkRole(['superadmin', 'admin'], user),
   },
   admin: {
-    defaultColumns: ['id', 'email', 'gmail_username', 'provider', 'roles', 'blocked', 'createdAt'],
+    defaultColumns: ['id', 'email', 'gmail_username', 'provider', 'roles', 'blocked', 'lastLoginAt', 'createdAt'],
     listSearchableFields: ['email', 'gmail_username'],
     useAsTitle: 'email',
     group: "People Management"
@@ -58,6 +62,31 @@ export const Users: CollectionConfig = {
               label: 'User Photo',
               type: 'upload',
               relationTo: 'media',
+            },
+          ],
+        },
+        {
+          label: 'Insights',
+          fields: [
+            {
+              name: 'lastLoginAt',
+              type: 'date',
+              label: 'Last Login',
+              admin: {
+                readOnly: true,
+                date: {
+                  displayFormat: 'd MMM yyyy, h:mm a',
+                },
+              },
+            },
+            {
+              name: 'loginCount',
+              type: 'number',
+              label: 'Login Count',
+              defaultValue: 0,
+              admin: {
+                readOnly: true,
+              },
             },
           ],
         },

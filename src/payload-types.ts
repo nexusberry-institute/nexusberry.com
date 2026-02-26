@@ -267,6 +267,8 @@ export interface User {
   id: number;
   gmail_username?: string | null;
   photo?: (number | null) | Media;
+  lastLoginAt?: string | null;
+  loginCount?: number | null;
   roles?:
     | (
         | 'superadmin'
@@ -2364,6 +2366,8 @@ export interface PayloadMigration {
 export interface UsersSelect<T extends boolean = true> {
   gmail_username?: T;
   photo?: T;
+  lastLoginAt?: T;
+  loginCount?: T;
   roles?: T;
   provider?: T;
   blocked?: T;
