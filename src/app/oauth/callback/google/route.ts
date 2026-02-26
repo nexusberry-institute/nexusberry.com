@@ -83,9 +83,14 @@ export async function GET(req: NextRequest) {
       )
     }
 
+    // Use `state` param (echoed back by Google) as redirect destination
+    const state = url.searchParams.get('state')
+    // Validate: must be a relative path to prevent open redirect
+    const redirectTo = (state && state.startsWith('/') && !state.startsWith('//')) ? state : '/'
+
     // Use raw HTTP response to set cookie — bypasses Next.js abstraction issues
     const redirectUrl = new URL(
-      `/?toast=${encodeURIComponent("Successfully logged In")}&toastType=success`,
+      `${redirectTo}${redirectTo.includes('?') ? '&' : '?'}toast=${encodeURIComponent("Successfully logged In")}&toastType=success`,
       process.env.NEXT_PUBLIC_SERVER_URL
     )
 

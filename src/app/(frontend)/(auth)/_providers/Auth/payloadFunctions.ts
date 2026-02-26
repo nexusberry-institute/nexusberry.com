@@ -79,12 +79,21 @@ export const payloadLogin = async (args: Login) => {
       limit: 1,
       depth: 0,
       select: {
-        email: true
+        email: true,
+        provider: true,
       }
     })
 
     if (!docs.length) {
       return { success: false, message: "We couldn't find an account with this email. Please check your email address or create a new account." }
+    }
+
+    // Check provider BEFORE attempting login to avoid password mismatch on Google accounts
+    if (docs[0].provider === "google") {
+      return {
+        success: false,
+        message: "Your account is registered through Google. Use Login with Google to access this account."
+      }
     }
 
     const result = await payload.login({
@@ -94,13 +103,6 @@ export const payloadLogin = async (args: Login) => {
         password: args.password
       }
     })
-
-    if (result.user?.provider === "google") {
-      return {
-        success: false,
-        message: "Your account is registered through google. Use Login with google to access this account"
-      }
-    }
 
     if (!result.user?._verified) {
       return {

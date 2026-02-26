@@ -1,20 +1,2 @@
-// Define route access permissions in a centralized, configurable way
-export const routePermissions = {
-  '/admin': ['superadmin', 'admin', 'developer'],
-  '/cms': ['superadmin', 'admin', 'developer', 'operations', 'csr'],
-  '/accounts': ['superadmin', 'admin', 'developer', 'operations', 'accountant'],
-  '/lms': ['developer', 'student', 'teacher'],
-  '/reports': ['superadmin', 'admin', 'operations'],
-}
-
-// Default redirect paths based on primary role
-export const roleDefaultPaths = {
-  'superadmin': '/admin',
-  'admin': '/admin',
-  'developer': '/admin',
-  'operations': '/accounts',
-  'accountant': '/accounts',
-  'csr': '/cms',
-  'student': '/lms/dashboard',
-  'authenticated': '/',
-}
+// Role priority order (highest to lowest) — used for display in header/sidebar
+export const rolePriority: string[] = ['superadmin', 'admin', 'developer', 'operations', 'accountant', 'csr', 'student', 'authenticated']

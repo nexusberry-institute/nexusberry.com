@@ -35,12 +35,18 @@ export const getUserByEmail = async (data: UserProps): Promise<User> => {
 
   const existingUser = result.docs[0]!
 
-  // Ensure Google-authenticated users are verified
-  if (!existingUser._verified) {
+  // Update provider to 'google' and ensure verified
+  if (existingUser.provider !== 'google' || !existingUser._verified) {
     const updated = await payload.update({
       collection: 'users',
       id: existingUser.id,
-      data: { _verified: true },
+      data: {
+        provider: 'google',
+        _verified: true,
+        ...(existingUser.provider !== 'google' && !existingUser.gmail_username
+          ? { gmail_username: data.name }
+          : {}),
+      },
     })
     return updated
   }

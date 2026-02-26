@@ -67,11 +67,13 @@ export const processAdmissionApproval: CollectionAfterChangeHook = async ({
 
       const currentRoles = (existingUser.roles ?? []) as UserRole[]
       if (!currentRoles.includes('student')) {
+        const updatedRoles = currentRoles.filter(r => r !== 'authenticated')
+        updatedRoles.push('student')
         await req.payload.update({
           collection: 'users',
           id: userId,
           data: {
-            roles: [...currentRoles, 'student'] as UserRole[],
+            roles: updatedRoles as UserRole[],
           },
           overrideAccess: true,
         })
@@ -91,11 +93,13 @@ export const processAdmissionApproval: CollectionAfterChangeHook = async ({
 
         const currentRoles = (firstUser.roles ?? []) as UserRole[]
         if (!currentRoles.includes('student')) {
+          const updatedRoles = currentRoles.filter(r => r !== 'authenticated')
+          updatedRoles.push('student')
           await req.payload.update({
             collection: 'users',
             id: userId,
             data: {
-              roles: [...currentRoles, 'student'] as UserRole[],
+              roles: updatedRoles as UserRole[],
             },
             overrideAccess: true,
           })

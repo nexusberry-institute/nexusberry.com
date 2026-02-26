@@ -9,6 +9,7 @@ import Link from 'next/link'
 import { Sidebar } from './Sidebar'
 import { Sheet, SheetTrigger } from '@/components/ui/sheet'
 import { useAuth } from '@/app/(frontend)/(auth)/_providers/Auth'
+import { rolePriority } from '@/constants'
 
 
 const NavBar = ({ departments }: {
@@ -21,6 +22,7 @@ const NavBar = ({ departments }: {
     const [dropdownOpen, setDropdownOpen] = useState(false)
     const { user } = useAuth()
     const isLoggedIn = !!user
+    const displayRole = rolePriority.find(r => user?.roles?.includes(r)) ?? 'user'
 
     return (
         <div className='flex sticky justify-between top-0 bg-primary items-center z-50 px-16 max-md:px-10 max-sm:px-8 max-xs:px-2 py-4'>
@@ -76,7 +78,7 @@ const NavBar = ({ departments }: {
                 </Link>
                 {isLoggedIn ? (
                     <Link href='/logout' className='flex flex-col items-center leading-tight text-card/70 hover:text-card'>
-                        <span className='text-[10px] uppercase tracking-wide opacity-70'>{user?.roles?.[0] ?? 'user'}</span>
+                        <span className='text-[10px] uppercase tracking-wide opacity-70'>{displayRole}</span>
                         <span className='text-base font-medium'>Logout</span>
                         <span className='text-[10px] opacity-70 truncate max-w-[160px]'>{user?.email}</span>
                     </Link>

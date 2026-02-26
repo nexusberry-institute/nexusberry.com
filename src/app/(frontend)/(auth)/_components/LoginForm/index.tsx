@@ -81,6 +81,7 @@ export const LoginForm: React.FC = () => {
       scope: "openid email profile",
       access_type: "offline",
       prompt: "consent",
+      ...(redirect.current ? { state: redirect.current } : {}),
     })
     nextRedirect(`https://accounts.google.com/o/oauth2/v2/auth?${params.toString()}`)
   }, [])

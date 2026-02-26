@@ -267,7 +267,7 @@ export default function AdmissionForm() {
             </Button>
             <p className="text-xs text-muted-foreground text-center">
               Already have an account?{' '}
-              <a href="/login" className="text-primary underline">
+              <a href="/login?redirect=/forms/admission" className="text-primary underline">
                 Login here
               </a>
             </p>
