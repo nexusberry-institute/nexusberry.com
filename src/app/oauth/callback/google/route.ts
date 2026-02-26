@@ -71,7 +71,7 @@ export async function GET(req: NextRequest) {
       );
     }
 
-    let cookieData: { name: string; value: string; tokenExpiration: number }
+    let cookieData: { name: string; value: string; tokenExpiration: number; sessionToken?: string }
     let userRoles: string[] = []
     try {
       const user = await getUserByEmail(googleUser)
@@ -99,13 +99,13 @@ export async function GET(req: NextRequest) {
       process.env.NEXT_PUBLIC_SERVER_URL
     )
 
-    return new Response(null, {
-      status: 302,
-      headers: {
-        'Location': redirectUrl.toString(),
-        'Set-Cookie': `${cookieData.name}=${cookieData.value}; HttpOnly; Max-Age=${cookieData.tokenExpiration}; Path=/; Secure; SameSite=Lax`,
-      },
-    })
+    const responseHeaders = new Headers()
+    responseHeaders.set('Location', redirectUrl.toString())
+    responseHeaders.append('Set-Cookie', `${cookieData.name}=${cookieData.value}; HttpOnly; Max-Age=${cookieData.tokenExpiration}; Path=/; Secure; SameSite=Lax`)
+    if (cookieData.sessionToken) {
+      responseHeaders.append('Set-Cookie', `session-token=${cookieData.sessionToken}; HttpOnly; Max-Age=${cookieData.tokenExpiration}; Path=/; Secure; SameSite=Lax`)
+    }
+    return new Response(null, { status: 302, headers: responseHeaders })
   } catch (error) {
     return NextResponse.redirect(
       new URL(`/login?toast=${encodeURIComponent("toast=Something went wrong with your sign-in. Please try again later.")}&toastType=error`, process.env.NEXT_PUBLIC_SERVER_URL!)

@@ -37,7 +37,7 @@ export const Users: CollectionConfig = {
     admin: ({ req: { user } }) => checkRole(['superadmin', 'admin'], user),
   },
   admin: {
-    defaultColumns: ['id', 'email', 'gmail_username', 'provider', 'roles', 'blocked', 'lastLoginAt', 'createdAt'],
+    defaultColumns: ['id', 'email', 'gmail_username', 'provider', 'roles', 'blocked', 'lastLoginAt', 'loginCount', 'createdAt'],
     listSearchableFields: ['email', 'gmail_username'],
     useAsTitle: 'email',
     group: "People Management"
@@ -87,6 +87,11 @@ export const Users: CollectionConfig = {
               admin: {
                 readOnly: true,
               },
+            },
+            {
+              name: 'sessionToken',
+              type: 'text',
+              admin: { hidden: true },
             },
           ],
         },

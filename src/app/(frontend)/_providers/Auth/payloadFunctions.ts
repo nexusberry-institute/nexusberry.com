@@ -64,12 +64,24 @@ export const payloadLogin = async (args: Login) => {
 
     if (result.token) {
       const storeCookie = await cookies();
-      storeCookie.set("payload-token", result.token, {
+      const cookieOptions = {
         httpOnly: true,
         maxAge: typeof Users.auth === "object" ? Users.auth.tokenExpiration : 7200,  //set the max age of token as in users collection. default is 7200s (2 hours)
         path: "/",
         secure: process.env.NODE_ENV === "production",
+      }
+      storeCookie.set("payload-token", result.token, cookieOptions)
+
+      const freshUser = await payload.findByID({
+        collection: 'users',
+        id: result.user.id,
+        select: { sessionToken: true },
+        overrideAccess: true,
+        depth: 0,
       })
+      if (freshUser.sessionToken) {
+        storeCookie.set("session-token", freshUser.sessionToken, cookieOptions)
+      }
 
       return {
         success: true,
@@ -93,7 +105,8 @@ export const payloadLogin = async (args: Login) => {
 export const payloadLogout = async () => {
   try {
     const cookieStore = await cookies();
-    cookieStore.delete("payload-token"); // Deletes the HTTP-only cookie
+    cookieStore.delete("payload-token");
+    cookieStore.delete("session-token");
 
     return { success: true }; // Indicate success
   } catch (error) {
@@ -107,9 +120,30 @@ export const getUser = async () => {
     const payload = await getPayload({ config })
     const { user, permissions } = await payload.auth({ headers: getHeaders })
 
-    return { user, permissions }
+    if (user && user.collection === 'users') {
+      const cookieStore = await cookies()
+      const sessionCookie = cookieStore.get('session-token')?.value
+
+      if (sessionCookie) {
+        const dbUser = await payload.findByID({
+          collection: 'users',
+          id: user.id,
+          select: { sessionToken: true },
+          overrideAccess: true,
+          depth: 0,
+        })
+
+        if (dbUser.sessionToken && dbUser.sessionToken !== sessionCookie) {
+          cookieStore.delete('payload-token')
+          cookieStore.delete('session-token')
+          return { user: null, permissions: null, sessionExpired: true }
+        }
+      }
+    }
+
+    return { user, permissions, sessionExpired: false }
   } catch (error) {
     console.error(error)
-    return { user: null, permissions: null }
+    return { user: null, permissions: null, sessionExpired: false }
   }
 }

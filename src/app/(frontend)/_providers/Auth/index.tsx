@@ -20,13 +20,20 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
 
   useEffect(() => {
     const fetchMe = async () => {
-      const { user, permissions } = await getUser()
+      const { user, permissions, sessionExpired } = await getUser()
+      if (sessionExpired) {
+        window.location.href = `/login?toast=${encodeURIComponent("You've been logged out because your account was signed in on another device.")}&toastType=warning`
+        return
+      }
       // Only set user if it's a regular user (not MCP API key)
       const regularUser = user && user.collection === 'users' ? user : null
       setUser(regularUser)
       setPermissions(permissions)
     }
     void fetchMe()
+
+    const interval = setInterval(fetchMe, 5 * 60 * 1000)
+    return () => clearInterval(interval)
   }, [])
 
   const login = useCallback<Login>(

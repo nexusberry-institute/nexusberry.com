@@ -107,10 +107,19 @@ export const loginWith = async (user: User) => {
     throw new Error("Failed to generate authentication token")
   }
 
+  const freshUser = await payload.findByID({
+    collection: 'users',
+    id: user.id,
+    select: { sessionToken: true },
+    overrideAccess: true,
+    depth: 0,
+  })
+
   return {
     name: `${payload.config.cookiePrefix}-token`,
     value: result.token,
     tokenExpiration: collectionConfig.auth.tokenExpiration,
+    sessionToken: freshUser.sessionToken as string | undefined,
   }
 }
 

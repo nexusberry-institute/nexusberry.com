@@ -269,6 +269,7 @@ export interface User {
   photo?: (number | null) | Media;
   lastLoginAt?: string | null;
   loginCount?: number | null;
+  sessionToken?: string | null;
   roles?:
     | (
         | 'superadmin'
@@ -2368,6 +2369,7 @@ export interface UsersSelect<T extends boolean = true> {
   photo?: T;
   lastLoginAt?: T;
   loginCount?: T;
+  sessionToken?: T;
   roles?: T;
   provider?: T;
   blocked?: T;

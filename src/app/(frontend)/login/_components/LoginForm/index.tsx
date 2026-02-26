@@ -1,7 +1,7 @@
 'use client'
 
 import { useSearchParams, redirect as nextRedirect } from 'next/navigation'
-import React, { useCallback, useRef } from 'react'
+import React, { useCallback, useEffect, useRef } from 'react'
 import { useForm } from 'react-hook-form'
 import { motion } from 'framer-motion'
 import { Mail, Lock } from 'lucide-react'
@@ -24,6 +24,18 @@ export const LoginForm: React.FC = () => {
   const redirect = useRef(searchParams.get('redirect'))
   const { login } = useAuth()
   const { toast } = useToast()
+
+  useEffect(() => {
+    const toastMessage = searchParams.get('toast')
+    const toastType = searchParams.get('toastType') as 'success' | 'destructive' | 'warning' | undefined
+    if (toastMessage) {
+      toast({
+        title: toastType === 'success' ? 'Success' : toastType === 'warning' ? 'Session Ended' : 'Error',
+        description: toastMessage,
+        variant: toastType === 'success' ? 'success' : toastType === 'warning' ? 'warning' : 'destructive',
+      })
+    }
+  }, [searchParams, toast])
 
   const {
     register,
