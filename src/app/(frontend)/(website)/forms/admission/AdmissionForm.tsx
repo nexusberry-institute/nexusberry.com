@@ -266,10 +266,7 @@ export default function AdmissionForm() {
               Sign in with Google
             </Button>
             <p className="text-xs text-muted-foreground text-center">
-              Already have an account?{' '}
-              <a href="/login?redirect=/forms/admission" className="text-primary underline">
-                Login here
-              </a>
+              An account will be created automatically if one does not already exist.
             </p>
           </CardContent>
         </Card>

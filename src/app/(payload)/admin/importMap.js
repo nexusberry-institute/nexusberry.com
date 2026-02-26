@@ -40,6 +40,7 @@ import { LinkToDoc as LinkToDoc_aead06e4cbf6b2620c5c51c9ab283634 } from '@payloa
 import { ReindexButton as ReindexButton_aead06e4cbf6b2620c5c51c9ab283634 } from '@payloadcms/plugin-search/client'
 import { RowLabel as RowLabel_ec255a65fa6fa8d1faeb09cf35284224 } from '@/Header/RowLabel'
 import { RowLabel as RowLabel_1f6ff6ff633e3695d348f4f3c58f1466 } from '@/Footer/RowLabel'
+import { Avatar as Avatar_cc098d9c2d89a6e02a321e7129da88d9 } from '@/graphics/Avatar/index.tsx'
 import { Icon as Icon_537d74cd4b75d6c420c521af18c7f707 } from '@/graphics/Icon/index.tsx'
 import { Logo as Logo_6c8490617bef60039b781082d4fedeae } from '@/graphics/Logo/index.tsx'
 import { default as default_1a7510af427896d367a49dbf838d2de6 } from '@/components/BeforeDashboard'
@@ -90,6 +91,7 @@ export const importMap = {
   "@payloadcms/plugin-search/client#ReindexButton": ReindexButton_aead06e4cbf6b2620c5c51c9ab283634,
   "@/Header/RowLabel#RowLabel": RowLabel_ec255a65fa6fa8d1faeb09cf35284224,
   "@/Footer/RowLabel#RowLabel": RowLabel_1f6ff6ff633e3695d348f4f3c58f1466,
+  "@/graphics/Avatar/index.tsx#Avatar": Avatar_cc098d9c2d89a6e02a321e7129da88d9,
   "@/graphics/Icon/index.tsx#Icon": Icon_537d74cd4b75d6c420c521af18c7f707,
   "@/graphics/Logo/index.tsx#Logo": Logo_6c8490617bef60039b781082d4fedeae,
   "@/components/BeforeDashboard#default": default_1a7510af427896d367a49dbf838d2de6,

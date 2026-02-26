@@ -29,11 +29,9 @@ const dirname = path.dirname(filename)
 
 export default buildConfig({
   admin: {
-    // avatar:{
-    //   collection: Users.slug,
-    //   // image: Users.user-photo.url,
-    //   size: 'md',
-    // },
+    avatar: {
+      Component: '@/graphics/Avatar/index.tsx#Avatar',
+    },
     // theme: 'dark',
     meta: {
       titleSuffix: ' | NexusBerry Training & Solutions',

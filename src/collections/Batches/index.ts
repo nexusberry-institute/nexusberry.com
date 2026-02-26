@@ -4,7 +4,7 @@ export const Batches: CollectionConfig = {
   slug: "batches",
 
   admin: {
-    useAsTitle: "courseTitle",
+    useAsTitle: "slug",
     group: "Academic Operations",
   },
 

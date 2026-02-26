@@ -59,7 +59,7 @@ export default function Logout() {
   }
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-tr from-primary-500/90 to-secondary-500/90 backdrop-blur-sm">
+    <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-tr from-primary-500 to-secondary-500 p-4">
       <div className="bg-white/10 backdrop-blur-md p-8 rounded-xl shadow-lg flex flex-col items-center">
         <Loader className="h-10 w-10 animate-spin text-white mb-4" />
 
