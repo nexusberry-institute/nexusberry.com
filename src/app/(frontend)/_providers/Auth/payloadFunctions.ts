@@ -11,63 +11,6 @@ interface Login {
   password: string;
 }
 
-interface Create {
-  email: string
-  firstName: string
-  lastName: string
-  password: string
-}
-
-export const createAccount = async (args: Create) => {
-  try {
-    const payload = await getPayload({ config })
-    const existingUser = await payload.find({
-      collection: "users",
-      where: {
-        email: {
-          equals: args.email
-        }
-      },
-      pagination: false,
-      depth: 0,
-      limit: 1,
-      select: {
-        email: true,
-      }
-    })
-
-    if (existingUser.docs.length) {
-      return {
-        success: false,
-        message: "Duplicate email Error. User with this email already exist. Please sign in or use a different email.",
-        user: null,
-      }
-    }
-
-    const createdUser = await payload.create({
-      collection: 'users',
-      data: {
-        username: args.email,
-        email: args.email,
-        password: args.password
-      }
-    })
-
-    return {
-      success: true,
-      message: "Account created successfully",
-      user: createdUser
-    }
-
-  } catch (error) {
-    return {
-      success: false,
-      message: error instanceof Error ? error.message : "Failed to create account. Check your internet connection and try again.",
-      user: null,
-    }
-  }
-}
-
 export const payloadLogin = async (args: Login) => {
   try {
 
@@ -156,64 +99,6 @@ export const payloadLogout = async () => {
   } catch (error) {
     return { success: false, message: "An error occurred during logout" };
   }
-}
-
-export const payloadForgetPassword = async (email: string) => {
-  try {
-    const payload = await getPayload({ config })
-    const token = await payload.forgotPassword({
-      collection: 'users',
-      data: {
-        email
-      }
-    })
-    return {
-      success: true,
-      message: "Password reset link has been sent to your email",
-      error: ""
-    }
-  } catch (error) {
-    return {
-      success: false,
-      message: "",
-      error: error instanceof Error ? error.message : "Unknown error occurred"
-    }
-  }
-}
-
-export const payloadResetPassword = async (password: string, token: string) => {
-  try {
-    const payload = await getPayload({ config })
-    const result = await payload.resetPassword({
-      collection: 'users',
-      data: {
-        password,
-        token
-      },
-      overrideAccess: true
-    })
-
-    if (result.token) {
-      const storeCookie = await cookies();
-      storeCookie.set("payload-token", result.token, {
-        httpOnly: true,
-        path: "/",
-        secure: true,
-      })
-
-      return { success: true, message: "Your password has been successfully updated. You can now log in with your new password." }
-    } else {
-      return { success: false, message: "Unable to update password. Please try again or contact support." }
-    }
-
-  } catch (error) {
-    return {
-      success: false,
-      message: "Your password reset link has expired or is invalid. Please request a new reset link.",
-      error: error instanceof Error ? error.message : "Unknown error occurred"
-    }
-  }
-
 }
 
 export const getUser = async () => {

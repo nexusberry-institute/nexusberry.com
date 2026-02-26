@@ -3,7 +3,7 @@ import { redirect } from 'next/navigation'
 import { getPayload } from 'payload'
 import config from '@/payload.config'
 import type { User } from '@/payload-types'
-import { HydrateClientUser } from '../(auth)/_components/HydrateClientUser'
+import { HydrateClientUser } from '../_components/HydrateClientUser'
 import { DashboardShell } from './_components/DashboardShell'
 
 export default async function DashboardLayout({ children }: { children: React.ReactNode }) {

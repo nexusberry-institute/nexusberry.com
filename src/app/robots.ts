@@ -9,8 +9,8 @@ export default function robots(): MetadataRoute.Robots {
       userAgent: '*',
       allow: '/',
       disallow: ['/admin/', '/api/', '/_next/',
-        '/account/', '/accounts/', '/cms/', '/lms/', '/reports/',
-        '/login/', '/logout/', '/register', '/recover-password/', "/reset-password", '/set-password'
+        '/accounts/', '/cms/', '/lms/', '/reports/',
+        '/login/', '/logout/',
       ],
     },
     sitemap: `${baseUrl}/sitemap.xml`,

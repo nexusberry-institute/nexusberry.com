@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
-import { useAuth } from '@/app/(frontend)/(auth)/_providers/Auth'
+import { useAuth } from '@/app/(frontend)/_providers/Auth'
 
 type Props = {
   accessType?: string | null

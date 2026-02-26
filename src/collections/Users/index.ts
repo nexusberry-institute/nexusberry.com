@@ -1,7 +1,6 @@
 import type { CollectionConfig } from 'payload'
 import { checkRole } from '@/access/checkRole'
 import { authenticated } from '@/access/authenticated'
-import { generateSetPasswordEmailHTML, generateSetPasswordEmailSubject } from '@/utilities/emailTemplates'
 import { adminOrSelf, superadminOrAdminDelete } from '@/access'
 import { protectRoles } from '@/hooks/protectRoles'
 
@@ -9,10 +8,6 @@ export const Users: CollectionConfig = {
   slug: 'users',
   auth: {
     tokenExpiration: 28800, // 28800 secs = 8 hours
-    forgotPassword: {
-      generateEmailHTML: generateSetPasswordEmailHTML,
-      generateEmailSubject: generateSetPasswordEmailSubject,
-    },
     verify: {
       generateEmailSubject: () => 'Nexusberry Email Verification',
       generateEmailHTML: ({ user, token }) => `<h1>Hey! ${user.email} Verify your email</h1><p>Click <a href='${process.env.NEXT_PUBLIC_SERVER_URL || ''}/verify?token=${token}'>here</a> to verify your email.</p>`,

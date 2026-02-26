@@ -2,9 +2,9 @@
 
 import React, { createContext, useCallback, useContext, useState, useEffect } from 'react'
 
-import type { AuthContext, Create, ForgotPassword, Login, Logout, ResetPassword } from './types'
+import type { AuthContext, Login, Logout } from './types'
 
-import { createAccount, getUser, payloadForgetPassword, payloadLogin, payloadLogout, payloadResetPassword } from './payloadFunctions'
+import { getUser, payloadLogin, payloadLogout } from './payloadFunctions'
 
 import { User } from '@/payload-types'
 import { SanitizedPermissions } from 'payload'
@@ -29,18 +29,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     void fetchMe()
   }, [])
 
-  const create = useCallback<Create>(
-    async (args) => {
-      const response = await createAccount(args)
-      if (response.success) {
-        await payloadLogin({ email: args.email, password: args.password })
-        setUser(response.user)
-      }
-      return response
-    },
-    [],
-  )
-
   const login = useCallback<Login>(
     async (args) => {
       const result = await payloadLogin({ email: args.email, password: args.password })
@@ -64,22 +52,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
       return result
     }, [])
 
-  const forgotPassword = useCallback<ForgotPassword>(
-    async (args) => {
-      const response = await payloadForgetPassword(args.email)
-      return response
-    },
-    [],
-  )
-
-  const resetPassword = useCallback<ResetPassword>(
-    async (args) => {
-      const response = await payloadResetPassword(args.password, args.token)
-      return response
-    },
-    [],
-  )
-
   return (
     <Context.Provider
       value={{
@@ -87,11 +59,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
         permissions,
         setPermissions,
         setUser,
-        create,
-        forgotPassword,
         login,
         logout,
-        resetPassword,
       }}
     >
       {children}

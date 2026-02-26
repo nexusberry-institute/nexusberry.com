@@ -9,7 +9,6 @@ import {
   BookOpen,
   GraduationCap,
   CalendarDays,
-  User as UserIcon,
   LogOut,
   Menu,
   X,
@@ -39,10 +38,6 @@ function getNavItems(roles: string[]): NavItem[] {
       { href: '/teacher/dashboard', label: 'My Batches', icon: <Users size={18} /> },
     )
   }
-
-  items.push(
-    { href: '/account', label: 'Account', icon: <UserIcon size={18} /> },
-  )
 
   return items
 }

@@ -2,7 +2,7 @@
 
 import { useEffect } from "react"
 import { useToast } from "@/hooks/use-toast"
-import { useAuth } from "../_providers/Auth"
+import { useAuth } from "@/app/(frontend)/_providers/Auth"
 import { motion } from "framer-motion"
 import { Loader } from "lucide-react"
 

@@ -2,7 +2,7 @@ import { headers as getHeaders } from 'next/headers'
 import { getPayload } from 'payload'
 import config from '@/payload.config'
 import Link from 'next/link'
-import { BookOpen, Users, Settings } from 'lucide-react'
+import { BookOpen, Users } from 'lucide-react'
 import type { User } from '@/payload-types'
 
 export default async function DashboardPage() {
@@ -54,18 +54,6 @@ export default async function DashboardPage() {
           </Link>
         )}
 
-        <Link
-          href="/account"
-          className="flex items-center gap-4 p-6 bg-white rounded-xl border border-gray-200 hover:border-gray-300 hover:shadow-sm transition-all"
-        >
-          <div className="flex items-center justify-center w-12 h-12 rounded-lg bg-gray-100 text-gray-600">
-            <Settings size={24} />
-          </div>
-          <div>
-            <p className="font-semibold text-gray-900">Account Settings</p>
-            <p className="text-sm text-gray-500">Update your profile</p>
-          </div>
-        </Link>
       </div>
 
       {!roles.includes('student') && !roles.includes('teacher') && (

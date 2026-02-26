@@ -1,6 +1,5 @@
 'use client'
 
-import Link from 'next/link'
 import { useSearchParams, redirect as nextRedirect } from 'next/navigation'
 import React, { useCallback, useRef } from 'react'
 import { useForm } from 'react-hook-form'
@@ -13,7 +12,7 @@ import { Card, CardContent, CardFooter, CardHeader } from '@/components/ui/card'
 import { Label } from '@/components/ui/label'
 
 import { useToast } from '@/hooks/use-toast'
-import { useAuth } from '../../_providers/Auth'
+import { useAuth } from '@/app/(frontend)/_providers/Auth'
 
 type FormData = {
   email: string
@@ -22,7 +21,6 @@ type FormData = {
 
 export const LoginForm: React.FC = () => {
   const searchParams = useSearchParams()
-  const allParams = searchParams.toString() ? `?${searchParams.toString()}` : ''
   const redirect = useRef(searchParams.get('redirect'))
   const { login } = useAuth()
   const { toast } = useToast()
@@ -33,8 +31,8 @@ export const LoginForm: React.FC = () => {
     formState: { errors, isSubmitting },
   } = useForm<FormData>({
     defaultValues: {
-      email: 'user@gmail.com',
-      password: '12345678',
+      email: '',
+      password: '',
     },
   })
 
@@ -151,9 +149,9 @@ export const LoginForm: React.FC = () => {
         </form>
       </CardContent>
       <CardFooter className="flex flex-col space-y-2 text-sm text-center">
-        <Link href={`/recover-password${allParams}`} className="text-blue-600 hover:underline">
-          Forgot your password?
-        </Link>
+        <p className="text-sm text-gray-500">
+          Forgot your password? Please contact staff for assistance.
+        </p>
       </CardFooter>
       {isSubmitting && (
         <div className="loadingBlock">

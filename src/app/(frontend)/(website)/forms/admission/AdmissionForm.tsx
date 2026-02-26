@@ -23,7 +23,7 @@ import {
 } from '@/components/ui/select'
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog'
 import { useToast } from '@/hooks/use-toast'
-import { useAuth } from '@/app/(frontend)/(auth)/_providers/Auth'
+import { useAuth } from '@/app/(frontend)/_providers/Auth'
 
 import { admissionSchema, type AdmissionFormData } from './schema'
 import { getCourses } from './actions'

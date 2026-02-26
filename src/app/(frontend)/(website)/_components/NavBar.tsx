@@ -8,7 +8,7 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuLabel, DropdownMenuTrigg
 import Link from 'next/link'
 import { Sidebar } from './Sidebar'
 import { Sheet, SheetTrigger } from '@/components/ui/sheet'
-import { useAuth } from '@/app/(frontend)/(auth)/_providers/Auth'
+import { useAuth } from '@/app/(frontend)/_providers/Auth'
 
 
 const NavBar = ({ departments }: {

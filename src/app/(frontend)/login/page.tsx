@@ -1,5 +1,5 @@
 import React, { Suspense } from 'react'
-import { LoginForm } from '@/app/(frontend)/(auth)/_components/LoginForm'
+import { LoginForm } from './_components/LoginForm'
 
 export default async function Login() {
 
@@ -11,4 +11,3 @@ export default async function Login() {
     </div>
   )
 }
-
