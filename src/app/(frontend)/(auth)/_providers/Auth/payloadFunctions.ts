@@ -90,7 +90,7 @@ export const payloadLogin = async (args: Login) => {
     }
 
     // Check provider BEFORE attempting login to avoid password mismatch on Google accounts
-    if (docs[0].provider === "google") {
+    if (docs[0]?.provider === "google") {
       return {
         success: false,
         message: "Your account is registered through Google. Use Login with Google to access this account."
