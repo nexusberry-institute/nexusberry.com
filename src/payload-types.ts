@@ -1655,6 +1655,10 @@ export interface AdmissionRequest {
     country?: string | null;
   };
   /**
+   * Department selected by the student.
+   */
+  department?: (number | null) | Department;
+  /**
    * Course the student wants to enroll in.
    */
   course: number | WebCourse;
@@ -1663,6 +1667,10 @@ export interface AdmissionRequest {
    * Amount of first installment paid by student.
    */
   firstPaymentAmount?: number | null;
+  /**
+   * Date of first payment.
+   */
+  payDate?: string | null;
   paidMethod?: ('BANK' | 'CASH' | 'JAZZCASH' | 'EASYPAISA') | null;
   /**
    * Screenshot of payment receipt.
@@ -3194,9 +3202,11 @@ export interface AdmissionRequestsSelect<T extends boolean = true> {
         province?: T;
         country?: T;
       };
+  department?: T;
   course?: T;
   preferredMedium?: T;
   firstPaymentAmount?: T;
+  payDate?: T;
   paidMethod?: T;
   paymentProofImage?: T;
   paymentProofText?: T;

@@ -26,7 +26,7 @@ import { useToast } from '@/hooks/use-toast'
 import { useAuth } from '@/app/(frontend)/_providers/Auth'
 
 import { admissionSchema, type AdmissionFormData } from './schema'
-import { getCourses } from './actions'
+import { getCourses, getDepartments } from './actions'
 
 const STEPS = [
   { title: 'Personal Details', icon: User },
@@ -40,6 +40,12 @@ type CourseOption = {
   title: string
   price: number | null | undefined
   duration: number | null | undefined
+  department: number | null | undefined
+}
+
+type DepartmentOption = {
+  id: number
+  title: string
 }
 
 export default function AdmissionForm() {
@@ -47,7 +53,9 @@ export default function AdmissionForm() {
   const { toast } = useToast()
   const [currentStep, setCurrentStep] = useState(0)
   const [courses, setCourses] = useState<CourseOption[]>([])
+  const [departments, setDepartments] = useState<DepartmentOption[]>([])
   const [isLoadingCourses, setIsLoadingCourses] = useState(true)
+  const [isLoadingDepartments, setIsLoadingDepartments] = useState(true)
   const [showSuccess, setShowSuccess] = useState(false)
   const [uploadingFile, setUploadingFile] = useState(false)
 
@@ -68,6 +76,7 @@ export default function AdmissionForm() {
         province: '',
         country: 'Pakistan',
       },
+      payDate: '',
       paidMethod: 'BANK',
       paymentProofText: '',
       studentNote: '',
@@ -90,7 +99,7 @@ export default function AdmissionForm() {
     }
   }, [user, setValue])
 
-  // Fetch courses
+  // Fetch courses and departments
   useEffect(() => {
     getCourses()
       .then(setCourses)
@@ -102,14 +111,25 @@ export default function AdmissionForm() {
         }),
       )
       .finally(() => setIsLoadingCourses(false))
+
+    getDepartments()
+      .then(setDepartments)
+      .catch(() =>
+        toast({
+          title: 'Error',
+          description: 'Failed to load departments.',
+          variant: 'destructive',
+        }),
+      )
+      .finally(() => setIsLoadingDepartments(false))
   }, [toast])
 
   // Step field groups for validation
   const stepFields: (keyof AdmissionFormData)[][] = [
-    ['fullName', 'email', 'phoneNumber'],
+    ['fullName', 'email', 'phoneNumber', 'gender', 'education'],
     ['address'],
-    ['course'],
-    [],
+    ['department', 'course', 'preferredMedium'],
+    ['firstPaymentAmount', 'payDate'],
   ]
 
   const nextStep = useCallback(async () => {
@@ -124,6 +144,15 @@ export default function AdmissionForm() {
   const prevStep = useCallback(() => {
     setCurrentStep((s) => Math.max(s - 1, 0))
   }, [])
+
+  // Reset course when department changes
+  const selectedDepartment = watch('department')
+  useEffect(() => {
+    if (selectedDepartment) {
+      setValue('course', undefined as unknown as number)
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selectedDepartment])
 
   // File upload handler
   const handleFileUpload = useCallback(
@@ -278,6 +307,11 @@ export default function AdmissionForm() {
   const selectedCourse = watch('course')
   const proofImageId = watch('paymentProofImage')
 
+  // Filter courses by selected department
+  const filteredCourses = selectedDepartment
+    ? courses.filter((c) => c.department === selectedDepartment)
+    : courses
+
   return (
     <div className="max-w-3xl mx-4 md:mx-auto mt-10 mb-20">
       <Card className="shadow-xl border-0">
@@ -334,6 +368,7 @@ export default function AdmissionForm() {
                 {/* ===== STEP 1: Personal Details ===== */}
                 {currentStep === 0 && (
                   <>
+                    {/* Row 1: Full Name*, Email* */}
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       <div className="space-y-1.5">
                         <Label htmlFor="fullName">
@@ -364,6 +399,7 @@ export default function AdmissionForm() {
                       </div>
                     </div>
 
+                    {/* Row 2: Phone Number*, Gender* */}
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       <div className="space-y-1.5">
                         <Label htmlFor="phoneNumber">
@@ -373,6 +409,10 @@ export default function AdmissionForm() {
                           id="phoneNumber"
                           placeholder="03001234567"
                           {...register('phoneNumber')}
+                          onInput={(e) => {
+                            const target = e.target as HTMLInputElement
+                            target.value = target.value.replace(/\D/g, '')
+                          }}
                         />
                         {errors.phoneNumber && (
                           <p className="text-xs text-red-500">
@@ -381,29 +421,14 @@ export default function AdmissionForm() {
                         )}
                       </div>
                       <div className="space-y-1.5">
-                        <Label htmlFor="guardianPhone">Guardian Phone</Label>
-                        <Input
-                          id="guardianPhone"
-                          placeholder="Optional"
-                          {...register('guardianPhone')}
-                        />
-                      </div>
-                    </div>
-
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                      <div className="space-y-1.5">
-                        <Label htmlFor="cnic">CNIC</Label>
-                        <Input
-                          id="cnic"
-                          placeholder="3520212345678"
-                          {...register('cnic')}
-                        />
-                      </div>
-                      <div className="space-y-1.5">
-                        <Label>Gender</Label>
+                        <Label>
+                          Gender <span className="text-red-500">*</span>
+                        </Label>
                         <Select
                           onValueChange={(v) =>
-                            setValue('gender', v as 'male' | 'female')
+                            setValue('gender', v as 'male' | 'female', {
+                              shouldValidate: true,
+                            })
                           }
                         >
                           <SelectTrigger>
@@ -414,17 +439,30 @@ export default function AdmissionForm() {
                             <SelectItem value="female">Female</SelectItem>
                           </SelectContent>
                         </Select>
+                        {errors.gender && (
+                          <p className="text-xs text-red-500">
+                            {errors.gender.message}
+                          </p>
+                        )}
                       </div>
                     </div>
 
+                    {/* Row 3: Highest Education*, Date of Birth (optional) */}
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       <div className="space-y-1.5">
-                        <Label htmlFor="education">Highest Education</Label>
+                        <Label htmlFor="education">
+                          Highest Education <span className="text-red-500">*</span>
+                        </Label>
                         <Input
                           id="education"
                           placeholder="e.g. BS Computer Science"
                           {...register('education')}
                         />
+                        {errors.education && (
+                          <p className="text-xs text-red-500">
+                            {errors.education.message}
+                          </p>
+                        )}
                       </div>
                       <div className="space-y-1.5">
                         <Label htmlFor="dateOfBirth">Date of Birth</Label>
@@ -435,6 +473,26 @@ export default function AdmissionForm() {
                         />
                       </div>
                     </div>
+
+                    {/* Row 4: Guardian Phone (optional), CNIC (optional) */}
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div className="space-y-1.5">
+                        <Label htmlFor="guardianPhone">Guardian Phone</Label>
+                        <Input
+                          id="guardianPhone"
+                          placeholder="Optional"
+                          {...register('guardianPhone')}
+                        />
+                      </div>
+                      <div className="space-y-1.5">
+                        <Label htmlFor="cnic">CNIC</Label>
+                        <Input
+                          id="cnic"
+                          placeholder="3520212345678"
+                          {...register('cnic')}
+                        />
+                      </div>
+                    </div>
                   </>
                 )}
 
@@ -442,12 +500,19 @@ export default function AdmissionForm() {
                 {currentStep === 1 && (
                   <>
                     <div className="space-y-1.5">
-                      <Label htmlFor="homeAddress">Home Address</Label>
+                      <Label htmlFor="homeAddress">
+                        Home Address <span className="text-red-500">*</span>
+                      </Label>
                       <Input
                         id="homeAddress"
                         placeholder="House #, Street, Area"
                         {...register('address.homeAddress')}
                       />
+                      {errors.address?.homeAddress && (
+                        <p className="text-xs text-red-500">
+                          {errors.address.homeAddress.message}
+                        </p>
+                      )}
                     </div>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       <div className="space-y-1.5">
@@ -466,20 +531,34 @@ export default function AdmissionForm() {
                         )}
                       </div>
                       <div className="space-y-1.5">
-                        <Label htmlFor="province">Province</Label>
+                        <Label htmlFor="province">
+                          Province <span className="text-red-500">*</span>
+                        </Label>
                         <Input
                           id="province"
                           placeholder="e.g. Punjab"
                           {...register('address.province')}
                         />
+                        {errors.address?.province && (
+                          <p className="text-xs text-red-500">
+                            {errors.address.province.message}
+                          </p>
+                        )}
                       </div>
                     </div>
                     <div className="space-y-1.5">
-                      <Label htmlFor="country">Country</Label>
+                      <Label htmlFor="country">
+                        Country <span className="text-red-500">*</span>
+                      </Label>
                       <Input
                         id="country"
                         {...register('address.country')}
                       />
+                      {errors.address?.country && (
+                        <p className="text-xs text-red-500">
+                          {errors.address.country.message}
+                        </p>
+                      )}
                     </div>
                   </>
                 )}
@@ -487,13 +566,46 @@ export default function AdmissionForm() {
                 {/* ===== STEP 3: Course Selection ===== */}
                 {currentStep === 2 && (
                   <>
-                    {isLoadingCourses ? (
+                    {isLoadingCourses || isLoadingDepartments ? (
                       <div className="flex items-center justify-center py-8">
                         <Loader2 className="animate-spin mr-2" size={20} />
-                        Loading courses...
+                        Loading...
                       </div>
                     ) : (
                       <>
+                        <div className="space-y-1.5">
+                          <Label>
+                            Department <span className="text-red-500">*</span>
+                          </Label>
+                          <Select
+                            value={selectedDepartment?.toString() || ''}
+                            onValueChange={(v) =>
+                              setValue('department', parseInt(v, 10), {
+                                shouldValidate: true,
+                              })
+                            }
+                          >
+                            <SelectTrigger>
+                              <SelectValue placeholder="Select a department" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              {departments.map((d) => (
+                                <SelectItem
+                                  key={d.id}
+                                  value={d.id.toString()}
+                                >
+                                  {d.title}
+                                </SelectItem>
+                              ))}
+                            </SelectContent>
+                          </Select>
+                          {errors.department && (
+                            <p className="text-xs text-red-500">
+                              {errors.department.message}
+                            </p>
+                          )}
+                        </div>
+
                         <div className="space-y-1.5">
                           <Label>
                             Course <span className="text-red-500">*</span>
@@ -510,7 +622,7 @@ export default function AdmissionForm() {
                               <SelectValue placeholder="Select a course" />
                             </SelectTrigger>
                             <SelectContent>
-                              {courses.map((c) => (
+                              {filteredCourses.map((c) => (
                                 <SelectItem
                                   key={c.id}
                                   value={c.id.toString()}
@@ -529,12 +641,15 @@ export default function AdmissionForm() {
                         </div>
 
                         <div className="space-y-1.5">
-                          <Label>Preferred Medium</Label>
+                          <Label>
+                            Preferred Medium <span className="text-red-500">*</span>
+                          </Label>
                           <Select
                             onValueChange={(v) =>
                               setValue(
                                 'preferredMedium',
                                 v as 'ONLINE' | 'PHYSICAL' | 'HYBRID',
+                                { shouldValidate: true },
                               )
                             }
                           >
@@ -549,6 +664,11 @@ export default function AdmissionForm() {
                               <SelectItem value="HYBRID">Hybrid</SelectItem>
                             </SelectContent>
                           </Select>
+                          {errors.preferredMedium && (
+                            <p className="text-xs text-red-500">
+                              {errors.preferredMedium.message}
+                            </p>
+                          )}
                         </div>
                       </>
                     )}
@@ -561,7 +681,7 @@ export default function AdmissionForm() {
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       <div className="space-y-1.5">
                         <Label htmlFor="firstPaymentAmount">
-                          First Payment Amount (Rs.)
+                          First Payment Amount (Rs.) <span className="text-red-500">*</span>
                         </Label>
                         <Input
                           id="firstPaymentAmount"
@@ -574,35 +694,57 @@ export default function AdmissionForm() {
                               'firstPaymentAmount',
                               e.target.value
                                 ? parseInt(e.target.value, 10)
-                                : undefined,
+                                : (undefined as unknown as number),
+                              { shouldValidate: true },
                             )
                           }
                         />
+                        {errors.firstPaymentAmount && (
+                          <p className="text-xs text-red-500">
+                            {errors.firstPaymentAmount.message}
+                          </p>
+                        )}
                       </div>
                       <div className="space-y-1.5">
-                        <Label>Payment Method</Label>
-                        <Select
-                          defaultValue="BANK"
-                          onValueChange={(v) =>
-                            setValue(
-                              'paidMethod',
-                              v as 'BANK' | 'CASH' | 'JAZZCASH' | 'EASYPAISA',
-                            )
-                          }
-                        >
-                          <SelectTrigger>
-                            <SelectValue />
-                          </SelectTrigger>
-                          <SelectContent>
-                            <SelectItem value="BANK">Bank Transfer</SelectItem>
-                            <SelectItem value="CASH">Cash</SelectItem>
-                            <SelectItem value="JAZZCASH">JazzCash</SelectItem>
-                            <SelectItem value="EASYPAISA">
-                              Easypaisa
-                            </SelectItem>
-                          </SelectContent>
-                        </Select>
+                        <Label htmlFor="payDate">
+                          Pay Date <span className="text-red-500">*</span>
+                        </Label>
+                        <Input
+                          id="payDate"
+                          type="date"
+                          {...register('payDate')}
+                        />
+                        {errors.payDate && (
+                          <p className="text-xs text-red-500">
+                            {errors.payDate.message}
+                          </p>
+                        )}
                       </div>
+                    </div>
+
+                    <div className="space-y-1.5">
+                      <Label>Payment Method</Label>
+                      <Select
+                        defaultValue="BANK"
+                        onValueChange={(v) =>
+                          setValue(
+                            'paidMethod',
+                            v as 'BANK' | 'CASH' | 'JAZZCASH' | 'EASYPAISA',
+                          )
+                        }
+                      >
+                        <SelectTrigger>
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="BANK">Bank Transfer</SelectItem>
+                          <SelectItem value="CASH">Cash</SelectItem>
+                          <SelectItem value="JAZZCASH">JazzCash</SelectItem>
+                          <SelectItem value="EASYPAISA">
+                            Easypaisa
+                          </SelectItem>
+                        </SelectContent>
+                      </Select>
                     </div>
 
                     <div className="space-y-1.5">
@@ -695,9 +837,10 @@ export default function AdmissionForm() {
                 </Button>
               ) : (
                 <Button
-                  type="submit"
+                  type="button"
                   disabled={isSubmitting}
                   className="gap-1"
+                  onClick={handleSubmit(onSubmit)}
                 >
                   {isSubmitting ? (
                     <>

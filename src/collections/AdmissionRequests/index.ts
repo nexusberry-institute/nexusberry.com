@@ -210,6 +210,15 @@ export const AdmissionRequests: CollectionConfig = {
           label: 'Course & Payment',
           fields: [
             {
+              name: 'department',
+              type: 'relationship',
+              relationTo: 'departments',
+              admin: {
+                allowCreate: false,
+                description: 'Department selected by the student.',
+              },
+            },
+            {
               name: 'course',
               type: 'relationship',
               relationTo: 'web-courses',
@@ -236,6 +245,18 @@ export const AdmissionRequests: CollectionConfig = {
                   admin: {
                     step: 100,
                     description: 'Amount of first installment paid by student.',
+                  },
+                },
+                {
+                  name: 'payDate',
+                  type: 'date',
+                  label: 'Pay Date',
+                  admin: {
+                    date: {
+                      pickerAppearance: 'dayOnly',
+                      displayFormat: 'dd/MM/yyyy',
+                    },
+                    description: 'Date of first payment.',
                   },
                 },
                 {
