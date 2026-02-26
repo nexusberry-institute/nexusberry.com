@@ -3,7 +3,7 @@ import Image from 'next/image'
 import React, { useState } from 'react'
 import logo from '@/app/(frontend)/(website)/_assets/logo/reverse-logo.png'
 import { Button } from '@/components/ui/button'
-import { ArrowRight, ChevronsDown, Menu } from 'lucide-react'
+import { ArrowRight, ChevronsDown, LogOut, Menu } from 'lucide-react'
 import { DropdownMenu, DropdownMenuContent, DropdownMenuLabel, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
 import Link from 'next/link'
 import { Sidebar } from './Sidebar'
@@ -76,11 +76,16 @@ const NavBar = ({ departments }: {
                     <Button className='text-lg text-card hover:underline'>Contact us</Button>
                 </Link>
                 {isLoggedIn ? (
-                    <Link href='/logout' className='flex flex-col items-center leading-tight text-card/70 hover:text-card'>
-                        <span className='text-[10px] uppercase tracking-wide opacity-70'>{displayRole}</span>
-                        <span className='text-base font-medium'>Logout</span>
-                        <span className='text-[10px] opacity-70 truncate max-w-[160px]'>{user?.email}</span>
-                    </Link>
+                    <div className='flex items-center gap-2'>
+                        <Link href='/dashboard' className='flex flex-col items-center leading-tight text-card/70 hover:text-card'>
+                            <span className='text-[10px] uppercase tracking-wide opacity-70'>{displayRole}</span>
+                            <span className='text-base font-medium'>Dashboard</span>
+                            <span className='text-[10px] opacity-70 truncate max-w-[160px]'>{user?.email}</span>
+                        </Link>
+                        <Link href='/logout' className='text-card/50 hover:text-card' title='Logout'>
+                            <LogOut size={18} />
+                        </Link>
+                    </div>
                 ) : (
                     <Link href='/login'>
                         <Button className='border-2 rounded-xl text-lg p-6 hover:bg-card hover:text-foreground focus-visible:ring-card focus-visible:ring-0'>
@@ -89,15 +94,28 @@ const NavBar = ({ departments }: {
                 )}
             </div>
 
-            {/* Burger Menu on Mobile Screens */}
-            <Sheet open={open} onOpenChange={setOpen}>
-                <SheetTrigger asChild aria-haspopup="dialog"
-                    aria-expanded="false"
-                    aria-controls="radix-«Rdnatb»">
-                    <Menu size={32} className='lg:hidden text-card mt-2 max-sm:size-7' />
-                </SheetTrigger>
-                <Sidebar setOpen={setOpen} courseLinks={departments} user={user} />
-            </Sheet>
+            {/* Mobile: Dashboard + Burger Menu */}
+            <div className='flex items-center gap-3 lg:hidden'>
+                {isLoggedIn ? (
+                    <Link href='/dashboard' className='flex flex-col items-center leading-none text-card/70 hover:text-card'>
+                        <span className='text-[8px] uppercase tracking-wide opacity-70'>{displayRole}</span>
+                        <span className='text-xs font-medium'>Dashboard</span>
+                        <span className='text-[8px] opacity-70 truncate max-w-[100px]'>{user?.email}</span>
+                    </Link>
+                ) : (
+                    <Link href='/login'>
+                        <Button className='text-xs border rounded-xl px-4 py-2'>Login</Button>
+                    </Link>
+                )}
+                <Sheet open={open} onOpenChange={setOpen}>
+                    <SheetTrigger asChild aria-haspopup="dialog"
+                        aria-expanded="false"
+                        aria-controls="radix-«Rdnatb»">
+                        <Menu size={32} className='text-card mt-2 max-sm:size-7' />
+                    </SheetTrigger>
+                    <Sidebar setOpen={setOpen} courseLinks={departments} user={user} />
+                </Sheet>
+            </div>
 
         </div>
     )

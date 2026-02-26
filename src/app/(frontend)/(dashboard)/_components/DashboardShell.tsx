@@ -1,5 +1,6 @@
 'use client'
 
+import Image from 'next/image'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { useState } from 'react'
@@ -65,14 +66,19 @@ export function DashboardShell({ user, children }: { user: User; children: React
 
       {/* Sidebar */}
       <aside
-        className={`fixed inset-y-0 left-0 z-50 flex w-64 flex-col bg-white border-r border-gray-200 transition-transform lg:translate-x-0 lg:static lg:z-auto ${
-          sidebarOpen ? 'translate-x-0' : '-translate-x-full'
-        }`}
+        className={`fixed inset-y-0 left-0 z-50 flex w-64 flex-col bg-white border-r border-gray-200 transition-transform lg:translate-x-0 lg:static lg:z-auto ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'
+          }`}
       >
         {/* Logo / brand */}
         <div className="flex items-center justify-between h-16 px-4 border-b border-gray-200">
-          <Link href="/" className="text-lg font-bold text-gray-900 truncate">
-            NexusBerry
+          <Link href="/">
+            <Image
+              src="/logos/nexusberry-transparant-1712x450.png"
+              alt="NexusBerry"
+              width={140}
+              height={37}
+              className="h-8 w-auto"
+            />
           </Link>
           <button
             onClick={() => setSidebarOpen(false)}
@@ -91,11 +97,10 @@ export function DashboardShell({ user, children }: { user: User; children: React
                 key={item.href}
                 href={item.href}
                 onClick={() => setSidebarOpen(false)}
-                className={`flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-colors ${
-                  isActive
+                className={`flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-colors ${isActive
                     ? 'bg-gray-900 text-white'
                     : 'text-gray-700 hover:bg-gray-100'
-                }`}
+                  }`}
               >
                 {item.icon}
                 {item.label}
@@ -112,7 +117,7 @@ export function DashboardShell({ user, children }: { user: User; children: React
             </div>
             <div className="flex-1 min-w-0">
               <p className="text-sm font-medium text-gray-900 truncate">{user.email}</p>
-              <Badge variant="secondary" className="text-[10px] capitalize">
+              <Badge variant="outline" className="text-[10px] capitalize bg-white text-gray-700 border-secondary">
                 {displayRole}
               </Badge>
             </div>
@@ -136,7 +141,15 @@ export function DashboardShell({ user, children }: { user: User; children: React
           >
             <Menu size={20} />
           </button>
-          <span className="ml-3 text-lg font-semibold text-gray-900">NexusBerry</span>
+          <Link href="/" className="ml-3">
+            <Image
+              src="/logos/nexusberry-transparant-1712x450.png"
+              alt="NexusBerry"
+              width={120}
+              height={32}
+              className="h-7 w-auto"
+            />
+          </Link>
         </header>
 
         {/* Page content */}

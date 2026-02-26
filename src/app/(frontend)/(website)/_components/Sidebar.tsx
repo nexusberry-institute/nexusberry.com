@@ -68,13 +68,18 @@ export function Sidebar({ setOpen, courseLinks, user }: SidebarProps) {
                         </Link>
                     </div>
                 </div>
-                <div className='flex justify-center'>
+                <div className='flex flex-col items-center gap-3'>
                     {isLoggedIn ? (
-                        <Link href='/logout' onClick={handleLinkClick} className='flex flex-col items-center leading-tight text-card/70 hover:text-card'>
-                            <span className='text-[10px] uppercase tracking-wide opacity-70'>{user?.roles?.find(r => r !== 'authenticated') ?? 'user'}</span>
-                            <span className='text-sm font-medium'>Logout</span>
-                            <span className='text-[10px] opacity-70 truncate max-w-[140px]'>{user?.email}</span>
-                        </Link>
+                        <>
+                            <Link href='/logout' onClick={handleLinkClick}>
+                                <Button variant='outline' size='sm' className='text-xs border-card/30 text-card/70 hover:text-card hover:bg-card/10'>Logout</Button>
+                            </Link>
+                            <Link href='/dashboard' onClick={handleLinkClick} className='flex flex-col items-center leading-tight text-card/70 hover:text-card'>
+                                <span className='text-[10px] uppercase tracking-wide opacity-70'>{user?.roles?.find(r => r !== 'authenticated') ?? 'user'}</span>
+                                <span className='text-sm font-medium'>Dashboard</span>
+                                <span className='text-[10px] opacity-70 truncate max-w-[140px]'>{user?.email}</span>
+                            </Link>
+                        </>
                     ) : (
                         <Link href='/login' onClick={handleLinkClick}>
                             <Button className='text-xs border rounded-xl px-8 py-4'>Login</Button>
