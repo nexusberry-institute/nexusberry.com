@@ -114,5 +114,34 @@ export const FeeReceipts: CollectionConfig = {
       name: 'note',
       type: 'text',
     },
+    // Enrollment & admission tracking
+    {
+      name: 'enrollment',
+      type: 'relationship',
+      relationTo: 'enrollments',
+      hasMany: false,
+      admin: {
+        allowCreate: false,
+        description: 'Which enrollment this receipt is for.',
+      },
+    },
+    {
+      name: 'installmentNumber',
+      type: 'number',
+      min: 1,
+      admin: {
+        description: 'Installment sequence number (1 = first payment, 2 = second, etc.)',
+      },
+    },
+    {
+      name: 'admissionRequest',
+      type: 'relationship',
+      relationTo: 'admission-requests',
+      hasMany: false,
+      admin: {
+        readOnly: true,
+        description: 'The admission request that generated this receipt (if auto-created).',
+      },
+    },
   ],
 };

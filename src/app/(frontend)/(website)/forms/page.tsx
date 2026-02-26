@@ -25,7 +25,7 @@ const formCards = [
     {
         id: "admission",
         title: "Admission Form",
-        description: "Apply for admission to our programs and courses with a quick and easy application.",
+        description: "Submit your admission application with personal details and payment proof. Login with Google required.",
         icon: <UserCheck className="h-8 w-8 text-purple-600" />,
         route: "/forms/admission",
         buttonText: "Apply Now",

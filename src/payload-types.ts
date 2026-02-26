@@ -101,6 +101,7 @@ export interface Config {
     tutorials: Tutorial;
     'tutorial-subjects': TutorialSubject;
     enrollments: Enrollment;
+    'admission-requests': AdmissionRequest;
     redirects: Redirect;
     forms: Form;
     'form-submissions': FormSubmission;
@@ -133,6 +134,9 @@ export interface Config {
     };
     attendance: {
       relatedAttendanceDetails: 'attendance-details';
+    };
+    enrollments: {
+      feeReceipts: 'fee-receipts';
     };
   };
   collectionsSelect: {
@@ -169,6 +173,7 @@ export interface Config {
     tutorials: TutorialsSelect<false> | TutorialsSelect<true>;
     'tutorial-subjects': TutorialSubjectsSelect<false> | TutorialSubjectsSelect<true>;
     enrollments: EnrollmentsSelect<false> | EnrollmentsSelect<true>;
+    'admission-requests': AdmissionRequestsSelect<false> | AdmissionRequestsSelect<true>;
     redirects: RedirectsSelect<false> | RedirectsSelect<true>;
     forms: FormsSelect<false> | FormsSelect<true>;
     'form-submissions': FormSubmissionsSelect<false> | FormSubmissionsSelect<true>;
@@ -1320,6 +1325,11 @@ export interface Enrollment {
   status?: ('active' | 'completed' | 'frozen' | 'dropped') | null;
   mode?: ('ONLINE' | 'PHYSICAL' | 'HYBRID') | null;
   admissionDate?: string | null;
+  feeReceipts?: {
+    docs?: (number | FeeReceipt)[];
+    hasNextPage?: boolean;
+    totalDocs?: number;
+  };
   updatedAt: string;
   createdAt: string;
 }
@@ -1571,6 +1581,141 @@ export interface QuizQuestion {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "fee-receipts".
+ */
+export interface FeeReceipt {
+  id: number;
+  student: number | Student;
+  amount: number;
+  verified?: boolean | null;
+  paidMethod?: ('BANK' | 'CASH' | 'JAZZCASH' | 'EASYPAISA') | null;
+  status?: ('RECEIVED' | 'PENDING' | 'DEAD') | null;
+  payDate?: string | null;
+  dueDate: string;
+  proofText?: string | null;
+  proofImage?: (number | null) | Media;
+  note?: string | null;
+  /**
+   * Which enrollment this receipt is for.
+   */
+  enrollment?: (number | null) | Enrollment;
+  /**
+   * Installment sequence number (1 = first payment, 2 = second, etc.)
+   */
+  installmentNumber?: number | null;
+  /**
+   * The admission request that generated this receipt (if auto-created).
+   */
+  admissionRequest?: (number | null) | AdmissionRequest;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "admission-requests".
+ */
+export interface AdmissionRequest {
+  id: number;
+  /**
+   * Set to "Approved" to trigger auto-creation of Student, Enrollment, and Fee Receipts.
+   */
+  status: 'pending' | 'reviewing' | 'approved' | 'rejected' | 'processed';
+  /**
+   * Required before approval. Assign the batch for enrollment.
+   */
+  assignedBatch?: (number | null) | Batch;
+  enrollmentMode?: ('ONLINE' | 'PHYSICAL' | 'HYBRID') | null;
+  /**
+   * Link to existing Lead record if applicable.
+   */
+  lead?: (number | null) | Lead;
+  /**
+   * Internal notes for staff review.
+   */
+  staffNotes?: string | null;
+  /**
+   * Reason for rejection.
+   */
+  rejectionReason?: string | null;
+  fullName: string;
+  email: string;
+  phoneNumber: string;
+  guardianPhone?: string | null;
+  cnic?: string | null;
+  gender?: ('male' | 'female') | null;
+  education?: string | null;
+  dateOfBirth?: string | null;
+  address?: {
+    homeAddress?: string | null;
+    city?: string | null;
+    province?: string | null;
+    country?: string | null;
+  };
+  /**
+   * Course the student wants to enroll in.
+   */
+  course: number | WebCourse;
+  preferredMedium?: ('ONLINE' | 'PHYSICAL' | 'HYBRID') | null;
+  /**
+   * Amount of first installment paid by student.
+   */
+  firstPaymentAmount?: number | null;
+  paidMethod?: ('BANK' | 'CASH' | 'JAZZCASH' | 'EASYPAISA') | null;
+  /**
+   * Screenshot of payment receipt.
+   */
+  paymentProofImage?: (number | null) | Media;
+  /**
+   * Transaction ID or reference number.
+   */
+  paymentProofText?: string | null;
+  /**
+   * Any message from the student.
+   */
+  studentNote?: string | null;
+  /**
+   * Total agreed fee for this enrollment.
+   */
+  totalFee?: number | null;
+  /**
+   * Define the installment plan. First row is the initial payment (already received). Remaining rows are future installments.
+   */
+  installments?:
+    | {
+        amount: number;
+        dueDate: string;
+        status?: ('RECEIVED' | 'PENDING' | 'DEAD') | null;
+        paidMethod?: ('BANK' | 'CASH' | 'JAZZCASH' | 'EASYPAISA') | null;
+        note?: string | null;
+        id?: string | null;
+      }[]
+    | null;
+  /**
+   * The Google-authenticated user who submitted the form.
+   */
+  submittedBy?: (number | null) | User;
+  /**
+   * Auto-linked after approval.
+   */
+  createdStudent?: (number | null) | Student;
+  /**
+   * Auto-linked after approval.
+   */
+  createdEnrollment?: (number | null) | Enrollment;
+  /**
+   * If approval processing failed, the error details appear here.
+   */
+  processingError?: string | null;
+  processedAt?: string | null;
+  /**
+   * Only set if hook created a new user (staff-created request). Share via WhatsApp.
+   */
+  tempPassword?: string | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "campaigns".
  */
 export interface Campaign {
@@ -1644,25 +1789,6 @@ export interface Message {
   type?: ('GENERAL' | 'WHATSAPP') | null;
   hasPlaceholder?: boolean | null;
   staffNote?: string | null;
-  updatedAt: string;
-  createdAt: string;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "fee-receipts".
- */
-export interface FeeReceipt {
-  id: number;
-  student: number | Student;
-  amount: number;
-  verified?: boolean | null;
-  paidMethod?: ('BANK' | 'CASH' | 'JAZZCASH' | 'EASYPAISA') | null;
-  status?: ('RECEIVED' | 'PENDING' | 'DEAD') | null;
-  payDate?: string | null;
-  dueDate: string;
-  proofText?: string | null;
-  proofImage?: (number | null) | Media;
-  note?: string | null;
   updatedAt: string;
   createdAt: string;
 }
@@ -2154,6 +2280,10 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'enrollments';
         value: number | Enrollment;
+      } | null)
+    | ({
+        relationTo: 'admission-requests';
+        value: number | AdmissionRequest;
       } | null)
     | ({
         relationTo: 'redirects';
@@ -2760,6 +2890,9 @@ export interface FeeReceiptsSelect<T extends boolean = true> {
   proofText?: T;
   proofImage?: T;
   note?: T;
+  enrollment?: T;
+  installmentNumber?: T;
+  admissionRequest?: T;
   updatedAt?: T;
   createdAt?: T;
 }
@@ -3024,6 +3157,61 @@ export interface EnrollmentsSelect<T extends boolean = true> {
   status?: T;
   mode?: T;
   admissionDate?: T;
+  feeReceipts?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "admission-requests_select".
+ */
+export interface AdmissionRequestsSelect<T extends boolean = true> {
+  status?: T;
+  assignedBatch?: T;
+  enrollmentMode?: T;
+  lead?: T;
+  staffNotes?: T;
+  rejectionReason?: T;
+  fullName?: T;
+  email?: T;
+  phoneNumber?: T;
+  guardianPhone?: T;
+  cnic?: T;
+  gender?: T;
+  education?: T;
+  dateOfBirth?: T;
+  address?:
+    | T
+    | {
+        homeAddress?: T;
+        city?: T;
+        province?: T;
+        country?: T;
+      };
+  course?: T;
+  preferredMedium?: T;
+  firstPaymentAmount?: T;
+  paidMethod?: T;
+  paymentProofImage?: T;
+  paymentProofText?: T;
+  studentNote?: T;
+  totalFee?: T;
+  installments?:
+    | T
+    | {
+        amount?: T;
+        dueDate?: T;
+        status?: T;
+        paidMethod?: T;
+        note?: T;
+        id?: T;
+      };
+  submittedBy?: T;
+  createdStudent?: T;
+  createdEnrollment?: T;
+  processingError?: T;
+  processedAt?: T;
+  tempPassword?: T;
   updatedAt?: T;
   createdAt?: T;
 }

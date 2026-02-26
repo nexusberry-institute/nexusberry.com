@@ -92,5 +92,12 @@ export const Enrollments: CollectionConfig = {
         },
       },
     },
+    // Virtual join — shows fee receipts linked to this enrollment
+    {
+      name: 'feeReceipts',
+      type: 'join',
+      collection: 'fee-receipts',
+      on: 'enrollment',
+    },
   ],
 }
