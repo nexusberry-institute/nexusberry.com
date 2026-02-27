@@ -64,7 +64,7 @@ export const Batches: CollectionConfig = {
               required: true,
               unique: true,
               admin: {
-                description: "Pattern: Batch/StartDate/MMMYY.Teacher/nick.module/nick.TimeTable/Days/D.TimeTable/Time/HH:MM AM|PM ",
+                description: "Pattern: Courese.Teacher.MonthYY.DaysTime",
                 // TODO: Create custom field component
                 // components: {
                 //   Field: {

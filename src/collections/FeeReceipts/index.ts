@@ -2,10 +2,11 @@ import { CollectionConfig } from 'payload';
 
 export const FeeReceipts: CollectionConfig = {
   slug: 'fee-receipts',
-  defaultSort: 'dueDate',
+  defaultSort: '-dueDate',
   admin: {
     useAsTitle: 'student',
     group: 'Academic Operations',
+    defaultColumns: ['student', 'amount', 'status', 'dueDate', 'payDate', 'installmentNumber', 'verified'],
   },
   fields: [
     // — Main area —
@@ -112,6 +113,9 @@ export const FeeReceipts: CollectionConfig = {
       ],
       admin: {
         position: 'sidebar',
+        components: {
+          Cell: '@/fields/StatusField/StatusCell#StatusCell',
+        },
       }
     },
     {

@@ -1,0 +1,25 @@
+.status-pill {
+  display: inline-block;
+  padding: 2px 10px;
+  border-radius: 9999px;
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 1.4;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+
+  &--received {
+    color: #166534;
+    background: rgba(22, 163, 74, 0.15);
+  }
+
+  &--pending {
+    color: #92400e;
+    background: rgba(245, 158, 11, 0.15);
+  }
+
+  &--dead {
+    color: #991b1b;
+    background: rgba(239, 68, 68, 0.15);
+  }
+}
