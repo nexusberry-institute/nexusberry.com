@@ -1,5 +1,6 @@
 import { CollectionConfig, Where } from 'payload'
 import { trackNewStudentAdmission } from './hooks/track'
+import { cascadeWithdrawal } from './hooks/cascadeWithdrawal'
 import { exportCsvEndpoint, exportEmailsEndpoint } from './endpoints'
 
 export const Students: CollectionConfig = {
@@ -15,7 +16,7 @@ export const Students: CollectionConfig = {
   },
   defaultSort: '-createdAt',
   hooks: {
-    afterChange: [trackNewStudentAdmission],
+    afterChange: [trackNewStudentAdmission, cascadeWithdrawal],
   },
   access: {},
   endpoints: [exportCsvEndpoint, exportEmailsEndpoint],
@@ -198,10 +199,10 @@ export const Students: CollectionConfig = {
         { label: 'Active', value: 'active' },
         { label: 'On Hold', value: 'on-hold' },
         { label: 'Withdrawn', value: 'withdrawn' },
-        { label: 'Graduated', value: 'graduated' },
       ],
       admin: {
         position: 'sidebar',
+        description: 'Overall institute status — independent of individual course enrollments',
       },
     },
     {
@@ -211,6 +212,7 @@ export const Students: CollectionConfig = {
       defaultValue: () => new Date(),
       admin: {
         position: 'sidebar',
+        description: 'Date student first joined the institute',
         date: {
           pickerAppearance: 'dayOnly',
           displayFormat: 'MMM dd, yyyy',

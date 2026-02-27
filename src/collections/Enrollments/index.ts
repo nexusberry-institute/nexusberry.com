@@ -1,12 +1,13 @@
 import type { CollectionConfig } from 'payload'
 import { checkRole } from '@/access/checkRole'
 import { authenticated } from '@/access/authenticated'
+import { syncStudentStatus } from './hooks/syncStudentStatus'
 
 export const Enrollments: CollectionConfig = {
   slug: 'enrollments',
   admin: {
     group: 'Academic Operations',
-    defaultColumns: ['student', 'batch', 'status', 'admissionDate'],
+    defaultColumns: ['id', 'student', 'batch', 'status', 'admissionDate', 'mode'],
   },
   access: {
     create: ({ req: { user } }) => checkRole(['superadmin', 'admin', 'operations'], user),
@@ -15,6 +16,7 @@ export const Enrollments: CollectionConfig = {
     delete: ({ req: { user } }) => checkRole(['superadmin', 'admin', 'operations'], user),
   },
   hooks: {
+    afterChange: [syncStudentStatus],
     beforeValidate: [
       async ({ data, req, operation }) => {
         if (operation !== 'create' || !data?.student || !data?.batch) return data
@@ -64,12 +66,14 @@ export const Enrollments: CollectionConfig = {
       defaultValue: 'active',
       options: [
         { label: 'Active', value: 'active' },
-        { label: 'Completed', value: 'completed' },
+        { label: 'Graduated', value: 'graduated' },
         { label: 'Frozen', value: 'frozen' },
         { label: 'Dropped', value: 'dropped' },
+        { label: 'Refund Requested', value: 'refund-requested' },
       ],
       admin: {
         position: 'sidebar',
+        description: 'Status of this specific course enrollment',
       },
     },
     {
@@ -83,6 +87,7 @@ export const Enrollments: CollectionConfig = {
     {
       name: 'admissionDate',
       type: 'date',
+      label: 'Enrollment Date',
       defaultValue: () => new Date(),
       admin: {
         position: 'sidebar',

@@ -543,7 +543,10 @@ export interface Enrollment {
   student: number | Student;
   batch: number | Batch;
   note?: string | null;
-  status?: ('active' | 'completed' | 'frozen' | 'dropped') | null;
+  /**
+   * Status of this specific course enrollment
+   */
+  status?: ('active' | 'graduated' | 'frozen' | 'dropped' | 'refund-requested') | null;
   mode?: ('ONLINE' | 'PHYSICAL' | 'HYBRID') | null;
   admissionDate?: string | null;
   feeReceipts?: {
@@ -594,7 +597,13 @@ export interface Student {
     hasNextPage?: boolean;
     totalDocs?: number;
   };
-  status?: ('active' | 'on-hold' | 'withdrawn' | 'graduated') | null;
+  /**
+   * Overall institute status — independent of individual course enrollments
+   */
+  status?: ('active' | 'on-hold' | 'withdrawn') | null;
+  /**
+   * Date student first joined the institute
+   */
   admissionDate?: string | null;
   updatedAt: string;
   createdAt: string;
