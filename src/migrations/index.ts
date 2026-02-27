@@ -22,6 +22,7 @@ import * as migration_20260226_154804 from './20260226_154804';
 import * as migration_20260226_163335 from './20260226_163335';
 import * as migration_20260226_173637 from './20260226_173637';
 import * as migration_20260227_move_trial_tutorials_add_father_name from './20260227_move_trial_tutorials_add_father_name';
+import * as migration_20260227_add_father_name_to_admission_requests from './20260227_add_father_name_to_admission_requests';
 
 export const migrations = [
   {
@@ -143,5 +144,10 @@ export const migrations = [
     up: migration_20260227_move_trial_tutorials_add_father_name.up,
     down: migration_20260227_move_trial_tutorials_add_father_name.down,
     name: '20260227_move_trial_tutorials_add_father_name',
+  },
+  {
+    up: migration_20260227_add_father_name_to_admission_requests.up,
+    down: migration_20260227_add_father_name_to_admission_requests.down,
+    name: '20260227_add_father_name_to_admission_requests',
   },
 ];
