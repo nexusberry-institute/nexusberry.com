@@ -7,7 +7,8 @@ export const Enrollments: CollectionConfig = {
   slug: 'enrollments',
   admin: {
     group: 'Academic Operations',
-    defaultColumns: ['id', 'student', 'batch', 'status', 'admissionDate', 'mode'],
+    useAsTitle: 'title',
+    defaultColumns: ['title', 'student', 'batch', 'status', 'admissionDate', 'mode'],
   },
   access: {
     create: ({ req: { user } }) => checkRole(['superadmin', 'admin', 'operations'], user),
@@ -39,21 +40,56 @@ export const Enrollments: CollectionConfig = {
   },
   fields: [
     {
-      name: 'student',
-      type: 'relationship',
-      relationTo: 'students',
-      required: true,
-      index: true,
+      name: 'title',
+      type: 'text',
+      admin: {
+        readOnly: true,
+        hidden: true,
+      },
+      hooks: {
+        beforeChange: [
+          async ({ data, req }) => {
+            const studentVal = data?.student
+            const batchVal = data?.batch
+
+            if (!studentVal || !batchVal) return undefined
+
+            const studentDoc =
+              typeof studentVal === 'object'
+                ? studentVal
+                : await req.payload.findByID({ collection: 'students', id: studentVal, depth: 0 })
+
+            const batchDoc =
+              typeof batchVal === 'object'
+                ? batchVal
+                : await req.payload.findByID({ collection: 'batches', id: batchVal, depth: 0 })
+
+            return `${studentDoc.fullName} — ${batchDoc.slug}`
+          },
+        ],
+      },
     },
     {
-      name: 'batch',
-      type: 'relationship',
-      relationTo: 'batches',
-      required: true,
-      index: true,
-      filterOptions: {
-        active: { equals: true },
-      },
+      type: 'row',
+      fields: [
+        {
+          name: 'student',
+          type: 'relationship',
+          relationTo: 'students',
+          required: true,
+          index: true,
+        },
+        {
+          name: 'batch',
+          type: 'relationship',
+          relationTo: 'batches',
+          required: true,
+          index: true,
+          filterOptions: {
+            active: { equals: true },
+          },
+        },
+      ],
     },
     {
       name: 'note',

@@ -540,6 +540,7 @@ export interface TimeTable {
  */
 export interface Enrollment {
   id: number;
+  title?: string | null;
   student: number | Student;
   batch: number | Batch;
   note?: string | null;
@@ -3192,6 +3193,7 @@ export interface TutorialSubjectsSelect<T extends boolean = true> {
  * via the `definition` "enrollments_select".
  */
 export interface EnrollmentsSelect<T extends boolean = true> {
+  title?: T;
   student?: T;
   batch?: T;
   note?: T;
