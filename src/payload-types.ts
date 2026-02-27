@@ -288,6 +288,10 @@ export interface User {
    * Staff can block this user temporarily, e.g. if defaulter
    */
   blocked?: boolean | null;
+  /**
+   * Protected tutorials this user can access on a trial basis.
+   */
+  trialTutorials?: (number | Tutorial)[] | null;
   updatedAt: string;
   createdAt: string;
   email: string;
@@ -329,6 +333,957 @@ export interface Media {
   height?: number | null;
   focalX?: number | null;
   focalY?: number | null;
+}
+/**
+ * Tutorials of All Subjects
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "tutorials".
+ */
+export interface Tutorial {
+  id: number;
+  title: string;
+  slug?: string | null;
+  slugLock?: boolean | null;
+  position?: number | null;
+  subject?: (number | null) | TutorialSubject;
+  label?: string | null;
+  /**
+   * When enabled, videos will be displayed on the frontend.
+   */
+  showVideos?: boolean | null;
+  /**
+   * When enabled, the quiz tab will be displayed on the frontend.
+   */
+  showQuiz?: boolean | null;
+  /**
+   * When enabled, the assignment tab will be displayed on the frontend.
+   */
+  showAssignment?: boolean | null;
+  /**
+   * When enabled, the code tab will be displayed on the frontend.
+   */
+  showCode?: boolean | null;
+  /**
+   * When enabled, the presentation tab will be displayed on the frontend.
+   */
+  showPresentation?: boolean | null;
+  /**
+   * Public tutorials are open to everyone. Protected tutorials require enrollment or trial access.
+   */
+  accessType: 'public' | 'protected';
+  /**
+   * Batches that have access to this protected tutorial.
+   */
+  batches?: (number | Batch)[] | null;
+  description?: {
+    root: {
+      type: string;
+      children: {
+        type: any;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  } | null;
+  content?: {
+    root: {
+      type: string;
+      children: {
+        type: any;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  } | null;
+  videos?:
+    | {
+        videoSource?: ('youtube' | 'bunny') | null;
+        youtubeUrl?: string | null;
+        /**
+         * The video ID from your Bunny CDN library
+         */
+        bunnyVideoId?: string | null;
+        id?: string | null;
+      }[]
+    | null;
+  quiz?: (number | null) | Quiz;
+  assignment?: {
+    root: {
+      type: string;
+      children: {
+        type: any;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  } | null;
+  /**
+   * Link to CodeSandbox, StackBlitz, CodePen, or GitHub repository
+   */
+  codeUrl?: string | null;
+  /**
+   * Link to Google Slides or other presentation
+   */
+  presentationUrl?: string | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * Subjects Categories for Tutorials
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "tutorial-subjects".
+ */
+export interface TutorialSubject {
+  id: number;
+  title: string;
+  slug?: string | null;
+  slugLock?: boolean | null;
+  position?: number | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "batches".
+ */
+export interface Batch {
+  id: number;
+  medium: 'ONLINE' | 'PHYSICAL' | 'HYBRID';
+  active?: boolean | null;
+  note?: string | null;
+  courseTitle: string;
+  /**
+   * Pattern: Batch/StartDate/MMMYY.Teacher/nick.module/nick.TimeTable/Days/D.TimeTable/Time/HH:MM AM|PM
+   */
+  slug: string;
+  teachers?: (number | Teacher)[] | null;
+  /**
+   * Duration in weeks
+   */
+  duration: number;
+  startDate?: string | null;
+  endDate?: string | null;
+  batchTimeTable?: {
+    docs?: (number | TimeTable)[];
+    hasNextPage?: boolean;
+    totalDocs?: number;
+  };
+  batchEnrollments?: {
+    docs?: (number | Enrollment)[];
+    hasNextPage?: boolean;
+    totalDocs?: number;
+  };
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "teachers".
+ */
+export interface Teacher {
+  id: number;
+  user: number | User;
+  fullName: string;
+  nick: string;
+  dateOfBirth?: string | null;
+  phoneNumber?: string | null;
+  address?: {
+    street?: string | null;
+    city?: string | null;
+    state?: string | null;
+    zipCode?: string | null;
+    country?: string | null;
+  };
+  profilePicture?: (number | null) | Media;
+  payMode?: ('FIX' | 'PER_LECTURE') | null;
+  payPerLecture?: number | null;
+  fixPay?: number | null;
+  note?: string | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "time-table".
+ */
+export interface TimeTable {
+  id: number;
+  batch: number | Batch;
+  day: 'MONDAY' | 'TUESDAY' | 'WEDNESDAY' | 'THURSDAY' | 'FRIDAY' | 'SATURDAY' | 'SUNDAY';
+  startTime: string;
+  endTime: string;
+  room?: string | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "enrollments".
+ */
+export interface Enrollment {
+  id: number;
+  student: number | Student;
+  batch: number | Batch;
+  note?: string | null;
+  status?: ('active' | 'completed' | 'frozen' | 'dropped') | null;
+  mode?: ('ONLINE' | 'PHYSICAL' | 'HYBRID') | null;
+  admissionDate?: string | null;
+  feeReceipts?: {
+    docs?: (number | FeeReceipt)[];
+    hasNextPage?: boolean;
+    totalDocs?: number;
+  };
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "students".
+ */
+export interface Student {
+  id: number;
+  user?: (number | null) | User;
+  fullName?: string | null;
+  phoneNumber?: string | null;
+  fatherName?: string | null;
+  /**
+   * Emergency / parent contact number
+   */
+  guardianPhone?: string | null;
+  /**
+   * National Identity Card number
+   */
+  cnic?: string | null;
+  /**
+   * Highest Student Education
+   */
+  education?: string | null;
+  gender?: ('male' | 'female') | null;
+  dateOfBirth?: string | null;
+  address?: {
+    homeAddress?: string | null;
+    city?: string | null;
+    province?: string | null;
+    country?: string | null;
+  };
+  enrollments?: {
+    docs?: (number | Enrollment)[];
+    hasNextPage?: boolean;
+    totalDocs?: number;
+  };
+  status?: ('active' | 'on-hold' | 'withdrawn' | 'graduated') | null;
+  admissionDate?: string | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "fee-receipts".
+ */
+export interface FeeReceipt {
+  id: number;
+  student: number | Student;
+  amount: number;
+  paidMethod?: ('BANK' | 'CASH' | 'JAZZCASH' | 'EASYPAISA') | null;
+  payDate?: string | null;
+  dueDate: string;
+  proofText?: string | null;
+  proofImage?: (number | null) | Media;
+  note?: string | null;
+  status?: ('RECEIVED' | 'PENDING' | 'DEAD') | null;
+  verified?: boolean | null;
+  /**
+   * Installment sequence number (1 = first payment, 2 = second, etc.)
+   */
+  installmentNumber?: number | null;
+  /**
+   * Which enrollment this receipt is for.
+   */
+  enrollment?: (number | null) | Enrollment;
+  /**
+   * The admission request that generated this receipt (if auto-created).
+   */
+  admissionRequest?: (number | null) | AdmissionRequest;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "admission-requests".
+ */
+export interface AdmissionRequest {
+  id: number;
+  /**
+   * Set to "Approved" to trigger auto-creation of Student, Enrollment, and Fee Receipts.
+   */
+  status: 'pending' | 'reviewing' | 'approved' | 'rejected' | 'processed';
+  /**
+   * Required before approval. Assign the batch for enrollment.
+   */
+  assignedBatch?: (number | null) | Batch;
+  enrollmentMode?: ('ONLINE' | 'PHYSICAL' | 'HYBRID') | null;
+  /**
+   * Link to existing Lead record if applicable.
+   */
+  lead?: (number | null) | Lead;
+  /**
+   * Internal notes for staff review.
+   */
+  staffNotes?: string | null;
+  /**
+   * Reason for rejection.
+   */
+  rejectionReason?: string | null;
+  fullName: string;
+  email: string;
+  phoneNumber: string;
+  fatherName?: string | null;
+  guardianPhone?: string | null;
+  cnic?: string | null;
+  gender?: ('male' | 'female') | null;
+  education?: string | null;
+  dateOfBirth?: string | null;
+  address?: {
+    homeAddress?: string | null;
+    city?: string | null;
+    province?: string | null;
+    country?: string | null;
+  };
+  /**
+   * Department selected by the student.
+   */
+  department?: (number | null) | Department;
+  /**
+   * Course the student wants to enroll in.
+   */
+  course: number | WebCourse;
+  preferredMedium?: ('ONLINE' | 'PHYSICAL' | 'HYBRID') | null;
+  /**
+   * Total fee amount as decided with CSR.
+   */
+  totalFeePackage: number;
+  /**
+   * Total number of installments the fee will be paid in, as decided with CSR.
+   */
+  remainingInstallments: number;
+  /**
+   * Amount of first installment paid by student.
+   */
+  firstPaymentAmount?: number | null;
+  /**
+   * Date of first payment.
+   */
+  payDate?: string | null;
+  paidMethod?: ('BANK' | 'CASH' | 'JAZZCASH' | 'EASYPAISA') | null;
+  /**
+   * Screenshot of payment receipt.
+   */
+  paymentProofImage?: (number | null) | Media;
+  /**
+   * Transaction ID or reference number. Max 50 characters.
+   */
+  paymentProofText?: string | null;
+  /**
+   * Any message from the student. Max 500 characters.
+   */
+  studentNote?: string | null;
+  /**
+   * Total agreed fee for this enrollment.
+   */
+  totalFee?: number | null;
+  /**
+   * Define the installment plan. First row is the initial payment (already received). Remaining rows are future installments.
+   */
+  installments?:
+    | {
+        amount: number;
+        dueDate: string;
+        status?: ('RECEIVED' | 'PENDING' | 'DEAD') | null;
+        paidMethod?: ('BANK' | 'CASH' | 'JAZZCASH' | 'EASYPAISA') | null;
+        note?: string | null;
+        id?: string | null;
+      }[]
+    | null;
+  /**
+   * The Google-authenticated user who submitted the form.
+   */
+  submittedBy?: (number | null) | User;
+  /**
+   * Auto-linked after approval.
+   */
+  createdStudent?: (number | null) | Student;
+  /**
+   * Auto-linked after approval.
+   */
+  createdEnrollment?: (number | null) | Enrollment;
+  /**
+   * If approval processing failed, the error details appear here.
+   */
+  processingError?: string | null;
+  processedAt?: string | null;
+  /**
+   * Only set if hook created a new user (staff-created request). Share via WhatsApp.
+   */
+  tempPassword?: string | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "leads".
+ */
+export interface Lead {
+  id: number;
+  /**
+   * Course the lead is interested in
+   */
+  course?: (number | null) | WebCourse;
+  /**
+   * Current stage in the sales pipeline
+   */
+  stage?: ('NEW' | 'QUALIFIED' | 'NOT_QUALIFIED' | 'NEGOTIATION' | 'ENROLLED' | 'LOST') | null;
+  /**
+   * Why the lead was lost
+   */
+  lostReason?: ('price' | 'competitor' | 'timing' | 'not_interested' | 'enroll_later' | 'no_response' | 'other') | null;
+  /**
+   * CSR interactions, fee package, issues
+   */
+  notes?: string | null;
+  /**
+   * Custom tag for categorization
+   */
+  label?: string | null;
+  /**
+   * Confirmed for demo
+   */
+  confirmedAttending?: boolean | null;
+  /**
+   * Actually attended
+   */
+  actuallyAttended?: boolean | null;
+  /**
+   * Date to follow up with this lead
+   */
+  reminder_date?: string | null;
+  /**
+   * Staff member responsible for this lead
+   */
+  assign_to?: (number | null) | Staff;
+  /**
+   * Lead is not answering calls/messages
+   */
+  not_responding?: boolean | null;
+  name: string;
+  /**
+   * Include country code (e.g., 923001234567)
+   */
+  mobile?: string | null;
+  email?: string | null;
+  city?: string | null;
+  province?: string | null;
+  country?: string | null;
+  /**
+   * The user's current professional or academic standing.
+   */
+  currentBackground?: string | null;
+  /**
+   * Current grasp of relevant tools (e.g., HTML/JS for Web or Python/Math for AI).
+   */
+  priorExperience?: string | null;
+  /**
+   * Preferred payment plan discussed with lead
+   */
+  payment_plan?: string | null;
+  /**
+   * Batch assigned to this lead
+   */
+  batch?: (number | null) | Batch;
+  /**
+   * Additional information provided by the lead
+   */
+  extraInfo?: string | null;
+  /**
+   * Course demos/trials the lead has booked
+   */
+  courseDemoBookings?:
+    | {
+        course: number | WebCourse;
+        bookedAt: string;
+        id?: string | null;
+      }[]
+    | null;
+  /**
+   * Events/webinars the lead registered for
+   */
+  eventAttendance?:
+    | {
+        event: number | Event;
+        /**
+         * Marketing campaign source
+         */
+        campaign?: (number | null) | Campaign;
+        /**
+         * Where they registered from
+         */
+        source?: string | null;
+        registeredAt?: string | null;
+        /**
+         * Check if lead attended this event
+         */
+        hasAttended?: boolean | null;
+        id?: string | null;
+      }[]
+    | null;
+  /**
+   * Where the lead came from (e.g., facebook, website, referral)
+   */
+  source?: string | null;
+  /**
+   * Marketing campaign identifier for tracking
+   */
+  campaignId?: string | null;
+  /**
+   * Facebook/Instagram form identifier
+   */
+  metaFormId?: string | null;
+  /**
+   * Unique lead ID from Meta Ads
+   */
+  metaLeadId?: string | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "web-courses".
+ */
+export interface WebCourse {
+  id: number;
+  title: string;
+  slug: string;
+  slugLock?: boolean | null;
+  subTitle: string;
+  learningOutcomes?: {
+    root: {
+      type: string;
+      children: {
+        type: any;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  } | null;
+  description?: {
+    root: {
+      type: string;
+      children: {
+        type: any;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  } | null;
+  modules?:
+    | {
+        heading?: string | null;
+        content?: {
+          root: {
+            type: string;
+            children: {
+              type: any;
+              version: number;
+              [k: string]: unknown;
+            }[];
+            direction: ('ltr' | 'rtl') | null;
+            format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+            indent: number;
+            version: number;
+          };
+          [k: string]: unknown;
+        } | null;
+        id?: string | null;
+      }[]
+    | null;
+  /**
+   * Duration in weeks
+   */
+  duration?: number | null;
+  /**
+   * Actual Price
+   */
+  price?: number | null;
+  /**
+   * Crossed Price
+   */
+  crossPrice?: number | null;
+  department?: (number | null) | Department;
+  image?: (number | null) | Media;
+  difficultyLevel?: ('Beginner' | 'Intermediate' | 'Advanced') | null;
+  renderStyle?: ('style-1' | 'style-2' | 'style-3') | null;
+  courseFormat?: ('short' | 'medium' | 'long') | null;
+  totalLectures?: number | null;
+  orderInCourses?: number | null;
+  projects?: number | null;
+  instructor?: (number | null) | Instructor;
+  FAQs?:
+    | {
+        question: string;
+        answer: string;
+        id?: string | null;
+      }[]
+    | null;
+  /**
+   * See all events that include this course
+   */
+  events?: {
+    docs?: (number | Event)[];
+    hasNextPage?: boolean;
+    totalDocs?: number;
+  };
+  meta?: {
+    title?: string | null;
+    /**
+     * Maximum upload file size: 12MB. Recommended file size for images is <500KB.
+     */
+    image?: (number | null) | Media;
+    description?: string | null;
+    /**
+     * The canonical URL for this page. Leave blank to use the default URL.
+     */
+    canonical?: string | null;
+    /**
+     * Add relevant keywords separated by commas
+     */
+    keywords?: string | null;
+    /**
+     * Add structured data for rich snippets
+     */
+    jsonld?:
+      | {
+          [k: string]: unknown;
+        }
+      | unknown[]
+      | string
+      | number
+      | boolean
+      | null;
+  };
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "departments".
+ */
+export interface Department {
+  id: number;
+  title: string;
+  slug?: string | null;
+  slugLock?: boolean | null;
+  orderInDepartments?: number | null;
+  description?: string | null;
+  image?: (number | null) | Media;
+  meta?: {
+    title?: string | null;
+    /**
+     * Maximum upload file size: 12MB. Recommended file size for images is <500KB.
+     */
+    image?: (number | null) | Media;
+    description?: string | null;
+  };
+  relatedCourses?: {
+    docs?: (number | WebCourse)[];
+    hasNextPage?: boolean;
+    totalDocs?: number;
+  };
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "instructors".
+ */
+export interface Instructor {
+  id: number;
+  name: string;
+  profileImage: number | Media;
+  expertise: string;
+  experience: number;
+  biography: {
+    root: {
+      type: string;
+      children: {
+        type: any;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  };
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "events".
+ */
+export interface Event {
+  id: number;
+  title: string;
+  label: string;
+  slug: string;
+  slugLock?: boolean | null;
+  image?: (number | null) | Media;
+  /**
+   * Uncheck to hide this event from the website
+   */
+  showInUI?: boolean | null;
+  /**
+   * Uncheck if there is no certificate for this event
+   */
+  hasCertificate: boolean;
+  /**
+   * Link to the live stream event
+   */
+  liveStreamLink?: string | null;
+  /**
+   * Select the date and starting time of the event
+   */
+  startDateTime: string;
+  /**
+   * Select the end time of the event (optional). Default is 2 hours after the start time.
+   */
+  endTime?: string | null;
+  courses?: (number | WebCourse)[] | null;
+  learningOutcomes?: {
+    root: {
+      type: string;
+      children: {
+        type: any;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  } | null;
+  instructor?: (number | null) | Instructor;
+  department?: (number | null) | Department;
+  whatsappLink?: string | null;
+  whatsappQrCode?: (number | null) | Media;
+  defaultParticipants?: number | null;
+  /**
+   * Auto-calculated from leads registered for this event
+   */
+  totalRegistrations?: number | null;
+  /**
+   * Number of registrations from campaign UTM codes for this event
+   */
+  campaignRegistrations?: number | null;
+  /**
+   * View all leads registered for this event. Use this to track attendance and export data.
+   */
+  eventLeads?: {
+    docs?: (number | Lead)[];
+    hasNextPage?: boolean;
+    totalDocs?: number;
+  };
+  meta?: {
+    title?: string | null;
+    /**
+     * Maximum upload file size: 12MB. Recommended file size for images is <500KB.
+     */
+    image?: (number | null) | Media;
+    description?: string | null;
+  };
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "staffs".
+ */
+export interface Staff {
+  id: number;
+  user: number | User;
+  fullName: string;
+  nick?: string | null;
+  dateOfBirth?: string | null;
+  phoneNumber?: string | null;
+  address?: {
+    street?: string | null;
+    city?: string | null;
+    state?: string | null;
+    zipCode?: string | null;
+    country?: string | null;
+  };
+  profilePicture?: (number | null) | Media;
+  payMode?: ('FIX' | 'PER_ADMISSION' | 'FIX_PLUS_PER_ADMISSION') | null;
+  payPerAdmission?: number | null;
+  fixPay?: number | null;
+  note?: string | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "campaigns".
+ */
+export interface Campaign {
+  id: number;
+  name: string;
+  platform?: string | null;
+  /**
+   * Detailed description of the campaign
+   */
+  detail?: string | null;
+  startDate?: string | null;
+  endDate?: string | null;
+  budget?: number | null;
+  events?: (number | Event)[] | null;
+  /**
+   * Identifies which site sent the traffic (e.g., google, facebook, newsletter)
+   */
+  utm_source?: string | null;
+  /**
+   * Identifies a specific product promotion or strategic campaign (e.g., spring_sale)
+   */
+  utm_campaign?: string | null;
+  /**
+   * Identifies what type of link was used (e.g., cpc, banner, email)
+   */
+  utm_medium?: string | null;
+  /**
+   * Identifies what specifically was clicked to bring the user (e.g., logolink, textlink)
+   */
+  utm_content?: string | null;
+  /**
+   * Legacy UTM field - kept for backward compatibility
+   */
+  utm?: string | null;
+  /**
+   * View all leads that came from this campaign. Use this to track campaign effectiveness.
+   */
+  campaignLeads?: {
+    docs?: (number | Lead)[];
+    hasNextPage?: boolean;
+    totalDocs?: number;
+  };
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "quizzes".
+ */
+export interface Quiz {
+  id: number;
+  title: string;
+  thumbnail?: (number | null) | Media;
+  questions?: (number | QuizQuestion)[] | null;
+  instructions?: {
+    root: {
+      type: string;
+      children: {
+        type: any;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  } | null;
+  slug?: string | null;
+  slugLock?: boolean | null;
+  tags?: string[] | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "quiz-questions".
+ */
+export interface QuizQuestion {
+  id: number;
+  text: {
+    root: {
+      type: string;
+      children: {
+        type: any;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  };
+  options: {
+    option?: string | null;
+    id?: string | null;
+  }[];
+  /**
+   * Zero-based index of the correct option (e.g., 0 for first, 1 for second)
+   */
+  correctAnswer: number;
+  explanation?: {
+    root: {
+      type: string;
+      children: {
+        type: any;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  } | null;
+  tags?: string[] | null;
+  updatedAt: string;
+  createdAt: string;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -824,959 +1779,6 @@ export interface Form {
   slug: string;
   status: 'Close Done' | 'Close Rejected' | 'Pending';
   staffNotes?: string | null;
-  updatedAt: string;
-  createdAt: string;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "instructors".
- */
-export interface Instructor {
-  id: number;
-  name: string;
-  profileImage: number | Media;
-  expertise: string;
-  experience: number;
-  biography: {
-    root: {
-      type: string;
-      children: {
-        type: any;
-        version: number;
-        [k: string]: unknown;
-      }[];
-      direction: ('ltr' | 'rtl') | null;
-      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
-      indent: number;
-      version: number;
-    };
-    [k: string]: unknown;
-  };
-  updatedAt: string;
-  createdAt: string;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "web-courses".
- */
-export interface WebCourse {
-  id: number;
-  title: string;
-  slug: string;
-  slugLock?: boolean | null;
-  subTitle: string;
-  learningOutcomes?: {
-    root: {
-      type: string;
-      children: {
-        type: any;
-        version: number;
-        [k: string]: unknown;
-      }[];
-      direction: ('ltr' | 'rtl') | null;
-      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
-      indent: number;
-      version: number;
-    };
-    [k: string]: unknown;
-  } | null;
-  description?: {
-    root: {
-      type: string;
-      children: {
-        type: any;
-        version: number;
-        [k: string]: unknown;
-      }[];
-      direction: ('ltr' | 'rtl') | null;
-      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
-      indent: number;
-      version: number;
-    };
-    [k: string]: unknown;
-  } | null;
-  modules?:
-    | {
-        heading?: string | null;
-        content?: {
-          root: {
-            type: string;
-            children: {
-              type: any;
-              version: number;
-              [k: string]: unknown;
-            }[];
-            direction: ('ltr' | 'rtl') | null;
-            format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
-            indent: number;
-            version: number;
-          };
-          [k: string]: unknown;
-        } | null;
-        id?: string | null;
-      }[]
-    | null;
-  /**
-   * Duration in weeks
-   */
-  duration?: number | null;
-  /**
-   * Actual Price
-   */
-  price?: number | null;
-  /**
-   * Crossed Price
-   */
-  crossPrice?: number | null;
-  department?: (number | null) | Department;
-  image?: (number | null) | Media;
-  difficultyLevel?: ('Beginner' | 'Intermediate' | 'Advanced') | null;
-  renderStyle?: ('style-1' | 'style-2' | 'style-3') | null;
-  courseFormat?: ('short' | 'medium' | 'long') | null;
-  totalLectures?: number | null;
-  orderInCourses?: number | null;
-  projects?: number | null;
-  instructor?: (number | null) | Instructor;
-  FAQs?:
-    | {
-        question: string;
-        answer: string;
-        id?: string | null;
-      }[]
-    | null;
-  /**
-   * See all events that include this course
-   */
-  events?: {
-    docs?: (number | Event)[];
-    hasNextPage?: boolean;
-    totalDocs?: number;
-  };
-  meta?: {
-    title?: string | null;
-    /**
-     * Maximum upload file size: 12MB. Recommended file size for images is <500KB.
-     */
-    image?: (number | null) | Media;
-    description?: string | null;
-    /**
-     * The canonical URL for this page. Leave blank to use the default URL.
-     */
-    canonical?: string | null;
-    /**
-     * Add relevant keywords separated by commas
-     */
-    keywords?: string | null;
-    /**
-     * Add structured data for rich snippets
-     */
-    jsonld?:
-      | {
-          [k: string]: unknown;
-        }
-      | unknown[]
-      | string
-      | number
-      | boolean
-      | null;
-  };
-  updatedAt: string;
-  createdAt: string;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "departments".
- */
-export interface Department {
-  id: number;
-  title: string;
-  slug?: string | null;
-  slugLock?: boolean | null;
-  orderInDepartments?: number | null;
-  description?: string | null;
-  image?: (number | null) | Media;
-  meta?: {
-    title?: string | null;
-    /**
-     * Maximum upload file size: 12MB. Recommended file size for images is <500KB.
-     */
-    image?: (number | null) | Media;
-    description?: string | null;
-  };
-  relatedCourses?: {
-    docs?: (number | WebCourse)[];
-    hasNextPage?: boolean;
-    totalDocs?: number;
-  };
-  updatedAt: string;
-  createdAt: string;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "events".
- */
-export interface Event {
-  id: number;
-  title: string;
-  label: string;
-  slug: string;
-  slugLock?: boolean | null;
-  image?: (number | null) | Media;
-  /**
-   * Uncheck to hide this event from the website
-   */
-  showInUI?: boolean | null;
-  /**
-   * Uncheck if there is no certificate for this event
-   */
-  hasCertificate: boolean;
-  /**
-   * Link to the live stream event
-   */
-  liveStreamLink?: string | null;
-  /**
-   * Select the date and starting time of the event
-   */
-  startDateTime: string;
-  /**
-   * Select the end time of the event (optional). Default is 2 hours after the start time.
-   */
-  endTime?: string | null;
-  courses?: (number | WebCourse)[] | null;
-  learningOutcomes?: {
-    root: {
-      type: string;
-      children: {
-        type: any;
-        version: number;
-        [k: string]: unknown;
-      }[];
-      direction: ('ltr' | 'rtl') | null;
-      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
-      indent: number;
-      version: number;
-    };
-    [k: string]: unknown;
-  } | null;
-  instructor?: (number | null) | Instructor;
-  department?: (number | null) | Department;
-  whatsappLink?: string | null;
-  whatsappQrCode?: (number | null) | Media;
-  defaultParticipants?: number | null;
-  /**
-   * Auto-calculated from leads registered for this event
-   */
-  totalRegistrations?: number | null;
-  /**
-   * Number of registrations from campaign UTM codes for this event
-   */
-  campaignRegistrations?: number | null;
-  /**
-   * View all leads registered for this event. Use this to track attendance and export data.
-   */
-  eventLeads?: {
-    docs?: (number | Lead)[];
-    hasNextPage?: boolean;
-    totalDocs?: number;
-  };
-  meta?: {
-    title?: string | null;
-    /**
-     * Maximum upload file size: 12MB. Recommended file size for images is <500KB.
-     */
-    image?: (number | null) | Media;
-    description?: string | null;
-  };
-  updatedAt: string;
-  createdAt: string;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "leads".
- */
-export interface Lead {
-  id: number;
-  /**
-   * Course the lead is interested in
-   */
-  course?: (number | null) | WebCourse;
-  /**
-   * Current stage in the sales pipeline
-   */
-  stage?: ('NEW' | 'QUALIFIED' | 'NOT_QUALIFIED' | 'NEGOTIATION' | 'ENROLLED' | 'LOST') | null;
-  /**
-   * Why the lead was lost
-   */
-  lostReason?: ('price' | 'competitor' | 'timing' | 'not_interested' | 'enroll_later' | 'no_response' | 'other') | null;
-  /**
-   * CSR interactions, fee package, issues
-   */
-  notes?: string | null;
-  /**
-   * Custom tag for categorization
-   */
-  label?: string | null;
-  /**
-   * Confirmed for demo
-   */
-  confirmedAttending?: boolean | null;
-  /**
-   * Actually attended
-   */
-  actuallyAttended?: boolean | null;
-  /**
-   * Date to follow up with this lead
-   */
-  reminder_date?: string | null;
-  /**
-   * Staff member responsible for this lead
-   */
-  assign_to?: (number | null) | Staff;
-  /**
-   * Lead is not answering calls/messages
-   */
-  not_responding?: boolean | null;
-  name: string;
-  /**
-   * Include country code (e.g., 923001234567)
-   */
-  mobile?: string | null;
-  email?: string | null;
-  city?: string | null;
-  province?: string | null;
-  country?: string | null;
-  /**
-   * The user's current professional or academic standing.
-   */
-  currentBackground?: string | null;
-  /**
-   * Current grasp of relevant tools (e.g., HTML/JS for Web or Python/Math for AI).
-   */
-  priorExperience?: string | null;
-  /**
-   * Preferred payment plan discussed with lead
-   */
-  payment_plan?: string | null;
-  /**
-   * Batch assigned to this lead
-   */
-  batch?: (number | null) | Batch;
-  /**
-   * Additional information provided by the lead
-   */
-  extraInfo?: string | null;
-  /**
-   * Course demos/trials the lead has booked
-   */
-  courseDemoBookings?:
-    | {
-        course: number | WebCourse;
-        bookedAt: string;
-        id?: string | null;
-      }[]
-    | null;
-  /**
-   * Events/webinars the lead registered for
-   */
-  eventAttendance?:
-    | {
-        event: number | Event;
-        /**
-         * Marketing campaign source
-         */
-        campaign?: (number | null) | Campaign;
-        /**
-         * Where they registered from
-         */
-        source?: string | null;
-        registeredAt?: string | null;
-        /**
-         * Check if lead attended this event
-         */
-        hasAttended?: boolean | null;
-        id?: string | null;
-      }[]
-    | null;
-  /**
-   * Where the lead came from (e.g., facebook, website, referral)
-   */
-  source?: string | null;
-  /**
-   * Marketing campaign identifier for tracking
-   */
-  campaignId?: string | null;
-  /**
-   * Facebook/Instagram form identifier
-   */
-  metaFormId?: string | null;
-  /**
-   * Unique lead ID from Meta Ads
-   */
-  metaLeadId?: string | null;
-  updatedAt: string;
-  createdAt: string;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "staffs".
- */
-export interface Staff {
-  id: number;
-  user: number | User;
-  fullName: string;
-  nick?: string | null;
-  dateOfBirth?: string | null;
-  phoneNumber?: string | null;
-  address?: {
-    street?: string | null;
-    city?: string | null;
-    state?: string | null;
-    zipCode?: string | null;
-    country?: string | null;
-  };
-  profilePicture?: (number | null) | Media;
-  payMode?: ('FIX' | 'PER_ADMISSION' | 'FIX_PLUS_PER_ADMISSION') | null;
-  payPerAdmission?: number | null;
-  fixPay?: number | null;
-  note?: string | null;
-  updatedAt: string;
-  createdAt: string;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "batches".
- */
-export interface Batch {
-  id: number;
-  medium: 'ONLINE' | 'PHYSICAL' | 'HYBRID';
-  active?: boolean | null;
-  note?: string | null;
-  courseTitle: string;
-  /**
-   * Pattern: Batch/StartDate/MMMYY.Teacher/nick.module/nick.TimeTable/Days/D.TimeTable/Time/HH:MM AM|PM
-   */
-  slug: string;
-  teachers?: (number | Teacher)[] | null;
-  /**
-   * Duration in weeks
-   */
-  duration: number;
-  startDate?: string | null;
-  endDate?: string | null;
-  batchTimeTable?: {
-    docs?: (number | TimeTable)[];
-    hasNextPage?: boolean;
-    totalDocs?: number;
-  };
-  batchEnrollments?: {
-    docs?: (number | Enrollment)[];
-    hasNextPage?: boolean;
-    totalDocs?: number;
-  };
-  updatedAt: string;
-  createdAt: string;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "teachers".
- */
-export interface Teacher {
-  id: number;
-  user: number | User;
-  fullName: string;
-  nick: string;
-  dateOfBirth?: string | null;
-  phoneNumber?: string | null;
-  address?: {
-    street?: string | null;
-    city?: string | null;
-    state?: string | null;
-    zipCode?: string | null;
-    country?: string | null;
-  };
-  profilePicture?: (number | null) | Media;
-  payMode?: ('FIX' | 'PER_LECTURE') | null;
-  payPerLecture?: number | null;
-  fixPay?: number | null;
-  note?: string | null;
-  updatedAt: string;
-  createdAt: string;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "time-table".
- */
-export interface TimeTable {
-  id: number;
-  batch: number | Batch;
-  day: 'MONDAY' | 'TUESDAY' | 'WEDNESDAY' | 'THURSDAY' | 'FRIDAY' | 'SATURDAY' | 'SUNDAY';
-  startTime: string;
-  endTime: string;
-  room?: string | null;
-  updatedAt: string;
-  createdAt: string;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "enrollments".
- */
-export interface Enrollment {
-  id: number;
-  student: number | Student;
-  batch: number | Batch;
-  note?: string | null;
-  status?: ('active' | 'completed' | 'frozen' | 'dropped') | null;
-  mode?: ('ONLINE' | 'PHYSICAL' | 'HYBRID') | null;
-  admissionDate?: string | null;
-  feeReceipts?: {
-    docs?: (number | FeeReceipt)[];
-    hasNextPage?: boolean;
-    totalDocs?: number;
-  };
-  updatedAt: string;
-  createdAt: string;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "students".
- */
-export interface Student {
-  id: number;
-  user?: (number | null) | User;
-  fullName?: string | null;
-  phoneNumber?: string | null;
-  /**
-   * National Identity Card number
-   */
-  cnic?: string | null;
-  /**
-   * Emergency / parent contact number
-   */
-  guardianPhone?: string | null;
-  /**
-   * Highest Student Education
-   */
-  education?: string | null;
-  gender?: ('male' | 'female') | null;
-  dateOfBirth?: string | null;
-  address?: {
-    homeAddress?: string | null;
-    city?: string | null;
-    province?: string | null;
-    country?: string | null;
-  };
-  enrollments?: {
-    docs?: (number | Enrollment)[];
-    hasNextPage?: boolean;
-    totalDocs?: number;
-  };
-  status?: ('active' | 'on-hold' | 'withdrawn' | 'graduated') | null;
-  admissionDate?: string | null;
-  /**
-   * Protected tutorials this student can access on a trial basis.
-   */
-  trialTutorials?: (number | Tutorial)[] | null;
-  updatedAt: string;
-  createdAt: string;
-}
-/**
- * Tutorials of All Subjects
- *
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "tutorials".
- */
-export interface Tutorial {
-  id: number;
-  title: string;
-  slug?: string | null;
-  slugLock?: boolean | null;
-  position?: number | null;
-  subject?: (number | null) | TutorialSubject;
-  label?: string | null;
-  /**
-   * When enabled, videos will be displayed on the frontend.
-   */
-  showVideos?: boolean | null;
-  /**
-   * When enabled, the quiz tab will be displayed on the frontend.
-   */
-  showQuiz?: boolean | null;
-  /**
-   * When enabled, the assignment tab will be displayed on the frontend.
-   */
-  showAssignment?: boolean | null;
-  /**
-   * When enabled, the code tab will be displayed on the frontend.
-   */
-  showCode?: boolean | null;
-  /**
-   * When enabled, the presentation tab will be displayed on the frontend.
-   */
-  showPresentation?: boolean | null;
-  /**
-   * Public tutorials are open to everyone. Protected tutorials require enrollment or trial access.
-   */
-  accessType: 'public' | 'protected';
-  /**
-   * Batches that have access to this protected tutorial.
-   */
-  batches?: (number | Batch)[] | null;
-  description?: {
-    root: {
-      type: string;
-      children: {
-        type: any;
-        version: number;
-        [k: string]: unknown;
-      }[];
-      direction: ('ltr' | 'rtl') | null;
-      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
-      indent: number;
-      version: number;
-    };
-    [k: string]: unknown;
-  } | null;
-  content?: {
-    root: {
-      type: string;
-      children: {
-        type: any;
-        version: number;
-        [k: string]: unknown;
-      }[];
-      direction: ('ltr' | 'rtl') | null;
-      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
-      indent: number;
-      version: number;
-    };
-    [k: string]: unknown;
-  } | null;
-  videos?:
-    | {
-        videoSource?: ('youtube' | 'bunny') | null;
-        youtubeUrl?: string | null;
-        /**
-         * The video ID from your Bunny CDN library
-         */
-        bunnyVideoId?: string | null;
-        id?: string | null;
-      }[]
-    | null;
-  quiz?: (number | null) | Quiz;
-  assignment?: {
-    root: {
-      type: string;
-      children: {
-        type: any;
-        version: number;
-        [k: string]: unknown;
-      }[];
-      direction: ('ltr' | 'rtl') | null;
-      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
-      indent: number;
-      version: number;
-    };
-    [k: string]: unknown;
-  } | null;
-  /**
-   * Link to CodeSandbox, StackBlitz, CodePen, or GitHub repository
-   */
-  codeUrl?: string | null;
-  /**
-   * Link to Google Slides or other presentation
-   */
-  presentationUrl?: string | null;
-  updatedAt: string;
-  createdAt: string;
-}
-/**
- * Subjects Categories for Tutorials
- *
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "tutorial-subjects".
- */
-export interface TutorialSubject {
-  id: number;
-  title: string;
-  slug?: string | null;
-  slugLock?: boolean | null;
-  position?: number | null;
-  updatedAt: string;
-  createdAt: string;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "quizzes".
- */
-export interface Quiz {
-  id: number;
-  title: string;
-  thumbnail?: (number | null) | Media;
-  questions?: (number | QuizQuestion)[] | null;
-  instructions?: {
-    root: {
-      type: string;
-      children: {
-        type: any;
-        version: number;
-        [k: string]: unknown;
-      }[];
-      direction: ('ltr' | 'rtl') | null;
-      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
-      indent: number;
-      version: number;
-    };
-    [k: string]: unknown;
-  } | null;
-  slug?: string | null;
-  slugLock?: boolean | null;
-  tags?: string[] | null;
-  updatedAt: string;
-  createdAt: string;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "quiz-questions".
- */
-export interface QuizQuestion {
-  id: number;
-  text: {
-    root: {
-      type: string;
-      children: {
-        type: any;
-        version: number;
-        [k: string]: unknown;
-      }[];
-      direction: ('ltr' | 'rtl') | null;
-      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
-      indent: number;
-      version: number;
-    };
-    [k: string]: unknown;
-  };
-  options: {
-    option?: string | null;
-    id?: string | null;
-  }[];
-  /**
-   * Zero-based index of the correct option (e.g., 0 for first, 1 for second)
-   */
-  correctAnswer: number;
-  explanation?: {
-    root: {
-      type: string;
-      children: {
-        type: any;
-        version: number;
-        [k: string]: unknown;
-      }[];
-      direction: ('ltr' | 'rtl') | null;
-      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
-      indent: number;
-      version: number;
-    };
-    [k: string]: unknown;
-  } | null;
-  tags?: string[] | null;
-  updatedAt: string;
-  createdAt: string;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "fee-receipts".
- */
-export interface FeeReceipt {
-  id: number;
-  student: number | Student;
-  amount: number;
-  paidMethod?: ('BANK' | 'CASH' | 'JAZZCASH' | 'EASYPAISA') | null;
-  payDate?: string | null;
-  dueDate: string;
-  proofText?: string | null;
-  proofImage?: (number | null) | Media;
-  note?: string | null;
-  status?: ('RECEIVED' | 'PENDING' | 'DEAD') | null;
-  verified?: boolean | null;
-  /**
-   * Installment sequence number (1 = first payment, 2 = second, etc.)
-   */
-  installmentNumber?: number | null;
-  /**
-   * Which enrollment this receipt is for.
-   */
-  enrollment?: (number | null) | Enrollment;
-  /**
-   * The admission request that generated this receipt (if auto-created).
-   */
-  admissionRequest?: (number | null) | AdmissionRequest;
-  updatedAt: string;
-  createdAt: string;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "admission-requests".
- */
-export interface AdmissionRequest {
-  id: number;
-  /**
-   * Set to "Approved" to trigger auto-creation of Student, Enrollment, and Fee Receipts.
-   */
-  status: 'pending' | 'reviewing' | 'approved' | 'rejected' | 'processed';
-  /**
-   * Required before approval. Assign the batch for enrollment.
-   */
-  assignedBatch?: (number | null) | Batch;
-  enrollmentMode?: ('ONLINE' | 'PHYSICAL' | 'HYBRID') | null;
-  /**
-   * Link to existing Lead record if applicable.
-   */
-  lead?: (number | null) | Lead;
-  /**
-   * Internal notes for staff review.
-   */
-  staffNotes?: string | null;
-  /**
-   * Reason for rejection.
-   */
-  rejectionReason?: string | null;
-  fullName: string;
-  email: string;
-  phoneNumber: string;
-  guardianPhone?: string | null;
-  cnic?: string | null;
-  gender?: ('male' | 'female') | null;
-  education?: string | null;
-  dateOfBirth?: string | null;
-  address?: {
-    homeAddress?: string | null;
-    city?: string | null;
-    province?: string | null;
-    country?: string | null;
-  };
-  /**
-   * Department selected by the student.
-   */
-  department?: (number | null) | Department;
-  /**
-   * Course the student wants to enroll in.
-   */
-  course: number | WebCourse;
-  preferredMedium?: ('ONLINE' | 'PHYSICAL' | 'HYBRID') | null;
-  /**
-   * Total fee amount as decided with CSR.
-   */
-  totalFeePackage: number;
-  /**
-   * Total number of installments the fee will be paid in, as decided with CSR.
-   */
-  remainingInstallments: number;
-  /**
-   * Amount of first installment paid by student.
-   */
-  firstPaymentAmount?: number | null;
-  /**
-   * Date of first payment.
-   */
-  payDate?: string | null;
-  paidMethod?: ('BANK' | 'CASH' | 'JAZZCASH' | 'EASYPAISA') | null;
-  /**
-   * Screenshot of payment receipt.
-   */
-  paymentProofImage?: (number | null) | Media;
-  /**
-   * Transaction ID or reference number. Max 50 characters.
-   */
-  paymentProofText?: string | null;
-  /**
-   * Any message from the student. Max 500 characters.
-   */
-  studentNote?: string | null;
-  /**
-   * Total agreed fee for this enrollment.
-   */
-  totalFee?: number | null;
-  /**
-   * Define the installment plan. First row is the initial payment (already received). Remaining rows are future installments.
-   */
-  installments?:
-    | {
-        amount: number;
-        dueDate: string;
-        status?: ('RECEIVED' | 'PENDING' | 'DEAD') | null;
-        paidMethod?: ('BANK' | 'CASH' | 'JAZZCASH' | 'EASYPAISA') | null;
-        note?: string | null;
-        id?: string | null;
-      }[]
-    | null;
-  /**
-   * The Google-authenticated user who submitted the form.
-   */
-  submittedBy?: (number | null) | User;
-  /**
-   * Auto-linked after approval.
-   */
-  createdStudent?: (number | null) | Student;
-  /**
-   * Auto-linked after approval.
-   */
-  createdEnrollment?: (number | null) | Enrollment;
-  /**
-   * If approval processing failed, the error details appear here.
-   */
-  processingError?: string | null;
-  processedAt?: string | null;
-  /**
-   * Only set if hook created a new user (staff-created request). Share via WhatsApp.
-   */
-  tempPassword?: string | null;
-  updatedAt: string;
-  createdAt: string;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "campaigns".
- */
-export interface Campaign {
-  id: number;
-  name: string;
-  platform?: string | null;
-  /**
-   * Detailed description of the campaign
-   */
-  detail?: string | null;
-  startDate?: string | null;
-  endDate?: string | null;
-  budget?: number | null;
-  events?: (number | Event)[] | null;
-  /**
-   * Identifies which site sent the traffic (e.g., google, facebook, newsletter)
-   */
-  utm_source?: string | null;
-  /**
-   * Identifies a specific product promotion or strategic campaign (e.g., spring_sale)
-   */
-  utm_campaign?: string | null;
-  /**
-   * Identifies what type of link was used (e.g., cpc, banner, email)
-   */
-  utm_medium?: string | null;
-  /**
-   * Identifies what specifically was clicked to bring the user (e.g., logolink, textlink)
-   */
-  utm_content?: string | null;
-  /**
-   * Legacy UTM field - kept for backward compatibility
-   */
-  utm?: string | null;
-  /**
-   * View all leads that came from this campaign. Use this to track campaign effectiveness.
-   */
-  campaignLeads?: {
-    docs?: (number | Lead)[];
-    hasNextPage?: boolean;
-    totalDocs?: number;
-  };
   updatedAt: string;
   createdAt: string;
 }
@@ -2389,6 +2391,7 @@ export interface UsersSelect<T extends boolean = true> {
   roles?: T;
   provider?: T;
   blocked?: T;
+  trialTutorials?: T;
   updatedAt?: T;
   createdAt?: T;
   email?: T;
@@ -2877,8 +2880,9 @@ export interface StudentsSelect<T extends boolean = true> {
   user?: T;
   fullName?: T;
   phoneNumber?: T;
-  cnic?: T;
+  fatherName?: T;
   guardianPhone?: T;
+  cnic?: T;
   education?: T;
   gender?: T;
   dateOfBirth?: T;
@@ -2893,7 +2897,6 @@ export interface StudentsSelect<T extends boolean = true> {
   enrollments?: T;
   status?: T;
   admissionDate?: T;
-  trialTutorials?: T;
   updatedAt?: T;
   createdAt?: T;
 }
@@ -3197,6 +3200,7 @@ export interface AdmissionRequestsSelect<T extends boolean = true> {
   fullName?: T;
   email?: T;
   phoneNumber?: T;
+  fatherName?: T;
   guardianPhone?: T;
   cnic?: T;
   gender?: T;

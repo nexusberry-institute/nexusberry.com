@@ -3,6 +3,7 @@ import { z } from 'zod'
 export const admissionSchema = z.object({
   // Step 1: Personal Details
   fullName: z.string().min(3, 'Full name must be at least 3 characters'),
+  fatherName: z.string().min(1, 'Father name is required'),
   email: z.string().email('Invalid email address'),
   phoneNumber: z
     .string()
@@ -53,6 +54,7 @@ export type AdmissionFormData = z.infer<typeof admissionSchema>
 // Per-step validation schemas
 export const step1Schema = admissionSchema.pick({
   fullName: true,
+  fatherName: true,
   email: true,
   phoneNumber: true,
   gender: true,

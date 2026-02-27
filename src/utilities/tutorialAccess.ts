@@ -74,7 +74,22 @@ export async function canAccessTutorial(
     }
   }
 
-  // Student: check enrollment or trial access
+  // Trial access: check trialTutorials on the user record
+  try {
+    const fullUser = await payload.findByID({ collection: 'users', id: user.id, depth: 0 })
+    const trialIds = (Array.isArray(fullUser.trialTutorials)
+      ? fullUser.trialTutorials.map((t) => (typeof t === 'object' && t !== null ? (t as { id: number }).id : t))
+      : []
+    ).filter(Boolean) as number[]
+
+    if (trialIds.includes(tutorial.id)) {
+      return { hasAccess: true, reason: 'trial' }
+    }
+  } catch {
+    // Fall through
+  }
+
+  // Student: check enrollment
   if (roles.includes('student')) {
     try {
       const studentResult = await payload.find({
@@ -85,16 +100,6 @@ export async function canAccessTutorial(
       })
       const student = studentResult.docs[0]
       if (student) {
-        // Check trial access
-        const trialIds = (Array.isArray(student.trialTutorials)
-          ? student.trialTutorials.map((t) => (typeof t === 'object' && t !== null ? t.id : t))
-          : []
-        ).filter(Boolean) as number[]
-
-        if (trialIds.includes(tutorial.id)) {
-          return { hasAccess: true, reason: 'trial' }
-        }
-
         // Check enrollment
         if (tutorialBatchIds.length > 0) {
           const enrollmentResult = await payload.find({

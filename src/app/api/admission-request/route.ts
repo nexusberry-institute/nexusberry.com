@@ -82,6 +82,7 @@ export async function POST(request: NextRequest) {
         fullName: body.fullName,
         email: body.email,
         phoneNumber: body.phoneNumber,
+        fatherName: body.fatherName || undefined,
         guardianPhone: body.guardianPhone || undefined,
         cnic: body.cnic || undefined,
         gender: body.gender || undefined,

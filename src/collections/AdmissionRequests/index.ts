@@ -138,6 +138,16 @@ export const AdmissionRequests: CollectionConfig = {
                   label: 'Phone Number',
                 },
                 {
+                  name: 'fatherName',
+                  type: 'text',
+                  label: 'Father Name',
+                },
+              ],
+            },
+            {
+              type: 'row',
+              fields: [
+                {
                   name: 'guardianPhone',
                   type: 'text',
                   label: 'Guardian Phone',

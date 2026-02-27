@@ -32,6 +32,9 @@ export const Students: CollectionConfig = {
               relationTo: 'users',
               hasMany: false,
               unique: true,
+              filterOptions: {
+                roles: { contains: 'student' },
+              },
             },
             {
               type: 'row',
@@ -53,12 +56,9 @@ export const Students: CollectionConfig = {
               type: 'row',
               fields: [
                 {
-                  name: 'cnic',
+                  name: 'fatherName',
                   type: 'text',
-                  label: 'CNIC',
-                  admin: {
-                    description: 'National Identity Card number',
-                  },
+                  label: 'Father Name',
                 },
                 {
                   name: 'guardianPhone',
@@ -66,6 +66,19 @@ export const Students: CollectionConfig = {
                   label: 'Guardian Phone',
                   admin: {
                     description: 'Emergency / parent contact number',
+                  },
+                },
+              ],
+            },
+            {
+              type: 'row',
+              fields: [
+                {
+                  name: 'cnic',
+                  type: 'text',
+                  label: 'CNIC',
+                  admin: {
+                    description: 'National Identity Card number',
                   },
                 },
               ],
@@ -173,16 +186,6 @@ export const Students: CollectionConfig = {
           pickerAppearance: 'dayOnly',
           displayFormat: 'MMM dd, yyyy',
         },
-      },
-    },
-    {
-      name: 'trialTutorials',
-      type: 'relationship',
-      relationTo: 'tutorials',
-      hasMany: true,
-      admin: {
-        position: 'sidebar',
-        description: 'Protected tutorials this student can access on a trial basis.',
       },
     },
   ],

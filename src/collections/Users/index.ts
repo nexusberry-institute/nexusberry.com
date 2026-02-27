@@ -153,5 +153,15 @@ export const Users: CollectionConfig = {
         description: 'Staff can block this user temporarily, e.g. if defaulter',
       },
     },
+    {
+      name: 'trialTutorials',
+      type: 'relationship',
+      relationTo: 'tutorials',
+      hasMany: true,
+      admin: {
+        position: 'sidebar',
+        description: 'Protected tutorials this user can access on a trial basis.',
+      },
+    },
   ],
 }

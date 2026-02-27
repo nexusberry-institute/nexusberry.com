@@ -59,6 +59,14 @@ export const tutorialReadAccess: Access = async ({ req }) => {
   // Student: public + protected via enrollment or trial
   if (user.roles.includes('student')) {
     try {
+      // Get trial tutorial IDs from user record
+      const fullUser = await payload.findByID({ collection: 'users', id: user.id, depth: 0 })
+      const trialIds = (Array.isArray(fullUser.trialTutorials)
+        ? fullUser.trialTutorials.map((t) => (typeof t === 'object' && t !== null ? (t as { id: number }).id : t))
+        : []
+      ).filter(Boolean) as number[]
+
+      // Get enrolled batch IDs
       const studentResult = await payload.find({
         collection: 'students',
         where: { user: { equals: user.id } },
@@ -66,14 +74,9 @@ export const tutorialReadAccess: Access = async ({ req }) => {
         depth: 0,
       })
       const student = studentResult.docs[0]
-      if (student) {
-        // Get trial tutorial IDs
-        const trialIds = (Array.isArray(student.trialTutorials)
-          ? student.trialTutorials.map((t) => (typeof t === 'object' && t !== null ? t.id : t))
-          : []
-        ).filter(Boolean) as number[]
 
-        // Get enrolled batch IDs
+      let batchIds: number[] = []
+      if (student) {
         const enrollmentResult = await payload.find({
           collection: 'enrollments',
           where: {
@@ -86,28 +89,28 @@ export const tutorialReadAccess: Access = async ({ req }) => {
           depth: 0,
           select: { batch: true },
         })
-        const batchIds = enrollmentResult.docs
+        batchIds = enrollmentResult.docs
           .map((e) => (typeof e.batch === 'object' && e.batch !== null ? e.batch.id : e.batch))
           .filter(Boolean) as number[]
-
-        const orConditions: Where[] = [{ accessType: { equals: 'public' } }]
-
-        if (batchIds.length > 0) {
-          orConditions.push({
-            and: [
-              { accessType: { equals: 'protected' } },
-              { batches: { in: batchIds } },
-            ],
-          })
-        }
-
-        if (trialIds.length > 0) {
-          orConditions.push({ id: { in: trialIds } })
-        }
-
-        const where: Where = { or: orConditions }
-        return where
       }
+
+      const orConditions: Where[] = [{ accessType: { equals: 'public' } }]
+
+      if (batchIds.length > 0) {
+        orConditions.push({
+          and: [
+            { accessType: { equals: 'protected' } },
+            { batches: { in: batchIds } },
+          ],
+        })
+      }
+
+      if (trialIds.length > 0) {
+        orConditions.push({ id: { in: trialIds } })
+      }
+
+      const where: Where = { or: orConditions }
+      return where
     } catch {
       // Fall through to public-only
     }

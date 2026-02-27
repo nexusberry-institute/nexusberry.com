@@ -64,6 +64,7 @@ export default function AdmissionForm() {
     mode: 'onTouched',
     defaultValues: {
       fullName: '',
+      fatherName: '',
       email: user?.email || '',
       phoneNumber: '',
       guardianPhone: '',
@@ -126,7 +127,7 @@ export default function AdmissionForm() {
 
   // Step field groups for validation
   const stepFields: (keyof AdmissionFormData)[][] = [
-    ['fullName', 'email', 'phoneNumber', 'gender', 'education'],
+    ['fullName', 'fatherName', 'email', 'phoneNumber', 'gender', 'education'],
     ['address'],
     ['department', 'course', 'preferredMedium'],
     ['totalFeePackage', 'remainingInstallments', 'firstPaymentAmount', 'payDate', 'paidMethod'],
@@ -399,8 +400,23 @@ export default function AdmissionForm() {
                       </div>
                     </div>
 
-                    {/* Row 2: Phone Number*, Gender* */}
+                    {/* Row 2: Father Name*, Phone Number* */}
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div className="space-y-1.5">
+                        <Label htmlFor="fatherName">
+                          Father Name <span className="text-red-500">*</span>
+                        </Label>
+                        <Input
+                          id="fatherName"
+                          placeholder="e.g. Ahmed Khan"
+                          {...register('fatherName')}
+                        />
+                        {errors.fatherName && (
+                          <p className="text-xs text-red-500">
+                            {errors.fatherName.message}
+                          </p>
+                        )}
+                      </div>
                       <div className="space-y-1.5">
                         <Label htmlFor="phoneNumber">
                           Phone Number <span className="text-red-500">*</span>
@@ -420,6 +436,10 @@ export default function AdmissionForm() {
                           </p>
                         )}
                       </div>
+                    </div>
+
+                    {/* Row 3: Gender*, Highest Education* */}
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       <div className="space-y-1.5">
                         <Label>
                           Gender <span className="text-red-500">*</span>
@@ -445,10 +465,6 @@ export default function AdmissionForm() {
                           </p>
                         )}
                       </div>
-                    </div>
-
-                    {/* Row 3: Highest Education*, Date of Birth (optional) */}
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       <div className="space-y-1.5">
                         <Label htmlFor="education">
                           Highest Education <span className="text-red-500">*</span>
@@ -464,6 +480,10 @@ export default function AdmissionForm() {
                           </p>
                         )}
                       </div>
+                    </div>
+
+                    {/* Row 4: Date of Birth (optional), Guardian Phone (optional), CNIC (optional) */}
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                       <div className="space-y-1.5">
                         <Label htmlFor="dateOfBirth">Date of Birth</Label>
                         <Input
@@ -472,10 +492,6 @@ export default function AdmissionForm() {
                           {...register('dateOfBirth')}
                         />
                       </div>
-                    </div>
-
-                    {/* Row 4: Guardian Phone (optional), CNIC (optional) */}
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       <div className="space-y-1.5">
                         <Label htmlFor="guardianPhone">Guardian Phone</Label>
                         <Input

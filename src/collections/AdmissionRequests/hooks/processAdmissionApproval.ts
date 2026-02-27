@@ -140,6 +140,7 @@ export const processAdmissionApproval: CollectionAfterChangeHook = async ({
         data: {
           user: userId,
           fullName: doc.fullName,
+          fatherName: doc.fatherName || undefined,
           phoneNumber: doc.phoneNumber || undefined,
           cnic: doc.cnic || undefined,
           guardianPhone: doc.guardianPhone || undefined,
