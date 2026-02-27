@@ -131,6 +131,7 @@ export interface Config {
     };
     students: {
       enrollments: 'enrollments';
+      feeReceipts: 'fee-receipts';
     };
     attendance: {
       relatedAttendanceDetails: 'attendance-details';
@@ -560,7 +561,7 @@ export interface Enrollment {
 export interface Student {
   id: number;
   user?: (number | null) | User;
-  fullName?: string | null;
+  fullName: string;
   phoneNumber?: string | null;
   fatherName?: string | null;
   /**
@@ -585,6 +586,11 @@ export interface Student {
   };
   enrollments?: {
     docs?: (number | Enrollment)[];
+    hasNextPage?: boolean;
+    totalDocs?: number;
+  };
+  feeReceipts?: {
+    docs?: (number | FeeReceipt)[];
     hasNextPage?: boolean;
     totalDocs?: number;
   };
@@ -2895,6 +2901,7 @@ export interface StudentsSelect<T extends boolean = true> {
         country?: T;
       };
   enrollments?: T;
+  feeReceipts?: T;
   status?: T;
   admissionDate?: T;
   updatedAt?: T;

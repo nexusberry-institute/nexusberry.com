@@ -1,4 +1,4 @@
-import { CollectionConfig } from 'payload'
+import { CollectionConfig, Where } from 'payload'
 import { trackNewStudentAdmission } from './hooks/track'
 import { exportCsvEndpoint, exportEmailsEndpoint } from './endpoints'
 
@@ -32,8 +32,25 @@ export const Students: CollectionConfig = {
               relationTo: 'users',
               hasMany: false,
               unique: true,
-              filterOptions: {
-                roles: { contains: 'student' },
+              filterOptions: async ({ id, req }) => {
+                const existingStudents = await req.payload.find({
+                  collection: 'students',
+                  depth: 0,
+                  limit: 0,
+                  select: { user: true },
+                  where: id ? { id: { not_equals: id } } : {},
+                })
+
+                const linkedUserIds = existingStudents.docs
+                  .map((s) => s.user)
+                  .filter(Boolean)
+
+                const conditions: Where[] = [{ roles: { contains: 'student' } }]
+                if (linkedUserIds.length > 0) {
+                  conditions.push({ id: { not_in: linkedUserIds } })
+                }
+
+                return { and: conditions }
               },
             },
             {
@@ -43,6 +60,7 @@ export const Students: CollectionConfig = {
                   name: 'fullName',
                   type: 'text',
                   label: 'Full Name',
+                  required: true,
                   minLength: 3,
                 },
                 {
@@ -154,6 +172,17 @@ export const Students: CollectionConfig = {
               name: 'enrollments',
               type: 'join',
               collection: 'enrollments',
+              on: 'student',
+            },
+          ],
+        },
+        {
+          label: 'Fee Receipts',
+          fields: [
+            {
+              name: 'feeReceipts',
+              type: 'join',
+              collection: 'fee-receipts',
               on: 'student',
             },
           ],
