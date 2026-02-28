@@ -34,6 +34,7 @@ import { SlugField as SlugField_2b8867833a34864a02ddf429b0728a40 } from '@payloa
 import { ExportEventLeads as ExportEventLeads_f28f5365c983c464fb2acfc112f47d5d } from '@/components/ExportButtons/ExportEventLeads'
 import { ExportCampaignLeads as ExportCampaignLeads_2c0e23320ca102fb71c4e1f25d2de1db } from '@/components/ExportButtons/ExportCampaignLeads'
 import { CSVExportButton as CSVExportButton_f03101cb3cbd9ad9ffd5782969ca2083 } from '@/components/CSVExportButton'
+import { StatusCell as StatusCell_9167b001a0d38cd6e2a9f89985fd27ef } from '@/fields/StatusField/StatusCell'
 import { MobileCell as MobileCell_0048392b89b1f5508673bc0d793d5155 } from '@/fields/MobileField/MobileCell'
 import { MobileActions as MobileActions_ca9b09090057c7c65834c77ce7a44c9c } from '@/fields/MobileField/MobileActions'
 import { LinkToDoc as LinkToDoc_aead06e4cbf6b2620c5c51c9ab283634 } from '@payloadcms/plugin-search/client'
@@ -85,6 +86,7 @@ export const importMap = {
   "@/components/ExportButtons/ExportEventLeads#ExportEventLeads": ExportEventLeads_f28f5365c983c464fb2acfc112f47d5d,
   "@/components/ExportButtons/ExportCampaignLeads#ExportCampaignLeads": ExportCampaignLeads_2c0e23320ca102fb71c4e1f25d2de1db,
   "@/components/CSVExportButton#CSVExportButton": CSVExportButton_f03101cb3cbd9ad9ffd5782969ca2083,
+  "@/fields/StatusField/StatusCell#StatusCell": StatusCell_9167b001a0d38cd6e2a9f89985fd27ef,
   "@/fields/MobileField/MobileCell#MobileCell": MobileCell_0048392b89b1f5508673bc0d793d5155,
   "@/fields/MobileField/MobileActions#MobileActions": MobileActions_ca9b09090057c7c65834c77ce7a44c9c,
   "@payloadcms/plugin-search/client#LinkToDoc": LinkToDoc_aead06e4cbf6b2620c5c51c9ab283634,
