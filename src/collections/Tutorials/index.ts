@@ -3,7 +3,6 @@ import { slugField } from '@/fields/slug'
 import { revalidateTutorial, revalidateDeleteTutorial } from './hooks/revalidateTutorial'
 import { richTextField } from '@/fields/richTextField'
 import { checkRole } from '@/access/checkRole'
-import { tutorialReadAccess } from '@/access/tutorialAccess'
 
 export const Tutorials: CollectionConfig = {
   slug: 'tutorials',
@@ -14,7 +13,10 @@ export const Tutorials: CollectionConfig = {
   },
   access: {
     create: ({ req: { user } }) => checkRole(['superadmin', 'admin'], user),
-    read: tutorialReadAccess,
+    read: ({ req: { user } }) => {
+      if (user && checkRole(['superadmin', 'admin'], user)) return true
+      return { isPublic: { equals: true } }
+    },
     update: ({ req: { user } }) => checkRole(['superadmin', 'admin'], user),
     delete: ({ req: { user } }) => checkRole(['superadmin', 'admin'], user),
   },
@@ -49,6 +51,27 @@ export const Tutorials: CollectionConfig = {
       type: "text",
       admin: {
         position: 'sidebar',
+      },
+    },
+    {
+      name: 'isPublic',
+      type: 'checkbox',
+      defaultValue: false,
+      label: 'Public',
+      admin: {
+        position: 'sidebar',
+        description: 'When enabled, this tutorial is visible on the public website. Tutorials not marked as public are only accessible via the admin panel.',
+      },
+    },
+    {
+      name: 'requiresLogin',
+      type: 'checkbox',
+      defaultValue: false,
+      label: 'Requires Login',
+      admin: {
+        position: 'sidebar',
+        description: 'When enabled, users must log in to access videos and tab content. The description is always visible to everyone.',
+        condition: (data) => data?.isPublic === true,
       },
     },
     {
@@ -102,28 +125,13 @@ export const Tutorials: CollectionConfig = {
       },
     },
     {
-      name: 'accessType',
-      type: 'select',
-      required: true,
-      defaultValue: 'public',
-      options: [
-        { label: 'Public', value: 'public' },
-        { label: 'Protected', value: 'protected' },
-      ],
-      admin: {
-        position: 'sidebar',
-        description: 'Public tutorials are open to everyone. Protected tutorials require enrollment or trial access.',
-      },
-    },
-    {
       name: 'batches',
       type: 'relationship',
       relationTo: 'batches',
       hasMany: true,
       admin: {
         position: 'sidebar',
-        description: 'Batches that have access to this protected tutorial.',
-        condition: (data) => data?.accessType === 'protected',
+        description: 'Batches associated with this tutorial.',
       },
     },
     {

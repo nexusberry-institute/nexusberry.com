@@ -30,7 +30,12 @@ const queryTutorialBySlug = (slug: string) =>
       const result = await payload.find({
         collection: 'tutorials',
         overrideAccess: true,
-        where: { slug: { equals: slug } },
+        where: {
+          and: [
+            { slug: { equals: slug } },
+            { isPublic: { equals: true } },
+          ],
+        },
         depth: 2,
         limit: 1,
         select: {
@@ -49,8 +54,8 @@ const queryTutorialBySlug = (slug: string) =>
           assignment: true,
           codeUrl: true,
           presentationUrl: true,
-          accessType: true,
-          batches: true,
+          isPublic: true,
+          requiresLogin: true,
         },
       })
       return result.docs[0] || null
@@ -295,7 +300,7 @@ export default async function TutorialPage({
           </section>
         )}
 
-        <TutorialAccessGate accessType={tutorial.accessType} tutorialSlug={tutorialSlug}>
+        <TutorialAccessGate requiresLogin={tutorial.requiresLogin}>
           {/* Video Section */}
           {tutorial.showVideos !== false && (
             <VideoPlayer slug={tutorialSlug} title={tutorial.title} />

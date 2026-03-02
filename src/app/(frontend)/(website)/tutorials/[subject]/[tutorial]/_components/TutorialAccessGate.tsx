@@ -1,65 +1,23 @@
 'use client'
 
-import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { useAuth } from '@/app/(frontend)/_providers/Auth'
 
 type Props = {
-  accessType?: string | null
-  tutorialSlug: string
+  requiresLogin?: boolean | null
   children: React.ReactNode
 }
 
-export default function TutorialAccessGate({ accessType, tutorialSlug, children }: Props) {
-  // Public tutorials — render immediately, no API call
-  if (!accessType || accessType !== 'protected') {
+export default function TutorialAccessGate({ requiresLogin, children }: Props) {
+  const { user } = useAuth()
+
+  // No login required — render immediately
+  if (!requiresLogin) {
     return <>{children}</>
   }
 
-  return <ProtectedGate tutorialSlug={tutorialSlug}>{children}</ProtectedGate>
-}
-
-function ProtectedGate({
-  tutorialSlug,
-  children,
-}: {
-  tutorialSlug: string
-  children: React.ReactNode
-}) {
-  const { user } = useAuth()
-  const [hasAccess, setHasAccess] = useState<boolean | null>(null)
-
-  useEffect(() => {
-    // Auth still loading (user is undefined)
-    if (user === undefined) return
-
-    // Not logged in
-    if (user === null) {
-      setHasAccess(false)
-      return
-    }
-
-    // Logged in — check access via API
-    let cancelled = false
-    fetch(`/api/tutorial-access/${encodeURIComponent(tutorialSlug)}`)
-      .then((res) => {
-        if (!res.ok) throw new Error('Access check failed')
-        return res.json()
-      })
-      .then((data) => {
-        if (!cancelled) setHasAccess(data.hasAccess === true)
-      })
-      .catch(() => {
-        if (!cancelled) setHasAccess(false)
-      })
-
-    return () => {
-      cancelled = true
-    }
-  }, [user, tutorialSlug])
-
-  // Auth loading or access check in progress
-  if (user === undefined || (user !== null && hasAccess === null)) {
+  // Auth still loading
+  if (user === undefined) {
     return (
       <section className="padding-x max-w-5xl mx-auto py-10 md:py-14">
         <div className="relative w-full overflow-hidden rounded-xl shadow-lg border border-border bg-muted aspect-video flex items-center justify-center">
@@ -69,14 +27,12 @@ function ProtectedGate({
     )
   }
 
-  // Access granted
-  if (hasAccess) {
+  // Logged in — grant access
+  if (user) {
     return <>{children}</>
   }
 
-  // Access denied — show appropriate message based on auth state
-  const isLoggedIn = user !== null
-
+  // Not logged in — show login prompt
   return (
     <section className="padding-x max-w-3xl mx-auto py-12">
       <div className="bg-card rounded-xl border border-amber-200 shadow-md p-8 text-center space-y-5">
@@ -97,19 +53,23 @@ function ProtectedGate({
           </svg>
         </div>
         <h2 className="text-xl md:text-2xl font-semibold text-foreground">
-          {isLoggedIn ? 'Access Restricted' : 'Login Required'}
+          Login Required
         </h2>
         <p className="text-muted-foreground max-w-md mx-auto">
-          {isLoggedIn
-            ? 'You don\u2019t have permission to view this tutorial. It is only available to enrolled students in the associated batch.'
-            : 'Please log in to access this tutorial. If you don\u2019t have an account, contact us to enroll.'}
+          Please log in to access the videos and content for this tutorial. The description above is always available.
         </p>
-        <div className="pt-2">
+        <div className="flex items-center justify-center gap-3 pt-2">
+          <Link
+            href="/login"
+            className="rounded-md bg-primary px-6 py-3 text-card font-medium shadow-sm hover:bg-primary/90 transition-colors"
+          >
+            Log In
+          </Link>
           <Link
             href="/tutorials"
             className="rounded-md border border-border px-6 py-3 text-foreground font-medium hover:bg-muted transition-colors"
           >
-            Go to Tutorials
+            Browse Tutorials
           </Link>
         </div>
       </div>

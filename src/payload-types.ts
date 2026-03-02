@@ -350,6 +350,14 @@ export interface Tutorial {
   subject?: (number | null) | TutorialSubject;
   label?: string | null;
   /**
+   * When enabled, this tutorial is visible on the public website. Tutorials not marked as public are only accessible via the admin panel.
+   */
+  isPublic?: boolean | null;
+  /**
+   * When enabled, users must log in to access videos and tab content. The description is always visible to everyone.
+   */
+  requiresLogin?: boolean | null;
+  /**
    * When enabled, videos will be displayed on the frontend.
    */
   showVideos?: boolean | null;
@@ -370,11 +378,7 @@ export interface Tutorial {
    */
   showPresentation?: boolean | null;
   /**
-   * Public tutorials are open to everyone. Protected tutorials require enrollment or trial access.
-   */
-  accessType: 'public' | 'protected';
-  /**
-   * Batches that have access to this protected tutorial.
+   * Batches associated with this tutorial.
    */
   batches?: (number | Batch)[] | null;
   description?: {
@@ -471,7 +475,7 @@ export interface Batch {
   note?: string | null;
   courseTitle: string;
   /**
-   * Pattern: Batch/StartDate/MMMYY.Teacher/nick.module/nick.TimeTable/Days/D.TimeTable/Time/HH:MM AM|PM
+   * Pattern: Courese.Teacher.MonthYY.DaysTime
    */
   slug: string;
   teachers?: (number | Teacher)[] | null;
@@ -3152,12 +3156,13 @@ export interface TutorialsSelect<T extends boolean = true> {
   position?: T;
   subject?: T;
   label?: T;
+  isPublic?: T;
+  requiresLogin?: T;
   showVideos?: T;
   showQuiz?: T;
   showAssignment?: T;
   showCode?: T;
   showPresentation?: T;
-  accessType?: T;
   batches?: T;
   description?: T;
   content?: T;

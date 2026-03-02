@@ -37,11 +37,16 @@ const queryTutorialsBySubject = (subjectId: number) =>
       const result = await payload.find({
         collection: 'tutorials',
         overrideAccess: true,
-        where: { subject: { equals: subjectId } },
+        where: {
+          and: [
+            { subject: { equals: subjectId } },
+            { isPublic: { equals: true } },
+          ],
+        },
         sort: 'position',
         pagination: false,
         limit: 500,
-        select: { title: true, slug: true, position: true, label: true, accessType: true },
+        select: { title: true, slug: true, position: true, label: true, requiresLogin: true },
       })
       return result.docs
     },
@@ -270,13 +275,13 @@ export default async function TutorialSubjectPage({
                           {tutorial.label}
                         </span>
                       )}
-                      {tutorial.accessType === 'protected' && (
+                      {tutorial.requiresLogin && (
                         <span className="inline-flex items-center gap-1 bg-amber-50 text-amber-700 text-xs font-medium px-2.5 py-1 rounded-full border border-amber-200">
                           <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                             <rect width="18" height="11" x="3" y="11" rx="2" ry="2" />
                             <path d="M7 11V7a5 5 0 0 1 10 0v4" />
                           </svg>
-                          Enrolled
+                          Login Required
                         </span>
                       )}
                     </div>

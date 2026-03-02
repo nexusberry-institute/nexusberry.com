@@ -4,7 +4,7 @@ import configPromise from '@payload-config'
 import { getPayload } from 'payload'
 import { extractYouTubeId } from '@/utilities/youtube'
 import { encodeVideoPayload } from '@/utilities/videoObfuscation'
-import { canAccessTutorial } from '@/utilities/tutorialAccess'
+import { checkTutorialAccess } from '@/utilities/tutorialAccess'
 
 const headers = {
   'Cache-Control': 'private, no-store',
@@ -40,8 +40,8 @@ export async function GET(
       select: {
         showVideos: true,
         videos: true,
-        accessType: true,
-        batches: true,
+        isPublic: true,
+        requiresLogin: true,
       },
     })
 
@@ -50,13 +50,16 @@ export async function GET(
       return NextResponse.json({ d: encodeVideoPayload({ videos: [] }) }, { headers })
     }
 
-    // Access check for protected tutorials
-    if (tutorial.accessType === 'protected') {
+    // Access check
+    let isAuthenticated = false
+    if (tutorial.requiresLogin) {
       const { user } = await payload.auth({ headers: await nextHeaders() })
-      const accessResult = await canAccessTutorial(payload, user as any, tutorial as any)
-      if (!accessResult.hasAccess) {
-        return NextResponse.json({ d: encodeVideoPayload({ videos: [] }) }, { headers })
-      }
+      isAuthenticated = !!user
+    }
+
+    const accessResult = checkTutorialAccess(tutorial, isAuthenticated)
+    if (!accessResult.hasAccess) {
+      return NextResponse.json({ d: encodeVideoPayload({ videos: [] }) }, { headers })
     }
 
     const videos = (tutorial.videos ?? [])
