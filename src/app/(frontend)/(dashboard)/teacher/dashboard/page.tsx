@@ -3,6 +3,7 @@ import { redirect } from 'next/navigation'
 import { getPayload } from 'payload'
 import config from '@/payload.config'
 import { Badge } from '@/components/ui/badge'
+import Link from 'next/link'
 import { Users, CalendarDays, ClipboardCheck } from 'lucide-react'
 import type { User } from '@/payload-types'
 
@@ -192,9 +193,17 @@ export default async function TeacherDashboardPage() {
                         {att.medium && ` | ${att.medium}`}
                       </p>
                     </div>
-                    <Badge variant={att.visible ? 'default' : 'secondary'} className="text-xs">
-                      {att.visible ? 'Active' : 'Expired'}
-                    </Badge>
+                    <div className="flex items-center gap-2">
+                      <Link
+                        href={`/teacher/mark-attendance/${att.id}`}
+                        className="px-3 py-1 text-xs font-medium rounded-lg bg-emerald-100 text-emerald-700 hover:bg-emerald-200 transition-colors"
+                      >
+                        Mark Attendance
+                      </Link>
+                      <Badge variant={att.visible ? 'default' : 'secondary'} className="text-xs">
+                        {att.visible ? 'Active' : 'Expired'}
+                      </Badge>
+                    </div>
                   </div>
                 )
               })}

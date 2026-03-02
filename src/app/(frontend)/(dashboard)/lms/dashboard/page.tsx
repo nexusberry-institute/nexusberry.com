@@ -221,9 +221,7 @@ export default async function StudentDashboardPage() {
                 return (
                   <a
                     key={cls.id}
-                    href={cls.onlineClassLink}
-                    target="_blank"
-                    rel="noopener noreferrer"
+                    href={`/api/join-class/${cls.id}`}
                     className="flex items-center justify-between p-3 bg-red-50 rounded-lg hover:bg-red-100 transition-colors"
                   >
                     <div>

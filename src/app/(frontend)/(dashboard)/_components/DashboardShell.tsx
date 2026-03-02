@@ -7,13 +7,12 @@ import { useState } from 'react'
 import {
   LayoutDashboard,
   BookOpen,
-  GraduationCap,
-  CalendarDays,
   LogOut,
   Menu,
   X,
   Video,
   Users,
+  ClipboardCheck,
 } from 'lucide-react'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
@@ -36,6 +35,7 @@ function getNavItems(roles: string[]): NavItem[] {
   if (roles.includes('teacher')) {
     items.push(
       { href: '/teacher/dashboard', label: 'My Batches', icon: <Users size={18} /> },
+      { href: '/teacher/mark-attendance', label: 'Mark Attendance', icon: <ClipboardCheck size={18} /> },
     )
   }
 

@@ -1,17 +1,19 @@
-// import { checkAccess } from "@/access/accessControl";
 import { CollectionConfig } from "payload";
+import { checkRole } from "@/access/checkRole";
+import { authenticated } from "@/access/authenticated";
 
 export const AttendanceDetails: CollectionConfig = {
   slug: "attendance-details",
   access: {
-    // create: checkAccess('attendance-details', 'create'),
-    // read: checkAccess('attendance-details', 'read'),
-    // update: checkAccess('attendance-details', 'update'),
-    // delete: checkAccess('attendance-details', 'delete'),
+    create: ({ req: { user } }) => checkRole(['superadmin', 'admin', 'operations', 'teacher'], user),
+    read: authenticated,
+    update: ({ req: { user } }) => checkRole(['superadmin', 'admin', 'operations', 'teacher'], user),
+    delete: ({ req: { user } }) => checkRole(['superadmin', 'admin', 'operations', 'teacher'], user),
   },
   admin: {
     useAsTitle: "attendance",
     group: "Academic Operations",
+    defaultColumns: ['student', 'attendance', 'status', 'medium', 'joinedAt'],
   },
   fields: [
     {
@@ -25,6 +27,19 @@ export const AttendanceDetails: CollectionConfig = {
           required: true
         },
         {
+          name: "student",
+          type: "relationship",
+          relationTo: "students",
+          hasMany: false,
+          required: true,
+          index: true,
+        },
+      ]
+    },
+    {
+      type: "row",
+      fields: [
+        {
           name: "medium",
           type: "radio",
           options: [
@@ -32,11 +47,6 @@ export const AttendanceDetails: CollectionConfig = {
             "ONLINE"
           ]
         },
-      ]
-    },
-    {
-      type: 'row',
-      fields: [
         {
           name: "status",
           type: "select",
@@ -56,6 +66,17 @@ export const AttendanceDetails: CollectionConfig = {
           ]
         },
       ]
+    },
+    {
+      name: "joinedAt",
+      type: "date",
+      admin: {
+        date: {
+          pickerAppearance: "dayAndTime",
+          displayFormat: "p dd/MM/yyyy",
+        },
+        description: "Auto-set when student joins online class",
+      },
     },
   ],
 };

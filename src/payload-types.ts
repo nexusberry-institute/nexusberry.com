@@ -1876,8 +1876,13 @@ export interface Attendance {
 export interface AttendanceDetail {
   id: number;
   attendance: number | Attendance;
+  student: number | Student;
   medium?: ('PHYSICAL' | 'ONLINE') | null;
   status?: ('PRESENT' | 'ABSENT' | 'LEAVE') | null;
+  /**
+   * Auto-set when student joins online class
+   */
+  joinedAt?: string | null;
   updatedAt: string;
   createdAt: string;
 }
@@ -2967,8 +2972,10 @@ export interface AttendanceSelect<T extends boolean = true> {
  */
 export interface AttendanceDetailsSelect<T extends boolean = true> {
   attendance?: T;
+  student?: T;
   medium?: T;
   status?: T;
+  joinedAt?: T;
   updatedAt?: T;
   createdAt?: T;
 }
