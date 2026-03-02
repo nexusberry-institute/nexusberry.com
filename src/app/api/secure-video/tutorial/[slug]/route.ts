@@ -42,6 +42,7 @@ export async function GET(
         videos: true,
         isPublic: true,
         requiresLogin: true,
+        batches: true,
       },
     })
 
@@ -50,14 +51,46 @@ export async function GET(
       return NextResponse.json({ d: encodeVideoPayload({ videos: [] }) }, { headers })
     }
 
-    // Access check
+    // Access check — authenticate when requiresLogin or when tutorial has batches (enrollment check)
+    const tutorialBatchIds = (tutorial.batches as (number | { id: number })[] | null | undefined)
+      ?.map((b) => (typeof b === 'object' && b !== null ? b.id : b))
+      .filter(Boolean) as number[] | undefined
+
     let isAuthenticated = false
-    if (tutorial.requiresLogin) {
+    let isEnrolled = false
+    if (tutorial.requiresLogin || (tutorialBatchIds && tutorialBatchIds.length > 0)) {
       const { user } = await payload.auth({ headers: await nextHeaders() })
       isAuthenticated = !!user
+
+      // Check enrollment if user is authenticated and tutorial has batches
+      if (isAuthenticated && user && tutorialBatchIds && tutorialBatchIds.length > 0) {
+        const studentResult = await payload.find({
+          collection: 'students',
+          where: { user: { equals: user.id } },
+          limit: 1,
+          depth: 0,
+        })
+        const student = studentResult.docs[0]
+        if (student) {
+          const enrollmentResult = await payload.find({
+            collection: 'enrollments',
+            where: {
+              student: { equals: student.id },
+              status: { in: ['active', 'graduated'] },
+            },
+            depth: 0,
+            limit: 50,
+            pagination: false,
+          })
+          const enrolledBatchIds = enrollmentResult.docs
+            .map((e) => (typeof e.batch === 'object' && e.batch !== null ? e.batch.id : e.batch))
+            .filter(Boolean) as number[]
+          isEnrolled = tutorialBatchIds.some((id) => enrolledBatchIds.includes(id))
+        }
+      }
     }
 
-    const accessResult = checkTutorialAccess(tutorial, isAuthenticated)
+    const accessResult = checkTutorialAccess(tutorial, isAuthenticated, isEnrolled)
     if (!accessResult.hasAccess) {
       return NextResponse.json({ d: encodeVideoPayload({ videos: [] }) }, { headers })
     }

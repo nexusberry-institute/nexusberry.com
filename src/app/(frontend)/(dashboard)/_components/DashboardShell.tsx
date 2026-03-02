@@ -19,7 +19,7 @@ import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import type { User } from '@/payload-types'
 
-type NavItem = { href: string; label: string; icon: React.ReactNode }
+type NavItem = { href: string; label: string; icon: React.ReactNode; exact?: boolean }
 
 function getNavItems(roles: string[]): NavItem[] {
   const items: NavItem[] = [
@@ -28,8 +28,8 @@ function getNavItems(roles: string[]): NavItem[] {
 
   if (roles.includes('student')) {
     items.push(
-      { href: '/lms/dashboard', label: 'My Courses', icon: <BookOpen size={18} /> },
-      { href: '/tutorials', label: 'Tutorials', icon: <Video size={18} /> },
+      { href: '/lms/dashboard', label: 'My Courses', icon: <BookOpen size={18} />, exact: true },
+      { href: '/lms/dashboard/tutorials', label: 'Tutorials', icon: <Video size={18} /> },
     )
   }
 
@@ -86,7 +86,9 @@ export function DashboardShell({ user, children }: { user: User; children: React
         {/* Nav links */}
         <nav className="flex-1 overflow-y-auto py-4 px-3 space-y-1">
           {navItems.map((item) => {
-            const isActive = pathname === item.href
+            const isActive = item.exact
+              ? pathname === item.href
+              : pathname === item.href || pathname.startsWith(item.href + '/')
             return (
               <Link
                 key={item.href}
