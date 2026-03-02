@@ -350,6 +350,75 @@ export interface Tutorial {
   subject?: (number | null) | TutorialSubject;
   label?: string | null;
   /**
+   * Batches associated with this tutorial.
+   */
+  batches?: (number | Batch)[] | null;
+  description?: {
+    root: {
+      type: string;
+      children: {
+        type: any;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  } | null;
+  videos?:
+    | {
+        videoSource?: ('youtube' | 'bunny') | null;
+        youtubeUrl?: string | null;
+        /**
+         * The video ID from your Bunny CDN library
+         */
+        bunnyVideoId?: string | null;
+        id?: string | null;
+      }[]
+    | null;
+  content?: {
+    root: {
+      type: string;
+      children: {
+        type: any;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  } | null;
+  quiz?: (number | null) | Quiz;
+  assignment?: {
+    root: {
+      type: string;
+      children: {
+        type: any;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  } | null;
+  /**
+   * Link to CodeSandbox, StackBlitz, CodePen, or GitHub repository
+   */
+  codeUrl?: string | null;
+  /**
+   * Link to Google Slides or other presentation
+   */
+  presentationUrl?: string | null;
+  /**
    * When enabled, this tutorial is visible on the public website. Tutorials not marked as public are only accessible via the admin panel.
    */
   isPublic?: boolean | null;
@@ -377,75 +446,6 @@ export interface Tutorial {
    * When enabled, the presentation tab will be displayed on the frontend.
    */
   showPresentation?: boolean | null;
-  /**
-   * Batches associated with this tutorial.
-   */
-  batches?: (number | Batch)[] | null;
-  description?: {
-    root: {
-      type: string;
-      children: {
-        type: any;
-        version: number;
-        [k: string]: unknown;
-      }[];
-      direction: ('ltr' | 'rtl') | null;
-      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
-      indent: number;
-      version: number;
-    };
-    [k: string]: unknown;
-  } | null;
-  content?: {
-    root: {
-      type: string;
-      children: {
-        type: any;
-        version: number;
-        [k: string]: unknown;
-      }[];
-      direction: ('ltr' | 'rtl') | null;
-      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
-      indent: number;
-      version: number;
-    };
-    [k: string]: unknown;
-  } | null;
-  videos?:
-    | {
-        videoSource?: ('youtube' | 'bunny') | null;
-        youtubeUrl?: string | null;
-        /**
-         * The video ID from your Bunny CDN library
-         */
-        bunnyVideoId?: string | null;
-        id?: string | null;
-      }[]
-    | null;
-  quiz?: (number | null) | Quiz;
-  assignment?: {
-    root: {
-      type: string;
-      children: {
-        type: any;
-        version: number;
-        [k: string]: unknown;
-      }[];
-      direction: ('ltr' | 'rtl') | null;
-      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
-      indent: number;
-      version: number;
-    };
-    [k: string]: unknown;
-  } | null;
-  /**
-   * Link to CodeSandbox, StackBlitz, CodePen, or GitHub repository
-   */
-  codeUrl?: string | null;
-  /**
-   * Link to Google Slides or other presentation
-   */
-  presentationUrl?: string | null;
   updatedAt: string;
   createdAt: string;
 }
@@ -3156,16 +3156,8 @@ export interface TutorialsSelect<T extends boolean = true> {
   position?: T;
   subject?: T;
   label?: T;
-  isPublic?: T;
-  requiresLogin?: T;
-  showVideos?: T;
-  showQuiz?: T;
-  showAssignment?: T;
-  showCode?: T;
-  showPresentation?: T;
   batches?: T;
   description?: T;
-  content?: T;
   videos?:
     | T
     | {
@@ -3174,10 +3166,18 @@ export interface TutorialsSelect<T extends boolean = true> {
         bunnyVideoId?: T;
         id?: T;
       };
+  content?: T;
   quiz?: T;
   assignment?: T;
   codeUrl?: T;
   presentationUrl?: T;
+  isPublic?: T;
+  requiresLogin?: T;
+  showVideos?: T;
+  showQuiz?: T;
+  showAssignment?: T;
+  showCode?: T;
+  showPresentation?: T;
   updatedAt?: T;
   createdAt?: T;
 }

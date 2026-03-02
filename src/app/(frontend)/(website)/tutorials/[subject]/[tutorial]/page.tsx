@@ -278,12 +278,12 @@ export default async function TutorialPage({
               </ol>
             </nav>
 
-            <div className="flex items-center gap-3 mb-3">
-              {tutorial.label && (
-                <span className="inline-block bg-secondary-500/20 text-secondary-300 text-xs font-semibold px-3 py-1 rounded-full border border-secondary-500/30">
-                  {tutorial.label}
+            <div className="flex items-center gap-3 mb-3 flex-wrap">
+              {tutorial.label && tutorial.label.split(',').map((l) => l.trim()).filter(Boolean).map((badge) => (
+                <span key={badge} className="inline-block bg-secondary-500/20 text-secondary-300 text-xs font-semibold px-3 py-1 rounded-full border border-secondary-500/30">
+                  {badge}
                 </span>
-              )}
+              ))}
             </div>
 
             <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold text-white mb-4">

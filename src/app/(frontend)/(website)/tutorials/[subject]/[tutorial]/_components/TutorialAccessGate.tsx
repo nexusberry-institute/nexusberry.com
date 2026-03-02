@@ -1,6 +1,7 @@
 'use client'
 
 import Link from 'next/link'
+import { usePathname } from 'next/navigation'
 import { useAuth } from '@/app/(frontend)/_providers/Auth'
 
 type Props = {
@@ -10,6 +11,7 @@ type Props = {
 
 export default function TutorialAccessGate({ requiresLogin, children }: Props) {
   const { user } = useAuth()
+  const pathname = usePathname()
 
   // No login required — render immediately
   if (!requiresLogin) {
@@ -60,7 +62,7 @@ export default function TutorialAccessGate({ requiresLogin, children }: Props) {
         </p>
         <div className="flex items-center justify-center gap-3 pt-2">
           <Link
-            href="/login"
+            href={`/login?redirect=${encodeURIComponent(pathname)}`}
             className="rounded-md bg-primary px-6 py-3 text-card font-medium shadow-sm hover:bg-primary/90 transition-colors"
           >
             Log In

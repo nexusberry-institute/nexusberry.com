@@ -54,77 +54,6 @@ export const Tutorials: CollectionConfig = {
       },
     },
     {
-      name: 'isPublic',
-      type: 'checkbox',
-      defaultValue: false,
-      label: 'Public',
-      admin: {
-        position: 'sidebar',
-        description: 'When enabled, this tutorial is visible on the public website. Tutorials not marked as public are only accessible via the admin panel.',
-      },
-    },
-    {
-      name: 'requiresLogin',
-      type: 'checkbox',
-      defaultValue: false,
-      label: 'Requires Login',
-      admin: {
-        position: 'sidebar',
-        description: 'When enabled, users must log in to access videos and tab content. The description is always visible to everyone.',
-        condition: (data) => data?.isPublic === true,
-      },
-    },
-    {
-      name: 'showVideos',
-      type: 'checkbox',
-      defaultValue: true,
-      label: 'Show Videos',
-      admin: {
-        position: 'sidebar',
-        description: 'When enabled, videos will be displayed on the frontend.',
-      },
-    },
-    {
-      name: 'showQuiz',
-      type: 'checkbox',
-      defaultValue: true,
-      label: 'Show Quiz',
-      admin: {
-        position: 'sidebar',
-        description: 'When enabled, the quiz tab will be displayed on the frontend.',
-      },
-    },
-    {
-      name: 'showAssignment',
-      type: 'checkbox',
-      defaultValue: true,
-      label: 'Show Assignment',
-      admin: {
-        position: 'sidebar',
-        description: 'When enabled, the assignment tab will be displayed on the frontend.',
-      },
-    },
-    {
-      name: 'showCode',
-      type: 'checkbox',
-      defaultValue: true,
-      label: 'Show Code',
-      admin: {
-        position: 'sidebar',
-        description: 'When enabled, the code tab will be displayed on the frontend.',
-      },
-    },
-    {
-      name: 'showPresentation',
-      type: 'checkbox',
-      defaultValue: true,
-      label: 'Show Presentation',
-      admin: {
-        position: 'sidebar',
-        description: 'When enabled, the presentation tab will be displayed on the frontend.',
-      },
-    },
-    {
       name: 'batches',
       type: 'relationship',
       relationTo: 'batches',
@@ -141,12 +70,6 @@ export const Tutorials: CollectionConfig = {
           label: 'Description',
           fields: [
             richTextField({ name: 'description', label: 'Description' }),
-          ],
-        },
-        {
-          label: 'Cheatsheet',
-          fields: [
-            richTextField({ name: 'content', label: 'Tutorial Content' }),
           ],
         },
         {
@@ -191,6 +114,12 @@ export const Tutorials: CollectionConfig = {
           ],
         },
         {
+          label: 'Cheatsheet',
+          fields: [
+            richTextField({ name: 'content', label: 'Tutorial Content' }),
+          ],
+        },
+        {
           label: 'Quiz',
           fields: [
             {
@@ -226,6 +155,75 @@ export const Tutorials: CollectionConfig = {
               admin: {
                 placeholder: 'https://docs.google.com/presentation/d/.../edit',
                 description: 'Link to Google Slides or other presentation',
+              },
+            },
+          ],
+        },
+        {
+          label: 'Settings',
+          fields: [
+            {
+              name: 'isPublic',
+              type: 'checkbox',
+              defaultValue: false,
+              label: 'Public',
+              admin: {
+                description: 'When enabled, this tutorial is visible on the public website. Tutorials not marked as public are only accessible via the admin panel.',
+              },
+            },
+            {
+              name: 'requiresLogin',
+              type: 'checkbox',
+              defaultValue: false,
+              label: 'Requires Login',
+              admin: {
+                description: 'When enabled, users must log in to access videos and tab content. The description is always visible to everyone.',
+                condition: (data) => data?.isPublic === true,
+              },
+            },
+            {
+              name: 'showVideos',
+              type: 'checkbox',
+              defaultValue: true,
+              label: 'Show Videos',
+              admin: {
+                description: 'When enabled, videos will be displayed on the frontend.',
+              },
+            },
+            {
+              name: 'showQuiz',
+              type: 'checkbox',
+              defaultValue: true,
+              label: 'Show Quiz',
+              admin: {
+                description: 'When enabled, the quiz tab will be displayed on the frontend.',
+              },
+            },
+            {
+              name: 'showAssignment',
+              type: 'checkbox',
+              defaultValue: true,
+              label: 'Show Assignment',
+              admin: {
+                description: 'When enabled, the assignment tab will be displayed on the frontend.',
+              },
+            },
+            {
+              name: 'showCode',
+              type: 'checkbox',
+              defaultValue: true,
+              label: 'Show Code',
+              admin: {
+                description: 'When enabled, the code tab will be displayed on the frontend.',
+              },
+            },
+            {
+              name: 'showPresentation',
+              type: 'checkbox',
+              defaultValue: true,
+              label: 'Show Presentation',
+              admin: {
+                description: 'When enabled, the presentation tab will be displayed on the frontend.',
               },
             },
           ],

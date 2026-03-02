@@ -269,12 +269,12 @@ export default async function TutorialSubjectPage({
                     href={`/tutorials/${subjectSlug}/${tutorialSlug}`}
                     className="group bg-card border border-border rounded-lg p-4 hover:shadow-md hover:border-primary-300 transition-all duration-200"
                   >
-                    <div className="flex items-center gap-2 mb-3">
-                      {tutorial.label && (
-                        <span className="inline-block bg-primary-50 text-primary-600 text-xs font-medium px-2.5 py-1 rounded-full">
-                          {tutorial.label}
+                    <div className="flex items-center gap-2 mb-3 flex-wrap">
+                      {tutorial.label && tutorial.label.split(',').map((l) => l.trim()).filter(Boolean).map((badge) => (
+                        <span key={badge} className="inline-block bg-primary-50 text-primary-600 text-xs font-medium px-2.5 py-1 rounded-full">
+                          {badge}
                         </span>
-                      )}
+                      ))}
                       {tutorial.requiresLogin && (
                         <span className="inline-flex items-center gap-1 bg-amber-50 text-amber-700 text-xs font-medium px-2.5 py-1 rounded-full border border-amber-200">
                           <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
