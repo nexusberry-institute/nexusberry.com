@@ -13,14 +13,14 @@ import config from '../src/payload.config'
 import { convertMarkdownToLexicalJSON } from './markdown-to-lexical'
 
 // --- CONFIGURATION ---
-const LECTURE_FOLDER = 'public/frontend-react/lecture-2'
+const LECTURE_FOLDER = 'public/frontend-react/lecture-7'
 const CHEATSHEET_PATH = `${LECTURE_FOLDER}/cheatsheet.md`
 const ASSIGNMENT_PATH = `${LECTURE_FOLDER}/assignment.md`
 const QUIZ_PATH = `${LECTURE_FOLDER}/quiz.md`
-const TUTORIAL_TITLE = 'Semantic HTML & Accessibility Cheatsheet'
-const TUTORIAL_SLUG = 'semantic-html-accessibility-cheatsheet'
-const QUIZ_TITLE = 'Lecture 2: Semantic HTML & Accessibility Quiz'
-const QUIZ_SLUG = 'lecture-2-semantic-html-accessibility-quiz'
+const TUTORIAL_TITLE = 'Advanced Tailwind & Customization'
+const TUTORIAL_SLUG = 'advanced-tailwind-customization'
+const QUIZ_TITLE = 'Lecture 7: Advanced Tailwind & Customization Quiz'
+const QUIZ_SLUG = 'lecture-7-tailwind-css-basics-quiz'
 
 // --- QUIZ PARSER ---
 
