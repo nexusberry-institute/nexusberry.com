@@ -157,6 +157,9 @@ export default async function StudentDashboardPage() {
                   <div key={enrollment.id} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
                     <div>
                       <p className="font-medium text-gray-900">{batch?.courseTitle ?? 'Course'}</p>
+                      {batch?.slug && (
+                        <p className="text-xs text-gray-400">{batch.slug}</p>
+                      )}
                       <p className="text-xs text-gray-500">
                         {enrollment.mode ?? batch?.medium ?? ''}
                         {batch?.startDate && ` | Started ${new Date(batch.startDate).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}`}
@@ -189,6 +192,9 @@ export default async function StudentDashboardPage() {
                   <div key={tt.id} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
                     <div>
                       <p className="font-medium text-gray-900">{batch?.courseTitle ?? 'Class'}</p>
+                      {batch?.slug && (
+                        <p className="text-xs text-gray-400">{batch.slug}</p>
+                      )}
                     </div>
                     <span className="text-sm text-gray-600">
                       {formatTime(tt.startTime)} – {formatTime(tt.endTime)}
@@ -217,7 +223,9 @@ export default async function StudentDashboardPage() {
                 })
                 if (!relevant) return null
 
-                return (
+                const hasLink = Boolean(cls.onlineClassLink)
+
+                return hasLink ? (
                   <a
                     key={cls.id}
                     href={`/api/join-class/${cls.id}`}
@@ -233,6 +241,21 @@ export default async function StudentDashboardPage() {
                     </div>
                     <Badge className="bg-red-600 text-white">Join</Badge>
                   </a>
+                ) : (
+                  <div
+                    key={cls.id}
+                    className="flex items-center justify-between p-3 bg-gray-50 rounded-lg"
+                  >
+                    <div>
+                      <p className="font-medium text-gray-900">
+                        Attendance Open
+                      </p>
+                      <p className="text-xs text-gray-500">
+                        Expires: {new Date(cls.expiry!).toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: true, timeZone: 'Asia/Karachi' })}
+                      </p>
+                    </div>
+                    <Badge variant="outline" className="text-xs">In-person</Badge>
+                  </div>
                 )
               })}
             </div>

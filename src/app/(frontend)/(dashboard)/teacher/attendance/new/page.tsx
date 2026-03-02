@@ -55,13 +55,14 @@ export default async function CreateAttendancePage() {
   const batches = batchesResult.docs.map(b => ({
     id: b.id,
     courseTitle: b.courseTitle,
+    slug: b.slug,
   }))
 
   return (
     <div className="space-y-6">
       <div className="flex items-center gap-3">
         <Link
-          href="/teacher/dashboard"
+          href="/teacher/attendance"
           className="p-2 rounded-lg hover:bg-gray-100 transition-colors"
         >
           <ArrowLeft size={20} />

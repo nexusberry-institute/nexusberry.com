@@ -125,6 +125,9 @@ export default async function TeacherDashboardPage() {
                   <div>
                     <p className="font-medium text-gray-900">{batch.courseTitle}</p>
                     <p className="text-xs text-gray-500">
+                      {batch.slug}
+                    </p>
+                    <p className="text-xs text-gray-400">
                       {batch.medium}
                       {batch.startDate && ` | ${new Date(batch.startDate).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}`}
                       {batch.endDate && ` – ${new Date(batch.endDate).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}`}
@@ -183,7 +186,7 @@ export default async function TeacherDashboardPage() {
                   <div key={att.id} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
                     <div>
                       <p className="font-medium text-gray-900">
-                        {attBatches.map((b: any) => typeof b === 'object' ? b.courseTitle : b).join(', ') || 'Attendance'}
+                        {attBatches.map((b: any) => typeof b === 'object' ? (b.slug || b.courseTitle) : b).join(', ') || 'Attendance'}
                       </p>
                       <p className="text-xs text-gray-500">
                         {att.date && new Date(att.date).toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' })}
@@ -191,7 +194,7 @@ export default async function TeacherDashboardPage() {
                     </div>
                     <div className="flex items-center gap-2">
                       <Link
-                        href={`/teacher/mark-attendance/${att.id}`}
+                        href={`/teacher/attendance/${att.id}`}
                         className="px-3 py-1 text-xs font-medium rounded-lg bg-emerald-100 text-emerald-700 hover:bg-emerald-200 transition-colors"
                       >
                         Mark Attendance

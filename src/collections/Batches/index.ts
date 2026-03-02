@@ -63,6 +63,7 @@ export const Batches: CollectionConfig = {
               type: "text",
               required: true,
               unique: true,
+              index: true,
               admin: {
                 description: "Pattern: Courese.Teacher.MonthYY.DaysTime",
                 // TODO: Create custom field component

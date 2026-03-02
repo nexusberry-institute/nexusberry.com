@@ -13,7 +13,6 @@ import {
   Video,
   Users,
   ClipboardCheck,
-  PlusCircle,
 } from 'lucide-react'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
@@ -36,8 +35,7 @@ function getNavItems(roles: string[]): NavItem[] {
   if (roles.includes('teacher')) {
     items.push(
       { href: '/teacher/dashboard', label: 'My Batches', icon: <Users size={18} /> },
-      { href: '/teacher/mark-attendance', label: 'Mark Attendance', icon: <ClipboardCheck size={18} /> },
-      { href: '/teacher/create-attendance', label: 'New Attendance', icon: <PlusCircle size={18} /> },
+      { href: '/teacher/attendance', label: 'Attendance', icon: <ClipboardCheck size={18} /> },
     )
   }
 

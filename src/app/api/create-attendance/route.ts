@@ -25,10 +25,11 @@ export async function POST(request: NextRequest) {
     }
 
     const body = await request.json()
-    const { batchIds, teacherId, staffNotes, records } = body as {
+    const { batchIds, teacherId, staffNotes, date, records } = body as {
       batchIds: number[]
       teacherId: number
       staffNotes?: string
+      date?: string
       records: AttendanceRecord[]
     }
 
@@ -72,13 +73,25 @@ export async function POST(request: NextRequest) {
       }
     }
 
+    // Resolve session date — use provided date or default to now
+    let sessionDate: string
+    if (date && /^\d{4}-\d{2}-\d{2}$/.test(date)) {
+      const parsed = new Date(`${date}T00:00:00`)
+      if (isNaN(parsed.getTime())) {
+        return NextResponse.json({ error: 'Invalid date' }, { status: 400 })
+      }
+      sessionDate = parsed.toISOString()
+    } else {
+      sessionDate = new Date().toISOString()
+    }
+
     // Create the attendance record
     const attendance = await payload.create({
       collection: 'attendance',
       data: {
         batches: batchIds,
         teacher: teacherId,
-        date: new Date().toISOString(),
+        date: sessionDate,
         visible: true,
         staffNotes: staffNotes || undefined,
       },

@@ -155,7 +155,7 @@ export default async function MarkAttendancePage({
     })
 
   const batchNames = attendanceBatches
-    .map((b) => typeof b === 'object' && b !== null ? b.courseTitle || b.slug : '')
+    .map((b) => typeof b === 'object' && b !== null ? b.slug || b.courseTitle : '')
     .filter(Boolean)
     .join(', ')
 
@@ -163,7 +163,7 @@ export default async function MarkAttendancePage({
     <div className="space-y-6">
       <div className="flex items-center gap-3">
         <Link
-          href="/teacher/dashboard"
+          href="/teacher/attendance"
           className="p-2 rounded-lg hover:bg-gray-100 transition-colors"
         >
           <ArrowLeft size={20} />

@@ -3,11 +3,11 @@ import { redirect } from 'next/navigation'
 import { getPayload } from 'payload'
 import config from '@/payload.config'
 import { Badge } from '@/components/ui/badge'
-import { ClipboardCheck } from 'lucide-react'
+import { ClipboardCheck, Plus } from 'lucide-react'
 import Link from 'next/link'
 import type { User } from '@/payload-types'
 
-export default async function MarkAttendanceListPage() {
+export default async function AttendanceListPage() {
   const headers = await getHeaders()
   const payload = await getPayload({ config })
   const { user: authUser } = await payload.auth({ headers })
@@ -32,7 +32,7 @@ export default async function MarkAttendanceListPage() {
   if (!teacher) {
     return (
       <div className="space-y-4">
-        <h1 className="text-2xl font-bold text-gray-900">Mark Attendance</h1>
+        <h1 className="text-2xl font-bold text-gray-900">Attendance</h1>
         <div className="p-6 bg-white rounded-xl border border-gray-200">
           <p className="text-gray-600">Teacher profile not found.</p>
         </div>
@@ -71,9 +71,18 @@ export default async function MarkAttendanceListPage() {
 
   return (
     <div className="space-y-6">
-      <div>
-        <h1 className="text-2xl font-bold text-gray-900">Mark Attendance</h1>
-        <p className="mt-1 text-sm text-gray-500">Select a session to mark attendance</p>
+      <div className="flex items-center justify-between">
+        <div>
+          <h1 className="text-2xl font-bold text-gray-900">Attendance</h1>
+          <p className="mt-1 text-sm text-gray-500">Manage attendance sessions</p>
+        </div>
+        <Link
+          href="/teacher/attendance/new"
+          className="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-white bg-gray-900 rounded-lg hover:bg-gray-800 transition-colors"
+        >
+          <Plus size={16} />
+          New Session
+        </Link>
       </div>
 
       {attendanceResult.docs.length === 0 ? (
@@ -85,14 +94,14 @@ export default async function MarkAttendanceListPage() {
           {attendanceResult.docs.map((att) => {
             const attBatches = Array.isArray(att.batches) ? att.batches : []
             const batchNames = attBatches
-              .map((b) => typeof b === 'object' && b !== null ? b.courseTitle || b.slug : '')
+              .map((b) => typeof b === 'object' && b !== null ? b.slug || b.courseTitle : '')
               .filter(Boolean)
               .join(', ')
 
             return (
               <Link
                 key={att.id}
-                href={`/teacher/mark-attendance/${att.id}`}
+                href={`/teacher/attendance/${att.id}`}
                 className="flex items-center justify-between p-4 bg-white rounded-xl border border-gray-200 hover:border-gray-300 hover:shadow-sm transition-all"
               >
                 <div className="flex items-center gap-3">

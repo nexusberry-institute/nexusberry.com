@@ -18,6 +18,7 @@ type Status = 'PRESENT' | 'ABSENT' | 'LEAVE'
 interface Batch {
   id: number
   courseTitle: string
+  slug: string
 }
 
 interface StudentRow {
@@ -31,11 +32,20 @@ interface CreateAttendanceFormProps {
   batches: Batch[]
 }
 
+function getTodayDateString(): string {
+  const now = new Date()
+  const year = now.getFullYear()
+  const month = String(now.getMonth() + 1).padStart(2, '0')
+  const day = String(now.getDate()).padStart(2, '0')
+  return `${year}-${month}-${day}`
+}
+
 export function CreateAttendanceForm({ teacherId, batches }: CreateAttendanceFormProps) {
   const [selectedBatchIds, setSelectedBatchIds] = useState<number[]>([])
   const [students, setStudents] = useState<StudentRow[]>([])
   const [loadingStudents, setLoadingStudents] = useState(false)
   const [staffNotes, setStaffNotes] = useState('')
+  const [selectedDate, setSelectedDate] = useState(getTodayDateString)
   const [submitting, setSubmitting] = useState(false)
   const router = useRouter()
   const { toast } = useToast()
@@ -98,6 +108,7 @@ export function CreateAttendanceForm({ teacherId, batches }: CreateAttendanceFor
         body: JSON.stringify({
           batchIds: selectedBatchIds,
           teacherId,
+          date: selectedDate,
           staffNotes: staffNotes || undefined,
           records: students.map(s => ({
             studentId: s.studentId,
@@ -117,7 +128,7 @@ export function CreateAttendanceForm({ teacherId, batches }: CreateAttendanceFor
         description: `${data.detailsCreated} student records created`,
         variant: 'success',
       })
-      router.push(`/teacher/mark-attendance/${data.attendanceId}`)
+      router.push(`/teacher/attendance/${data.attendanceId}`)
     } catch {
       toast({ title: 'Error', description: 'Something went wrong', variant: 'destructive' })
     } finally {
@@ -129,6 +140,21 @@ export function CreateAttendanceForm({ teacherId, batches }: CreateAttendanceFor
 
   return (
     <div className="space-y-6">
+      {/* Date Picker */}
+      <div className="bg-white rounded-xl border border-gray-200 p-6">
+        <label htmlFor="sessionDate" className="block text-sm font-semibold text-gray-900 mb-2">
+          Session Date
+        </label>
+        <input
+          id="sessionDate"
+          type="date"
+          value={selectedDate}
+          max={getTodayDateString()}
+          onChange={e => setSelectedDate(e.target.value)}
+          className="w-full max-w-xs rounded-lg border border-gray-200 px-3 py-2 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-gray-900 focus:border-transparent"
+        />
+      </div>
+
       {/* Batch Selection */}
       <div className="bg-white rounded-xl border border-gray-200 p-6">
         <h2 className="text-sm font-semibold text-gray-900 mb-3">Select Batches</h2>
@@ -141,13 +167,18 @@ export function CreateAttendanceForm({ teacherId, batches }: CreateAttendanceFor
                 key={batch.id}
                 type="button"
                 onClick={() => toggleBatch(batch.id)}
-                className={`px-4 py-2 text-sm font-medium rounded-lg border transition-colors ${
+                className={`px-4 py-2 text-sm font-medium rounded-lg border transition-colors text-left ${
                   selectedBatchIds.includes(batch.id)
                     ? 'bg-gray-900 text-white border-gray-900'
                     : 'bg-white text-gray-700 border-gray-200 hover:bg-gray-50'
                 }`}
               >
-                {batch.courseTitle}
+                <span className="block">{batch.courseTitle}</span>
+                <span className={`block text-xs mt-0.5 ${
+                  selectedBatchIds.includes(batch.id) ? 'text-gray-300' : 'text-gray-400'
+                }`}>
+                  {batch.slug}
+                </span>
               </button>
             ))}
           </div>
