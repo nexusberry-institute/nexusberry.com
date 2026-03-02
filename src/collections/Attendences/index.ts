@@ -3,110 +3,129 @@ import { CollectionConfig } from 'payload';
 export const Attendances: CollectionConfig = {
   slug: 'attendance',
   admin: {
-    listSearchableFields: ["batches"],
-    group: "Academic Operations",
-    defaultColumns: ['batches', 'teacher', 'date', 'visible'],
+    useAsTitle: 'date',
+    listSearchableFields: ['batches', 'teacher'],
+    group: 'Academic Operations',
+    defaultColumns: ['date', 'batches', 'teacher', 'visible'],
+    description: 'Manage class attendance sessions and online class links',
   },
-  defaultSort: "-date",
+  defaultSort: '-date',
   fields: [
+    // ── Sidebar: always visible regardless of active tab ──
     {
-      type: "tabs",
+      name: 'date',
+      type: 'date',
+      required: true,
+      defaultValue: () => new Date(),
+      admin: {
+        position: 'sidebar',
+        date: {
+          pickerAppearance: 'dayOnly',
+          displayFormat: 'MMM dd, yyyy',
+        },
+      },
+    },
+    {
+      name: 'teacher',
+      type: 'relationship',
+      relationTo: 'teachers',
+      admin: {
+        position: 'sidebar',
+      },
+    },
+    {
+      name: 'visible',
+      type: 'checkbox',
+      defaultValue: true,
+      admin: {
+        position: 'sidebar',
+        description: 'Show this session to students',
+      },
+    },
+    {
+      name: 'expiry',
+      type: 'date',
+      defaultValue: () => new Date(Date.now() + 90 * 60 * 1000),
+      admin: {
+        position: 'sidebar',
+        description: 'Online class link auto-hides after this time',
+        date: {
+          pickerAppearance: 'dayAndTime',
+          displayFormat: 'p dd/MM/yyyy',
+        },
+      },
+    },
+
+    // ── Tabbed content ──
+    {
+      type: 'tabs',
       tabs: [
         {
-          label: "Attendance",
+          label: 'Class Setup',
           fields: [
             {
-              name: "onlineClassLink",
-              type: "text",
-            },
-            {
-              name: "expiry",
-              type: "date",
-              defaultValue: () => new Date(Date.now() + 90 * 60 * 1000),
-              admin: {
-                position: "sidebar",
-                description: "After expiry time, the link will automatically be hidden from the student portal",
-                date: {
-                  pickerAppearance: "dayAndTime",
-                  displayFormat: "p dd/MM/yyyy"
-                }
-              }
-            },
-            {
-              name: "visible",
-              type: "checkbox",
-              defaultValue: true,
-              admin: {
-                position: "sidebar"
-              }
-            },
-            {
-              name: 'date',
-              type: 'date',
-              defaultValue: () => new Date(),
-              admin: {
-                position: "sidebar",
-                date: {
-                  pickerAppearance: "dayOnly",
-                  displayFormat: "MMM dd, yyyy",
-                }
-              }
-            },
-            {
-              type: 'row',
-              fields: [
-                {
-                  name: "batches",
-                  type: "relationship",
-                  relationTo: "batches",
-                  required: true,
-                  hasMany: true,
-                  filterOptions: {
-                    active: { equals: true },
-                  },
-                },
-                {
-                  name: "teacher",
-                  type: "relationship",
-                  relationTo: "teachers",
-                },
-              ]
-            },
-            {
-              name: "users",
-              type: "relationship",
-              relationTo: "users",
+              name: 'batches',
+              type: 'relationship',
+              relationTo: 'batches',
+              required: true,
               hasMany: true,
               filterOptions: {
-                roles: {
-                  contains: "student"
-                }
+                active: { equals: true },
               },
               admin: {
-                description: "Selected users can access this class regardless of enrollment status and restrictions"
-              }
+                description: 'Select the batch(es) for this attendance session',
+              },
             },
             {
-              name: "staffNotes",
-              type: "textarea",
+              name: 'onlineClassLink',
+              type: 'text',
+              label: 'Online Class Link',
               admin: {
-                description: "Internal notes for teachers and staff",
-              }
+                description: 'Google Meet or Zoom link for the class',
+              },
+            },
+            {
+              name: 'users',
+              type: 'relationship',
+              relationTo: 'users',
+              hasMany: true,
+              label: 'Additional Students',
+              filterOptions: {
+                roles: {
+                  contains: 'student',
+                },
+              },
+              admin: {
+                description:
+                  'Grant access to specific students regardless of enrollment status',
+              },
+            },
+            {
+              name: 'staffNotes',
+              type: 'textarea',
+              label: 'Staff Notes',
+              admin: {
+                description: 'Internal notes — only visible to teachers and staff',
+              },
             },
           ],
         },
         {
-          label: "Attendance Details",
+          label: 'Attendance Records',
           fields: [
             {
-              name: "relatedAttendanceDetails",
-              type: "join",
-              collection: "attendance-details",
-              on: "attendance",
-            }
-          ]
-        }
-      ]
-    }
-  ]
+              name: 'relatedAttendanceDetails',
+              type: 'join',
+              collection: 'attendance-details',
+              on: 'attendance',
+              admin: {
+                description:
+                  'Individual student attendance entries for this session',
+              },
+            },
+          ],
+        },
+      ],
+    },
+  ],
 };

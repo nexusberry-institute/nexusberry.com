@@ -525,13 +525,18 @@ export interface Teacher {
   createdAt: string;
 }
 /**
+ * Weekly class schedule entries per batch
+ *
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "time-table".
  */
 export interface TimeTable {
   id: number;
-  batch: number | Batch;
   day: 'MONDAY' | 'TUESDAY' | 'WEDNESDAY' | 'THURSDAY' | 'FRIDAY' | 'SATURDAY' | 'SUNDAY';
+  /**
+   * The batch this schedule entry belongs to
+   */
+  batch: number | Batch;
   startTime: string;
   endTime: string;
   updatedAt: string;
@@ -1833,28 +1838,42 @@ export interface Message {
   createdAt: string;
 }
 /**
+ * Manage class attendance sessions and online class links
+ *
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "attendance".
  */
 export interface Attendance {
   id: number;
-  onlineClassLink?: string | null;
-  /**
-   * After expiry time, the link will automatically be hidden from the student portal
-   */
-  expiry?: string | null;
-  visible?: boolean | null;
-  date?: string | null;
-  batches: (number | Batch)[];
+  date: string;
   teacher?: (number | null) | Teacher;
   /**
-   * Selected users can access this class regardless of enrollment status and restrictions
+   * Show this session to students
+   */
+  visible?: boolean | null;
+  /**
+   * Online class link auto-hides after this time
+   */
+  expiry?: string | null;
+  /**
+   * Select the batch(es) for this attendance session
+   */
+  batches: (number | Batch)[];
+  /**
+   * Google Meet or Zoom link for the class
+   */
+  onlineClassLink?: string | null;
+  /**
+   * Grant access to specific students regardless of enrollment status
    */
   users?: (number | User)[] | null;
   /**
-   * Internal notes for teachers and staff
+   * Internal notes — only visible to teachers and staff
    */
   staffNotes?: string | null;
+  /**
+   * Individual student attendance entries for this session
+   */
   relatedAttendanceDetails?: {
     docs?: (number | AttendanceDetail)[];
     hasNextPage?: boolean;
@@ -1864,19 +1883,27 @@ export interface Attendance {
   createdAt: string;
 }
 /**
+ * Individual student attendance entries per session
+ *
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "attendance-details".
  */
 export interface AttendanceDetail {
   id: number;
-  attendance?: (number | null) | Attendance;
-  student: number | Student;
-  medium?: ('PHYSICAL' | 'ONLINE') | null;
   status?: ('PRESENT' | 'ABSENT' | 'LEAVE') | null;
+  /**
+   * How the student attended
+   */
+  medium?: ('PHYSICAL' | 'ONLINE') | null;
   /**
    * Auto-set when student joins online class
    */
   joinedAt?: string | null;
+  /**
+   * The attendance session this entry belongs to
+   */
+  attendance: number | Attendance;
+  student: number | Student;
   updatedAt: string;
   createdAt: string;
 }
@@ -2883,8 +2910,8 @@ export interface BatchesSelect<T extends boolean = true> {
  * via the `definition` "time-table_select".
  */
 export interface TimeTableSelect<T extends boolean = true> {
-  batch?: T;
   day?: T;
+  batch?: T;
   startTime?: T;
   endTime?: T;
   updatedAt?: T;
@@ -2945,12 +2972,12 @@ export interface FeeReceiptsSelect<T extends boolean = true> {
  * via the `definition` "attendance_select".
  */
 export interface AttendanceSelect<T extends boolean = true> {
-  onlineClassLink?: T;
-  expiry?: T;
-  visible?: T;
   date?: T;
-  batches?: T;
   teacher?: T;
+  visible?: T;
+  expiry?: T;
+  batches?: T;
+  onlineClassLink?: T;
   users?: T;
   staffNotes?: T;
   relatedAttendanceDetails?: T;
@@ -2962,11 +2989,11 @@ export interface AttendanceSelect<T extends boolean = true> {
  * via the `definition` "attendance-details_select".
  */
 export interface AttendanceDetailsSelect<T extends boolean = true> {
+  status?: T;
+  medium?: T;
+  joinedAt?: T;
   attendance?: T;
   student?: T;
-  medium?: T;
-  status?: T;
-  joinedAt?: T;
   updatedAt?: T;
   createdAt?: T;
 }
