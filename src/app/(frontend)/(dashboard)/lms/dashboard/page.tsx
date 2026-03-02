@@ -189,7 +189,6 @@ export default async function StudentDashboardPage() {
                   <div key={tt.id} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
                     <div>
                       <p className="font-medium text-gray-900">{batch?.courseTitle ?? 'Class'}</p>
-                      {tt.room && <p className="text-xs text-gray-500">Room: {tt.room}</p>}
                     </div>
                     <span className="text-sm text-gray-600">
                       {formatTime(tt.startTime)} – {formatTime(tt.endTime)}
@@ -226,7 +225,7 @@ export default async function StudentDashboardPage() {
                   >
                     <div>
                       <p className="font-medium text-gray-900">
-                        {cls.type === 'CLASS' ? 'Live Class' : cls.type}
+                        Live Class
                       </p>
                       <p className="text-xs text-gray-500">
                         Expires: {new Date(cls.expiry!).toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: true, timeZone: 'Asia/Karachi' })}

@@ -2,7 +2,6 @@ import { headers as getHeaders } from 'next/headers'
 import { redirect } from 'next/navigation'
 import { getPayload } from 'payload'
 import config from '@/payload.config'
-import { Badge } from '@/components/ui/badge'
 import { ArrowLeft, CalendarDays } from 'lucide-react'
 import Link from 'next/link'
 import type { User } from '@/payload-types'
@@ -179,11 +178,6 @@ export default async function MarkAttendancePage({
               day: 'numeric',
               year: 'numeric',
             })}
-            {attendance.type && (
-              <Badge variant="outline" className="text-xs ml-1">
-                {attendance.type}
-              </Badge>
-            )}
             {batchNames && (
               <span className="text-gray-400">| {batchNames}</span>
             )}

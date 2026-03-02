@@ -111,7 +111,7 @@ export async function POST(request: NextRequest) {
           data: {
             attendance: attendanceId,
             student: studentId,
-            medium: 'PHYSICAL',
+            medium: 'ONLINE',
             status,
           },
           overrideAccess: true,

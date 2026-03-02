@@ -156,7 +156,6 @@ export default async function TeacherDashboardPage() {
                   <div key={tt.id} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
                     <div>
                       <p className="font-medium text-gray-900">{batch?.courseTitle ?? 'Class'}</p>
-                      {tt.room && <p className="text-xs text-gray-500">Room: {tt.room}</p>}
                     </div>
                     <span className="text-sm text-gray-600">
                       {formatTime(tt.startTime)} – {formatTime(tt.endTime)}
@@ -184,13 +183,10 @@ export default async function TeacherDashboardPage() {
                   <div key={att.id} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
                     <div>
                       <p className="font-medium text-gray-900">
-                        {att.type === 'CLASS' ? 'Class' : att.type}
-                        {' – '}
-                        {attBatches.map((b: any) => typeof b === 'object' ? b.courseTitle : b).join(', ')}
+                        {attBatches.map((b: any) => typeof b === 'object' ? b.courseTitle : b).join(', ') || 'Attendance'}
                       </p>
                       <p className="text-xs text-gray-500">
                         {att.date && new Date(att.date).toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' })}
-                        {att.medium && ` | ${att.medium}`}
                       </p>
                     </div>
                     <div className="flex items-center gap-2">

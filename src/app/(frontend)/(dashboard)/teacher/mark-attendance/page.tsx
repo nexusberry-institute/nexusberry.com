@@ -101,8 +101,7 @@ export default async function MarkAttendanceListPage() {
                   </div>
                   <div>
                     <p className="font-medium text-gray-900">
-                      {att.type === 'CLASS' ? 'Class' : att.type}
-                      {batchNames && ` — ${batchNames}`}
+                      {batchNames || 'Attendance'}
                     </p>
                     <p className="text-xs text-gray-500">
                       {att.date && new Date(att.date).toLocaleDateString('en-US', {
@@ -111,7 +110,6 @@ export default async function MarkAttendanceListPage() {
                         day: 'numeric',
                         year: 'numeric',
                       })}
-                      {att.medium && ` | ${att.medium}`}
                     </p>
                   </div>
                 </div>

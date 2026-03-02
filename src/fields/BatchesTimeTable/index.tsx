@@ -73,7 +73,6 @@ export default function BatchesTimeTable() {
             <th>Day</th>
             <th>Start Time</th>
             <th>End Time</th>
-            <th>Room</th>
             <th>Created At</th>
             <th>Updated At</th>
           </tr>
@@ -86,7 +85,6 @@ export default function BatchesTimeTable() {
               <td>{tt.day}</td>
               <td>{format(tt.startTime, "p")}</td>
               <td>{format(tt.endTime, "p")}</td>
-              <td>{tt.room || "N/A"}</td>
               <td>{format(tt.createdAt, "dd/mm/yyyy p")}</td>
               <td>{format(tt.updatedAt, "dd/mm/yyyy p")}</td>
             </tr>

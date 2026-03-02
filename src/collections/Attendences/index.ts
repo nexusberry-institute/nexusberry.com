@@ -5,6 +5,7 @@ export const Attendances: CollectionConfig = {
   admin: {
     listSearchableFields: ["batches"],
     group: "Academic Operations",
+    defaultColumns: ['batches', 'teacher', 'date', 'visible'],
   },
   defaultSort: "-date",
   fields: [
@@ -17,12 +18,11 @@ export const Attendances: CollectionConfig = {
             {
               name: "onlineClassLink",
               type: "text",
-              required: true
             },
             {
               name: "expiry",
               type: "date",
-              defaultValue: () => new Date(Date.now() + 2 * 60 * 60 * 1000),
+              defaultValue: () => new Date(Date.now() + 90 * 60 * 1000),
               admin: {
                 position: "sidebar",
                 description: "After expiry time, the link will automatically be hidden from the student portal",
@@ -41,6 +41,18 @@ export const Attendances: CollectionConfig = {
               }
             },
             {
+              name: 'date',
+              type: 'date',
+              defaultValue: () => new Date(),
+              admin: {
+                position: "sidebar",
+                date: {
+                  pickerAppearance: "dayOnly",
+                  displayFormat: "MMM dd, yyyy",
+                }
+              }
+            },
+            {
               type: 'row',
               fields: [
                 {
@@ -49,150 +61,38 @@ export const Attendances: CollectionConfig = {
                   relationTo: "batches",
                   required: true,
                   hasMany: true,
-                  filterOptions: async ({ data, req }) => {
-
-                    if (data.type === "CLASS") {
-
-                      const daysOfWeek = ["SUNDAY", "MONDAY",
-                        "TUESDAY", "WEDNESDAY", "THURSDAY",
-                        "FRIDAY", "SATURDAY"]
-
-                      const selectedDay = new Date(data.date).getDay()
-                      const scheduledBatches = await req.payload.find({
-                        collection: "time-table",
-                        depth: 0,
-                        select: {
-                          batch: true,
-                        },
-                        where: {
-                          day: { equals: daysOfWeek[selectedDay] }
-                        }
-                      })
-
-                      if (scheduledBatches.totalDocs) {
-                        return {
-                          id: { in: scheduledBatches.docs.map(scheduledBatch => scheduledBatch.batch) },
-                          active: { equals: true }
-                        }
-                      } else return false
-
-                    } else return {
-                      id: { not_equals: 0 },
-                      active: { equals: true }
-                    }
-                  },
-                  admin: {
-                    description: "When Class Type is set to 'Class', only batches with a scheduled class for today will be shown"
-                  }
-                },
-              ]
-            },
-            {
-              type: 'row',
-              fields: [
-                {
-                  name: "users",
-                  type: "relationship",
-                  relationTo: "users",
-                  hasMany: true,
                   filterOptions: {
-                    roles: {
-                      contains: "student"
-                    }
+                    active: { equals: true },
                   },
-                  admin: {
-                    description: "Selected users can access this class regardless of enrollment status and restrictions"
-                  }
                 },
                 {
                   name: "teacher",
                   type: "relationship",
                   relationTo: "teachers",
-                  filterOptions: ({ data }) => {
-                    return {
-                      id: { in: data.batch }
-                    }
-                  },
-                  admin: {
-                    description: "Teahcer for this class (OPTIONAl)"
-                  }
+                },
+              ]
+            },
+            {
+              name: "users",
+              type: "relationship",
+              relationTo: "users",
+              hasMany: true,
+              filterOptions: {
+                roles: {
+                  contains: "student"
                 }
-              ]
+              },
+              admin: {
+                description: "Selected users can access this class regardless of enrollment status and restrictions"
+              }
             },
             {
-              type: 'row',
-              fields: [
-                {
-                  name: 'date',
-                  type: 'date',
-                  defaultValue: () => new Date(),
-                  admin: {
-                    date: {
-                      pickerAppearance: "dayOnly",
-                      displayFormat: "MMM dd, yyyy",
-                    }
-                  }
-                },
-                {
-                  name: 'type',
-                  label: "Class Type",
-                  type: 'select',
-                  defaultValue: "CLASS",
-                  options: [
-                    {
-                      label: 'Class',
-                      value: 'CLASS',
-                    },
-                    {
-                      label: 'Lab',
-                      value: 'LAB',
-                    },
-                    {
-                      label: 'Make Up Class',
-                      value: 'MAKE-UP-CLASS',
-                    },
-                    {
-                      label: 'Make Up Lab',
-                      value: 'MAKE-UP-LAB',
-                    }
-                  ]
-                },
-                {
-                  name: 'medium',
-                  type: 'select',
-                  options: [
-                    {
-                      label: 'Physical',
-                      value: 'PHYSICAL',
-                    },
-                    {
-                      label: 'Online',
-                      value: 'ONLINE',
-                    },
-                    {
-                      label: 'Hybrid',
-                      value: 'HYBRID',
-                    }
-                  ]
-                },
-              ]
+              name: "staffNotes",
+              type: "textarea",
+              admin: {
+                description: "Internal notes for teachers and staff",
+              }
             },
-            {
-              name: "content",
-              type: "text"
-            },
-            // TODO: Create custom field component
-            // {
-            //   name: "TimeTable",
-            //   type: "ui",
-            //   admin: {
-            //     components: {
-            //       Field: {
-            //         path: "@/fields/BatchesTimeTable"
-            //       }
-            //     }
-            //   }
-            // },
           ],
         },
         {
@@ -205,24 +105,7 @@ export const Attendances: CollectionConfig = {
               on: "attendance",
             }
           ]
-        },
-        // TODO: Create custom field component
-        // {
-        //   label: "Mark Attendance",
-        //   fields: [
-        //     {
-        //       name: "markAttendance",
-        //       type: "ui",
-        //       admin: {
-        //         components: {
-        //           Field: {
-        //             path: "@/fields/MarkAttendance"
-        //           }
-        //         }
-        //       }
-        //     }
-        //   ]
-        // }
+        }
       ]
     }
   ]

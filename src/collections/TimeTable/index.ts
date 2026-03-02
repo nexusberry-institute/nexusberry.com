@@ -1,4 +1,3 @@
-// import { checkAccess } from '@/access/accessControl';
 import { CollectionConfig } from 'payload';
 
 export const TimeTable: CollectionConfig = {
@@ -6,13 +5,9 @@ export const TimeTable: CollectionConfig = {
   admin: {
     useAsTitle: 'day',
     group: "Academic Operations",
+    defaultColumns: ['batch', 'day', 'startTime', 'endTime'],
   },
-  access: {
-    // create: checkAccess('time-table', 'create'),
-    // read: checkAccess('time-table', 'read'),
-    // update: checkAccess('time-table', 'update'),
-    // delete: checkAccess('time-table', 'delete'),
-  },
+  access: {},
   fields: [
     {
       type: 'row',
@@ -50,8 +45,6 @@ export const TimeTable: CollectionConfig = {
               timeIntervals: 30,
             },
           }
-
-
         },
         {
           name: 'endTime',
@@ -72,10 +65,6 @@ export const TimeTable: CollectionConfig = {
           }
         },
       ]
-    },
-    {
-      name: "room",
-      type: "text"
     },
   ],
 };

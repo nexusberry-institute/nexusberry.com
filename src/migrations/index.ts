@@ -27,6 +27,7 @@ import * as migration_20260227_status_enum_changes from './20260227_status_enum_
 import * as migration_20260227_add_title_to_enrollments from './20260227_add_title_to_enrollments';
 import * as migration_20260302_simplify_tutorial_access from './20260302_simplify_tutorial_access';
 import * as migration_20260302_add_student_to_attendance_details from './20260302_add_student_to_attendance_details';
+import * as migration_20260302_attendance_system_overhaul from './20260302_attendance_system_overhaul';
 
 export const migrations = [
   {
@@ -173,5 +174,10 @@ export const migrations = [
     up: migration_20260302_add_student_to_attendance_details.up,
     down: migration_20260302_add_student_to_attendance_details.down,
     name: '20260302_add_student_to_attendance_details',
+  },
+  {
+    up: migration_20260302_attendance_system_overhaul.up,
+    down: migration_20260302_attendance_system_overhaul.down,
+    name: '20260302_attendance_system_overhaul',
   },
 ];

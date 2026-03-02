@@ -534,7 +534,6 @@ export interface TimeTable {
   day: 'MONDAY' | 'TUESDAY' | 'WEDNESDAY' | 'THURSDAY' | 'FRIDAY' | 'SATURDAY' | 'SUNDAY';
   startTime: string;
   endTime: string;
-  room?: string | null;
   updatedAt: string;
   createdAt: string;
 }
@@ -1839,28 +1838,23 @@ export interface Message {
  */
 export interface Attendance {
   id: number;
-  onlineClassLink: string;
+  onlineClassLink?: string | null;
   /**
    * After expiry time, the link will automatically be hidden from the student portal
    */
   expiry?: string | null;
   visible?: boolean | null;
-  /**
-   * When Class Type is set to 'Class', only batches with a scheduled class for today will be shown
-   */
+  date?: string | null;
   batches: (number | Batch)[];
+  teacher?: (number | null) | Teacher;
   /**
    * Selected users can access this class regardless of enrollment status and restrictions
    */
   users?: (number | User)[] | null;
   /**
-   * Teahcer for this class (OPTIONAl)
+   * Internal notes for teachers and staff
    */
-  teacher?: (number | null) | Teacher;
-  date?: string | null;
-  type?: ('CLASS' | 'LAB' | 'MAKE-UP-CLASS' | 'MAKE-UP-LAB') | null;
-  medium?: ('PHYSICAL' | 'ONLINE' | 'HYBRID') | null;
-  content?: string | null;
+  staffNotes?: string | null;
   relatedAttendanceDetails?: {
     docs?: (number | AttendanceDetail)[];
     hasNextPage?: boolean;
@@ -1875,7 +1869,7 @@ export interface Attendance {
  */
 export interface AttendanceDetail {
   id: number;
-  attendance: number | Attendance;
+  attendance?: (number | null) | Attendance;
   student: number | Student;
   medium?: ('PHYSICAL' | 'ONLINE') | null;
   status?: ('PRESENT' | 'ABSENT' | 'LEAVE') | null;
@@ -2893,7 +2887,6 @@ export interface TimeTableSelect<T extends boolean = true> {
   day?: T;
   startTime?: T;
   endTime?: T;
-  room?: T;
   updatedAt?: T;
   createdAt?: T;
 }
@@ -2955,13 +2948,11 @@ export interface AttendanceSelect<T extends boolean = true> {
   onlineClassLink?: T;
   expiry?: T;
   visible?: T;
-  batches?: T;
-  users?: T;
-  teacher?: T;
   date?: T;
-  type?: T;
-  medium?: T;
-  content?: T;
+  batches?: T;
+  teacher?: T;
+  users?: T;
+  staffNotes?: T;
   relatedAttendanceDetails?: T;
   updatedAt?: T;
   createdAt?: T;

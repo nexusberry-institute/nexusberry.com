@@ -24,7 +24,6 @@ export const AttendanceDetails: CollectionConfig = {
           type: "relationship",
           relationTo: "attendance",
           hasMany: false,
-          required: true
         },
         {
           name: "student",
@@ -42,6 +41,7 @@ export const AttendanceDetails: CollectionConfig = {
         {
           name: "medium",
           type: "radio",
+          defaultValue: "ONLINE",
           options: [
             "PHYSICAL",
             "ONLINE"
@@ -50,6 +50,7 @@ export const AttendanceDetails: CollectionConfig = {
         {
           name: "status",
           type: "select",
+          defaultValue: "ABSENT",
           options: [
             {
               label: "Present",
@@ -63,7 +64,12 @@ export const AttendanceDetails: CollectionConfig = {
               label: "Leave",
               value: "LEAVE",
             }
-          ]
+          ],
+          admin: {
+            components: {
+              Cell: '@/fields/AttendanceStatusField/AttendanceStatusCell.tsx#AttendanceStatusCell',
+            },
+          },
         },
       ]
     },

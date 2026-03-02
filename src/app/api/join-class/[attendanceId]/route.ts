@@ -120,6 +120,9 @@ export async function GET(
     }
 
     // Redirect to Google Meet
+    if (!attendance.onlineClassLink) {
+      return NextResponse.redirect(new URL(`${DASHBOARD_URL}?error=no-class-link`, _request.url))
+    }
     return NextResponse.redirect(attendance.onlineClassLink)
   } catch {
     return NextResponse.redirect(new URL(`${DASHBOARD_URL}?error=server-error`, _request.url))
