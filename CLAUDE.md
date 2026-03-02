@@ -18,27 +18,31 @@ Local development connects to the **Supabase production database**. There is no 
    ```bash
    pnpm generate:types
    ```
-2. **Verify TypeScript** (no emit)
+2. **Regenerate import map** *(only if a custom component was added or changed, e.g. `Cell`, `Field`, `Filter` references)*
+   ```bash
+   pnpm payload generate:importmap
+   ```
+3. **Verify TypeScript** (no emit)
    ```bash
    pnpm tsc --noEmit
    ```
-3. **Verify linting**
+4. **Verify linting**
    ```bash
    pnpm lint
    ```
-4. **Build check**
+5. **Build check**
    ```bash
    pnpm build
    ```
-5. **Create migration** (for Postgres schema changes)
+6. **Create migration** (for Postgres schema changes)
    ```bash
    pnpm payload migrate:create
    ```
-6. **Run migration**
+7. **Run migration**
    ```bash
    pnpm payload migrate
    ```
-7. **Then suggest commit and push**
+8. **Then suggest commit and push**
 
 Never skip steps. Fix any errors before proceeding to the next step.
 
