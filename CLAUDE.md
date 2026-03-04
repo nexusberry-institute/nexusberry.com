@@ -1,7 +1,7 @@
 # Project: nexusberry.com
 
 ## Tech Stack
-- **Framework:** Next.js + Payload CMS 3.76
+- **Framework:** Next.js 15.4.11 + Payload CMS 3.78.0
 - **Database:** PostgreSQL via Supabase (production DB used locally — no separate dev DB)
 - **DB Adapter:** `@payloadcms/db-postgres` (uses Drizzle ORM internally)
 - **Package manager:** pnpm
