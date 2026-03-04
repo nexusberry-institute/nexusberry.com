@@ -3,6 +3,13 @@ import { slugField } from '@/fields/slug'
 import { revalidateTutorial, revalidateDeleteTutorial } from './hooks/revalidateTutorial'
 import { richTextField } from '@/fields/richTextField'
 import { checkRole } from '@/access/checkRole'
+import {
+  MetaDescriptionField,
+  MetaImageField,
+  MetaTitleField,
+  OverviewField,
+  PreviewField,
+} from '@payloadcms/plugin-seo/fields'
 
 export const Tutorials: CollectionConfig = {
   slug: 'tutorials',
@@ -226,6 +233,29 @@ export const Tutorials: CollectionConfig = {
                 description: 'When enabled, the presentation tab will be displayed on the frontend.',
               },
             },
+          ],
+        },
+        {
+          name: 'meta',
+          label: 'SEO',
+          fields: [
+            OverviewField({
+              titlePath: 'meta.title',
+              descriptionPath: 'meta.description',
+              imagePath: 'meta.image',
+            }),
+            MetaTitleField({
+              hasGenerateFn: true,
+            }),
+            MetaImageField({
+              relationTo: 'media',
+            }),
+            MetaDescriptionField({}),
+            PreviewField({
+              hasGenerateFn: true,
+              titlePath: 'meta.title',
+              descriptionPath: 'meta.description',
+            }),
           ],
         },
       ],

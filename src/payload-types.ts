@@ -446,6 +446,14 @@ export interface Tutorial {
    * When enabled, the presentation tab will be displayed on the frontend.
    */
   showPresentation?: boolean | null;
+  meta?: {
+    title?: string | null;
+    /**
+     * Maximum upload file size: 12MB. Recommended file size for images is <500KB.
+     */
+    image?: (number | null) | Media;
+    description?: string | null;
+  };
   updatedAt: string;
   createdAt: string;
 }
@@ -3203,6 +3211,13 @@ export interface TutorialsSelect<T extends boolean = true> {
   showAssignment?: T;
   showCode?: T;
   showPresentation?: T;
+  meta?:
+    | T
+    | {
+        title?: T;
+        image?: T;
+        description?: T;
+      };
   updatedAt?: T;
   createdAt?: T;
 }

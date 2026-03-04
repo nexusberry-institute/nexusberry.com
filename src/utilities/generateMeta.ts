@@ -1,6 +1,6 @@
 import type { Metadata } from 'next'
 
-import type { Media, Page, Post, Config, Department, WebCourse } from '../payload-types'
+import type { Media, Page, Post, Config, Department, WebCourse, Tutorial } from '../payload-types'
 
 import { mergeOpenGraph } from './mergeOpenGraph'
 import { getServerSideURL } from './getURL'
@@ -22,24 +22,33 @@ const getImageURL = (image?: Media | Config['db']['defaultIDType'] | null) => {
 // ... existing imports
 
 export const generateMeta = async (args: {
-  doc: Partial<Page> | Partial<Post> | Partial<Department> | Partial<WebCourse> | any | null | undefined
+  doc: Partial<Page> | Partial<Post> | Partial<Department> | Partial<WebCourse> | Partial<Tutorial> | any | null | undefined
 }): Promise<Metadata> => {
   const { doc } = args
   const serverUrl = getServerSideURL()
   const ogImage = getImageURL(doc?.meta?.image)
 
   // 1. Determine the URL Prefix based on the document properties
-  let prefix = '' 
-  
+  let prefix = ''
+
   if (doc?.slug) {
+    // Check for Tutorial pattern (has subject relationship)
+    if ("subject" in doc && doc.subject) {
+      const subjectSlug = typeof doc.subject === 'object' && 'slug' in doc.subject ? doc.subject.slug : null
+      if (subjectSlug) {
+        prefix = `/tutorials/${subjectSlug}`
+      } else {
+        prefix = '/tutorials'
+      }
+    }
     // Check for Department pattern
-    if ("departmentName" in doc) {
+    else if ("departmentName" in doc) {
       prefix = '/departments'
-    } 
+    }
     // Check for Course pattern
     else if ("courseTitle" in doc) {
       prefix = '/course'
-    } 
+    }
     // Check for Post/Blog pattern
     else if ("content" in doc && !("courseTitle" in doc)) {
       prefix = '/blog'
@@ -67,6 +76,9 @@ export const generateMeta = async (args: {
 
   if ("departmentName" in (doc || {})) {
     keywordsList = [`${doc.departmentName} Courses`, "NexusBerry Departments", ...keywordsList]
+  } else if ("subject" in (doc || {}) && doc?.subject) {
+    const subjectTitle = typeof doc.subject === 'object' && 'title' in doc.subject ? doc.subject.title : ''
+    keywordsList = [doc.title || '', subjectTitle, 'tutorial', 'guide', ...keywordsList].filter(Boolean)
   }
 
   const title = doc?.meta?.title

@@ -28,6 +28,7 @@ import * as migration_20260227_add_title_to_enrollments from './20260227_add_tit
 import * as migration_20260302_simplify_tutorial_access from './20260302_simplify_tutorial_access';
 import * as migration_20260302_add_student_to_attendance_details from './20260302_add_student_to_attendance_details';
 import * as migration_20260302_attendance_system_overhaul from './20260302_attendance_system_overhaul';
+import * as migration_20260303_add_seo_to_tutorials from './20260303_add_seo_to_tutorials';
 
 export const migrations = [
   {
@@ -179,5 +180,10 @@ export const migrations = [
     up: migration_20260302_attendance_system_overhaul.up,
     down: migration_20260302_attendance_system_overhaul.down,
     name: '20260302_attendance_system_overhaul',
+  },
+  {
+    up: migration_20260303_add_seo_to_tutorials.up,
+    down: migration_20260303_add_seo_to_tutorials.down,
+    name: '20260303_add_seo_to_tutorials',
   },
 ];

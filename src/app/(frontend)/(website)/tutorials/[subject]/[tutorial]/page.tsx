@@ -4,12 +4,11 @@ import { unstable_cache } from 'next/cache'
 import Link from 'next/link'
 import type { Metadata } from 'next/types'
 import ErrorCard from '../../../_components/ErrorCard'
-import { getServerSideURL } from '@/utilities/getURL'
 import TutorialTabs from './_components/TutorialTabs'
 import VideoPlayer from './_components/VideoPlayer'
 import TutorialAccessGate from './_components/TutorialAccessGate'
 import RichText from '@/components/RichText'
-import { mergeOpenGraph } from '@/utilities/mergeOpenGraph'
+import { generateMeta } from '@/utilities/generateMeta'
 
 export const revalidate = false
 
@@ -56,6 +55,7 @@ const queryTutorialBySlug = (slug: string) =>
           presentationUrl: true,
           isPublic: true,
           requiresLogin: true,
+          meta: true,
         },
       })
       return result.docs[0] || null
@@ -69,44 +69,9 @@ export async function generateMetadata({
 }: {
   params: Promise<{ subject: string; tutorial: string }>
 }): Promise<Metadata> {
-  try {
-    const { tutorial: slug, subject: subjectSlug } = await paramsPromise
-    const tutorial = await queryTutorialBySlug(slug)
-
-    if (!tutorial) {
-      return { title: 'Tutorial Not Found | NexusBerry' }
-    }
-
-    const subjectTitle =
-      tutorial.subject && typeof tutorial.subject === 'object'
-        ? (tutorial.subject as TutorialSubject).title
-        : ''
-
-    const title = `${tutorial.title} | ${subjectTitle} Tutorial | NexusBerry`
-    const description = `Learn ${tutorial.title} in our ${subjectTitle} tutorial series at NexusBerry Training & Solutions.`
-
-    return {
-      title,
-      description,
-      keywords: [
-        tutorial.title?.toLowerCase() || '',
-        subjectTitle?.toLowerCase() || '',
-        'tutorial',
-        'guide',
-        'nexusberry',
-      ],
-      alternates: {
-        canonical: `${getServerSideURL()}/tutorials/${subjectSlug}/${tutorial.slug}`,
-      },
-      openGraph: mergeOpenGraph({
-        title,
-        description,
-        url: `${getServerSideURL()}/tutorials/${subjectSlug}/${tutorial.slug}`,
-      }),
-    }
-  } catch {
-    return { title: 'Tutorial | NexusBerry' }
-  }
+  const { tutorial: slug } = await paramsPromise
+  const tutorial = await queryTutorialBySlug(slug)
+  return generateMeta({ doc: tutorial })
 }
 
 export default async function TutorialPage({
