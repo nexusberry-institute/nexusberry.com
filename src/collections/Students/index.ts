@@ -46,7 +46,7 @@ export const Students: CollectionConfig = {
                   .map((s) => s.user)
                   .filter(Boolean)
 
-                const conditions: Where[] = [{ roles: { contains: 'student' } }]
+                const conditions: Where[] = [{ roles: { equals: 'student' } }]
                 if (linkedUserIds.length > 0) {
                   conditions.push({ id: { not_in: linkedUserIds } })
                 }

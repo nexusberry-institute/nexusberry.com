@@ -92,7 +92,7 @@ export const Attendances: CollectionConfig = {
               label: 'Additional Students',
               filterOptions: {
                 roles: {
-                  contains: 'student',
+                  equals: 'student',
                 },
               },
               admin: {
