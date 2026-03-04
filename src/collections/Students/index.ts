@@ -1,4 +1,4 @@
-import { CollectionConfig, Where } from 'payload'
+import { CollectionConfig } from 'payload'
 import { trackNewStudentAdmission } from './hooks/track'
 import { cascadeWithdrawal } from './hooks/cascadeWithdrawal'
 import { exportCsvEndpoint, exportEmailsEndpoint } from './endpoints'
@@ -34,24 +34,36 @@ export const Students: CollectionConfig = {
               hasMany: false,
               unique: true,
               filterOptions: async ({ id, req }) => {
-                const existingStudents = await req.payload.find({
-                  collection: 'students',
-                  depth: 0,
-                  limit: 0,
-                  select: { user: true },
-                  where: id ? { id: { not_equals: id } } : {},
-                })
+                const [studentRoleUsers, existingStudents] = await Promise.all([
+                  req.payload.find({
+                    collection: 'users',
+                    depth: 0,
+                    limit: 0,
+                    select: {},
+                    where: { roles: { equals: 'student' } },
+                  }),
+                  req.payload.find({
+                    collection: 'students',
+                    depth: 0,
+                    limit: 0,
+                    select: { user: true },
+                    where: id ? { id: { not_equals: id } } : {},
+                  }),
+                ])
 
-                const linkedUserIds = existingStudents.docs
-                  .map((s) => s.user)
-                  .filter(Boolean)
+                const linkedUserIds = new Set(
+                  existingStudents.docs.map((s) => s.user).filter(Boolean),
+                )
 
-                const conditions: Where[] = [{ roles: { equals: 'student' } }]
-                if (linkedUserIds.length > 0) {
-                  conditions.push({ id: { not_in: linkedUserIds } })
+                const availableIds = studentRoleUsers.docs
+                  .filter((u) => !linkedUserIds.has(u.id))
+                  .map((u) => u.id)
+
+                if (availableIds.length === 0) {
+                  return { id: { equals: 0 } }
                 }
 
-                return { and: conditions }
+                return { id: { in: availableIds } }
               },
             },
             {
