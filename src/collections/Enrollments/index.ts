@@ -56,12 +56,12 @@ export const Enrollments: CollectionConfig = {
             const studentDoc =
               typeof studentVal === 'object'
                 ? studentVal
-                : await req.payload.findByID({ collection: 'students', id: studentVal, depth: 0 })
+                : await req.payload.findByID({ collection: 'students', id: studentVal, depth: 0, req })
 
             const batchDoc =
               typeof batchVal === 'object'
                 ? batchVal
-                : await req.payload.findByID({ collection: 'batches', id: batchVal, depth: 0 })
+                : await req.payload.findByID({ collection: 'batches', id: batchVal, depth: 0, req })
 
             return `${studentDoc.fullName} — ${batchDoc.slug}`
           },

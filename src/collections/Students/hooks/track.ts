@@ -31,6 +31,7 @@ export const trackNewStudentAdmission: CollectionAfterChangeHook =
           id: userId,
           select: { email: true },
           depth: 0,
+          req,
         })
         email = user?.email
       } catch (_e) {

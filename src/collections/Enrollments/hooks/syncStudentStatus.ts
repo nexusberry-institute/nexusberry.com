@@ -23,13 +23,15 @@ export const syncStudentStatus: CollectionAfterChangeHook = async ({
     id: studentId,
     depth: 0,
     select: { status: true },
+    req,
   })
 
-  if (student.status === 'on-hold') {
+  if (student?.status === 'on-hold') {
     await req.payload.update({
       collection: 'students',
       id: studentId,
       data: { status: 'active' },
+      req,
     })
   }
 }
