@@ -37,6 +37,7 @@ export const Students: CollectionConfig = {
                 const [studentRoleUsers, existingStudents] = await Promise.all([
                   req.payload.find({
                     collection: 'users',
+                    req,
                     depth: 0,
                     limit: 0,
                     select: {},
@@ -44,6 +45,7 @@ export const Students: CollectionConfig = {
                   }),
                   req.payload.find({
                     collection: 'students',
+                    req,
                     depth: 0,
                     limit: 0,
                     select: { user: true },
