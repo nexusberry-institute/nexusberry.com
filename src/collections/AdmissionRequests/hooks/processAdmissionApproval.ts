@@ -27,6 +27,7 @@ export const processAdmissionApproval: CollectionAfterChangeHook = async ({
         processingError: 'Cannot approve: no batch assigned.',
       },
       overrideAccess: true,
+      req,
     })
     return doc
   }
@@ -40,6 +41,7 @@ export const processAdmissionApproval: CollectionAfterChangeHook = async ({
         processingError: 'Cannot approve: no installment plan defined.',
       },
       overrideAccess: true,
+      req,
     })
     return doc
   }
@@ -63,6 +65,7 @@ export const processAdmissionApproval: CollectionAfterChangeHook = async ({
         collection: 'users',
         id: userId,
         depth: 0,
+        req,
       })
 
       const currentRoles = (existingUser.roles ?? []) as UserRole[]
@@ -76,6 +79,7 @@ export const processAdmissionApproval: CollectionAfterChangeHook = async ({
             roles: updatedRoles as UserRole[],
           },
           overrideAccess: true,
+          req,
         })
       }
     } else {
@@ -85,6 +89,7 @@ export const processAdmissionApproval: CollectionAfterChangeHook = async ({
         where: { email: { equals: doc.email } },
         limit: 1,
         depth: 0,
+        req,
       })
 
       const firstUser = existingUsers.docs[0]
@@ -102,6 +107,7 @@ export const processAdmissionApproval: CollectionAfterChangeHook = async ({
               roles: updatedRoles as UserRole[],
             },
             overrideAccess: true,
+            req,
           })
         }
       } else {
@@ -116,6 +122,7 @@ export const processAdmissionApproval: CollectionAfterChangeHook = async ({
             _verified: true,
           },
           overrideAccess: true,
+          req,
         })
         userId = newUser.id as number
       }
@@ -129,6 +136,7 @@ export const processAdmissionApproval: CollectionAfterChangeHook = async ({
       where: { user: { equals: userId } },
       limit: 1,
       depth: 0,
+      req,
     })
 
     const firstStudent = existingStudents.docs[0]
@@ -157,6 +165,7 @@ export const processAdmissionApproval: CollectionAfterChangeHook = async ({
           admissionDate: new Date().toISOString(),
         },
         overrideAccess: true,
+        req,
       })
       studentId = newStudent.id as number
       // trackNewStudentAdmission fires automatically via Students afterChange hook
@@ -182,6 +191,7 @@ export const processAdmissionApproval: CollectionAfterChangeHook = async ({
           note: `Created from admission request #${doc.id}`,
         },
         overrideAccess: true,
+        req,
       })
       enrollmentId = enrollment.id as number
     } catch (err: unknown) {
@@ -199,6 +209,7 @@ export const processAdmissionApproval: CollectionAfterChangeHook = async ({
           },
           limit: 1,
           depth: 0,
+          req,
         })
         const existingEnrollment = existing.docs[0]
         if (existingEnrollment) {
@@ -242,6 +253,7 @@ export const processAdmissionApproval: CollectionAfterChangeHook = async ({
           note: `Installment ${i + 1} — Admission Request #${doc.id}`,
         },
         overrideAccess: true,
+        req,
       })
     }
 
@@ -256,6 +268,7 @@ export const processAdmissionApproval: CollectionAfterChangeHook = async ({
           stage: 'ENROLLED',
         },
         overrideAccess: true,
+        req,
       })
     }
 
@@ -272,6 +285,7 @@ export const processAdmissionApproval: CollectionAfterChangeHook = async ({
         ...(tempPassword ? { tempPassword } : {}),
       },
       overrideAccess: true,
+      req,
     })
   } catch (error: unknown) {
     const errorMessage =
@@ -284,6 +298,7 @@ export const processAdmissionApproval: CollectionAfterChangeHook = async ({
         processingError: `Processing failed: ${errorMessage}. Previously created records may exist — check Users, Students, Enrollments manually.`,
       },
       overrideAccess: true,
+      req,
     })
   }
 
