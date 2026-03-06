@@ -23,12 +23,12 @@ interface StudentRow {
   medium?: 'ONLINE' | 'PHYSICAL' | null
 }
 
-interface MarkAttendanceFormProps {
+interface UpdateAttendanceFormProps {
   attendanceId: number
   students: StudentRow[]
 }
 
-export function MarkAttendanceForm({ attendanceId, students: initialStudents }: MarkAttendanceFormProps) {
+export function UpdateAttendanceForm({ attendanceId, students: initialStudents }: UpdateAttendanceFormProps) {
   const [students, setStudents] = useState<StudentRow[]>(initialStudents)
   const [submitting, setSubmitting] = useState(false)
   const router = useRouter()
@@ -108,15 +108,14 @@ export function MarkAttendanceForm({ attendanceId, students: initialStudents }: 
                         key={s}
                         type="button"
                         onClick={() => setStatus(student.studentId, s)}
-                        className={`px-3 py-1 text-xs font-medium rounded-full border transition-colors ${
-                          student.status === s
+                        className={`px-3 py-1 text-xs font-medium rounded-full border transition-colors ${student.status === s
                             ? s === 'PRESENT'
                               ? 'bg-green-100 text-green-800 border-green-300'
                               : s === 'ABSENT'
                                 ? 'bg-red-100 text-red-800 border-red-300'
                                 : 'bg-yellow-100 text-yellow-800 border-yellow-300'
                             : 'bg-gray-50 text-gray-500 border-gray-200 hover:bg-gray-100'
-                        }`}
+                          }`}
                       >
                         {s}
                       </button>
@@ -139,7 +138,7 @@ export function MarkAttendanceForm({ attendanceId, students: initialStudents }: 
       ) : (
         <div className="flex justify-end">
           <Button onClick={handleSubmit} disabled={submitting}>
-            {submitting ? 'Saving...' : 'Save Attendance'}
+            {submitting ? 'Updating...' : 'Update Attendance'}
           </Button>
         </div>
       )}

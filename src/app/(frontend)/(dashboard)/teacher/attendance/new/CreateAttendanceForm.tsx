@@ -167,16 +167,14 @@ export function CreateAttendanceForm({ teacherId, batches }: CreateAttendanceFor
                 key={batch.id}
                 type="button"
                 onClick={() => toggleBatch(batch.id)}
-                className={`px-4 py-2 text-sm font-medium rounded-lg border transition-colors text-left ${
-                  selectedBatchIds.includes(batch.id)
+                className={`px-4 py-2 text-sm font-medium rounded-lg border transition-colors text-left ${selectedBatchIds.includes(batch.id)
                     ? 'bg-gray-900 text-white border-gray-900'
                     : 'bg-white text-gray-700 border-gray-200 hover:bg-gray-50'
-                }`}
+                  }`}
               >
                 <span className="block">{batch.courseTitle}</span>
-                <span className={`block text-xs mt-0.5 ${
-                  selectedBatchIds.includes(batch.id) ? 'text-gray-300' : 'text-gray-400'
-                }`}>
+                <span className={`block text-xs mt-0.5 ${selectedBatchIds.includes(batch.id) ? 'text-gray-300' : 'text-gray-400'
+                  }`}>
                   {batch.slug}
                 </span>
               </button>
@@ -223,15 +221,14 @@ export function CreateAttendanceForm({ teacherId, batches }: CreateAttendanceFor
                               key={s}
                               type="button"
                               onClick={() => setStatus(student.studentId, s)}
-                              className={`px-3 py-1 text-xs font-medium rounded-full border transition-colors ${
-                                student.status === s
+                              className={`px-3 py-1 text-xs font-medium rounded-full border transition-colors ${student.status === s
                                   ? s === 'PRESENT'
                                     ? 'bg-green-100 text-green-800 border-green-300'
                                     : s === 'ABSENT'
                                       ? 'bg-red-100 text-red-800 border-red-300'
                                       : 'bg-yellow-100 text-yellow-800 border-yellow-300'
                                   : 'bg-gray-50 text-gray-500 border-gray-200 hover:bg-gray-100'
-                              }`}
+                                }`}
                             >
                               {s}
                             </button>
@@ -268,7 +265,7 @@ export function CreateAttendanceForm({ teacherId, batches }: CreateAttendanceFor
       {selectedBatchIds.length > 0 && students.length > 0 && (
         <div className="flex justify-end">
           <Button onClick={handleSubmit} disabled={submitting}>
-            {submitting ? 'Creating...' : 'Create Attendance Session'}
+            {submitting ? 'Creating Attendance...' : 'Create Attendance Session'}
           </Button>
         </div>
       )}

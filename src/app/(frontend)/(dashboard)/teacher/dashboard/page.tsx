@@ -78,14 +78,14 @@ export default async function TeacherDashboardPage() {
   const [todayScheduleResult, recentAttendanceResult] = await Promise.all([
     batchIds.length > 0
       ? payload.find({
-          collection: 'time-table',
-          where: {
-            batch: { in: batchIds },
-            day: { equals: todayDay },
-          },
-          depth: 1,
-          limit: 20,
-        })
+        collection: 'time-table',
+        where: {
+          batch: { in: batchIds },
+          day: { equals: todayDay },
+        },
+        depth: 1,
+        limit: 20,
+      })
       : Promise.resolve({ docs: [] }),
     payload.find({
       collection: 'attendance',
@@ -197,7 +197,7 @@ export default async function TeacherDashboardPage() {
                         href={`/teacher/attendance/${att.id}`}
                         className="px-3 py-1 text-xs font-medium rounded-lg bg-emerald-100 text-emerald-700 hover:bg-emerald-200 transition-colors"
                       >
-                        Mark Attendance
+                        Edit Attendance
                       </Link>
                       <Badge variant={att.visible ? 'default' : 'secondary'} className="text-xs">
                         {att.visible ? 'Active' : 'Expired'}

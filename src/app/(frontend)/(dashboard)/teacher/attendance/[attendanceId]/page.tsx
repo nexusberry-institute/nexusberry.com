@@ -5,7 +5,7 @@ import config from '@/payload.config'
 import { ArrowLeft, CalendarDays } from 'lucide-react'
 import Link from 'next/link'
 import type { User } from '@/payload-types'
-import { MarkAttendanceForm } from './MarkAttendanceForm'
+import { UpdateAttendanceForm } from './UpdateAttendanceForm'
 
 export default async function MarkAttendancePage({
   params,
@@ -92,16 +92,16 @@ export default async function MarkAttendancePage({
   // Fetch enrolled students in those batches
   const enrollmentsResult = batchIds.length > 0
     ? await payload.find({
-        collection: 'enrollments',
-        where: {
-          batch: { in: batchIds },
-          status: { equals: 'active' },
-        },
-        depth: 1,
-        limit: 200,
-        pagination: false,
-        overrideAccess: true,
-      })
+      collection: 'enrollments',
+      where: {
+        batch: { in: batchIds },
+        status: { equals: 'active' },
+      },
+      depth: 1,
+      limit: 200,
+      pagination: false,
+      overrideAccess: true,
+    })
     : { docs: [] }
 
   // Deduplicate students (a student might be enrolled in multiple batches)
@@ -169,7 +169,7 @@ export default async function MarkAttendancePage({
           <ArrowLeft size={20} />
         </Link>
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Mark Attendance</h1>
+          <h1 className="text-2xl font-bold text-gray-900">Update Attendance</h1>
           <div className="flex items-center gap-2 mt-1 text-sm text-gray-500">
             <CalendarDays size={14} />
             {attendance.date && new Date(attendance.date).toLocaleDateString('en-US', {
@@ -185,7 +185,7 @@ export default async function MarkAttendancePage({
         </div>
       </div>
 
-      <MarkAttendanceForm attendanceId={id} students={studentRows} />
+      <UpdateAttendanceForm attendanceId={id} students={studentRows} />
     </div>
   )
 }
