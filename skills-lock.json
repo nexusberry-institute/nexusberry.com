@@ -1,0 +1,55 @@
+{
+  "version": 1,
+  "skills": {
+    "agent-browser": {
+      "source": "vercel-labs/agent-browser",
+      "sourceType": "github",
+      "computedHash": "948f56ca9ffdef1f71b5333e9a3ffa9b47279a928498f660568648f504b5add8"
+    },
+    "agent-skill-creator": {
+      "source": "francyjglisboa/agent-skill-creator",
+      "sourceType": "github",
+      "computedHash": "2c457adb5cc0bfd93443a4de43fd8ae18551b1b8cc32693a2fb0c2ce43c8e2a1"
+    },
+    "find-skills": {
+      "source": "vercel-labs/skills",
+      "sourceType": "github",
+      "computedHash": "25872a21881a950edc3db1f3329664d60405d539660ce05b3265db2de06a7dfd"
+    },
+    "image": {
+      "source": "vercel-labs/json-render",
+      "sourceType": "github",
+      "computedHash": "de9613259aacba0595cf38c603530948f538f85f951ce5033219c7829884d7be"
+    },
+    "next-best-practices": {
+      "source": "vercel-labs/next-skills",
+      "sourceType": "github",
+      "computedHash": "c31ddd68ba5798a79a516c619b1e1fc4408cc4876ad600fefa4f5add4425719d"
+    },
+    "payload": {
+      "source": "payloadcms/skills",
+      "sourceType": "github",
+      "computedHash": "4a17a9529d4533545edb8191159c9134120774acdd042172877291a25929e7a1"
+    },
+    "product-marketing-context": {
+      "source": "coreyhaines31/marketingskills",
+      "sourceType": "github",
+      "computedHash": "e0c954d8b63d562b997fe6d60f0b39aef49517bdbb93ad67e61989ecbc647cf8"
+    },
+    "seo-audit": {
+      "source": "coreyhaines31/marketingskills",
+      "sourceType": "github",
+      "computedHash": "941f6f4db0f79248f6480256cf1838ed19bc1a0d70f499bb756f491142625cb4"
+    },
+    "vercel-react-best-practices": {
+      "source": "vercel-labs/agent-skills",
+      "sourceType": "github",
+      "computedHash": "3ff06f0712886f7c2660d6746856c22d3127bd6568ddde29ddad8b72dbaaa226"
+    },
+    "web-design-guidelines": {
+      "source": "vercel-labs/agent-skills",
+      "sourceType": "github",
+      "computedHash": "d8e7d3afe37dcc8a97b99ffb5afdb4d0919ae0092ea8b68f44eb201f035e33ac"
+    }
+  }
+}
