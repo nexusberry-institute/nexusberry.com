@@ -13,12 +13,27 @@ import {
   Video,
   Users,
   ClipboardCheck,
+  BarChart3,
+  ChevronDown,
+  DollarSign,
+  GraduationCap,
+  CalendarCheck,
+  Target,
+  Megaphone,
+  Briefcase,
 } from 'lucide-react'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible'
 import type { User } from '@/payload-types'
 
 type NavItem = { href: string; label: string; icon: React.ReactNode; exact?: boolean }
+type NavGroup = {
+  label: string
+  icon: React.ReactNode
+  children: NavItem[]
+  roles?: string[]
+}
 
 function getNavItems(roles: string[]): NavItem[] {
   const items: NavItem[] = [
@@ -42,12 +57,42 @@ function getNavItems(roles: string[]): NavItem[] {
   return items
 }
 
+function getNavGroups(roles: string[]): NavGroup[] {
+  const groups: NavGroup[] = []
+
+  if (roles.includes('superadmin') || roles.includes('admin')) {
+    groups.push({
+      label: 'Analytics',
+      icon: <BarChart3 size={18} />,
+      roles: ['superadmin', 'admin'],
+      children: [
+        { href: '/analytics', label: 'Overview', icon: <BarChart3 size={16} />, exact: true },
+        { href: '/analytics/revenue', label: 'Revenue & Fees', icon: <DollarSign size={16} /> },
+        { href: '/analytics/students', label: 'Students', icon: <GraduationCap size={16} /> },
+        { href: '/analytics/attendance', label: 'Attendance', icon: <CalendarCheck size={16} /> },
+        { href: '/analytics/leads', label: 'Lead Pipeline', icon: <Target size={16} /> },
+        { href: '/analytics/marketing', label: 'Marketing', icon: <Megaphone size={16} /> },
+        { href: '/analytics/staff', label: 'Staff & Payroll', icon: <Briefcase size={16} /> },
+      ],
+    })
+  }
+
+  return groups
+}
+
 export function DashboardShell({ user, children }: { user: User; children: React.ReactNode }) {
   const pathname = usePathname()
   const [sidebarOpen, setSidebarOpen] = useState(false)
   const roles = (user.roles as string[]) ?? []
   const displayRole = roles.find(r => r !== 'authenticated') ?? 'user'
   const navItems = getNavItems(roles)
+  const navGroups = getNavGroups(roles)
+
+  const isLinkActive = (item: NavItem) =>
+    item.exact ? pathname === item.href : pathname === item.href || pathname.startsWith(item.href + '/')
+
+  const isGroupActive = (group: NavGroup) =>
+    group.children.some((child) => isLinkActive(child))
 
   return (
     <div className="flex min-h-screen bg-gray-50">
@@ -86,9 +131,7 @@ export function DashboardShell({ user, children }: { user: User; children: React
         {/* Nav links */}
         <nav className="flex-1 overflow-y-auto py-4 px-3 space-y-1">
           {navItems.map((item) => {
-            const isActive = item.exact
-              ? pathname === item.href
-              : pathname === item.href || pathname.startsWith(item.href + '/')
+            const isActive = isLinkActive(item)
             return (
               <Link
                 key={item.href}
@@ -104,6 +147,38 @@ export function DashboardShell({ user, children }: { user: User; children: React
               </Link>
             )
           })}
+
+          {/* Collapsible nav groups */}
+          {navGroups.map((group) => (
+            <Collapsible key={group.label} defaultOpen={isGroupActive(group)}>
+              <CollapsibleTrigger className="flex w-full items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-100 transition-colors">
+                {group.icon}
+                <span className="flex-1 text-left">{group.label}</span>
+                <ChevronDown size={14} className="transition-transform [[data-state=open]>&]:rotate-180" />
+              </CollapsibleTrigger>
+              <CollapsibleContent>
+                <div className="ml-3 mt-1 space-y-0.5 border-l border-gray-200 pl-3">
+                  {group.children.map((child) => {
+                    const isActive = isLinkActive(child)
+                    return (
+                      <Link
+                        key={child.href}
+                        href={child.href}
+                        onClick={() => setSidebarOpen(false)}
+                        className={`flex items-center gap-2.5 px-3 py-1.5 rounded-lg text-sm transition-colors ${isActive
+                            ? 'bg-gray-900 text-white'
+                            : 'text-gray-600 hover:bg-gray-100'
+                          }`}
+                      >
+                        {child.icon}
+                        {child.label}
+                      </Link>
+                    )
+                  })}
+                </div>
+              </CollapsibleContent>
+            </Collapsible>
+          ))}
         </nav>
 
         {/* User info + logout */}
