@@ -27,7 +27,7 @@ async function fetchGoogleFontTTF(
   const css = await cssRes.text();
   const match = css.match(/url\((https:\/\/fonts\.gstatic\.com\/[^)]+\.ttf)\)/);
   if (!match) throw new Error(`No TTF URL found in CSS for "${family}" ${weight}`);
-  const fontRes = await fetch(match[1]);
+  const fontRes = await fetch(match[1]!);
   if (!fontRes.ok) throw new Error(`Font fetch failed: ${fontRes.status} ${match[1]}`);
   return Buffer.from(await fontRes.arrayBuffer());
 }
