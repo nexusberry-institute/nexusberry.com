@@ -181,7 +181,7 @@ export const Students: CollectionConfig = {
           ],
         },
         {
-          label: 'Enrollments',
+          label: 'Enrollments & Fees',
           fields: [
             {
               name: 'enrollments',
@@ -189,11 +189,6 @@ export const Students: CollectionConfig = {
               collection: 'enrollments',
               on: 'student',
             },
-          ],
-        },
-        {
-          label: 'Fee Receipts',
-          fields: [
             {
               name: 'feeReceipts',
               type: 'join',
