@@ -268,7 +268,7 @@ export default async function TutorialPage({
         <TutorialAccessGate requiresLogin={tutorial.requiresLogin}>
           {/* Video Section */}
           {tutorial.showVideos !== false && (
-            <VideoPlayer slug={tutorialSlug} title={tutorial.title} />
+            <VideoPlayer slug={tutorialSlug} title={tutorial.title} tutorialId={String(tutorial.id)} />
           )}
 
           {/* Tabbed Content */}

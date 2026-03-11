@@ -233,6 +233,15 @@ export const Tutorials: CollectionConfig = {
                 description: 'When enabled, the presentation tab will be displayed on the frontend.',
               },
             },
+            {
+              name: 'trackVideoWatch',
+              type: 'checkbox',
+              defaultValue: true,
+              label: 'Track Video Watch',
+              admin: {
+                description: 'When enabled, video watch sessions are tracked for logged-in users.',
+              },
+            },
           ],
         },
         {

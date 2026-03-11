@@ -103,6 +103,7 @@ export interface Config {
     'tutorial-subjects': TutorialSubject;
     enrollments: Enrollment;
     'admission-requests': AdmissionRequest;
+    'tutorial-video-watch-logs': TutorialVideoWatchLog;
     redirects: Redirect;
     forms: Form;
     'form-submissions': FormSubmission;
@@ -177,6 +178,7 @@ export interface Config {
     'tutorial-subjects': TutorialSubjectsSelect<false> | TutorialSubjectsSelect<true>;
     enrollments: EnrollmentsSelect<false> | EnrollmentsSelect<true>;
     'admission-requests': AdmissionRequestsSelect<false> | AdmissionRequestsSelect<true>;
+    'tutorial-video-watch-logs': TutorialVideoWatchLogsSelect<false> | TutorialVideoWatchLogsSelect<true>;
     redirects: RedirectsSelect<false> | RedirectsSelect<true>;
     forms: FormsSelect<false> | FormsSelect<true>;
     'form-submissions': FormSubmissionsSelect<false> | FormSubmissionsSelect<true>;
@@ -451,6 +453,10 @@ export interface Tutorial {
    * When enabled, the presentation tab will be displayed on the frontend.
    */
   showPresentation?: boolean | null;
+  /**
+   * When enabled, video watch sessions are tracked for logged-in users.
+   */
+  trackVideoWatch?: boolean | null;
   meta?: {
     title?: string | null;
     /**
@@ -2097,6 +2103,30 @@ export interface QuizResult {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "tutorial-video-watch-logs".
+ */
+export interface TutorialVideoWatchLog {
+  id: number;
+  user: number | User;
+  tutorial: number | Tutorial;
+  /**
+   * Index of the video in the tutorial videos array (0-based)
+   */
+  videoIndex: number;
+  /**
+   * Total seconds watched (accumulated across all sessions)
+   */
+  totalWatchTime?: number | null;
+  lastWatchedAt?: string | null;
+  /**
+   * Total number of watch sessions
+   */
+  sessions?: number | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "redirects".
  */
 export interface Redirect {
@@ -2403,6 +2433,10 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'admission-requests';
         value: number | AdmissionRequest;
+      } | null)
+    | ({
+        relationTo: 'tutorial-video-watch-logs';
+        value: number | TutorialVideoWatchLog;
       } | null)
     | ({
         relationTo: 'redirects';
@@ -3273,6 +3307,7 @@ export interface TutorialsSelect<T extends boolean = true> {
   showAssignment?: T;
   showCode?: T;
   showPresentation?: T;
+  trackVideoWatch?: T;
   meta?:
     | T
     | {
@@ -3367,6 +3402,20 @@ export interface AdmissionRequestsSelect<T extends boolean = true> {
   processingError?: T;
   processedAt?: T;
   tempPassword?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "tutorial-video-watch-logs_select".
+ */
+export interface TutorialVideoWatchLogsSelect<T extends boolean = true> {
+  user?: T;
+  tutorial?: T;
+  videoIndex?: T;
+  totalWatchTime?: T;
+  lastWatchedAt?: T;
+  sessions?: T;
   updatedAt?: T;
   createdAt?: T;
 }

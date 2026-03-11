@@ -1,19 +1,24 @@
 'use client'
 
-import { useRef, useId } from 'react'
+import { useRef, useId, useEffect } from 'react'
 import { useYouTubePlayer } from '@/hooks/useYouTubePlayer'
 import YouTubeControls from './YouTubeControls'
 
 interface Props {
   videoId: string
   title?: string
+  onPlayStateChange?: (isPlaying: boolean) => void
 }
 
-export default function YouTubeSecurePlayer({ videoId, title }: Props) {
+export default function YouTubeSecurePlayer({ videoId, title, onPlayStateChange }: Props) {
   const uniqueId = useId()
   const containerId = `yt-player-${uniqueId.replace(/:/g, '')}`
   const containerRef = useRef<HTMLDivElement>(null)
   const [state, controls] = useYouTubePlayer(containerId, videoId)
+
+  useEffect(() => {
+    onPlayStateChange?.(state.isPlaying)
+  }, [state.isPlaying, onPlayStateChange])
 
   return (
     <div

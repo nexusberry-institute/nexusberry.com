@@ -35,6 +35,7 @@ import { Tutorials } from './Tutorials'
 import { TutorialSubjects } from './TutorialSubjects'
 import { Enrollments } from './Enrollments'
 import { AdmissionRequests } from './AdmissionRequests'
+import { TutorialVideoWatchLogs } from './TutorialVideoWatchLogs'
 
 const collections = [
    Users, Media, Pages,
@@ -75,6 +76,7 @@ const collections = [
    TutorialSubjects,
    Enrollments,
    AdmissionRequests,
+   TutorialVideoWatchLogs,
 ];
 
 export default collections;

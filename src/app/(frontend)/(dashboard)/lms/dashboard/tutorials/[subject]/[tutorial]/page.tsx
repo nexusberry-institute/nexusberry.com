@@ -193,7 +193,7 @@ export default async function LmsTutorialDetailPage({
 
       {/* Video Section */}
       {tutorial.showVideos !== false && (
-        <VideoPlayer slug={tutorialSlug} title={tutorial.title} />
+        <VideoPlayer slug={tutorialSlug} title={tutorial.title} tutorialId={String(tutorial.id)} />
       )}
 
       {/* Tabbed Content */}

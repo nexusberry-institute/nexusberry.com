@@ -1,19 +1,91 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useRef, useEffect, useCallback } from 'react'
 import { useTutorialVideos } from '@/hooks/useSecureVideo'
 import SecureVideoPlayer from '@/components/SecureVideoPlayer'
 
 type Props = {
   slug: string
   title: string
+  tutorialId?: string
 }
 
-export default function VideoPlayer({ slug, title }: Props) {
+function useVideoTracking(tutorialId: string | undefined, activeIndexRef: React.RefObject<number>) {
+  const accumulatedRef = useRef(0)
+  const isPlayingRef = useRef(false)
+
+  const flush = useCallback(async () => {
+    if (!tutorialId || accumulatedRef.current <= 0) return
+    const seconds = accumulatedRef.current
+    accumulatedRef.current = 0
+    fetch('/api/video-watch', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        tutorialId,
+        videoIndex: activeIndexRef.current,
+        watchedSeconds: seconds,
+      }),
+    }).catch(() => {})
+  }, [tutorialId, activeIndexRef])
+
+  // Tick every second when playing
+  useEffect(() => {
+    if (!tutorialId) return
+    const interval = setInterval(() => {
+      if (isPlayingRef.current) accumulatedRef.current++
+    }, 1000)
+    return () => clearInterval(interval)
+  }, [tutorialId])
+
+  // Flush every 60 seconds
+  useEffect(() => {
+    if (!tutorialId) return
+    const interval = setInterval(() => {
+      flush()
+    }, 60_000)
+    return () => clearInterval(interval)
+  }, [tutorialId, flush])
+
+  // Flush on unmount
+  useEffect(() => {
+    return () => {
+      flush()
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
+
+  const setIsPlaying = useCallback((playing: boolean) => {
+    isPlayingRef.current = playing
+  }, [])
+
+  return { setIsPlaying }
+}
+
+export default function VideoPlayer({ slug, title, tutorialId }: Props) {
   const [activeIndex, setActiveIndex] = useState(0)
+  const activeIndexRef = useRef(0)
   const { data: playableVideos, isLoading, error } = useTutorialVideos(slug)
+  const { setIsPlaying } = useVideoTracking(tutorialId, activeIndexRef)
 
   const blockContextMenu = (e: React.MouseEvent) => e.preventDefault()
+
+  const handleVideoChange = useCallback((idx: number) => {
+    // Flush before switching video
+    activeIndexRef.current = idx
+    setActiveIndex(idx)
+    setIsPlaying(false)
+  }, [setIsPlaying])
+
+  // When active video is Bunny (iframe), track open-time as watch time
+  useEffect(() => {
+    if (!playableVideos || playableVideos.length === 0) return
+    const active = playableVideos[activeIndex]
+    if (active?.type === 'bunny') {
+      setIsPlaying(true)
+      return () => setIsPlaying(false)
+    }
+  }, [activeIndex, playableVideos, setIsPlaying])
 
   if (isLoading) {
     return (
@@ -47,6 +119,7 @@ export default function VideoPlayer({ slug, title }: Props) {
           type={active.type}
           videoId={active.id}
           title={title}
+          onPlayStateChange={setIsPlaying}
         />
       </div>
 
@@ -56,8 +129,8 @@ export default function VideoPlayer({ slug, title }: Props) {
           {playableVideos.map((v, idx) => (
             <button
               key={`${v.type}-${v.id}-${idx}`}
-              onClick={() => setActiveIndex(idx)}
-              className={`flex-shrink-0 w-40 rounded-lg border-2 overflow-hidden transition-colors ${idx === activeIndex
+              onClick={() => handleVideoChange(idx)}
+              className={`shrink-0 w-40 rounded-lg border-2 overflow-hidden transition-colors ${idx === activeIndex
                   ? 'border-primary shadow-md'
                   : 'border-border hover:border-primary/50'
                 }`}
