@@ -105,9 +105,9 @@ export default function QuizSection({ quiz }: Props) {
       .finally(() => setLoadingResult(false))
   }, [quiz.saveMarks, quiz.id, user])
 
-  // Countdown timer
+  // Countdown timer — runs continuously, does not pause when answered
   useEffect(() => {
-    if (!quizStarted || showScore || answered) return
+    if (!quizStarted || showScore) return
 
     const interval = setInterval(() => {
       setTimeLeft((prev) => {
@@ -120,7 +120,7 @@ export default function QuizSection({ quiz }: Props) {
     }, 1000)
 
     return () => clearInterval(interval)
-  }, [quizStarted, showScore, answered, currentQuestion])
+  }, [quizStarted, showScore, currentQuestion])
 
   // Auto-advance when timer hits 0
   const handleAutoAdvance = useCallback(() => {
@@ -136,10 +136,20 @@ export default function QuizSection({ quiz }: Props) {
   }, [currentQuestion, questions.length, timePerQuestion])
 
   useEffect(() => {
-    if (timeLeft === 0 && quizStarted && !showScore && !answered) {
+    if (timeLeft === 0 && quizStarted && !showScore) {
       handleAutoAdvance()
     }
-  }, [timeLeft, quizStarted, showScore, answered, handleAutoAdvance])
+  }, [timeLeft, quizStarted, showScore, handleAutoAdvance])
+
+  // Increment attempt counter when quiz completes
+  useEffect(() => {
+    if (!showScore) return
+    fetch('/api/quiz-attempt', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ quizId: quiz.id }),
+    }).catch(() => {})
+  }, [showScore, quiz.id])
 
   // Save results when quiz completes
   useEffect(() => {

@@ -63,12 +63,22 @@ export const Quizzes: CollectionConfig = {
     {
       name: 'timePerQuestion',
       type: 'number',
-      defaultValue: 60,
+      defaultValue: 30,
       min: 10,
       max: 600,
       admin: {
         position: 'sidebar',
-        description: 'Seconds allowed per question (default: 60).',
+        description: 'Seconds allowed per question (default: 30).',
+      },
+    },
+    {
+      name: 'attempts',
+      type: 'number',
+      defaultValue: 0,
+      admin: {
+        position: 'sidebar',
+        description: 'Total times this quiz has been completed.',
+        readOnly: true,
       },
     },
   ]

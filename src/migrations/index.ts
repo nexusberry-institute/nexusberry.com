@@ -31,6 +31,7 @@ import * as migration_20260302_attendance_system_overhaul from './20260302_atten
 import * as migration_20260303_add_seo_to_tutorials from './20260303_add_seo_to_tutorials';
 import * as migration_20260311_quiz_marks_timer from './20260311_quiz_marks_timer';
 import * as migration_20260311_fix_locked_documents_quiz_results from './20260311_fix_locked_documents_quiz_results';
+import * as migration_20260311_add_quiz_attempts from './20260311_add_quiz_attempts';
 
 export const migrations = [
   {
@@ -197,5 +198,10 @@ export const migrations = [
     up: migration_20260311_fix_locked_documents_quiz_results.up,
     down: migration_20260311_fix_locked_documents_quiz_results.down,
     name: '20260311_fix_locked_documents_quiz_results',
+  },
+  {
+    up: migration_20260311_add_quiz_attempts.up,
+    down: migration_20260311_add_quiz_attempts.down,
+    name: '20260311_add_quiz_attempts',
   },
 ];

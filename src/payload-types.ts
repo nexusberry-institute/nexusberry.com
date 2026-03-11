@@ -208,9 +208,6 @@ export interface Config {
     settings: SettingsSelect<false> | SettingsSelect<true>;
   };
   locale: null;
-  widgets: {
-    collections: CollectionsWidget;
-  };
   user: User | PayloadMcpApiKey;
   jobs: {
     tasks: unknown;
@@ -1280,9 +1277,13 @@ export interface Quiz {
    */
   allowRetake?: boolean | null;
   /**
-   * Seconds allowed per question (default: 60).
+   * Seconds allowed per question (default: 30).
    */
   timePerQuestion?: number | null;
+  /**
+   * Total times this quiz has been completed.
+   */
+  attempts?: number | null;
   updatedAt: string;
   createdAt: string;
 }
@@ -1384,18 +1385,7 @@ export interface Page {
       | null;
     media?: (number | null) | Media;
   };
-  layout: (
-    | CallToActionBlock
-    | ContentBlock
-    | {
-        media: number | Media;
-        id?: string | null;
-        blockName?: string | null;
-        blockType: 'mediaBlock';
-      }
-    | ArchiveBlock
-    | FormBlock
-  )[];
+  layout: (CallToActionBlock | ContentBlock | MediaBlock | ArchiveBlock | FormBlock)[];
   meta?: {
     title?: string | null;
     /**
@@ -1579,6 +1569,16 @@ export interface ContentBlock {
   id?: string | null;
   blockName?: string | null;
   blockType: 'content';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "MediaBlock".
+ */
+export interface MediaBlock {
+  media: number | Media;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'mediaBlock';
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -3196,6 +3196,7 @@ export interface QuizzesSelect<T extends boolean = true> {
   saveMarks?: T;
   allowRetake?: T;
   timePerQuestion?: T;
+  attempts?: T;
   updatedAt?: T;
   createdAt?: T;
 }
@@ -3977,26 +3978,6 @@ export interface SettingsSelect<T extends boolean = true> {
   updatedAt?: T;
   createdAt?: T;
   globalType?: T;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "collections_widget".
- */
-export interface CollectionsWidget {
-  data?: {
-    [k: string]: unknown;
-  };
-  width: 'full';
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "MediaBlock".
- */
-export interface MediaBlock {
-  media: number | Media;
-  id?: string | null;
-  blockName?: string | null;
-  blockType: 'mediaBlock';
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
