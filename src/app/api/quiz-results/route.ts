@@ -98,6 +98,38 @@ export async function POST(request: NextRequest) {
   }
 }
 
+export async function DELETE(request: NextRequest) {
+  try {
+    const payload = await getPayload({ config: configPromise })
+    const { user } = await payload.auth({ headers: await nextHeaders() })
+
+    if (!user || user.collection !== 'users') {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+    }
+
+    if (!user.roles?.some((r) => ['admin', 'superadmin'].includes(r))) {
+      return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
+    }
+
+    // Parse `where` from query string (Payload bulk delete sends ?where[...])
+    const whereParam = request.nextUrl.searchParams.get('where')
+    if (!whereParam) {
+      return NextResponse.json({ error: 'where parameter is required' }, { status: 400 })
+    }
+
+    const where = JSON.parse(whereParam)
+    const deleted = await payload.delete({
+      collection: 'quiz-results',
+      where,
+      overrideAccess: true,
+    })
+
+    return NextResponse.json(deleted)
+  } catch {
+    return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
+  }
+}
+
 export async function GET(request: NextRequest) {
   try {
     const payload = await getPayload({ config: configPromise })
