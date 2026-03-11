@@ -72,6 +72,7 @@ export async function POST(request: NextRequest) {
         data: {
           score,
           totalQuestions,
+          attempts: (existing.docs[0]!.attempts ?? 1) + 1,
           completedAt: new Date().toISOString(),
         },
         overrideAccess: true,
@@ -84,6 +85,7 @@ export async function POST(request: NextRequest) {
           quiz: quizId,
           score,
           totalQuestions,
+          attempts: 1,
           completedAt: new Date().toISOString(),
         },
         overrideAccess: true,

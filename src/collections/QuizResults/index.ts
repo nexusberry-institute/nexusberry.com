@@ -35,6 +35,16 @@ export const QuizResults: CollectionConfig = {
       min: 1,
     },
     {
+      name: 'attempts',
+      type: 'number',
+      defaultValue: 1,
+      min: 1,
+      admin: {
+        description: 'How many times this user has completed this quiz',
+        readOnly: true,
+      },
+    },
+    {
       name: 'completedAt',
       type: 'date',
       required: true,
