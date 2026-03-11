@@ -97,34 +97,3 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
   }
 }
-
-export async function GET(request: NextRequest) {
-  try {
-    const payload = await getPayload({ config: configPromise })
-    const { user } = await payload.auth({ headers: await nextHeaders() })
-
-    if (!user || user.collection !== 'users') {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
-    }
-
-    const quizId = request.nextUrl.searchParams.get('quizId')
-    if (!quizId) {
-      return NextResponse.json({ error: 'quizId is required' }, { status: 400 })
-    }
-
-    const results = await payload.find({
-      collection: 'quiz-results',
-      where: {
-        user: { equals: user.id },
-        quiz: { equals: Number(quizId) },
-      },
-      limit: 1,
-      depth: 0,
-      overrideAccess: true,
-    })
-
-    return NextResponse.json({ result: results.docs[0] ?? null })
-  } catch {
-    return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
-  }
-}

@@ -96,10 +96,10 @@ export default function QuizSection({ quiz }: Props) {
       setLoadingResult(false)
       return
     }
-    fetch(`/api/quiz-results?quizId=${quiz.id}`)
+    fetch(`/api/quiz-results?where[quiz][equals]=${quiz.id}&where[user][equals]=${user.id}&limit=1&depth=0`)
       .then((res) => res.json())
       .then((data) => {
-        if (data.result) setPreviousResult(data.result)
+        if (data.docs?.[0]) setPreviousResult(data.docs[0])
       })
       .catch(() => {})
       .finally(() => setLoadingResult(false))
@@ -157,7 +157,7 @@ export default function QuizSection({ quiz }: Props) {
     if (saveStatus !== 'idle') return
 
     setSaveStatus('saving')
-    fetch('/api/quiz-results', {
+    fetch('/api/quiz-results/submit', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
