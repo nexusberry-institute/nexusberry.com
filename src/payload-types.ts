@@ -300,6 +300,10 @@ export interface User {
    * Protected tutorials this user can access on a trial basis.
    */
   trialTutorials?: (number | Tutorial)[] | null;
+  /**
+   * Linked student profile for this user.
+   */
+  student?: (number | null) | Student;
   updatedAt: string;
   createdAt: string;
   email: string;
@@ -2524,6 +2528,7 @@ export interface UsersSelect<T extends boolean = true> {
   provider?: T;
   blocked?: T;
   trialTutorials?: T;
+  student?: T;
   updatedAt?: T;
   createdAt?: T;
   email?: T;

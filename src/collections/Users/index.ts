@@ -163,5 +163,16 @@ export const Users: CollectionConfig = {
         description: 'Protected tutorials this user can access on a trial basis.',
       },
     },
+    {
+      name: 'student',
+      type: 'relationship',
+      relationTo: 'students',
+      hasMany: false,
+      admin: {
+        position: 'sidebar',
+        description: 'Linked student profile for this user.',
+        condition: (data) => Array.isArray(data?.roles) && data.roles.includes('student'),
+      },
+    },
   ],
 }

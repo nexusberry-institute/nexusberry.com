@@ -35,6 +35,7 @@ import * as migration_20260311_add_quiz_attempts from './20260311_add_quiz_attem
 import * as migration_20260311_add_quiz_results_attempts from './20260311_add_quiz_results_attempts';
 import * as migration_20260311_add_tutorial_video_watch_logs from './20260311_add_tutorial_video_watch_logs';
 import * as migration_20260311_fix_locked_documents_video_watch_logs from './20260311_fix_locked_documents_video_watch_logs';
+import * as migration_20260311_add_student_to_users from './20260311_add_student_to_users';
 
 export const migrations = [
   {
@@ -221,5 +222,10 @@ export const migrations = [
     up: migration_20260311_fix_locked_documents_video_watch_logs.up,
     down: migration_20260311_fix_locked_documents_video_watch_logs.down,
     name: '20260311_fix_locked_documents_video_watch_logs',
+  },
+  {
+    up: migration_20260311_add_student_to_users.up,
+    down: migration_20260311_add_student_to_users.down,
+    name: '20260311_add_student_to_users',
   },
 ];
