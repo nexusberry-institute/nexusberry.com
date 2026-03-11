@@ -2121,11 +2121,11 @@ export interface TutorialVideoWatchLog {
    * Total seconds watched (accumulated across all sessions)
    */
   totalWatchTime?: number | null;
-  lastWatchedAt?: string | null;
   /**
-   * Total number of watch sessions
+   * Timestamp of the very first watch session for this video
    */
-  sessions?: number | null;
+  firstWatchedAt?: string | null;
+  lastWatchedAt?: string | null;
   updatedAt: string;
   createdAt: string;
 }
@@ -3419,8 +3419,8 @@ export interface TutorialVideoWatchLogsSelect<T extends boolean = true> {
   tutorial?: T;
   videoIndex?: T;
   totalWatchTime?: T;
+  firstWatchedAt?: T;
   lastWatchedAt?: T;
-  sessions?: T;
   updatedAt?: T;
   createdAt?: T;
 }

@@ -42,19 +42,17 @@ export const TutorialVideoWatchLogs: CollectionConfig = {
       },
     },
     {
-      name: 'lastWatchedAt',
+      name: 'firstWatchedAt',
       type: 'date',
       admin: {
         readOnly: true,
+        description: 'Timestamp of the very first watch session for this video',
       },
     },
     {
-      name: 'sessions',
-      type: 'number',
-      defaultValue: 1,
-      min: 1,
+      name: 'lastWatchedAt',
+      type: 'date',
       admin: {
-        description: 'Total number of watch sessions',
         readOnly: true,
       },
     },

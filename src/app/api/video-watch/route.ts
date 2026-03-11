@@ -65,7 +65,6 @@ export async function POST(request: NextRequest) {
         data: {
           totalWatchTime: (doc.totalWatchTime ?? 0) + watchedSeconds,
           lastWatchedAt: now,
-          sessions: (doc.sessions ?? 1) + 1,
         },
       })
     } else {
@@ -77,8 +76,8 @@ export async function POST(request: NextRequest) {
           tutorial: tutorialIdNum,
           videoIndex,
           totalWatchTime: watchedSeconds,
+          firstWatchedAt: now,
           lastWatchedAt: now,
-          sessions: 1,
         },
       })
     }
