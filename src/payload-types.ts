@@ -98,6 +98,7 @@ export interface Config {
     'platform-redirects': PlatformRedirect;
     quizzes: Quiz;
     'quiz-questions': QuizQuestion;
+    'quiz-results': QuizResult;
     tutorials: Tutorial;
     'tutorial-subjects': TutorialSubject;
     enrollments: Enrollment;
@@ -171,6 +172,7 @@ export interface Config {
     'platform-redirects': PlatformRedirectsSelect<false> | PlatformRedirectsSelect<true>;
     quizzes: QuizzesSelect<false> | QuizzesSelect<true>;
     'quiz-questions': QuizQuestionsSelect<false> | QuizQuestionsSelect<true>;
+    'quiz-results': QuizResultsSelect<false> | QuizResultsSelect<true>;
     tutorials: TutorialsSelect<false> | TutorialsSelect<true>;
     'tutorial-subjects': TutorialSubjectsSelect<false> | TutorialSubjectsSelect<true>;
     enrollments: EnrollmentsSelect<false> | EnrollmentsSelect<true>;
@@ -1269,6 +1271,18 @@ export interface Quiz {
   slug?: string | null;
   slugLock?: boolean | null;
   tags?: string[] | null;
+  /**
+   * When enabled, users must sign in with Google and their score will be saved.
+   */
+  saveMarks?: boolean | null;
+  /**
+   * Allow users to retake the quiz. Latest attempt is stored. Only applies when Save Marks is on.
+   */
+  allowRetake?: boolean | null;
+  /**
+   * Seconds allowed per question (default: 60).
+   */
+  timePerQuestion?: number | null;
   updatedAt: string;
   createdAt: string;
 }
@@ -2061,6 +2075,20 @@ export interface PlatformRedirect {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "quiz-results".
+ */
+export interface QuizResult {
+  id: number;
+  user: number | User;
+  quiz: number | Quiz;
+  score: number;
+  totalQuestions: number;
+  completedAt: string;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "redirects".
  */
 export interface Redirect {
@@ -2347,6 +2375,10 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'quiz-questions';
         value: number | QuizQuestion;
+      } | null)
+    | ({
+        relationTo: 'quiz-results';
+        value: number | QuizResult;
       } | null)
     | ({
         relationTo: 'tutorials';
@@ -3161,6 +3193,9 @@ export interface QuizzesSelect<T extends boolean = true> {
   slug?: T;
   slugLock?: T;
   tags?: T;
+  saveMarks?: T;
+  allowRetake?: T;
+  timePerQuestion?: T;
   updatedAt?: T;
   createdAt?: T;
 }
@@ -3179,6 +3214,19 @@ export interface QuizQuestionsSelect<T extends boolean = true> {
   correctAnswer?: T;
   explanation?: T;
   tags?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "quiz-results_select".
+ */
+export interface QuizResultsSelect<T extends boolean = true> {
+  user?: T;
+  quiz?: T;
+  score?: T;
+  totalQuestions?: T;
+  completedAt?: T;
   updatedAt?: T;
   createdAt?: T;
 }

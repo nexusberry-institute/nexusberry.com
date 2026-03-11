@@ -29,6 +29,7 @@ import * as migration_20260302_simplify_tutorial_access from './20260302_simplif
 import * as migration_20260302_add_student_to_attendance_details from './20260302_add_student_to_attendance_details';
 import * as migration_20260302_attendance_system_overhaul from './20260302_attendance_system_overhaul';
 import * as migration_20260303_add_seo_to_tutorials from './20260303_add_seo_to_tutorials';
+import * as migration_20260311_quiz_marks_timer from './20260311_quiz_marks_timer';
 
 export const migrations = [
   {
@@ -185,5 +186,10 @@ export const migrations = [
     up: migration_20260303_add_seo_to_tutorials.up,
     down: migration_20260303_add_seo_to_tutorials.down,
     name: '20260303_add_seo_to_tutorials',
+  },
+  {
+    up: migration_20260311_quiz_marks_timer.up,
+    down: migration_20260311_quiz_marks_timer.down,
+    name: '20260311_quiz_marks_timer',
   },
 ];

@@ -41,6 +41,36 @@ export const Quizzes: CollectionConfig = {
         position: 'sidebar',
       }
     },
+    {
+      name: 'saveMarks',
+      type: 'checkbox',
+      defaultValue: false,
+      admin: {
+        position: 'sidebar',
+        description: 'When enabled, users must sign in with Google and their score will be saved.',
+      },
+    },
+    {
+      name: 'allowRetake',
+      type: 'checkbox',
+      defaultValue: false,
+      admin: {
+        position: 'sidebar',
+        description: 'Allow users to retake the quiz. Latest attempt is stored. Only applies when Save Marks is on.',
+        condition: (data) => data.saveMarks === true,
+      },
+    },
+    {
+      name: 'timePerQuestion',
+      type: 'number',
+      defaultValue: 60,
+      min: 10,
+      max: 600,
+      admin: {
+        position: 'sidebar',
+        description: 'Seconds allowed per question (default: 60).',
+      },
+    },
   ]
 }
 

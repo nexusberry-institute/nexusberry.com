@@ -30,6 +30,7 @@ import { ClassRecords } from './ClassRecords'
 import { PlatformRedirects } from './PlatformRedirects'
 import { Quizzes } from './Quizzes'
 import { QuizQuestions } from './QuizQuestions'
+import { QuizResults } from './QuizResults'
 import { Tutorials } from './Tutorials'
 import { TutorialSubjects } from './TutorialSubjects'
 import { Enrollments } from './Enrollments'
@@ -68,6 +69,7 @@ const collections = [
    // Classwork
    Quizzes,
    QuizQuestions,
+   QuizResults,
    // Tutorials
    Tutorials,
    TutorialSubjects,
