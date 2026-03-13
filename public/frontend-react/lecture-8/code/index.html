@@ -1,0 +1,845 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Financial Calculator Suite | Lecture 8 | NexusBerry</title>
+    <style>
+        /* =====================================================
+           NexusBerry Brand Color System
+           Lecture 8: JavaScript Fundamentals
+           These CSS custom properties mirror the presentation theme
+        ====================================================== */
+        :root {
+            --nb-bg: #080D2B;
+            --nb-berry: #990147;
+            --nb-berry-light: #E04A7A;
+            --nb-nexus: #0020C2;
+            --nb-nexus-light: #4D70FF;
+            --nb-surface: #0F1642;
+            --nb-surface-2: #1A2258;
+            --nb-border: #2A3370;
+            --nb-text: #F0F0F5;
+            --nb-dim: #6B7094;
+            --nb-green: #00C896;
+            --nb-red: #FF4C6A;
+            --nb-orange: #FF8C42;
+            --nb-purple: #A855F7;
+        }
+
+        /* =====================================================
+           Base Reset & Typography
+        ====================================================== */
+        *, *::before, *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background-color: var(--nb-bg);
+            color: var(--nb-text);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        /* =====================================================
+           Header
+        ====================================================== */
+        header {
+            background: linear-gradient(135deg, var(--nb-surface) 0%, var(--nb-surface-2) 100%);
+            border-bottom: 2px solid var(--nb-berry);
+            padding: 1.5rem 2rem;
+            text-align: center;
+        }
+
+        header img {
+            height: 40px;
+            opacity: 0.9;
+            margin-bottom: 0.75rem;
+            display: block;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        header h1 {
+            font-size: 1.8rem;
+            color: var(--nb-berry-light);
+            margin-bottom: 0.3rem;
+        }
+
+        header p {
+            font-size: 0.85rem;
+            color: var(--nb-dim);
+            letter-spacing: 0.03em;
+        }
+
+        /* =====================================================
+           Main Layout — Responsive Grid
+        ====================================================== */
+        main {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem 1.5rem;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+            gap: 1.8rem;
+            align-items: start;
+        }
+
+        /* =====================================================
+           Calculator Card
+        ====================================================== */
+        .calculator-card {
+            background: var(--nb-surface);
+            border: 1px solid var(--nb-border);
+            border-radius: 14px;
+            padding: 1.6rem;
+            transition: border-color 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .calculator-card:hover {
+            border-color: var(--nb-berry-light);
+            box-shadow: 0 0 20px rgba(153, 1, 71, 0.15);
+        }
+
+        .calculator-card h2 {
+            font-size: 1.2rem;
+            color: var(--nb-berry-light);
+            margin-bottom: 0.4rem;
+        }
+
+        /* =====================================================
+           Concept Badge — "JS Concepts Used" label per card
+        ====================================================== */
+        .concept-badge {
+            display: inline-block;
+            background: var(--nb-surface-2);
+            border: 1px solid var(--nb-nexus-light);
+            border-radius: 20px;
+            color: var(--nb-nexus-light);
+            font-size: 0.65rem;
+            font-weight: 600;
+            letter-spacing: 0.03em;
+            padding: 0.25em 0.75em;
+            margin-bottom: 1.1rem;
+            line-height: 1.5;
+        }
+
+        /* =====================================================
+           Form Controls
+        ====================================================== */
+        .form-group {
+            margin-bottom: 0.9rem;
+        }
+
+        label {
+            display: block;
+            font-size: 0.78rem;
+            color: var(--nb-dim);
+            margin-bottom: 0.3rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+        }
+
+        input[type="number"],
+        input[type="text"],
+        select {
+            width: 100%;
+            background: var(--nb-surface-2);
+            border: 1px solid var(--nb-border);
+            border-radius: 8px;
+            color: var(--nb-text);
+            font-size: 0.95rem;
+            padding: 0.55em 0.8em;
+            outline: none;
+            transition: border-color 0.2s ease;
+            appearance: none;
+            -webkit-appearance: none;
+        }
+
+        input[type="number"]:focus,
+        input[type="text"]:focus,
+        select:focus {
+            border-color: var(--nb-nexus-light);
+            box-shadow: 0 0 0 3px rgba(77, 112, 255, 0.15);
+        }
+
+        /* Fix browser autofill background */
+        input:-webkit-autofill {
+            -webkit-box-shadow: 0 0 0 1000px var(--nb-surface-2) inset;
+            -webkit-text-fill-color: var(--nb-text);
+        }
+
+        /* Select arrow */
+        .select-wrapper {
+            position: relative;
+        }
+
+        .select-wrapper::after {
+            content: '▾';
+            position: absolute;
+            right: 0.8em;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--nb-dim);
+            pointer-events: none;
+            font-size: 0.85em;
+        }
+
+        select option {
+            background: var(--nb-surface-2);
+            color: var(--nb-text);
+        }
+
+        /* Two-column input row for currency converter */
+        .input-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.75rem;
+        }
+
+        /* =====================================================
+           Calculate Button
+        ====================================================== */
+        .btn-calculate {
+            width: 100%;
+            background: linear-gradient(135deg, var(--nb-berry) 0%, #C40060 100%);
+            border: none;
+            border-radius: 8px;
+            color: #fff;
+            cursor: pointer;
+            font-size: 0.95rem;
+            font-weight: 700;
+            letter-spacing: 0.04em;
+            padding: 0.65em 1.2em;
+            margin-top: 0.3rem;
+            transition: background 0.2s ease, transform 0.1s ease, box-shadow 0.2s ease;
+        }
+
+        .btn-calculate:hover {
+            background: linear-gradient(135deg, #B5005A 0%, #E0006C 100%);
+            box-shadow: 0 4px 16px rgba(153, 1, 71, 0.4);
+        }
+
+        .btn-calculate:active {
+            transform: scale(0.98);
+        }
+
+        /* =====================================================
+           Result Display Area
+        ====================================================== */
+        .result {
+            margin-top: 1rem;
+            border-radius: 8px;
+            padding: 0.9em 1em;
+            font-size: 0.9rem;
+            line-height: 1.7;
+            min-height: 2.5em;
+            display: none; /* hidden until calculateXxx() populates it */
+            border-left: 4px solid transparent;
+        }
+
+        .result.success {
+            display: block;
+            background: rgba(0, 200, 150, 0.08);
+            border-color: var(--nb-green);
+            color: var(--nb-text);
+        }
+
+        .result.error {
+            display: block;
+            background: rgba(255, 76, 106, 0.1);
+            border-color: var(--nb-red);
+            color: var(--nb-red);
+        }
+
+        .result p {
+            margin: 0.15em 0;
+        }
+
+        .result p strong {
+            color: var(--nb-green);
+        }
+
+        .result p.warning-line {
+            color: var(--nb-orange);
+            font-weight: 600;
+        }
+
+        .result p.trend-line {
+            color: var(--nb-nexus-light);
+            font-weight: 600;
+        }
+
+        /* =====================================================
+           Divider Between Controls and Result
+        ====================================================== */
+        .calc-divider {
+            border: none;
+            border-top: 1px solid var(--nb-border);
+            margin: 1rem 0 0;
+        }
+
+        /* =====================================================
+           Footer
+        ====================================================== */
+        footer {
+            background: var(--nb-surface);
+            border-top: 1px solid var(--nb-border);
+            text-align: center;
+            padding: 1.2rem;
+            font-size: 0.75rem;
+            color: var(--nb-dim);
+            line-height: 2;
+            margin-top: 1rem;
+        }
+
+        footer a {
+            color: var(--nb-nexus-light);
+            text-decoration: none;
+        }
+
+        /* =====================================================
+           Responsive: Stack to single column on narrow screens
+        ====================================================== */
+        @media (max-width: 600px) {
+            header h1 {
+                font-size: 1.3rem;
+            }
+
+            main {
+                grid-template-columns: 1fr;
+                padding: 1.2rem 1rem;
+                gap: 1.2rem;
+            }
+
+            .input-row {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- =====================================================
+         HEADER
+    ====================================================== -->
+    <header>
+        <img src="../../../logo/nexusberry-logo-transparent-1712x450.png"
+             alt="NexusBerry Training and Solutions">
+        <h1>&#128176; Financial Calculator Suite</h1>
+        <p>Lecture 8: JavaScript Fundamentals &nbsp;|&nbsp; NexusBerry Modern Frontend Course</p>
+    </header>
+
+    <!-- =====================================================
+         MAIN — Three Calculator Cards
+    ====================================================== -->
+    <main>
+
+        <!-- =================================================
+             CALCULATOR 1: Tip Calculator
+             JS Concepts: const, let, string type, number type,
+             arithmetic operators (+, *, /), template literals,
+             parseFloat, parseInt, toFixed()
+        ================================================== -->
+        <section class="calculator-card" id="tip-calc">
+            <h2>&#127869;&#65039; Tip Calculator</h2>
+            <p class="concept-badge">Parts 1 &amp; 3 &nbsp;|&nbsp; const · let · arithmetic · template literals</p>
+
+            <div class="form-group">
+                <label for="billAmount">Bill Amount (PKR)</label>
+                <input type="number" id="billAmount" placeholder="e.g. 2500" min="0" step="0.01">
+            </div>
+
+            <div class="form-group">
+                <label for="tipPercent">Tip Percentage (%)</label>
+                <div class="select-wrapper">
+                    <select id="tipPercent">
+                        <option value="10">10% — Budget</option>
+                        <option value="15">15% — Standard</option>
+                        <option value="18" selected>18% — Good Service</option>
+                        <option value="20">20% — Excellent Service</option>
+                        <option value="25">25% — Outstanding!</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="people">Number of People Splitting</label>
+                <input type="number" id="people" placeholder="1" min="1" value="1">
+            </div>
+
+            <button class="btn-calculate" onclick="calculateTip()">Calculate Tip</button>
+            <hr class="calc-divider">
+            <div id="tipResult" class="result"></div>
+        </section>
+
+        <!-- =================================================
+             CALCULATOR 2: Loan EMI Calculator
+             JS Concepts: let reassignment, comparison operators
+             (>, <, <=, >=, !==), ** exponentiation, boolean type,
+             ternary operator, compound formulas
+        ================================================== -->
+        <section class="calculator-card" id="emi-calc">
+            <h2>&#127970; Loan EMI Calculator</h2>
+            <p class="concept-badge">Parts 1, 2 &amp; 3 &nbsp;|&nbsp; let · comparison operators · ** exponentiation · boolean</p>
+
+            <div class="form-group">
+                <label for="loanAmount">Loan Amount (PKR)</label>
+                <input type="number" id="loanAmount" placeholder="e.g. 500000" min="0">
+            </div>
+
+            <div class="form-group">
+                <label for="interestRate">Annual Interest Rate (%)</label>
+                <input type="number" id="interestRate" placeholder="e.g. 12.5" min="0" max="100" step="0.1">
+            </div>
+
+            <div class="form-group">
+                <label for="loanTerm">Loan Term (Months)</label>
+                <div class="select-wrapper">
+                    <select id="loanTerm">
+                        <option value="6">6 months</option>
+                        <option value="12">12 months — 1 year</option>
+                        <option value="24">24 months — 2 years</option>
+                        <option value="36" selected>36 months — 3 years</option>
+                        <option value="48">48 months — 4 years</option>
+                        <option value="60">60 months — 5 years</option>
+                        <option value="120">120 months — 10 years</option>
+                        <option value="240">240 months — 20 years</option>
+                    </select>
+                </div>
+            </div>
+
+            <button class="btn-calculate" onclick="calculateEMI()">Calculate EMI</button>
+            <hr class="calc-divider">
+            <div id="emiResult" class="result"></div>
+        </section>
+
+        <!-- =================================================
+             CALCULATOR 3: Currency Converter
+             JS Concepts: object literal, bracket notation,
+             logical operators (&& ||), truthy/falsy, ternary,
+             string type in template literals, .toFixed(4)
+        ================================================== -->
+        <section class="calculator-card" id="currency-calc">
+            <h2>&#128178; Currency Converter</h2>
+            <p class="concept-badge">Parts 2, 3 &amp; 4 &nbsp;|&nbsp; objects · logical operators · truthy/falsy · ternary</p>
+
+            <div class="form-group">
+                <label for="convAmount">Amount to Convert</label>
+                <input type="number" id="convAmount" placeholder="e.g. 10000" min="0" step="0.01">
+            </div>
+
+            <div class="input-row">
+                <div class="form-group">
+                    <label for="fromCurrency">From Currency</label>
+                    <div class="select-wrapper">
+                        <select id="fromCurrency">
+                            <option value="PKR" selected>PKR — Pakistani Rupee</option>
+                            <option value="USD">USD — US Dollar</option>
+                            <option value="EUR">EUR — Euro</option>
+                            <option value="GBP">GBP — British Pound</option>
+                            <option value="AED">AED — UAE Dirham</option>
+                            <option value="SAR">SAR — Saudi Riyal</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="toCurrency">To Currency</label>
+                    <div class="select-wrapper">
+                        <select id="toCurrency">
+                            <option value="PKR">PKR — Pakistani Rupee</option>
+                            <option value="USD" selected>USD — US Dollar</option>
+                            <option value="EUR">EUR — Euro</option>
+                            <option value="GBP">GBP — British Pound</option>
+                            <option value="AED">AED — UAE Dirham</option>
+                            <option value="SAR">SAR — Saudi Riyal</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <button class="btn-calculate" onclick="convertCurrency()">Convert Currency</button>
+            <hr class="calc-divider">
+            <div id="convResult" class="result"></div>
+        </section>
+
+    </main>
+
+    <!-- =====================================================
+         FOOTER
+    ====================================================== -->
+    <footer>
+        <p>&copy; 2026 NexusBerry Training and Solutions &nbsp;|&nbsp;
+           <a href="https://www.nexusberry.com" target="_blank">www.nexusberry.com</a></p>
+        <p>Lecture 8 Code Demo &nbsp;|&nbsp; By Rana M. Ajmal</p>
+    </footer>
+
+
+    <!-- =====================================================
+         JAVASCRIPT — All logic with educational comments
+         Concepts demonstrated match CLAUDE.md course structure:
+           Part 1 — Variables (const, let), Data Types
+           Part 2 — Operators (arithmetic, comparison, logical)
+           Part 3 — Template Literals, Type Coercion, Ternary
+           Part 4 — Objects, Truthy/Falsy, Input Validation
+    ====================================================== -->
+    <script>
+
+        // ====================================================
+        // PART 1 DEMO: const vs let
+        // const — value set once, never reassigned
+        // let   — value can change during program execution
+        // ====================================================
+
+        // PART 1: const for values that NEVER change (named constants)
+        const TAX_RATE = 0.17;              // Pakistani GST — fixed by law
+        const APP_NAME = "Financial Suite"; // string type — immutable label
+        const MAX_LOAN_RATE = 100;          // upper bound for interest validation
+
+        // PART 1: let for values that WILL change as user interacts
+        let lastCalculation = null;         // null type — no calculation done yet
+        let calculationCount = 0;           // number type — will increment
+
+        // PART 4: object type — exchange rates stored as key/value pairs
+        // All rates are relative to PKR (1 PKR = x of that currency)
+        // Approximate rates as of early 2026
+        const exchangeRates = {
+            PKR: 1,         // base currency
+            USD: 0.0036,    // 1 PKR ≈ 0.0036 USD  (1 USD ≈ 278 PKR)
+            EUR: 0.0033,    // 1 PKR ≈ 0.0033 EUR
+            GBP: 0.0028,    // 1 PKR ≈ 0.0028 GBP
+            AED: 0.013,     // 1 PKR ≈ 0.013 AED   (1 AED ≈ 76 PKR)
+            SAR: 0.013      // 1 PKR ≈ 0.013 SAR   (1 SAR ≈ 76 PKR)
+        };
+
+        // PART 1: string type — currency symbols for display
+        const currencySymbols = {
+            PKR: "PKR",
+            USD: "$",
+            EUR: "€",
+            GBP: "£",
+            AED: "AED",
+            SAR: "SAR"
+        };
+
+
+        // ====================================================
+        // CALCULATOR 1: Tip Calculator
+        // Demonstrates: const, let, arithmetic operators,
+        //               parseFloat/parseInt, template literals,
+        //               toFixed(), basic if/else validation
+        // ====================================================
+        function calculateTip() {
+
+            // PART 1: const — these values are read once and not changed
+            const bill      = parseFloat(document.getElementById('billAmount').value);
+            const tipPercent = parseFloat(document.getElementById('tipPercent').value) / 100;
+            const people    = parseInt(document.getElementById('people').value) || 1;
+
+            // PART 2: comparison operator — check if bill is a valid positive number
+            // isNaN() checks if the value is "Not a Number"
+            if (!bill || bill <= 0) {
+                showResult('tipResult', 'Please enter a valid bill amount greater than 0', 'error');
+                return; // early return — stop the function here
+            }
+
+            // PART 2: comparison operator — people must be at least 1
+            if (people < 1) {
+                showResult('tipResult', 'Number of people must be at least 1', 'error');
+                return;
+            }
+
+            // PART 1 + 2: arithmetic operators (+, *, /)
+            // const used because these calculated values won't be reassigned
+            const tip       = bill * tipPercent;         // multiplication
+            const total     = bill + tip;                // addition
+            const perPerson = total / people;            // division
+            const taxAmount = bill * TAX_RATE;           // using our named const
+
+            // PART 2: comparison — determine if tip is generous
+            // PART 3: ternary operator — compact if/else in one line
+            //   condition ? valueIfTrue : valueIfFalse
+            const tipLabel = tipPercent >= 0.20
+                ? "&#127775; Generous tip — great service recognized!"
+                : "&#9989; Standard tip applied";
+
+            // PART 1: let — we ARE reassigning this based on split
+            let splitMessage = "";
+            if (people > 1) {
+                // PART 3: template literal — backtick string with ${} expressions
+                splitMessage = `&#128101; ${people} people — each pays PKR ${perPerson.toFixed(2)}`;
+            }
+
+            // PART 3: template literal — multi-line string with embedded expressions
+            // toFixed(2) rounds to 2 decimal places — essential for currency display
+            const resultHTML = `
+                <p><strong>Tip Amount:</strong> PKR ${tip.toFixed(2)}</p>
+                <p><strong>Total Bill:</strong> PKR ${total.toFixed(2)}</p>
+                <p><strong>GST (17%):</strong> PKR ${taxAmount.toFixed(2)} <em style="color:var(--nb-dim);font-size:0.8em;">(informational)</em></p>
+                ${splitMessage ? `<p class="trend-line">${splitMessage}</p>` : ""}
+                <p style="color:var(--nb-green);font-size:0.85em;">${tipLabel}</p>
+            `;
+
+            showResult('tipResult', resultHTML, 'success', true);
+
+            // PART 1: let reassignment — update our mutable tracking variables
+            lastCalculation = 'tip';
+            calculationCount = calculationCount + 1; // same as calculationCount++
+        }
+
+
+        // ====================================================
+        // CALCULATOR 2: Loan EMI Calculator
+        // Demonstrates: let reassignment, comparison operators
+        //               (>, <, >=, <=, ===, !==), ** exponentiation,
+        //               boolean type, ternary, compound formula
+        // ====================================================
+        function calculateEMI() {
+
+            // PART 1: reading inputs — const because we won't reassign these
+            const principal  = parseFloat(document.getElementById('loanAmount').value);
+            const annualRate = parseFloat(document.getElementById('interestRate').value);
+            const months     = parseInt(document.getElementById('loanTerm').value);
+
+            // PART 2: comparison operators for multi-rule validation
+            // Each condition uses a different comparison operator
+
+            // !== checks "not equal to" — principal must exist and not be zero
+            if (!principal || principal <= 0) {
+                showResult('emiResult', 'Loan amount must be greater than 0', 'error');
+                return;
+            }
+
+            // > and <= — rate must be a realistic number
+            if (!annualRate || annualRate <= 0 || annualRate > MAX_LOAN_RATE) {
+                showResult('emiResult', `Interest rate must be between 0 and ${MAX_LOAN_RATE}%`, 'error');
+                return;
+            }
+
+            // >= — months must be a positive integer
+            if (!months || months < 1) {
+                showResult('emiResult', 'Loan term must be at least 1 month', 'error');
+                return;
+            }
+
+            // PART 2: arithmetic chain — convert annual % to monthly decimal
+            // operator precedence: division runs before division (left to right)
+            const monthlyRate = annualRate / 100 / 12;
+
+            // PART 2: ** exponentiation operator — raise to a power
+            // (1 + monthlyRate) ** months  is the same as Math.pow(1+monthlyRate, months)
+            // EMI formula: P * r * (1+r)^n  /  ((1+r)^n - 1)
+            const powerFactor = (1 + monthlyRate) ** months;  // ** is the exponent operator
+            const emi          = principal * monthlyRate * powerFactor / (powerFactor - 1);
+            const totalPayment = emi * months;                 // total you will pay back
+            const totalInterest = totalPayment - principal;    // how much the bank earns
+
+            // PART 1: boolean type — true or false, nothing else
+            // PART 2: > comparison produces a boolean result
+            const isHighInterest = annualRate > 15;   // boolean: true or false
+
+            // PART 3: ternary — choose message based on boolean value
+            const rateWarning = isHighInterest
+                ? `<p class="warning-line">&#9888;&#65039; High interest rate (${annualRate}%) — consider negotiating</p>`
+                : `<p style="color:var(--nb-green);">&#9989; Reasonable rate (${annualRate}%)</p>`;
+
+            // PART 3: more ternary — mortgage vs personal loan label
+            const loanType = months >= 120 ? "&#127968; Long-term / Mortgage" : "&#128203; Personal / Auto Loan";
+
+            const resultHTML = `
+                <p><strong>Monthly EMI:</strong> PKR ${emi.toFixed(2)}</p>
+                <p><strong>Total Payment:</strong> PKR ${totalPayment.toFixed(2)}</p>
+                <p><strong>Total Interest:</strong> PKR ${totalInterest.toFixed(2)}</p>
+                <p style="color:var(--nb-dim);font-size:0.8em;">Interest is ${((totalInterest / principal) * 100).toFixed(1)}% of principal</p>
+                <p class="trend-line">${loanType}</p>
+                ${rateWarning}
+            `;
+
+            showResult('emiResult', resultHTML, 'success', true);
+
+            lastCalculation = 'emi';
+            calculationCount++;  // shorthand increment — same as calculationCount = calculationCount + 1
+        }
+
+
+        // ====================================================
+        // CALCULATOR 3: Currency Converter
+        // Demonstrates: object literal, dot notation vs bracket
+        //               notation, logical operators (&& ||),
+        //               truthy/falsy values, ternary, string methods
+        // ====================================================
+        function convertCurrency() {
+
+            // PART 1: reading inputs
+            const amount       = parseFloat(document.getElementById('convAmount').value);
+            const fromCurrency = document.getElementById('fromCurrency').value;  // string type
+            const toCurrency   = document.getElementById('toCurrency').value;    // string type
+
+            // PART 4: truthy/falsy validation
+            // In JavaScript, the following are FALSY: 0, "", null, undefined, NaN, false
+            // Everything else is TRUTHY — including non-zero numbers and non-empty strings
+            // !amount is true when amount is 0, NaN, or undefined (all falsy)
+            if (!amount || amount <= 0) {
+                showResult('convResult', 'Please enter a valid amount greater than 0', 'error');
+                return;
+            }
+
+            // PART 4: logical && (AND) — both must be true
+            // We know fromCurrency and toCurrency are always set (select has defaults)
+            // but let's demonstrate && for validation anyway
+            if (!fromCurrency && !toCurrency) {
+                showResult('convResult', 'Please select both currencies', 'error');
+                return;
+            }
+
+            // PART 3: object bracket notation — access property using a variable as key
+            // exchangeRates["USD"] is the same as exchangeRates.USD
+            // but bracket notation lets us use a variable: exchangeRates[fromCurrency]
+            // PART 4: logical || (OR) — fallback to 1 if key somehow missing
+            const fromRate = exchangeRates[fromCurrency] || 1;  // bracket notation
+            const toRate   = exchangeRates[toCurrency]   || 1;  // bracket notation
+
+            // Conversion strategy: go through PKR as the pivot currency
+            // Step 1: convert amount → PKR using fromRate
+            // Step 2: convert PKR → target using toRate
+            const inPKR    = amount / fromRate;           // to PKR base
+            const converted = inPKR * toRate;             // from PKR to target
+
+            // PART 1: string type — bracket notation to get symbol string
+            const fromSymbol = currencySymbols[fromCurrency];  // object bracket notation
+            const toSymbol   = currencySymbols[toCurrency];
+
+            // PART 3: ternary — directional label
+            // === strict equality: checks value AND type
+            const trend = fromCurrency === 'PKR'
+                ? "&#128200; Sending abroad"
+                : toCurrency === 'PKR'
+                    ? "&#128229; Receiving in PKR"
+                    : "&#128257; Cross-currency exchange";
+
+            // PART 2: comparison — warn about same-currency conversion
+            const sameCurrency = fromCurrency === toCurrency;
+
+            // PART 3: template literal with conditional (&&) rendering
+            // In JSX this pattern is common: condition && <element>
+            const sameWarning = sameCurrency
+                ? `<p class="warning-line">&#8505;&#65039; Same currency selected — rate is 1:1</p>`
+                : "";
+
+            // PART 3: template literal — precise 4 decimal places for FX
+            const resultHTML = `
+                <p><strong>${amount} ${fromSymbol}</strong> =
+                   <strong style="color:var(--nb-green);font-size:1.1em;">
+                     ${converted.toFixed(4)} ${toSymbol}
+                   </strong>
+                </p>
+                <p style="color:var(--nb-dim);font-size:0.8em;">
+                    Rate: 1 ${fromCurrency} = ${(toRate / fromRate).toFixed(6)} ${toCurrency}
+                </p>
+                <p class="trend-line">${trend}</p>
+                ${sameWarning}
+            `;
+
+            showResult('convResult', resultHTML, 'success', true);
+
+            lastCalculation = 'currency';
+            calculationCount++;
+        }
+
+
+        // ====================================================
+        // HELPER: showResult()
+        // Injects HTML (or plain text) into a result div
+        // and sets the visual state class (success / error)
+        //
+        // Parameters:
+        //   elementId — string: the id of the result <div>
+        //   message   — string: HTML or plain text to display
+        //   type      — string: 'success' or 'error' (default 'success')
+        //   isHTML    — boolean: true = innerHTML, false = split on \n
+        // ====================================================
+        function showResult(elementId, message, type = 'success', isHTML = false) {
+            const el = document.getElementById(elementId);
+
+            if (isHTML) {
+                // Message already formatted as HTML — inject directly
+                el.innerHTML = message;
+            } else {
+                // Plain text — split on newlines, wrap each non-empty line in <p>
+                el.innerHTML = message
+                    .split('\n')
+                    .filter(line => line.trim())               // remove blank lines (truthy/falsy!)
+                    .map(line => `<p>${line.trim()}</p>`)      // template literal per line
+                    .join('');
+            }
+
+            // Set the CSS class for success (green border) or error (red border)
+            el.className = `result ${type}`;
+        }
+
+
+        // ====================================================
+        // ALLOW ENTER KEY on all inputs to trigger calculation
+        // addEventListener — introduced in the DOM section later,
+        // shown here as a preview of event-driven JavaScript
+        // ====================================================
+        document.querySelectorAll('#tip-calc input, #tip-calc select').forEach(el => {
+            el.addEventListener('keydown', e => { if (e.key === 'Enter') calculateTip(); });
+        });
+
+        document.querySelectorAll('#emi-calc input, #emi-calc select').forEach(el => {
+            el.addEventListener('keydown', e => { if (e.key === 'Enter') calculateEMI(); });
+        });
+
+        document.querySelectorAll('#currency-calc input, #currency-calc select').forEach(el => {
+            el.addEventListener('keydown', e => { if (e.key === 'Enter') convertCurrency(); });
+        });
+
+
+        // ====================================================
+        // DEVTOOLS TIP — Open browser console (F12) and try:
+        //
+        //   1. Inspect variable types:
+        //        typeof TAX_RATE          // "number"
+        //        typeof APP_NAME          // "string"
+        //        typeof lastCalculation   // "object" (null is object — JS quirk!)
+        //        typeof exchangeRates     // "object"
+        //
+        //   2. Object bracket vs dot notation:
+        //        exchangeRates.USD        // 0.0036
+        //        exchangeRates["USD"]     // 0.0036  (same result)
+        //        let key = "EUR"
+        //        exchangeRates[key]       // 0.0033  (dynamic access — only brackets work!)
+        //
+        //   3. Truthy / Falsy experiment:
+        //        Boolean(0)               // false
+        //        Boolean("")              // false
+        //        Boolean(null)            // false
+        //        Boolean(NaN)             // false
+        //        Boolean(1)               // true
+        //        Boolean("hello")         // true
+        //
+        //   4. Exponentiation operator:
+        //        2 ** 10                  // 1024
+        //        (1.01) ** 12             // 1.1268... (12 months at 1% monthly)
+        //
+        //   5. Template literal vs string concatenation:
+        //        let x = 42
+        //        `Value is ${x}`          // "Value is 42"   (template literal)
+        //        "Value is " + x          // "Value is 42"   (concatenation — older way)
+        //
+        //   6. Check calculationCount live after using the calculators:
+        //        calculationCount         // shows how many times you clicked Calculate
+        //        lastCalculation          // shows which calculator you used last
+        //
+        // ====================================================
+
+    </script>
+
+</body>
+</html>

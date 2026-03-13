@@ -1,0 +1,2053 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lecture 8: JavaScript Fundamentals | NexusBerry Modern Frontend Course</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5/dist/reveal.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5/dist/theme/black.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5/plugin/highlight/monokai.css">
+    <style>
+        :root {
+            --nb-berry: #990147;
+            --nb-nexus: #0020C2;
+            --nb-berry-light: #E04A7A;
+            --nb-nexus-light: #4D70FF;
+            --nb-bg: #080D2B;
+            --nb-text: #F0F0F5;
+            --nb-accent-green: #00C896;
+            --nb-accent-orange: #FF8C42;
+            --nb-accent-red: #FF4C6A;
+            --nb-accent-purple: #A855F7;
+            --nb-surface: #0F1642;
+            --nb-surface-2: #1A2258;
+            --nb-border: #2A3370;
+            --nb-dim: #6B7094;
+            --nb-duration-fast: 0.3s;
+            --nb-duration-normal: 0.6s;
+            --nb-duration-slow: 0.9s;
+            --nb-ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .reveal { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        .reveal h1, .reveal h2, .reveal h3 { color: var(--nb-berry-light); text-transform: none; }
+        .reveal .slide-background { background-color: var(--nb-bg); }
+        .reveal pre code { font-size: 0.85em; line-height: 1.4; max-height: 420px; }
+        .reveal .nexusberry-brand { color: var(--nb-berry); font-weight: bold; }
+        .reveal .interactive-q-slide { text-align: left; }
+        .reveal .interactive-q-slide .options { list-style: upper-alpha; font-size: 0.85em; margin-top: 0.4em; }
+        .reveal .interactive-q-slide .options li { margin-bottom: 0.2em; }
+        .reveal .code-transition { font-size: 1.2em; color: var(--nb-berry-light); }
+        .reveal .part-label { font-size: 0.6em; color: var(--nb-nexus-light); text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 0.3em; }
+        .reveal footer { position: absolute; bottom: 0.2em; left: 1em; font-size: 0.45em; color: #8888AA; }
+
+        /* ANIMATION KEYFRAMES */
+        @keyframes nb-rise { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes nb-pop { from { opacity: 0; transform: scale(0.8); } to { opacity: 1; transform: scale(1); } }
+        @keyframes nb-fill-bar { from { width: 0; } }
+        @keyframes nb-highlight-correct { to { background: rgba(0,200,150,0.2); border-color: var(--nb-accent-green); } }
+        @keyframes nb-highlight-wrong { to { background: rgba(255,76,106,0.15); border-color: var(--nb-accent-red); } }
+
+        .nb-anim-rise { animation: nb-rise var(--nb-duration-normal) var(--nb-ease-out) both; }
+        .nb-anim-pop { animation: nb-pop var(--nb-duration-normal) var(--nb-ease-out) both; }
+        .nb-delay-1 { animation-delay: 0.1s; } .nb-delay-2 { animation-delay: 0.2s; }
+        .nb-delay-3 { animation-delay: 0.3s; } .nb-delay-4 { animation-delay: 0.4s; }
+        .nb-delay-5 { animation-delay: 0.5s; } .nb-delay-6 { animation-delay: 0.6s; }
+
+        /* INFOGRAPHIC: Process Flow Horizontal */
+        .nb-flow { display: flex; align-items: center; justify-content: center; gap: 0; flex-wrap: wrap; margin: 0.8em 0; }
+        .nb-flow-step { background: var(--nb-surface); border: 1px solid var(--nb-border); border-radius: 10px; padding: 0.5em 0.7em; text-align: center; min-width: 90px; flex-shrink: 1; }
+        .nb-flow-step .icon { font-size: 1.3em; display: block; margin-bottom: 0.2em; }
+        .nb-flow-step .label { font-size: 0.6em; font-weight: 600; color: var(--nb-text); }
+        .nb-flow-step .sublabel { font-size: 0.45em; color: var(--nb-dim); margin-top: 0.1em; }
+        .nb-flow-step.nb-active { border-color: var(--nb-berry-light); box-shadow: 0 0 12px rgba(224,74,122,0.3); }
+        .nb-flow-arrow { font-size: 1em; color: var(--nb-dim); padding: 0 0.2em; flex-shrink: 0; }
+
+        /* INFOGRAPHIC: Process Flow Vertical */
+        .nb-flow-v { display: flex; flex-direction: column; align-items: center; gap: 0; margin: 0.5em auto; max-width: 320px; }
+        .nb-flow-v .nb-flow-step { width: 100%; min-width: unset; padding: 0.4em 0.6em; }
+        .nb-flow-v .nb-flow-step .icon { font-size: 1.1em; margin-bottom: 0.1em; }
+        .nb-flow-v .nb-flow-step .label { font-size: 0.55em; }
+        .nb-flow-v .nb-flow-arrow { transform: rotate(90deg); padding: 0.1em 0; font-size: 0.8em; }
+
+        /* INFOGRAPHIC: Comparison */
+        .nb-compare { display: grid; grid-template-columns: 1fr auto 1fr; gap: 0.6em; align-items: start; margin: 0.6em 0; }
+        .nb-col-a, .nb-col-b { background: var(--nb-surface); border-radius: 10px; padding: 0.7em; border: 2px solid var(--nb-border); min-width: 0; overflow: hidden; }
+        .nb-col-a { border-color: var(--nb-nexus-light); }
+        .nb-col-b { border-color: var(--nb-berry-light); }
+        .nb-col-a pre, .nb-col-b pre { overflow: hidden; }
+        .nb-col-a h4, .nb-col-b h4 { margin: 0 0 0.4em 0; font-size: 0.75em; }
+        .nb-col-a p, .nb-col-b p { margin: 0.2em 0; font-size: 0.55em; line-height: 1.3; }
+        .nb-col-a pre, .nb-col-b pre { font-size: 0.55em; margin: 0.3em 0 0 0; }
+        .nb-vs { display: flex; align-items: center; font-size: 1.1em; font-weight: 700; color: var(--nb-dim); padding: 0 0.2em; }
+        .nb-winner { border-color: var(--nb-accent-green) !important; box-shadow: 0 0 15px rgba(0,200,150,0.25); }
+
+        /* INFOGRAPHIC: Anatomy */
+        .nb-anatomy { text-align: center; margin: 0.8em 0; }
+        .nb-anatomy pre { display: inline-block; text-align: left; }
+        .nb-anatomy .nb-callouts { display: flex; justify-content: center; gap: 1.5em; margin-top: 0.8em; flex-wrap: wrap; }
+        .nb-anatomy .nb-callout-item { font-size: 0.65em; display: flex; align-items: center; gap: 0.4em; }
+        .nb-anatomy .nb-dot { width: 10px; height: 10px; border-radius: 50%; display: inline-block; flex-shrink: 0; }
+        .nb-hl-1 { color: var(--nb-berry-light); } .nb-dot-1 { background: var(--nb-berry-light); }
+        .nb-hl-2 { color: var(--nb-nexus-light); } .nb-dot-2 { background: var(--nb-nexus-light); }
+        .nb-hl-3 { color: var(--nb-accent-green); } .nb-dot-3 { background: var(--nb-accent-green); }
+        .nb-hl-4 { color: var(--nb-accent-orange); } .nb-dot-4 { background: var(--nb-accent-orange); }
+
+        /* INFOGRAPHIC: Icon Cards */
+        .nb-cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 0.5em; margin: 0.6em 0; }
+        .nb-card { background: var(--nb-surface); border: 1px solid var(--nb-border); border-radius: 10px; padding: 0.6em 0.5em; text-align: center; }
+        .nb-card .icon { font-size: 1.3em; display: block; margin-bottom: 0.15em; }
+        .nb-card .title { font-size: 0.6em; font-weight: 600; color: var(--nb-text); margin-bottom: 0.15em; display: block; }
+        .nb-card .desc { font-size: 0.45em; color: var(--nb-dim); line-height: 1.3; display: block; }
+        .nb-card-berry { border-color: var(--nb-berry-light); }
+        .nb-card-nexus { border-color: var(--nb-nexus-light); }
+        .nb-card-green { border-color: var(--nb-accent-green); }
+        .nb-card-orange { border-color: var(--nb-accent-orange); }
+        .nb-card-red { border-color: var(--nb-accent-red); }
+        .nb-card-purple { border-color: var(--nb-accent-purple); }
+
+        /* INFOGRAPHIC: Stat Bars */
+        .nb-stats { margin: 0.6em 0; }
+        .nb-stat { margin-bottom: 0.5em; }
+        .nb-stat .stat-header { display: flex; justify-content: space-between; font-size: 0.6em; margin-bottom: 0.2em; }
+        .nb-stat .stat-label { color: var(--nb-text); }
+        .nb-stat .stat-value { color: var(--nb-berry-light); font-weight: 700; }
+        .nb-stat .stat-track { height: 6px; background: var(--nb-surface); border-radius: 3px; overflow: hidden; }
+        .nb-stat .stat-fill { height: 100%; border-radius: 3px; background: linear-gradient(90deg, var(--nb-nexus-light), var(--nb-berry-light)); }
+        .present .nb-stat .stat-fill { animation: nb-fill-bar var(--nb-duration-slow) var(--nb-ease-out) both; }
+
+        /* INFOGRAPHIC: Callout Boxes */
+        .nb-callout { background: var(--nb-surface); border-left: 4px solid var(--nb-border); border-radius: 0 8px 8px 0; padding: 0.5em 0.7em; margin: 0.5em 0 1.5em 0; text-align: left; font-size: 0.6em; display: flex; align-items: flex-start; gap: 0.5em; }
+        .nb-callout .callout-icon { font-size: 1.1em; flex-shrink: 0; }
+        .nb-callout .callout-text { line-height: 1.4; }
+        .nb-tip { border-color: var(--nb-accent-green); }
+        .nb-warning { border-color: var(--nb-accent-orange); }
+        .nb-error { border-color: var(--nb-accent-red); }
+        .nb-pro { border-color: var(--nb-accent-purple); }
+
+        /* COMPACT TABLES */
+        .reveal table { font-size: 0.55em; margin: 0.4em auto; border-collapse: collapse; }
+        .reveal table th { background: var(--nb-surface-2); color: var(--nb-berry-light); padding: 0.3em 0.5em; }
+        .reveal table td { padding: 0.25em 0.5em; border-bottom: 1px solid var(--nb-border); }
+        .reveal table tr:nth-child(even) td { background: rgba(15,22,66,0.4); }
+        .reveal table code { font-size: 0.9em; }
+        .tbl-compact { font-size: 0.5em !important; }
+        .tbl-compact th, .tbl-compact td { padding: 0.2em 0.4em !important; }
+
+        /* COPY BUTTON */
+        .reveal pre { position: relative; }
+        .copy-btn { position: absolute; top: 0.4em; right: 0.4em; background: var(--nb-surface-2); border: 1px solid var(--nb-border); border-radius: 4px; padding: 0.3em 0.5em; font-size: 0.7em; color: var(--nb-dim); cursor: pointer; opacity: 0; transition: opacity 0.2s, background 0.2s; z-index: 10; }
+        .reveal pre:hover .copy-btn { opacity: 1; }
+        .copy-btn:hover { background: var(--nb-border); color: var(--nb-text); }
+        .copy-btn.copied { background: var(--nb-accent-green); color: var(--nb-bg); }
+
+        /* LOGO WATERMARK */
+        .reveal .slides section:not(.stack)::after {
+            content: '';
+            position: absolute;
+            bottom: 10px;
+            right: 10px;
+            width: 120px;
+            height: 32px;
+            background: url('https://pn1iqo7y4j.ufs.sh/f/8eAtmrMpsgOdpa5TY5tzNjXMV6hUO1ryYsQP047Gqo5I8wWl') no-repeat center / contain;
+            opacity: 0.35;
+            pointer-events: none;
+        }
+
+        /* ANSWER HIGHLIGHT HELPERS */
+        .answer-correct { color: var(--nb-accent-green); font-weight: 700; }
+        .answer-wrong { color: var(--nb-dim); text-decoration: line-through; }
+        .tag-js { display: inline-block; background: var(--nb-accent-orange); color: #000; font-size: 0.5em; padding: 0.1em 0.4em; border-radius: 4px; font-weight: 700; vertical-align: middle; margin-left: 0.3em; }
+        .tag-ts { display: inline-block; background: var(--nb-nexus-light); color: #fff; font-size: 0.5em; padding: 0.1em 0.4em; border-radius: 4px; font-weight: 700; vertical-align: middle; margin-left: 0.3em; }
+
+        /* TWO-COLUMN LAYOUT */
+        .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 1em; align-items: start; }
+        .two-col-3-2 { display: grid; grid-template-columns: 3fr 2fr; gap: 1em; align-items: start; }
+
+        /* CHEAT SHEET TWO-COL */
+        .cs-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.8em; margin: 0.5em 0; text-align: left; font-size: 0.48em; }
+        .cs-block { background: var(--nb-surface); border: 1px solid var(--nb-border); border-radius: 8px; padding: 0.4em 0.6em; min-width: 0; }
+        .cs-block h4 { color: var(--nb-berry-light); margin: 0 0 0.2em 0; font-size: 1.1em; }
+        .cs-block ul { margin: 0; padding-left: 1em; }
+        .cs-block li { margin-bottom: 0.1em; }
+        .cs-block code { color: var(--nb-accent-green); font-size: 0.9em; }
+    </style>
+</head>
+<body>
+    <div class="reveal">
+        <div class="slides">
+
+            <!-- ===== SLIDE 1: TITLE ===== -->
+            <section>
+                <img src="https://pn1iqo7y4j.ufs.sh/f/8eAtmrMpsgOdpa5TY5tzNjXMV6hUO1ryYsQP047Gqo5I8wWl"
+                     alt="NexusBerry Logo" style="width: 200px; margin-bottom: 0.4em; opacity: 0.9;">
+                <p class="part-label">NexusBerry Modern Frontend Course &mdash; Module 2</p>
+                <h1 style="font-size: 1.6em; margin-bottom: 0.2em;">Lecture 8</h1>
+                <h2 style="font-size: 1.2em; margin-bottom: 0.4em;">JavaScript Fundamentals</h2>
+                <p style="font-size: 0.85em; color: var(--nb-nexus-light); margin-bottom: 0.6em;">
+                    Variables &middot; Data Types &middot; Operators &middot; TypeScript Preview
+                </p>
+                <p style="font-size: 0.7em; color: var(--nb-dim);">By Rana M. Ajmal | March 2026</p>
+                <p style="font-size: 0.45em; margin-top: 0.6em;">
+                    <a href="?print-pdf" target="_blank" style="color: var(--nb-dim);">Export PDF</a>
+                    &nbsp;|&nbsp;
+                    <a href="index.html" target="_blank" style="color: var(--nb-dim);">Open in Browser</a>
+                </p>
+                <footer>www.nexusberry.com</footer>
+            </section>
+
+            <!-- ===== SLIDE 2: TABLE OF CONTENTS ===== -->
+            <section>
+                <h2>Today's Agenda</h2>
+                <ol style="font-size: 0.82em; line-height: 1.7;">
+                    <li class="fragment fade-up">
+                        <strong style="color: var(--nb-nexus-light);">JavaScript as a Language</strong>
+                        <span style="color: var(--nb-dim); font-size: 0.8em;"> &mdash; features, versions, ways to run</span>
+                    </li>
+                    <li class="fragment fade-up">
+                        <strong style="color: var(--nb-nexus-light);">Variables &amp; Declarations</strong>
+                        <span style="color: var(--nb-dim); font-size: 0.8em;"> &mdash; var, let, const &amp; hoisting</span>
+                    </li>
+                    <li class="fragment fade-up">
+                        <strong style="color: var(--nb-nexus-light);">Data Types</strong>
+                        <span style="color: var(--nb-dim); font-size: 0.8em;"> &mdash; primitives, typeof, type coercion</span>
+                    </li>
+                    <li class="fragment fade-up">
+                        <strong style="color: var(--nb-nexus-light);">Operators</strong>
+                        <span style="color: var(--nb-dim); font-size: 0.8em;"> &mdash; arithmetic, comparison, logical, ternary</span>
+                    </li>
+                    <li class="fragment fade-up">
+                        <strong style="color: var(--nb-nexus-light);">Truthy &amp; Falsy</strong>
+                        <span style="color: var(--nb-dim); font-size: 0.8em;"> &mdash; every value has a boolean soul</span>
+                    </li>
+                    <li class="fragment fade-up">
+                        <strong style="color: var(--nb-nexus-light);">TypeScript Preview</strong>
+                        <span style="color: var(--nb-dim); font-size: 0.8em;"> &mdash; JavaScript with a safety net</span>
+                    </li>
+                </ol>
+                <p class="fragment fade-up" style="font-size: 0.55em; color: var(--nb-dim); margin-top: 0.8em;">
+                    &#127959; Project: <strong style="color: var(--nb-text);">Financial Calculator Suite</strong>
+                </p>
+                <footer>www.nexusberry.com</footer>
+            </section>
+
+            <!-- ===================================================== -->
+            <!-- PART 0: JAVASCRIPT AS A LANGUAGE                       -->
+            <!-- ===================================================== -->
+            <section>
+
+                <!-- 0.1 Part Intro -->
+                <section>
+                    <p class="part-label">Part 0 of 6</p>
+                    <h2>JavaScript as a Language</h2>
+                    <p style="font-size: 0.72em; color: var(--nb-dim); margin-bottom: 0.7em;">
+                        Before we write a single line of JS, let's understand what kind of beast we're dealing with.
+                    </p>
+                    <div class="nb-cards" style="grid-template-columns: repeat(3, 1fr);">
+                        <div class="nb-card nb-card-nexus fragment fade-up">
+                            <span class="icon">&#9889;</span>
+                            <span class="title">Interpreted</span>
+                            <span class="desc">Runs line-by-line without a separate compile step</span>
+                        </div>
+                        <div class="nb-card nb-card-berry fragment fade-up">
+                            <span class="icon">&#128260;</span>
+                            <span class="title">Dynamic</span>
+                            <span class="desc">Types are determined at runtime, not declared upfront</span>
+                        </div>
+                        <div class="nb-card nb-card-green fragment fade-up">
+                            <span class="icon">&#127760;</span>
+                            <span class="title">Everywhere</span>
+                            <span class="desc">Browser, server, mobile, desktop — JS runs anywhere</span>
+                        </div>
+                    </div>
+                    <footer>www.nexusberry.com</footer>
+                </section>
+
+                <!-- 0.2 JS + Ecosystem Pairings -->
+                <section>
+                    <p class="part-label">Part 0 &mdash; JS Everywhere</p>
+                    <h3>One Language, Every Platform</h3>
+                    <p style="font-size: 0.65em; color: var(--nb-dim); margin-bottom: 0.7em;">
+                        JavaScript is the only language that runs natively in every browser — and the ecosystem extends it to every platform.
+                    </p>
+                    <div class="nb-cards" style="grid-template-columns: repeat(3, 1fr);">
+                        <div class="nb-card nb-card-nexus fragment fade-up">
+                            <span class="icon">&#127760;</span>
+                            <span class="title">Web Apps</span>
+                            <span class="desc" style="font-size: 0.55em;">
+                                <strong style="color: var(--nb-nexus-light);">React.js</strong><br>
+                                Component-based UI library for building fast, interactive web applications
+                            </span>
+                        </div>
+                        <div class="nb-card nb-card-berry fragment fade-up">
+                            <span class="icon">&#128241;</span>
+                            <span class="title">Mobile Apps</span>
+                            <span class="desc" style="font-size: 0.55em;">
+                                <strong style="color: var(--nb-berry-light);">React Native</strong><br>
+                                Write once in JS/React, compile to native iOS &amp; Android apps
+                            </span>
+                        </div>
+                        <div class="nb-card nb-card-green fragment fade-up">
+                            <span class="icon">&#128187;</span>
+                            <span class="title">Desktop Apps</span>
+                            <span class="desc" style="font-size: 0.55em;">
+                                <strong style="color: var(--nb-accent-green);">Electron</strong><br>
+                                Bundle web tech (HTML + CSS + JS) into cross-platform desktop apps
+                            </span>
+                        </div>
+                    </div>
+                    <div class="nb-callout nb-pro fragment fade-up" style="margin-top: 0.8em; margin-bottom: 1.5em;">
+                        <span class="callout-icon">&#128142;</span>
+                        <span class="callout-text">VS Code, Slack, Discord, WhatsApp Desktop — all built with Electron. React.js powers Facebook, Instagram, Netflix. React Native powers the Facebook and Shopify mobile apps.</span>
+                    </div>
+                    <footer>www.nexusberry.com</footer>
+                </section>
+
+                <!-- 0.3 What Kind of Language Is JavaScript? -->
+                <section>
+                    <p class="part-label">Part 0 &mdash; Language Characteristics</p>
+                    <h3>What Kind of Language Is JavaScript?</h3>
+                    <div class="nb-cards" style="grid-template-columns: repeat(3, 1fr); margin-top: 0.5em;">
+                        <div class="nb-card nb-card-nexus fragment fade-up">
+                            <span class="icon">&#9889;</span>
+                            <span class="title">Interpreted / JIT</span>
+                            <span class="desc">Source runs directly; V8 optimizes hot paths at runtime</span>
+                        </div>
+                        <div class="nb-card nb-card-berry fragment fade-up">
+                            <span class="icon">&#128260;</span>
+                            <span class="title">Dynamically Typed</span>
+                            <span class="desc">Variables hold any type; types can change anytime</span>
+                        </div>
+                        <div class="nb-card nb-card-green fragment fade-up">
+                            <span class="icon">&#128119;</span>
+                            <span class="title">Prototype-based OOP</span>
+                            <span class="desc">Objects inherit from other objects, not classes</span>
+                        </div>
+                        <div class="nb-card nb-card-orange fragment fade-up">
+                            <span class="icon">&#128640;</span>
+                            <span class="title">First-class Functions</span>
+                            <span class="desc">Functions are values — pass them, return them, store them</span>
+                        </div>
+                        <div class="nb-card fragment fade-up" style="border-color: var(--nb-accent-purple);">
+                            <span class="icon">&#128257;</span>
+                            <span class="title">Single-threaded</span>
+                            <span class="desc">One thing at a time — async makes it feel parallel</span>
+                        </div>
+                        <div class="nb-card fragment fade-up" style="border-color: var(--nb-dim);">
+                            <span class="icon">&#128276;</span>
+                            <span class="title">Event-driven</span>
+                            <span class="desc">Reacts to user actions, timers, and network responses</span>
+                        </div>
+                    </div>
+                    <footer>www.nexusberry.com</footer>
+                </section>
+
+                <!-- 0.3 Programming Language Building Blocks -->
+                <section>
+                    <p class="part-label">Part 0 &mdash; Building Blocks</p>
+                    <h3>Every Programming Language Has These</h3>
+                    <p style="font-size: 0.65em; color: var(--nb-dim); margin-bottom: 0.6em;">JavaScript has all of them — and today we start with the first two.</p>
+                    <div class="nb-flow">
+                        <div class="nb-flow-step nb-active fragment fade-up">
+                            <span class="icon">&#128420;</span>
+                            <span class="label">Variables</span>
+                            <span class="sublabel">store data</span>
+                        </div>
+                        <span class="nb-flow-arrow fragment fade-in">&#8594;</span>
+                        <div class="nb-flow-step nb-active fragment fade-up">
+                            <span class="icon">&#128296;</span>
+                            <span class="label">Functions</span>
+                            <span class="sublabel">reusable logic</span>
+                        </div>
+                        <span class="nb-flow-arrow fragment fade-in">&#8594;</span>
+                        <div class="nb-flow-step fragment fade-up">
+                            <span class="icon">&#128336;</span>
+                            <span class="label">Control Flow</span>
+                            <span class="sublabel">if / loops</span>
+                        </div>
+                        <span class="nb-flow-arrow fragment fade-in">&#8594;</span>
+                        <div class="nb-flow-step fragment fade-up">
+                            <span class="icon">&#128218;</span>
+                            <span class="label">Data Structures</span>
+                            <span class="sublabel">arrays, objects</span>
+                        </div>
+                        <span class="nb-flow-arrow fragment fade-in">&#8594;</span>
+                        <div class="nb-flow-step fragment fade-up">
+                            <span class="icon">&#128065;</span>
+                            <span class="label">I / O</span>
+                            <span class="sublabel">console, DOM, APIs</span>
+                        </div>
+                    </div>
+                    <div class="nb-callout nb-tip fragment fade-up" style="margin-bottom: 2em;">
+                        <span class="callout-icon">&#9889;</span>
+                        <span class="callout-text">Every language — Python, Java, C#, Swift — shares these same building blocks. Learn them once in JS and you can pick up any other language faster.</span>
+                    </div>
+                    <footer>www.nexusberry.com</footer>
+                </section>
+
+                <!-- 0.3b Phases of Learning JavaScript -->
+                <section>
+                    <p class="part-label">Part 0 &mdash; Learning Path</p>
+                    <h3>Two Phases of Learning JavaScript</h3>
+                    <p style="font-size: 0.6em; color: var(--nb-dim); margin-bottom: 0.5em;">Most courses skip Phase 1 — we won't.</p>
+                    <div class="nb-compare" style="grid-template-columns: 1fr auto 1fr; align-items: start;">
+                        <div class="nb-col-a fragment fade-right">
+                            <h4 style="color: var(--nb-nexus-light); font-size: 0.75em; margin-bottom: 0.4em;">&#128187; Phase 1 — Pure Language</h4>
+                            <p style="font-size: 0.5em; color: var(--nb-dim); margin-bottom: 0.5em;">JS as a programming language — no browser needed</p>
+                            <div style="font-size: 0.5em; line-height: 1.7;">
+                                <div>&#9989; Variables &amp; Data Types</div>
+                                <div>&#9989; Functions &amp; Scope</div>
+                                <div>&#9989; Control Flow (if / loops)</div>
+                                <div>&#9989; Arrays &amp; Objects</div>
+                                <div>&#9989; OOP &amp; Prototypes</div>
+                                <div>&#9989; Async / Promises</div>
+                            </div>
+                            <div style="margin-top: 0.6em; font-size: 0.48em; color: var(--nb-nexus-light);">
+                                &#128187; Run with: <code>node filename.js</code><br>
+                                &#127760; Or: Browser Console (F12)<br>
+                                &#127757; Or: Deno, Bun, QuickJS
+                            </div>
+                        </div>
+                        <div class="nb-vs" style="font-size: 0.9em; color: var(--nb-dim); padding: 0 0.4em;">&#8594;</div>
+                        <div class="nb-col-b fragment fade-left">
+                            <h4 style="color: var(--nb-berry-light); font-size: 0.75em; margin-bottom: 0.4em;">&#127760; Phase 2 — Browser &amp; DOM</h4>
+                            <p style="font-size: 0.5em; color: var(--nb-dim); margin-bottom: 0.5em;">JS interacting with HTML, CSS &amp; the web platform</p>
+                            <div style="font-size: 0.5em; line-height: 1.7;">
+                                <div>&#9989; DOM Selection &amp; Manipulation</div>
+                                <div>&#9989; Events (click, input, submit)</div>
+                                <div>&#9989; Fetch API &amp; AJAX</div>
+                                <div>&#9989; localStorage &amp; sessionStorage</div>
+                                <div>&#9989; Browser APIs (Geo, Notifications…)</div>
+                                <div>&#9989; React / Next.js (built on top)</div>
+                            </div>
+                            <div style="margin-top: 0.6em; font-size: 0.48em; color: var(--nb-berry-light);">
+                                &#127760; Requires: A real browser &amp; HTML file<br>
+                                &#128296; Tools: DevTools, React, Next.js
+                            </div>
+                        </div>
+                    </div>
+                    <div class="nb-callout nb-tip fragment fade-up" style="margin-bottom: 1.5em; font-size: 0.55em;">
+                        <span class="callout-icon">&#9889;</span>
+                        <span class="callout-text"><strong>We start in Phase 1.</strong> Lectures 8–16 are pure JS logic — no DOM. This is intentional. Master the language first, then point it at the browser. Most confusion in web dev comes from mixing these two phases too early.</span>
+                    </div>
+                    <footer>www.nexusberry.com</footer>
+                </section>
+
+                <!-- 0.4 JavaScript Version History -->
+                <section>
+                    <p class="part-label">Part 0 &mdash; Version History</p>
+                    <h3>JavaScript Version History</h3>
+                    <div class="nb-cards" style="grid-template-columns: repeat(3, 1fr); margin-top: 0.5em;">
+                        <div class="nb-card nb-card-berry fragment fade-up">
+                            <span class="icon">&#128640;</span>
+                            <span class="title"><span style="font-size:0.75em; color: var(--nb-dim);">1995</span> — Created</span>
+                            <span class="desc">Brendan Eich built JS in 10 days at Netscape. Originally called Mocha, then LiveScript.</span>
+                        </div>
+                        <div class="nb-card fragment fade-up">
+                            <span class="icon">&#128209;</span>
+                            <span class="title"><span style="font-size:0.75em; color: var(--nb-dim);">1997</span> — ES1</span>
+                            <span class="desc">First ECMAScript standard published. JavaScript officially had a specification.</span>
+                        </div>
+                        <div class="nb-card nb-card-orange fragment fade-up">
+                            <span class="icon">&#9881;</span>
+                            <span class="title"><span style="font-size:0.75em; color: var(--nb-dim);">2009</span> — ES5</span>
+                            <span class="desc">Modern baseline. Added <code>strict mode</code>, <code>JSON</code>, and <code>Array</code> methods like <code>.map()</code> / <code>.filter()</code>.</span>
+                        </div>
+                        <div class="nb-card nb-card-nexus fragment fade-up" style="border-width: 2px;">
+                            <span class="icon">&#11088;</span>
+                            <span class="title"><span style="font-size:0.75em; color: var(--nb-nexus-light);">2015</span> — ES6 ★</span>
+                            <span class="desc">The Revolution — <code>let</code>/<code>const</code>, arrow functions, classes, modules, template literals. "Modern JS" means ES6+.</span>
+                        </div>
+                        <div class="nb-card fragment fade-up">
+                            <span class="icon">&#128197;</span>
+                            <span class="title"><span style="font-size:0.75em; color: var(--nb-dim);">2016–2023</span></span>
+                            <span class="desc">Yearly releases (ES2016 → ES2023). Small but steady improvements every year.</span>
+                        </div>
+                        <div class="nb-card nb-card-green fragment fade-up">
+                            <span class="icon">&#9989;</span>
+                            <span class="title"><span style="font-size:0.75em; color: var(--nb-accent-green);">2024</span> — ES2024</span>
+                            <span class="desc">Today's baseline. <code>Promise.withResolvers()</code>, <code>Object.groupBy()</code>, and more.</span>
+                        </div>
+                    </div>
+                    <footer>www.nexusberry.com</footer>
+                </section>
+
+                <!-- 0.5 Ways to Run JavaScript -->
+                <section>
+                    <p class="part-label">Part 0 &mdash; Running JS</p>
+                    <h3>Ways to Run JavaScript Code</h3>
+                    <div class="nb-cards" style="grid-template-columns: repeat(2, 1fr); margin-top: 0.5em;">
+                        <div class="nb-card nb-card-nexus fragment fade-up">
+                            <span class="icon">&#127760;</span>
+                            <span class="title">Browser Console</span>
+                            <span class="desc">F12 → Console tab. Instant REPL — type JS and see results live. Zero setup.</span>
+                        </div>
+                        <div class="nb-card nb-card-berry fragment fade-up">
+                            <span class="icon">&#128196;</span>
+                            <span class="title">HTML &lt;script&gt; Tag</span>
+                            <span class="desc">Embed JS in an HTML file or link an external <code>.js</code> file. How the web works.</span>
+                        </div>
+                        <div class="nb-card nb-card-green fragment fade-up">
+                            <span class="icon">&#128187;</span>
+                            <span class="title">Node.js</span>
+                            <span class="desc">Server-side runtime. Run <code>.js</code> files directly with <code>node filename.js</code>.</span>
+                        </div>
+                        <div class="nb-card nb-card-orange fragment fade-up">
+                            <span class="icon">&#129514;</span>
+                            <span class="title">Online Playgrounds</span>
+                            <span class="desc">CodePen, JSFiddle, StackBlitz — share runnable code snippets instantly.</span>
+                        </div>
+                    </div>
+                    <footer>www.nexusberry.com</footer>
+                </section>
+
+                <!-- 0.5b How JavaScript Escaped the Browser -->
+                <section>
+                    <p class="part-label">Part 0 &mdash; JS Engines</p>
+                    <h3>How JavaScript Escaped the Browser</h3>
+                    <div class="nb-cards" style="grid-template-columns: repeat(3, 1fr); margin-top: 0.4em;">
+                        <div class="nb-card nb-card-nexus fragment fade-up">
+                            <span class="icon">&#128640;</span>
+                            <span class="title">V8</span>
+                            <span class="desc">Google. Powers Chrome, Node.js, Deno, and Edge. Most widely deployed JS engine in the world.</span>
+                        </div>
+                        <div class="nb-card nb-card-orange fragment fade-up">
+                            <span class="icon">&#128049;</span>
+                            <span class="title">SpiderMonkey</span>
+                            <span class="desc">Mozilla Firefox. The very first JS engine ever built (1995) — Brendan Eich wrote it himself.</span>
+                        </div>
+                        <div class="nb-card fragment fade-up">
+                            <span class="icon">&#127822;</span>
+                            <span class="title">JavaScriptCore</span>
+                            <span class="desc">Apple / WebKit. Powers Safari and React Native on iOS. Also called "Nitro".</span>
+                        </div>
+                        <div class="nb-card nb-card-berry fragment fade-up">
+                            <span class="icon">&#128241;</span>
+                            <span class="title">Hermes</span>
+                            <span class="desc">Meta. Optimized for React Native on Android — fast startup, low memory footprint.</span>
+                        </div>
+                        <div class="nb-card nb-card-green fragment fade-up">
+                            <span class="icon">&#128104;&#8205;&#128187;</span>
+                            <span class="title">QuickJS</span>
+                            <span class="desc">Tiny, embeddable engine. Powers Cloudflare Workers and IoT / embedded systems.</span>
+                        </div>
+                        <div class="nb-card fragment fade-up">
+                            <span class="icon">&#129482;</span>
+                            <span class="title">Deno</span>
+                            <span class="desc">Built on V8 by Ryan Dahl (Node.js creator). TypeScript-native runtime — the modern Node.</span>
+                        </div>
+                    </div>
+                    <div class="nb-callout nb-pro fragment fade-up" style="margin-bottom: 1.5em; font-size: 0.55em;">
+                        <span class="callout-icon">&#128142;</span>
+                        <span class="callout-text"><strong>Node.js (2009) was the turning point</strong> — Ryan Dahl took V8 out of Chrome and gave JS a server. That's why you can run <code>node app.js</code> today and JS is everywhere.</span>
+                    </div>
+                    <footer>www.nexusberry.com</footer>
+                </section>
+
+                <!-- 0.6 Code Transition -->
+                <section>
+                    <p class="code-transition">Let's open the browser console right now!</p>
+                    <br>
+                    <p style="font-size: 0.75em; color: var(--nb-dim);">
+                        Press <strong style="color: var(--nb-text);">F12</strong> → click the <strong style="color: var(--nb-text);">Console</strong> tab
+                    </p>
+                    <br>
+                    <p style="font-size: 0.7em; color: var(--nb-nexus-light);">Then type:</p>
+                    <pre style="font-size: 0.75em; width: 60%; margin: 0.4em auto;"><code data-trim class="language-javascript">console.log("Hello, JavaScript!");</code></pre>
+                    <footer>www.nexusberry.com</footer>
+                </section>
+
+                <!-- 0.7 Interactive Question -->
+                <section class="interactive-q-slide">
+                    <p class="part-label">Part 0 &mdash; Interactive Question</p>
+                    <h3>&#128161; Predict the Output</h3>
+                    <pre><code data-trim class="language-javascript">let message = "I love HTML";
+message = 42;
+message = true;
+console.log(message);</code></pre>
+                    <p style="font-size: 0.75em; margin: 0.6em 0 0.3em;">JavaScript is dynamically typed — what does the console print?</p>
+                    <ol class="options">
+                        <li class="fragment fade-in"><code>"I love HTML"</code></li>
+                        <li class="fragment fade-in"><code>42</code></li>
+                        <li class="fragment fade-in"><code>true</code></li>
+                        <li class="fragment fade-in">Error — you can't change a variable's type</li>
+                    </ol>
+                    <p class="fragment fade-up" style="font-size: 0.65em; color: var(--nb-accent-green); margin-top: 0.6em;">
+                        &#9989; <strong>Answer: C — <code>true</code></strong> — JavaScript is <em>dynamically typed</em>: variables hold any type and the last assignment wins. No type errors here!
+                    </p>
+                    <footer>www.nexusberry.com</footer>
+                </section>
+
+                <!-- 0.8 Part 0 Summary -->
+                <section>
+                    <p class="part-label">Part 0 &mdash; Summary</p>
+                    <h3>Part 0 Recap</h3>
+                    <ul style="font-size: 0.72em; line-height: 1.7;">
+                        <li class="fragment fade-up"><strong style="color: var(--nb-accent-red);">Common Mistake:</strong> Confusing JavaScript with Java — they share a name and nothing else.</li>
+                        <li class="fragment fade-up"><strong style="color: var(--nb-accent-green);">Best Practice:</strong> Keep the browser console open while learning — it is your best feedback loop.</li>
+                        <li class="fragment fade-up"><strong style="color: var(--nb-accent-purple);">Pro Tip:</strong> ES6+ is the modern baseline. Avoid <code>var</code>, avoid old patterns — we'll use <code>let</code> and <code>const</code> throughout this course.</li>
+                    </ul>
+                    <div class="nb-callout nb-pro fragment fade-up" style="margin-bottom: 2em;">
+                        <span class="callout-icon">&#128142;</span>
+                        <span class="callout-text">In 25+ years of development I've seen JS go from a toy scripting language to the backbone of enterprise software. The foundation you build today determines the developer you become.</span>
+                    </div>
+                    <footer>www.nexusberry.com</footer>
+                </section>
+
+            </section>
+
+            <!-- ===================================================== -->
+            <!-- PART 1: VARIABLES & DECLARATIONS                       -->
+            <!-- ===================================================== -->
+            <section>
+
+                <!-- 1.1 Part Intro -->
+                <section>
+                    <p class="part-label">Part 1 of 6</p>
+                    <h2>Variables &amp; Declarations</h2>
+                    <p style="font-size: 0.75em; color: var(--nb-dim); margin-bottom: 0.8em;">
+                        Every program needs to <strong style="color: var(--nb-text);">remember things</strong>. Variables are how JavaScript remembers.
+                    </p>
+                    <div class="nb-cards" style="grid-template-columns: repeat(3, 1fr);">
+                        <div class="nb-card nb-card-nexus fragment fade-up">
+                            <span class="icon">&#128420;</span>
+                            <span class="title">Labeled Jar</span>
+                            <span class="desc">A variable is a named container that holds a value</span>
+                        </div>
+                        <div class="nb-card nb-card-berry fragment fade-up">
+                            <span class="icon">&#128260;</span>
+                            <span class="title">Can Change</span>
+                            <span class="desc">Most variables can hold different values over time</span>
+                        </div>
+                        <div class="nb-card nb-card-green fragment fade-up">
+                            <span class="icon">&#128274;</span>
+                            <span class="title">Can Lock</span>
+                            <span class="desc">Constants lock the value — it cannot be reassigned</span>
+                        </div>
+                    </div>
+                    <div class="nb-callout nb-tip fragment fade-up" style="margin-bottom: 2em;">
+                        <span class="callout-icon">&#9889;</span>
+                        <span class="callout-text">Think of a variable like a labeled jar in your kitchen. The label is the name, the contents are the value — and you can swap what's inside anytime (unless it's sealed with <code>const</code>).</span>
+                    </div>
+                    <footer>www.nexusberry.com</footer>
+                </section>
+
+                <!-- 1.2 Dynamic vs Static Typing -->
+                <section>
+                    <p class="part-label">Part 1 &mdash; Background</p>
+                    <h3>Dynamic vs Static Typing</h3>
+                    <div class="nb-compare fragment fade-in">
+                        <div class="nb-col-a">
+                            <h4>&#128170; JavaScript <span class="tag-js">JS</span></h4>
+                            <p>Type is <strong>assigned at runtime</strong>. A variable can hold any type at any time.</p>
+                            <pre><code data-trim data-noescape class="language-javascript">let age = 25;
+age = "twenty-five"; // OK!
+age = true;          // Still OK!</code></pre>
+                        </div>
+                        <div class="nb-vs">VS</div>
+                        <div class="nb-col-b">
+                            <h4>&#128282; TypeScript / C# <span class="tag-ts">TS</span></h4>
+                            <p>Type is <strong>declared upfront</strong>. Compiler enforces it — wrong type = error before running.</p>
+                            <pre><code data-trim data-noescape class="language-typescript">let age: number = 25;
+age = "twenty-five"; // ERROR!
+// Type 'string' not assignable
+// to type 'number'</code></pre>
+                        </div>
+                    </div>
+                    <div class="nb-callout nb-warning fragment fade-up" style="margin-bottom: 2em;">
+                        <span class="callout-icon">&#9888;</span>
+                        <span class="callout-text">JavaScript's flexibility is powerful but dangerous. We'll add TypeScript's safety net in Part 5 — and deeply in Lecture 16.</span>
+                    </div>
+                    <footer>www.nexusberry.com</footer>
+                </section>
+
+                <!-- 1.3 Anatomy: let userName = "Rana" -->
+                <section>
+                    <p class="part-label">Part 1 &mdash; Anatomy</p>
+                    <h3>Anatomy of a Variable Declaration</h3>
+                    <div class="nb-anatomy">
+                        <pre><code data-trim data-noescape style="font-size: 1.2em; padding: 0.6em 1.2em;">
+<span class="nb-hl-1">let</span> <span class="nb-hl-2">userName</span> <span class="nb-hl-4">=</span> <span class="nb-hl-3">"Rana"</span><span style="color:#F0F0F5;">;</span>
+                        </code></pre>
+                        <div class="nb-callouts fragment fade-up">
+                            <span class="nb-callout-item"><span class="nb-dot nb-dot-1"></span> Declaration keyword (<code>let</code>, <code>const</code>, <code>var</code>)</span>
+                            <span class="nb-callout-item"><span class="nb-dot nb-dot-2"></span> Identifier (variable name)</span>
+                            <span class="nb-callout-item"><span class="nb-dot nb-dot-4"></span> Assignment operator</span>
+                            <span class="nb-callout-item"><span class="nb-dot nb-dot-3"></span> Value (string literal)</span>
+                        </div>
+                    </div>
+                    <div class="nb-callout nb-tip fragment fade-up" style="margin-top: 0.6em; margin-bottom: 2em;">
+                        <span class="callout-icon">&#9889;</span>
+                        <span class="callout-text"><strong>Naming rules:</strong> Start with a letter, <code>$</code>, or <code>_</code>. Use camelCase for variables: <code>firstName</code>, <code>totalPrice</code>, <code>isLoggedIn</code>. Never start with a number.</span>
+                    </div>
+                    <footer>www.nexusberry.com</footer>
+                </section>
+
+                <!-- 1.4 var vs let vs const table -->
+                <section>
+                    <p class="part-label">Part 1 &mdash; Comparison</p>
+                    <h3><code>var</code> vs <code>let</code> vs <code>const</code></h3>
+                    <table class="tbl-compact" style="width: 92%; margin: 0.4em auto;">
+                        <thead>
+                            <tr>
+                                <th>Feature</th>
+                                <th><code>var</code></th>
+                                <th><code>let</code></th>
+                                <th><code>const</code></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Reassignable</td>
+                                <td style="color: var(--nb-accent-green);">&#9989; Yes</td>
+                                <td style="color: var(--nb-accent-green);">&#9989; Yes</td>
+                                <td style="color: var(--nb-accent-red);">&#10060; No</td>
+                            </tr>
+                            <tr>
+                                <td>Block-scoped</td>
+                                <td style="color: var(--nb-accent-red);">&#10060; No (function)</td>
+                                <td style="color: var(--nb-accent-green);">&#9989; Yes</td>
+                                <td style="color: var(--nb-accent-green);">&#9989; Yes</td>
+                            </tr>
+                            <tr>
+                                <td>Hoisted</td>
+                                <td style="color: var(--nb-accent-orange);">&#9888; Yes (as undefined)</td>
+                                <td style="color: var(--nb-dim);">TDZ error</td>
+                                <td style="color: var(--nb-dim);">TDZ error</td>
+                            </tr>
+                            <tr>
+                                <td>Re-declarable</td>
+                                <td style="color: var(--nb-accent-green);">&#9989; Yes</td>
+                                <td style="color: var(--nb-accent-red);">&#10060; No</td>
+                                <td style="color: var(--nb-accent-red);">&#10060; No</td>
+                            </tr>
+                            <tr>
+                                <td>Use today?</td>
+                                <td style="color: var(--nb-accent-red);">&#10060; Avoid</td>
+                                <td style="color: var(--nb-accent-green);">&#9989; Yes</td>
+                                <td style="color: var(--nb-accent-green);">&#9989; Prefer this</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <div class="nb-callout nb-pro fragment fade-up" style="margin-bottom: 2em;">
+                        <span class="callout-icon">&#128142;</span>
+                        <span class="callout-text"><strong>Production Rule:</strong> Default to <code>const</code>. Use <code>let</code> only when you know the value will change. Never use <code>var</code> in modern code — it's a legacy keyword that causes subtle bugs.</span>
+                    </div>
+                    <footer>www.nexusberry.com</footer>
+                </section>
+
+                <!-- 1.5 Hoisting -->
+                <section>
+                    <p class="part-label">Part 1 &mdash; Hoisting</p>
+                    <h3>Hoisting: What Actually Happens</h3>
+                    <p style="font-size: 0.6em; color: var(--nb-dim); margin-bottom: 0.5em;">JavaScript moves <code>var</code> declarations to the top of their scope <em>before</em> execution.</p>
+                    <div class="two-col">
+                        <div>
+                            <p style="font-size: 0.6em; color: var(--nb-nexus-light); margin-bottom: 0.2em;">What you write:</p>
+                            <pre><code data-trim data-noescape class="language-javascript">console.log(score); // ?
+var score = 100;
+console.log(score); // ?</code></pre>
+                        </div>
+                        <div class="fragment fade-left">
+                            <p style="font-size: 0.6em; color: var(--nb-berry-light); margin-bottom: 0.2em;">What JS actually runs:</p>
+                            <pre><code data-trim data-noescape class="language-javascript">var score; // hoisted to top
+console.log(score); // undefined
+score = 100;
+console.log(score); // 100</code></pre>
+                        </div>
+                    </div>
+                    <div class="nb-flow" style="margin: 0.5em 0; font-size: 0.88em;">
+                        <div class="nb-flow-step fragment fade-up">
+                            <span class="icon">&#128269;</span>
+                            <span class="label">Parse</span>
+                            <span class="sublabel">JS scans all var declarations</span>
+                        </div>
+                        <span class="nb-flow-arrow fragment fade-in">&#8594;</span>
+                        <div class="nb-flow-step fragment fade-up">
+                            <span class="icon">&#11014;</span>
+                            <span class="label">Hoist</span>
+                            <span class="sublabel">Moves to top as undefined</span>
+                        </div>
+                        <span class="nb-flow-arrow fragment fade-in">&#8594;</span>
+                        <div class="nb-flow-step nb-active fragment fade-up">
+                            <span class="icon">&#9654;</span>
+                            <span class="label">Execute</span>
+                            <span class="sublabel">Assigns value when line runs</span>
+                        </div>
+                    </div>
+                    <div class="nb-callout nb-warning fragment fade-up" style="margin-bottom: 0.5em;">
+                        <span class="callout-icon">&#9888;</span>
+                        <span class="callout-text"><code>let</code> and <code>const</code> are also hoisted, but land in the <strong>Temporal Dead Zone (TDZ)</strong> — accessing them before declaration throws a ReferenceError, not undefined.</span>
+                    </div>
+                    <footer>www.nexusberry.com</footer>
+                </section>
+
+                <!-- 1.6 Code Transition -->
+                <section>
+                    <p class="code-transition">&#128187; Let's see this in code!</p>
+                    <p style="color: var(--nb-dim); font-size: 0.8em; margin-top: 0.3em;">Switch to VS Code</p>
+                    <div class="nb-flow" style="margin-top: 1.5em;">
+                        <div class="nb-flow-step">
+                            <span class="icon">&#128196;</span>
+                            <span class="label">Create calculator.js</span>
+                        </div>
+                        <span class="nb-flow-arrow">&#8594;</span>
+                        <div class="nb-flow-step">
+                            <span class="icon">&#128295;</span>
+                            <span class="label">Declare variables with let &amp; const</span>
+                        </div>
+                        <span class="nb-flow-arrow">&#8594;</span>
+                        <div class="nb-flow-step">
+                            <span class="icon">&#128270;</span>
+                            <span class="label">console.log &amp; observe hoisting</span>
+                        </div>
+                    </div>
+                    <footer>www.nexusberry.com</footer>
+                </section>
+
+                <!-- 1.7 Interactive Question 1: const reassignment -->
+                <section class="interactive-q-slide">
+                    <p class="part-label">Part 1 &mdash; Interactive Question</p>
+                    <h3>&#129300; Predict the Output</h3>
+                    <pre><code data-trim data-noescape class="language-javascript">const x = 5;
+x = 10;
+console.log(x);</code></pre>
+                    <p style="font-size: 0.7em; margin: 0.5em 0;">What happens when this code runs?</p>
+                    <ol class="options">
+                        <li class="fragment fade-in" data-fragment-index="1">10</li>
+                        <li class="fragment fade-in" data-fragment-index="2">5</li>
+                        <li class="fragment fade-in" data-fragment-index="3"><span class="fragment highlight-green" data-fragment-index="5">TypeError: Assignment to constant variable</span></li>
+                        <li class="fragment fade-in" data-fragment-index="4">undefined</li>
+                    </ol>
+                    <div class="nb-callout nb-tip fragment fade-up" data-fragment-index="5" style="margin-bottom: 0.5em;">
+                        <span class="callout-icon">&#9989;</span>
+                        <span class="callout-text"><strong>Answer: C.</strong> <code>const</code> locks the binding — you cannot reassign it. The error happens at runtime on line 2, before <code>console.log</code> ever executes.</span>
+                    </div>
+                    <footer>www.nexusberry.com</footer>
+                </section>
+
+                <!-- 1.8 Interactive Question 2: hoisting -->
+                <section class="interactive-q-slide">
+                    <p class="part-label">Part 1 &mdash; Interactive Question</p>
+                    <h3>&#129300; Hoisting — What's Logged?</h3>
+                    <pre><code data-trim data-noescape class="language-javascript">console.log(name);
+var name = "Rana";</code></pre>
+                    <p style="font-size: 0.7em; margin: 0.5em 0;">What does <code>console.log(name)</code> output?</p>
+                    <ol class="options">
+                        <li class="fragment fade-in" data-fragment-index="1">"Rana"</li>
+                        <li class="fragment fade-in" data-fragment-index="2">ReferenceError: name is not defined</li>
+                        <li class="fragment fade-in" data-fragment-index="3"><span class="fragment highlight-green" data-fragment-index="5">undefined</span></li>
+                        <li class="fragment fade-in" data-fragment-index="4">null</li>
+                    </ol>
+                    <div class="nb-callout nb-tip fragment fade-up" data-fragment-index="5" style="margin-bottom: 0.5em;">
+                        <span class="callout-icon">&#9989;</span>
+                        <span class="callout-text"><strong>Answer: C.</strong> <code>var name</code> is hoisted to the top as <code>undefined</code>. The assignment <code>= "Rana"</code> only happens on line 2. If this were <code>let</code>, you'd get a ReferenceError instead.</span>
+                    </div>
+                    <footer>www.nexusberry.com</footer>
+                </section>
+
+                <!-- 1.9 Part 1 Summary -->
+                <section>
+                    <p class="part-label">Part 1 &mdash; Summary</p>
+                    <h3>Variables &amp; Declarations — Key Takeaways</h3>
+                    <ul style="font-size: 0.68em; line-height: 1.5;">
+                        <li class="fragment fade-up"><strong style="color: var(--nb-accent-red);">Common Mistake:</strong> Using <code>var</code> and being surprised by hoisting or function-scope leaks</li>
+                        <li class="fragment fade-up"><strong style="color: var(--nb-accent-red);">Common Mistake:</strong> Using <code>const</code> on an object and thinking the whole object is frozen — only the reference is locked, not the contents</li>
+                        <li class="fragment fade-up"><strong style="color: var(--nb-accent-green);">Best Practice:</strong> Always declare with <code>const</code> first; switch to <code>let</code> only if you need to reassign</li>
+                        <li class="fragment fade-up"><strong style="color: var(--nb-accent-green);">Best Practice:</strong> Declare variables at the top of their scope — write what JS does, not what it hides</li>
+                        <li class="fragment fade-up"><strong style="color: var(--nb-accent-purple);">Pro Tip:</strong> ESLint's <code>no-var</code> rule auto-flags <code>var</code> usage — every professional team has this rule enabled</li>
+                    </ul>
+                    <footer>www.nexusberry.com</footer>
+                </section>
+
+            </section>
+            <!-- END PART 1 -->
+
+            <!-- ===================================================== -->
+            <!-- PART 2: DATA TYPES                                     -->
+            <!-- ===================================================== -->
+            <section>
+
+                <!-- 2.1 Part Intro -->
+                <section>
+                    <p class="part-label">Part 2 of 6</p>
+                    <h2>Data Types</h2>
+                    <p style="font-size: 0.75em; color: var(--nb-dim); margin-bottom: 0.6em;">
+                        Every value in JavaScript belongs to a type. Knowing types prevents the most common JS bugs.
+                    </p>
+                    <div class="nb-compare fragment fade-in">
+                        <div class="nb-col-a">
+                            <h4>&#128203; Primitive Types</h4>
+                            <p>Stored <strong>by value</strong>. Like a photocopy — each variable gets its own copy.</p>
+                            <pre><code data-trim data-noescape class="language-javascript">let a = 5;
+let b = a;
+b = 10;
+console.log(a); // 5 (unchanged)</code></pre>
+                        </div>
+                        <div class="nb-vs">VS</div>
+                        <div class="nb-col-b">
+                            <h4>&#128279; Reference Types</h4>
+                            <p>Stored <strong>by reference</strong>. Like a shared Google Doc — both point to the same data.</p>
+                            <pre><code data-trim data-noescape class="language-javascript">let arr1 = [1, 2];
+let arr2 = arr1;
+arr2.push(3);
+console.log(arr1); // [1,2,3]!</code></pre>
+                        </div>
+                    </div>
+                    <footer>www.nexusberry.com</footer>
+                </section>
+
+                <!-- 2.2 7 Primitive Types (cards) -->
+                <section>
+                    <p class="part-label">Part 2 &mdash; Primitives</p>
+                    <h3>The 7 Primitive Types</h3>
+                    <div class="nb-cards" style="grid-template-columns: repeat(4, 1fr); margin: 0.5em 0;">
+                        <div class="nb-card nb-card-nexus fragment fade-up">
+                            <span class="icon">&#128172;</span>
+                            <span class="title">string</span>
+                            <span class="desc"><code>"hello"</code><br><code>'Rana'</code><br><code>`template`</code></span>
+                        </div>
+                        <div class="nb-card nb-card-berry fragment fade-up">
+                            <span class="icon">&#128290;</span>
+                            <span class="title">number</span>
+                            <span class="desc"><code>42</code><br><code>3.14</code><br><code>-7</code></span>
+                        </div>
+                        <div class="nb-card nb-card-green fragment fade-up">
+                            <span class="icon">&#9989;</span>
+                            <span class="title">boolean</span>
+                            <span class="desc"><code>true</code><br><code>false</code><br>Yes or No</span>
+                        </div>
+                        <div class="nb-card nb-card-red fragment fade-up">
+                            <span class="icon">&#10060;</span>
+                            <span class="title">null</span>
+                            <span class="desc">Intentional absence. You set this deliberately.</span>
+                        </div>
+                    </div>
+                    <div class="nb-cards" style="grid-template-columns: repeat(3, 1fr); margin: 0.3em 0;">
+                        <div class="nb-card nb-card-orange fragment fade-up">
+                            <span class="icon">&#10067;</span>
+                            <span class="title">undefined</span>
+                            <span class="desc">Not yet assigned. JS sets this automatically.</span>
+                        </div>
+                        <div class="nb-card nb-card-purple fragment fade-up">
+                            <span class="icon">&#128192;</span>
+                            <span class="title">symbol</span>
+                            <span class="desc"><code>Symbol("id")</code><br>Unique identifier key</span>
+                        </div>
+                        <div class="nb-card fragment fade-up" style="border-color: var(--nb-dim);">
+                            <span class="icon">&#128190;</span>
+                            <span class="title">BigInt</span>
+                            <span class="desc"><code>9007199254740991n</code><br>Numbers beyond JS limit</span>
+                        </div>
+                    </div>
+                    <footer>www.nexusberry.com</footer>
+                </section>
+
+                <!-- 2.3 typeof table -->
+                <section>
+                    <p class="part-label">Part 2 &mdash; typeof Operator</p>
+                    <h3>The <code>typeof</code> Operator</h3>
+                    <p style="font-size: 0.6em; color: var(--nb-dim); margin-bottom: 0.3em;">Returns a string describing the type of a value. Useful for debugging and type guards.</p>
+                    <table class="tbl-compact" style="width: 90%; margin: 0 auto;">
+                        <thead>
+                            <tr><th>Expression</th><th>Returns</th><th>Note</th></tr>
+                        </thead>
+                        <tbody>
+                            <tr><td><code>typeof "hello"</code></td><td><code>"string"</code></td><td>All strings</td></tr>
+                            <tr><td><code>typeof 42</code></td><td><code>"number"</code></td><td>Integers &amp; floats</td></tr>
+                            <tr><td><code>typeof true</code></td><td><code>"boolean"</code></td><td></td></tr>
+                            <tr><td><code>typeof undefined</code></td><td><code>"undefined"</code></td><td></td></tr>
+                            <tr><td><code>typeof Symbol()</code></td><td><code>"symbol"</code></td><td></td></tr>
+                            <tr><td><code>typeof 9n</code></td><td><code>"bigint"</code></td><td></td></tr>
+                            <tr><td><code>typeof function(){}</code></td><td><code>"function"</code></td><td></td></tr>
+                            <tr><td style="color: var(--nb-accent-orange);"><code>typeof null</code></td><td style="color: var(--nb-accent-orange);"><code>"object"</code></td><td style="color: var(--nb-accent-orange);">&#9888; Famous JS bug!</td></tr>
+                            <tr><td><code>typeof {}</code></td><td><code>"object"</code></td><td>Objects &amp; arrays</td></tr>
+                        </tbody>
+                    </table>
+                    <div class="nb-callout nb-pro fragment fade-up" style="margin-top: 0.4em; margin-bottom: 2em;">
+                        <span class="callout-icon">&#128142;</span>
+                        <span class="callout-text"><code>typeof null === "object"</code> is a 26-year-old bug in JavaScript. It can never be fixed — too much existing code depends on it. Use <code>value === null</code> to check for null specifically.</span>
+                    </div>
+                    <footer>www.nexusberry.com</footer>
+                </section>
+
+                <!-- 2.4 JS Type Inference -->
+                <section>
+                    <p class="part-label">Part 2 &mdash; Type Inference</p>
+                    <h3>JavaScript Type Inference (Implicit Typing)</h3>
+                    <p style="font-size: 0.6em; color: var(--nb-dim); margin-bottom: 0.4em;">You don't declare types — you assign values. JS figures out the rest.</p>
+                    <div class="nb-anatomy">
+                        <pre><code data-trim data-noescape class="language-javascript"><span class="nb-hl-2">let</span> <span class="nb-hl-1">x</span> <span class="nb-hl-4">=</span> <span class="nb-hl-3">5</span>;          // JS infers: number
+<span class="nb-hl-2">let</span> <span class="nb-hl-1">city</span> <span class="nb-hl-4">=</span> <span class="nb-hl-3">"Lahore"</span>;   // JS infers: string
+<span class="nb-hl-2">let</span> <span class="nb-hl-1">active</span> <span class="nb-hl-4">=</span> <span class="nb-hl-3">true</span>;     // JS infers: boolean</code></pre>
+                        <div class="nb-callouts fragment fade-up">
+                            <span class="nb-callout-item"><span class="nb-dot nb-dot-2"></span> keyword</span>
+                            <span class="nb-callout-item"><span class="nb-dot nb-dot-1"></span> variable name</span>
+                            <span class="nb-callout-item"><span class="nb-dot nb-dot-4"></span> assignment</span>
+                            <span class="nb-callout-item"><span class="nb-dot nb-dot-3"></span> value (determines type)</span>
+                        </div>
+                    </div>
+                    <pre class="fragment fade-up"><code data-trim data-noescape class="language-javascript">// Type can change at runtime — no warning!
+let x = 5;
+console.log(typeof x);  // "number"
+
+x = "hello";
+console.log(typeof x);  // "string" — same variable, different type!
+
+x = true;
+console.log(typeof x);  // "boolean" — JS allows this silently</code></pre>
+                    <div class="nb-callout nb-warning fragment fade-up" style="margin-bottom: 1.5em;">
+                        <span class="callout-icon">&#9888;</span>
+                        <span class="callout-text"><strong>Powerful but risky:</strong> JS never warns you when a variable changes type. This is exactly the problem TypeScript solves — it freezes the inferred type and alerts you the moment you break it.</span>
+                    </div>
+                    <footer>www.nexusberry.com</footer>
+                </section>
+
+                <!-- 2.5 Type Conversion -->
+                <section>
+                    <p class="part-label">Part 2 &mdash; Type Conversion</p>
+                    <h3>Converting Types</h3>
+                    <p style="font-size: 0.62em; color: var(--nb-dim); margin-bottom: 0.4em;"><code>prompt()</code> always returns a string — you must convert for math.</p>
+                    <div class="two-col">
+                        <div>
+                            <p style="font-size: 0.6em; color: var(--nb-nexus-light);">String &#8594; Number</p>
+                            <pre><code data-trim data-noescape class="language-javascript">const input = prompt("Enter price:");
+// input is always a string!
+
+const price = Number(input);   // explicit
+const price2 = +input;         // shorthand
+const price3 = parseInt(input); // integer only
+const price4 = parseFloat(input); // with decimals
+
+console.log(typeof price); // "number"</code></pre>
+                        </div>
+                        <div>
+                            <p style="font-size: 0.6em; color: var(--nb-berry-light);">Number &#8594; String</p>
+                            <pre><code data-trim data-noescape class="language-javascript">const total = 199.99;
+
+const s1 = String(total);   // "199.99"
+const s2 = total.toString(); // "199.99"
+const s3 = `${total}`;      // "199.99" (template)
+
+// Coercion trap!
+console.log("5" + 3); // "53" not 8!</code></pre>
+                        </div>
+                    </div>
+                    <div class="nb-callout nb-warning fragment fade-up" style="margin-bottom: 2em;">
+                        <span class="callout-icon">&#9888;</span>
+                        <span class="callout-text"><strong>Type Coercion Trap:</strong> <code>"5" + 3 = "53"</code> (string concatenation). <code>"5" - 3 = 2</code> (numeric subtraction). The <code>+</code> operator checks types first. This is why TypeScript exists.</span>
+                    </div>
+                    <footer>www.nexusberry.com</footer>
+                </section>
+
+                <!-- 2.5 Code Transition -->
+                <section>
+                    <p class="code-transition">&#128187; Let's see this in code!</p>
+                    <p style="color: var(--nb-dim); font-size: 0.8em; margin-top: 0.3em;">Switch to VS Code</p>
+                    <div class="nb-flow" style="margin-top: 1.5em;">
+                        <div class="nb-flow-step">
+                            <span class="icon">&#128172;</span>
+                            <span class="label">Declare all 7 primitive types</span>
+                        </div>
+                        <span class="nb-flow-arrow">&#8594;</span>
+                        <div class="nb-flow-step">
+                            <span class="icon">&#128270;</span>
+                            <span class="label">Use typeof on each</span>
+                        </div>
+                        <span class="nb-flow-arrow">&#8594;</span>
+                        <div class="nb-flow-step">
+                            <span class="icon">&#128260;</span>
+                            <span class="label">Demonstrate type coercion with +</span>
+                        </div>
+                    </div>
+                    <footer>www.nexusberry.com</footer>
+                </section>
+
+                <!-- 2.6 Interactive Question: typeof null -->
+                <section class="interactive-q-slide">
+                    <p class="part-label">Part 2 &mdash; Interactive Question</p>
+                    <h3>&#129300; The Famous Bug</h3>
+                    <pre><code data-trim data-noescape class="language-javascript">let user = null;
+console.log(typeof user);</code></pre>
+                    <p style="font-size: 0.7em; margin: 0.5em 0;">What does <code>typeof null</code> return?</p>
+                    <ol class="options">
+                        <li class="fragment fade-in" data-fragment-index="1">"null"</li>
+                        <li class="fragment fade-in" data-fragment-index="2">"undefined"</li>
+                        <li class="fragment fade-in" data-fragment-index="3"><span class="fragment highlight-green" data-fragment-index="5">"object"</span></li>
+                        <li class="fragment fade-in" data-fragment-index="4">"boolean"</li>
+                    </ol>
+                    <div class="nb-callout nb-tip fragment fade-up" data-fragment-index="5" style="margin-bottom: 0.5em;">
+                        <span class="callout-icon">&#9989;</span>
+                        <span class="callout-text"><strong>Answer: C &mdash; "object".</strong> This is a 26-year-old bug that will never be fixed. Always check for null explicitly: <code>if (value === null)</code>, not <code>if (typeof value === "null")</code>.</span>
+                    </div>
+                    <footer>www.nexusberry.com</footer>
+                </section>
+
+                <!-- 2.7 Part 2 Summary -->
+                <section>
+                    <p class="part-label">Part 2 &mdash; Summary</p>
+                    <h3>Data Types — Key Takeaways</h3>
+                    <ul style="font-size: 0.68em; line-height: 1.5;">
+                        <li class="fragment fade-up"><strong style="color: var(--nb-accent-red);">Common Mistake:</strong> Using <code>== null</code> to check for null — use <code>=== null</code> (strict comparison)</li>
+                        <li class="fragment fade-up"><strong style="color: var(--nb-accent-red);">Common Mistake:</strong> Adding a number to a prompt() result without conversion — always <code>Number()</code> first</li>
+                        <li class="fragment fade-up"><strong style="color: var(--nb-accent-green);">Best Practice:</strong> Use explicit conversion functions (<code>Number()</code>, <code>String()</code>, <code>Boolean()</code>) — never rely on implicit coercion</li>
+                        <li class="fragment fade-up"><strong style="color: var(--nb-accent-green);">Best Practice:</strong> Use <code>typeof</code> for runtime type checks in JavaScript; TypeScript eliminates the need at compile time</li>
+                        <li class="fragment fade-up"><strong style="color: var(--nb-accent-purple);">Pro Tip:</strong> <code>NaN</code> is type <code>"number"</code> — and <code>NaN !== NaN</code>. Use <code>Number.isNaN()</code> to check for it, not <code>=== NaN</code></li>
+                    </ul>
+                    <footer>www.nexusberry.com</footer>
+                </section>
+
+            </section>
+            <!-- END PART 2 -->
+
+            <!-- ===================================================== -->
+            <!-- PART 3: OPERATORS                                      -->
+            <!-- ===================================================== -->
+            <section>
+
+                <!-- 3.1 Part Intro -->
+                <section>
+                    <p class="part-label">Part 3 of 6</p>
+                    <h2>Operators</h2>
+                    <p style="font-size: 0.75em; color: var(--nb-dim); margin-bottom: 0.8em;">
+                        If variables are <strong>nouns</strong>, operators are the <strong>verbs</strong>. They act on values and produce results.
+                    </p>
+                    <div class="nb-cards" style="grid-template-columns: repeat(4, 1fr);">
+                        <div class="nb-card nb-card-nexus fragment fade-up">
+                            <span class="icon">&#10133;</span>
+                            <span class="title">Arithmetic</span>
+                            <span class="desc">Math: <code>+</code> <code>-</code> <code>*</code> <code>/</code> <code>%</code> <code>**</code></span>
+                        </div>
+                        <div class="nb-card nb-card-berry fragment fade-up">
+                            <span class="icon">&#9878;</span>
+                            <span class="title">Comparison</span>
+                            <span class="desc">Returns true/false: <code>==</code> <code>===</code> <code>&lt;</code> <code>&gt;</code></span>
+                        </div>
+                        <div class="nb-card nb-card-green fragment fade-up">
+                            <span class="icon">&#128279;</span>
+                            <span class="title">Logical</span>
+                            <span class="desc">Combine booleans: <code>&amp;&amp;</code> <code>||</code> <code>!</code></span>
+                        </div>
+                        <div class="nb-card nb-card-orange fragment fade-up">
+                            <span class="icon">&#10067;</span>
+                            <span class="title">Ternary</span>
+                            <span class="desc">Inline if/else: <code>? :</code></span>
+                        </div>
+                    </div>
+                    <footer>www.nexusberry.com</footer>
+                </section>
+
+                <!-- 3.2 Arithmetic Operators -->
+                <section>
+                    <p class="part-label">Part 3 &mdash; Arithmetic</p>
+                    <h3>Arithmetic Operators</h3>
+                    <table class="tbl-compact" style="width: 90%; margin: 0.3em auto;">
+                        <thead>
+                            <tr><th>Operator</th><th>Name</th><th>Example</th><th>Result</th></tr>
+                        </thead>
+                        <tbody>
+                            <tr><td><code>+</code></td><td>Addition</td><td><code>10 + 3</code></td><td><code>13</code></td></tr>
+                            <tr><td><code>-</code></td><td>Subtraction</td><td><code>10 - 3</code></td><td><code>7</code></td></tr>
+                            <tr><td><code>*</code></td><td>Multiplication</td><td><code>10 * 3</code></td><td><code>30</code></td></tr>
+                            <tr><td><code>/</code></td><td>Division</td><td><code>10 / 3</code></td><td><code>3.333...</code></td></tr>
+                            <tr><td><code>%</code></td><td>Modulus (remainder)</td><td><code>10 % 3</code></td><td><code>1</code></td></tr>
+                            <tr><td><code>**</code></td><td>Exponentiation</td><td><code>2 ** 8</code></td><td><code>256</code></td></tr>
+                            <tr><td><code>++</code></td><td>Increment</td><td><code>let i=5; i++</code></td><td><code>6</code></td></tr>
+                            <tr><td><code>--</code></td><td>Decrement</td><td><code>let i=5; i--</code></td><td><code>4</code></td></tr>
+                        </tbody>
+                    </table>
+                    <div class="nb-callout nb-tip fragment fade-up" style="margin-bottom: 2em;">
+                        <span class="callout-icon">&#9889;</span>
+                        <span class="callout-text"><strong>Modulus use case:</strong> <code>number % 2 === 0</code> checks if a number is even. Used constantly in professional code for pagination, alternating rows, cycling through arrays.</span>
+                    </div>
+                    <footer>www.nexusberry.com</footer>
+                </section>
+
+                <!-- 3.3 Comparison Operators -->
+                <section>
+                    <p class="part-label">Part 3 &mdash; Comparison</p>
+                    <h3>Comparison Operators</h3>
+                    <p style="font-size: 0.62em; color: var(--nb-dim); margin-bottom: 0.3em;">Every comparison returns a boolean: <code>true</code> or <code>false</code>.</p>
+                    <table class="tbl-compact" style="width: 90%; margin: 0.3em auto;">
+                        <thead>
+                            <tr><th>Operator</th><th>Name</th><th>Example</th><th>Result</th></tr>
+                        </thead>
+                        <tbody>
+                            <tr><td colspan="4" style="background: var(--nb-surface-2); color: var(--nb-nexus-light); font-weight: 600; text-align: center;">Relational</td></tr>
+                            <tr><td><code>&lt;</code></td><td>Less than</td><td><code>5 &lt; 10</code></td><td style="color: var(--nb-accent-green);"><code>true</code></td></tr>
+                            <tr><td><code>&gt;</code></td><td>Greater than</td><td><code>10 &gt; 5</code></td><td style="color: var(--nb-accent-green);"><code>true</code></td></tr>
+                            <tr><td><code>&lt;=</code></td><td>Less than or equal</td><td><code>5 &lt;= 5</code></td><td style="color: var(--nb-accent-green);"><code>true</code></td></tr>
+                            <tr><td><code>&gt;=</code></td><td>Greater than or equal</td><td><code>3 &gt;= 7</code></td><td style="color: var(--nb-accent-red);"><code>false</code></td></tr>
+                            <tr><td colspan="4" style="background: var(--nb-surface-2); color: var(--nb-nexus-light); font-weight: 600; text-align: center;">Equality</td></tr>
+                            <tr><td style="color: var(--nb-accent-orange);"><code>==</code></td><td>Loose equal &#9888;</td><td><code>"5" == 5</code></td><td style="color: var(--nb-accent-orange);"><code>true &#9888;</code></td></tr>
+                            <tr><td style="color: var(--nb-accent-orange);"><code>!=</code></td><td>Loose not equal &#9888;</td><td><code>"5" != 5</code></td><td style="color: var(--nb-accent-orange);"><code>false &#9888;</code></td></tr>
+                            <tr><td style="color: var(--nb-accent-green);"><code>===</code></td><td>Strict equal</td><td><code>"5" === 5</code></td><td style="color: var(--nb-accent-green);"><code>false</code> &#9989;</td></tr>
+                            <tr><td style="color: var(--nb-accent-green);"><code>!==</code></td><td>Strict not equal</td><td><code>"5" !== 5</code></td><td style="color: var(--nb-accent-green);"><code>true</code> &#9989;</td></tr>
+                        </tbody>
+                    </table>
+                    <div class="nb-callout nb-warning fragment fade-up" style="margin-bottom: 0.5em;">
+                        <span class="callout-icon">&#9888;</span>
+                        <span class="callout-text">Loose <code>==</code> and <code>!=</code> do type coercion before comparing. Always use <code>===</code> and <code>!==</code> in production code.</span>
+                    </div>
+                    <footer>www.nexusberry.com</footer>
+                </section>
+
+                <!-- 3.4 Logical Operators -->
+                <section>
+                    <p class="part-label">Part 3 &mdash; Logical</p>
+                    <h3>Logical Operators</h3>
+                    <div class="two-col">
+                        <div>
+                            <p style="font-size: 0.6em; color: var(--nb-nexus-light); margin-bottom: 0.2em;">Operator Reference</p>
+                            <table class="tbl-compact" style="width: 100%;">
+                                <thead><tr><th>Operator</th><th>Name</th><th>Rule</th></tr></thead>
+                                <tbody>
+                                    <tr><td><code>&amp;&amp;</code></td><td>AND</td><td>True only if BOTH sides are truthy</td></tr>
+                                    <tr><td><code>||</code></td><td>OR</td><td>True if EITHER side is truthy</td></tr>
+                                    <tr><td><code>!</code></td><td>NOT</td><td>Flips truthy &#8596; falsy</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div>
+                            <p style="font-size: 0.6em; color: var(--nb-berry-light); margin-bottom: 0.2em;">Short-Circuit — Actual Return Values</p>
+                            <pre><code data-trim data-noescape class="language-javascript" style="font-size: 0.78em;">// && returns first FALSY or last value
+""  && "hello"  // ""
+0   && "hello"  // 0
+1   && "hello"  // "hello"
+
+// || returns first TRUTHY or last value
+""  || "default" // "default"
+0   || 42        // 42
+"hi"|| "world"   // "hi"
+
+// ! flips truthy/falsy
+!true   // false
+!0      // true
+!""     // true</code></pre>
+                        </div>
+                    </div>
+                    <div class="nb-callout nb-pro fragment fade-up" style="margin-bottom: 0.5em;">
+                        <span class="callout-icon">&#128142;</span>
+                        <span class="callout-text">Short-circuit is used every day in React: <code>user &amp;&amp; &lt;Profile /&gt;</code> renders only when user is truthy. <code>name || 'Guest'</code> provides safe defaults.</span>
+                    </div>
+                    <footer>www.nexusberry.com</footer>
+                </section>
+
+                <!-- 3.5 Operator Precedence (redesigned with incremental reveal) -->
+                <section>
+                    <p class="part-label">Part 3 &mdash; Precedence</p>
+                    <h3>Operator Precedence</h3>
+                    <p style="font-size: 0.6em; color: var(--nb-dim); margin-bottom: 0.3em;">Higher precedence evaluates first. Click to reveal each group.</p>
+                    <table class="tbl-compact" style="width: 86%; margin: 0 auto;">
+                        <thead>
+                            <tr><th>Priority</th><th>Operator(s)</th><th>Name</th></tr>
+                        </thead>
+                        <tbody>
+                            <tr><td style="color: var(--nb-accent-green);">Highest</td><td><code>( )</code></td><td>Parentheses (grouping)</td></tr>
+                            <tr class="fragment fade-up" data-fragment-index="1"><td colspan="3" style="background: var(--nb-surface-2); color: var(--nb-nexus-light); font-size: 0.85em; padding: 0.15em 0.4em;">&#10133; Arithmetic</td></tr>
+                            <tr class="fragment fade-up" data-fragment-index="1"><td>2</td><td><code>**</code></td><td>Exponentiation</td></tr>
+                            <tr class="fragment fade-up" data-fragment-index="1"><td>3</td><td><code>* / %</code></td><td>Multiply, Divide, Modulus</td></tr>
+                            <tr class="fragment fade-up" data-fragment-index="1"><td>4</td><td><code>+ -</code></td><td>Add, Subtract</td></tr>
+                            <tr class="fragment fade-up" data-fragment-index="2"><td colspan="3" style="background: var(--nb-surface-2); color: var(--nb-nexus-light); font-size: 0.85em; padding: 0.15em 0.4em;">&#9878; Relational</td></tr>
+                            <tr class="fragment fade-up" data-fragment-index="2"><td>5</td><td><code>&lt; &gt; &lt;= &gt;=</code></td><td>Comparison</td></tr>
+                            <tr class="fragment fade-up" data-fragment-index="3"><td colspan="3" style="background: var(--nb-surface-2); color: var(--nb-nexus-light); font-size: 0.85em; padding: 0.15em 0.4em;">&#9869; Equality</td></tr>
+                            <tr class="fragment fade-up" data-fragment-index="3"><td>6</td><td><code>== != === !==</code></td><td>Equality</td></tr>
+                            <tr class="fragment fade-up" data-fragment-index="4"><td colspan="3" style="background: var(--nb-surface-2); color: var(--nb-nexus-light); font-size: 0.85em; padding: 0.15em 0.4em;">&#128279; Logical &amp; Ternary</td></tr>
+                            <tr class="fragment fade-up" data-fragment-index="4"><td>7</td><td><code>!</code></td><td>Logical NOT</td></tr>
+                            <tr class="fragment fade-up" data-fragment-index="4"><td>8</td><td><code>&amp;&amp;</code></td><td>Logical AND</td></tr>
+                            <tr class="fragment fade-up" data-fragment-index="4"><td>9</td><td><code>||</code></td><td>Logical OR</td></tr>
+                            <tr class="fragment fade-up" data-fragment-index="4"><td>10</td><td><code>? :</code></td><td>Ternary</td></tr>
+                            <tr class="fragment fade-up" data-fragment-index="5"><td style="color: var(--nb-accent-red);">Lowest</td><td><code>= += -=</code></td><td>Assignment</td></tr>
+                        </tbody>
+                    </table>
+                    <footer>www.nexusberry.com</footer>
+                </section>
+
+                <!-- 3.6 Operator Associativity (new) -->
+                <section>
+                    <p class="part-label">Part 3 &mdash; Associativity</p>
+                    <h3>Operator Associativity</h3>
+                    <p style="font-size: 0.65em; color: var(--nb-dim); margin-bottom: 0.4em;">When operators have equal precedence, which direction do they evaluate?</p>
+                    <div class="nb-compare fragment fade-in">
+                        <div class="nb-col-a">
+                            <h4>&#8592; Left-to-Right <small style="font-size:0.75em; color: var(--nb-dim);">(most operators)</small></h4>
+                            <pre><code data-trim data-noescape class="language-javascript">10 - 3 - 2
+= (10 - 3) - 2
+= 7 - 2
+= 5
+
+20 / 4 / 2
+= (20 / 4) / 2
+= 5 / 2
+= 2.5</code></pre>
+                        </div>
+                        <div class="nb-vs">VS</div>
+                        <div class="nb-col-b">
+                            <h4>&#8594; Right-to-Left <small style="font-size:0.75em; color: var(--nb-dim);"> (<code>**</code> &amp; assignment)</small></h4>
+                            <pre><code data-trim data-noescape class="language-javascript">2 ** 3 ** 2
+= 2 ** (3 ** 2)
+= 2 ** 9
+= 512  // NOT 64!
+
+// Assignment chains:
+a = b = c = 10
+// c=10 first, then b=10, then a=10</code></pre>
+                        </div>
+                    </div>
+                    <div class="nb-callout nb-warning fragment fade-up" style="margin-bottom: 0.5em;">
+                        <span class="callout-icon">&#9888;</span>
+                        <span class="callout-text"><strong>Gotcha:</strong> <code>2 ** 3 ** 2</code> is <strong>512</strong>, not 64. Exponentiation is right-to-left: <code>3**2=9</code> first, then <code>2**9=512</code>. Use parentheses to be explicit: <code>(2**3)**2 = 64</code>.</span>
+                    </div>
+                    <footer>www.nexusberry.com</footer>
+                </section>
+
+                <!-- 3.7 == vs === (deep dive) -->
+                <section>
+                    <p class="part-label">Part 3 &mdash; Equality</p>
+                    <h3>Loose <code>==</code> vs Strict <code>===</code></h3>
+                    <div class="nb-compare fragment fade-in">
+                        <div class="nb-col-a">
+                            <h4>&#128516; Loose Equality <code>==</code></h4>
+                            <p>Converts types before comparing. Surprises await.</p>
+                            <pre><code data-trim data-noescape class="language-javascript">5    ==  "5"    // true ⚠️
+0    ==  false  // true ⚠️
+null == undefined // true ⚠️
+[]   ==  false  // true ⚠️
+""   ==  false  // true ⚠️</code></pre>
+                        </div>
+                        <div class="nb-vs">VS</div>
+                        <div class="nb-col-b nb-winner">
+                            <h4>&#9989; Strict Equality <code>===</code></h4>
+                            <p>No type conversion. Same value AND same type.</p>
+                            <pre><code data-trim data-noescape class="language-javascript">5    === "5"    // false ✅
+0    === false  // false ✅
+null === undefined // false ✅
+[]   === false  // false ✅
+""   === false  // false ✅</code></pre>
+                        </div>
+                    </div>
+                    <div class="nb-callout nb-pro fragment fade-up" style="margin-bottom: 2em;">
+                        <span class="callout-icon">&#128142;</span>
+                        <span class="callout-text"><strong>Production Rule:</strong> Always use <code>===</code> and <code>!==</code>. Zero exceptions. ESLint's <code>eqeqeq</code> rule enforces this. <code>==</code> exists only for legacy compatibility.</span>
+                    </div>
+                    <footer>www.nexusberry.com</footer>
+                </section>
+
+                <!-- 3.8 Logical Operators & Short-Circuit (deep dive) -->
+                <section>
+                    <p class="part-label">Part 3 &mdash; Logical Operators</p>
+                    <h3>Logical Operators &amp; Short-Circuit</h3>
+                    <div class="two-col">
+                        <div>
+                            <p style="font-size: 0.6em; color: var(--nb-nexus-light); margin-bottom: 0.3em;">Truth Tables</p>
+                            <table class="tbl-compact" style="width: 100%;">
+                                <thead><tr><th>A</th><th>B</th><th>A &amp;&amp; B</th><th>A || B</th><th>!A</th></tr></thead>
+                                <tbody>
+                                    <tr><td>T</td><td>T</td><td style="color:var(--nb-accent-green);">T</td><td style="color:var(--nb-accent-green);">T</td><td style="color:var(--nb-accent-red);">F</td></tr>
+                                    <tr><td>T</td><td>F</td><td style="color:var(--nb-accent-red);">F</td><td style="color:var(--nb-accent-green);">T</td><td style="color:var(--nb-accent-red);">F</td></tr>
+                                    <tr><td>F</td><td>T</td><td style="color:var(--nb-accent-red);">F</td><td style="color:var(--nb-accent-green);">T</td><td style="color:var(--nb-accent-green);">T</td></tr>
+                                    <tr><td>F</td><td>F</td><td style="color:var(--nb-accent-red);">F</td><td style="color:var(--nb-accent-red);">F</td><td style="color:var(--nb-accent-green);">T</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div>
+                            <p style="font-size: 0.6em; color: var(--nb-berry-light); margin-bottom: 0.3em;">Short-Circuit Return Values</p>
+                            <pre><code data-trim data-noescape class="language-javascript" style="font-size:0.75em;">// && returns first FALSY or last value
+false && "hello"  // false
+null  && "hello"  // null
+1     && "hello"  // "hello"
+
+// || returns first TRUTHY or last value
+false || "hello"  // "hello"
+null  || 0        // 0
+"hi"  || "world"  // "hi"</code></pre>
+                        </div>
+                    </div>
+                    <footer>www.nexusberry.com</footer>
+                </section>
+
+                <!-- 3.9 Ternary Operator -->
+                <section>
+                    <p class="part-label">Part 3 &mdash; Ternary</p>
+                    <h3>The Ternary Operator <code>? :</code></h3>
+                    <p style="font-size: 0.65em; color: var(--nb-dim); margin-bottom: 0.5em;">A one-line if/else. Returns one of two values based on a condition.</p>
+                    <div class="nb-anatomy">
+                        <pre style="font-size: 0.95em;"><code data-trim data-noescape>
+<span class="nb-hl-2">condition</span> <span class="nb-hl-1">?</span> <span class="nb-hl-3">valueIfTrue</span> <span class="nb-hl-1">:</span> <span class="nb-hl-4">valueIfFalse</span>
+                        </code></pre>
+                        <div class="nb-callouts fragment fade-up">
+                            <span class="nb-callout-item"><span class="nb-dot nb-dot-2"></span> Condition (evaluates to true/false)</span>
+                            <span class="nb-callout-item"><span class="nb-dot nb-dot-1"></span> ? and : are the ternary operators</span>
+                            <span class="nb-callout-item"><span class="nb-dot nb-dot-3"></span> Value when true</span>
+                            <span class="nb-callout-item"><span class="nb-dot nb-dot-4"></span> Value when false</span>
+                        </div>
+                    </div>
+                    <pre class="fragment fade-up"><code data-trim data-noescape class="language-javascript">const age = 20;
+const status = age >= 18 ? "Adult" : "Minor";
+console.log(status); // "Adult"
+
+// Equivalent to:
+// if (age >= 18) { status = "Adult"; } else { status = "Minor"; }</code></pre>
+                    <footer>www.nexusberry.com</footer>
+                </section>
+
+                <!-- 3.10 Code Transition -->
+                <section>
+                    <p class="code-transition">&#128187; Let's see this in code!</p>
+                    <p style="color: var(--nb-dim); font-size: 0.8em; margin-top: 0.3em;">Switch to VS Code</p>
+                    <div class="nb-flow" style="margin-top: 1.5em;">
+                        <div class="nb-flow-step">
+                            <span class="icon">&#10133;</span>
+                            <span class="label">Build a calculator — +, -, *, /, %</span>
+                        </div>
+                        <span class="nb-flow-arrow">&#8594;</span>
+                        <div class="nb-flow-step">
+                            <span class="icon">&#9878;</span>
+                            <span class="label">Demonstrate == vs === trap</span>
+                        </div>
+                        <span class="nb-flow-arrow">&#8594;</span>
+                        <div class="nb-flow-step">
+                            <span class="icon">&#10067;</span>
+                            <span class="label">Ternary for tax calculation</span>
+                        </div>
+                    </div>
+                    <footer>www.nexusberry.com</footer>
+                </section>
+
+                <!-- 3.11 Interactive Question 1: Precedence -->
+                <section class="interactive-q-slide">
+                    <p class="part-label">Part 3 &mdash; Interactive Question</p>
+                    <h3>&#129300; Operator Precedence</h3>
+                    <pre><code data-trim data-noescape class="language-javascript">console.log(2 + 3 * 4);</code></pre>
+                    <p style="font-size: 0.7em; margin: 0.5em 0;">What is the output?</p>
+                    <ol class="options">
+                        <li class="fragment fade-in" data-fragment-index="1">20</li>
+                        <li class="fragment fade-in" data-fragment-index="2"><span class="fragment highlight-green" data-fragment-index="5">14</span></li>
+                        <li class="fragment fade-in" data-fragment-index="3">24</li>
+                        <li class="fragment fade-in" data-fragment-index="4">10</li>
+                    </ol>
+                    <div class="nb-callout nb-tip fragment fade-up" data-fragment-index="5" style="margin-bottom: 0.5em;">
+                        <span class="callout-icon">&#9989;</span>
+                        <span class="callout-text"><strong>Answer: B &mdash; 14.</strong> Multiplication (<code>*</code>) has higher precedence than addition (<code>+</code>). So <code>3 * 4 = 12</code> first, then <code>2 + 12 = 14</code>. Write <code>(2 + 3) * 4</code> to get 20.</span>
+                    </div>
+                    <footer>www.nexusberry.com</footer>
+                </section>
+
+                <!-- 3.12 Interactive Question 2: == vs === -->
+                <section class="interactive-q-slide">
+                    <p class="part-label">Part 3 &mdash; Interactive Question</p>
+                    <h3>&#129300; Loose vs Strict Equality</h3>
+                    <pre><code data-trim data-noescape class="language-javascript">console.log("5" == 5);
+console.log("5" === 5);</code></pre>
+                    <p style="font-size: 0.7em; margin: 0.5em 0;">What are the two outputs?</p>
+                    <ol class="options">
+                        <li class="fragment fade-in" data-fragment-index="1">false, false</li>
+                        <li class="fragment fade-in" data-fragment-index="2">true, true</li>
+                        <li class="fragment fade-in" data-fragment-index="3"><span class="fragment highlight-green" data-fragment-index="5">true, false</span></li>
+                        <li class="fragment fade-in" data-fragment-index="4">false, true</li>
+                    </ol>
+                    <div class="nb-callout nb-tip fragment fade-up" data-fragment-index="5" style="margin-bottom: 0.5em;">
+                        <span class="callout-icon">&#9989;</span>
+                        <span class="callout-text"><strong>Answer: C &mdash; true, false.</strong> <code>==</code> converts <code>"5"</code> to <code>5</code> before comparing → true. <code>===</code> checks type too: string vs number → false. This is exactly why we never use <code>==</code>.</span>
+                    </div>
+                    <footer>www.nexusberry.com</footer>
+                </section>
+
+                <!-- 3.13 Part 3 Summary -->
+                <section>
+                    <p class="part-label">Part 3 &mdash; Summary</p>
+                    <h3>Operators — Key Takeaways</h3>
+                    <ul style="font-size: 0.68em; line-height: 1.5;">
+                        <li class="fragment fade-up"><strong style="color: var(--nb-accent-red);">Common Mistake:</strong> Forgetting operator precedence — <code>2 + 3 * 4</code> is not 20. Use parentheses when in doubt.</li>
+                        <li class="fragment fade-up"><strong style="color: var(--nb-accent-red);">Common Mistake:</strong> Using <code>==</code> instead of <code>===</code> — loose equality produces unpredictable results with mixed types</li>
+                        <li class="fragment fade-up"><strong style="color: var(--nb-accent-green);">Best Practice:</strong> Always use <code>===</code> and <code>!==</code>. No exceptions.</li>
+                        <li class="fragment fade-up"><strong style="color: var(--nb-accent-green);">Best Practice:</strong> Use ternary for simple one-line conditions; use <code>if/else</code> for complex multi-line logic</li>
+                        <li class="fragment fade-up"><strong style="color: var(--nb-accent-purple);">Pro Tip:</strong> Short-circuit evaluation (<code>&&</code>, <code>||</code>) is heavily used in React for conditional rendering — you'll use this every day</li>
+                    </ul>
+                    <footer>www.nexusberry.com</footer>
+                </section>
+
+            </section>
+            <!-- END PART 3 -->
+
+            <!-- ===================================================== -->
+            <!-- PART 4: TRUTHY & FALSY                                 -->
+            <!-- ===================================================== -->
+            <section>
+
+                <!-- 4.1 Part Intro -->
+                <section>
+                    <p class="part-label">Part 4 of 6</p>
+                    <h2>Truthy &amp; Falsy</h2>
+                    <p style="font-size: 0.75em; color: var(--nb-dim); margin-bottom: 0.6em;">
+                        Every value in JavaScript has an <strong>implicit boolean nature</strong>. Conditions don't require actual booleans.
+                    </p>
+                    <div class="nb-compare fragment fade-in">
+                        <div class="nb-col-a">
+                            <h4 style="color: var(--nb-accent-green);">&#9989; Truthy</h4>
+                            <p>Values that behave like <code>true</code> in a condition.</p>
+                            <p><strong>Everything that is NOT falsy.</strong></p>
+                            <pre><code data-trim data-noescape class="language-javascript">if ("hello") { /* runs */ }
+if (42)      { /* runs */ }
+if ([])      { /* runs */ }
+if ({})      { /* runs */ }</code></pre>
+                        </div>
+                        <div class="nb-vs">VS</div>
+                        <div class="nb-col-b">
+                            <h4 style="color: var(--nb-accent-red);">&#10060; Falsy</h4>
+                            <p>Only 6 values behave like <code>false</code>. Everything else is truthy.</p>
+                            <pre><code data-trim data-noescape class="language-javascript">if (false)     { /* skipped */ }
+if (0)         { /* skipped */ }
+if ("")        { /* skipped */ }
+if (null)      { /* skipped */ }
+if (undefined) { /* skipped */ }
+if (NaN)       { /* skipped */ }</code></pre>
+                        </div>
+                    </div>
+                    <footer>www.nexusberry.com</footer>
+                </section>
+
+                <!-- 4.2 The 6 Falsy Values -->
+                <section>
+                    <p class="part-label">Part 4 &mdash; Falsy Values</p>
+                    <h3>The Only 6 Falsy Values</h3>
+                    <p style="font-size: 0.62em; color: var(--nb-dim); margin-bottom: 0.5em;">Memorize these. Everything else is truthy — including empty arrays, empty objects, and <code>"0"</code>.</p>
+                    <div class="nb-cards" style="grid-template-columns: repeat(3, 1fr);">
+                        <div class="nb-card nb-card-red fragment fade-up">
+                            <span class="icon">&#10060;</span>
+                            <span class="title"><code>false</code></span>
+                            <span class="desc">The boolean false itself</span>
+                        </div>
+                        <div class="nb-card nb-card-red fragment fade-up">
+                            <span class="icon">&#128290;</span>
+                            <span class="title"><code>0</code></span>
+                            <span class="desc">Zero (and <code>-0</code>, <code>0n</code>)</span>
+                        </div>
+                        <div class="nb-card nb-card-red fragment fade-up">
+                            <span class="icon">&#128172;</span>
+                            <span class="title"><code>""</code></span>
+                            <span class="desc">Empty string (any empty string)</span>
+                        </div>
+                        <div class="nb-card nb-card-red fragment fade-up">
+                            <span class="icon">&#10060;</span>
+                            <span class="title"><code>null</code></span>
+                            <span class="desc">Intentional absence of value</span>
+                        </div>
+                        <div class="nb-card nb-card-red fragment fade-up">
+                            <span class="icon">&#10067;</span>
+                            <span class="title"><code>undefined</code></span>
+                            <span class="desc">Variable declared but not assigned</span>
+                        </div>
+                        <div class="nb-card nb-card-red fragment fade-up">
+                            <span class="icon">&#128290;</span>
+                            <span class="title"><code>NaN</code></span>
+                            <span class="desc">Not a Number (invalid math result)</span>
+                        </div>
+                    </div>
+                    <footer>www.nexusberry.com</footer>
+                </section>
+
+                <!-- 4.3 Truthy Surprises -->
+                <section>
+                    <p class="part-label">Part 4 &mdash; Truthy Surprises</p>
+                    <h3>Truthy Values That Surprise Beginners</h3>
+                    <pre class="fragment fade-up"><code data-trim data-noescape class="language-javascript">// These are all TRUTHY — they run the if block
+if ("0")     { console.log("'0' is truthy!"); }  // non-empty string
+if ("false") { console.log("'false' is truthy!"); } // non-empty string
+if ([])      { console.log("[] is truthy!"); }   // empty array
+if ({})      { console.log("{} is truthy!"); }   // empty object
+if (-1)      { console.log("-1 is truthy!"); }   // non-zero number
+if (Infinity){ console.log("Infinity is truthy!"); }</code></pre>
+                    <div class="nb-callout nb-warning fragment fade-up" style="margin-bottom: 2em;">
+                        <span class="callout-icon">&#9888;</span>
+                        <span class="callout-text"><strong>The Most Common Bug:</strong> <code>if (myArray)</code> is <em>always true</em> even when the array is empty! To check if an array has items, use <code>if (myArray.length &gt; 0)</code> or <code>if (myArray.length)</code>.</span>
+                    </div>
+                    <footer>www.nexusberry.com</footer>
+                </section>
+
+                <!-- 4.4 Practical Patterns -->
+                <section>
+                    <p class="part-label">Part 4 &mdash; Practical Patterns</p>
+                    <h3>Truthy/Falsy in Real Code</h3>
+                    <pre><code data-trim data-noescape class="language-javascript" style="font-size: 0.62em;">// ✅ Default value pattern (|| operator)
+const username = prompt("Your name:") || "Guest";
+// If prompt returns "" (empty), use "Guest"
+
+// ✅ Guard check pattern (&& operator)
+const user = null;
+const name = user && user.name; // null (doesn't crash!)
+// If user is falsy, stop — don't access .name
+
+// ✅ Boolean conversion
+const hasDiscount = Boolean(discountCode); // true if truthy
+const hasDiscount2 = !!discountCode;       // same, shorter
+
+// ✅ Existence check
+const price = 0;
+if (price !== undefined) {  // CORRECT: price=0 is valid!
+    console.log("Price set:", price);
+}
+// if (price) { ... } would FAIL — 0 is falsy!</code></pre>
+                    <footer>www.nexusberry.com</footer>
+                </section>
+
+                <!-- 4.5 Code Transition -->
+                <section>
+                    <p class="code-transition">&#128187; Let's see this in code!</p>
+                    <p style="color: var(--nb-dim); font-size: 0.8em; margin-top: 0.3em;">Switch to VS Code</p>
+                    <div class="nb-flow" style="margin-top: 1.5em;">
+                        <div class="nb-flow-step">
+                            <span class="icon">&#128270;</span>
+                            <span class="label">Test all 6 falsy values in console</span>
+                        </div>
+                        <span class="nb-flow-arrow">&#8594;</span>
+                        <div class="nb-flow-step">
+                            <span class="icon">&#9888;</span>
+                            <span class="label">Demonstrate the [] and "0" trap</span>
+                        </div>
+                        <span class="nb-flow-arrow">&#8594;</span>
+                        <div class="nb-flow-step">
+                            <span class="icon">&#9889;</span>
+                            <span class="label">Apply || default pattern in calculator</span>
+                        </div>
+                    </div>
+                    <footer>www.nexusberry.com</footer>
+                </section>
+
+                <!-- 4.6 Interactive Question 1: "0" truthy or falsy? -->
+                <section class="interactive-q-slide">
+                    <p class="part-label">Part 4 &mdash; Interactive Question</p>
+                    <h3>&#129300; Truthy or Falsy?</h3>
+                    <pre><code data-trim data-noescape class="language-javascript">const value = "0";
+if (value) {
+    console.log("Truthy!");
+} else {
+    console.log("Falsy!");
+}</code></pre>
+                    <p style="font-size: 0.7em; margin: 0.3em 0 0.2em 0;">What does this print?</p>
+                    <ol class="options">
+                        <li class="fragment fade-in" data-fragment-index="1"><span class="fragment highlight-green" data-fragment-index="5">Truthy!</span></li>
+                        <li class="fragment fade-in" data-fragment-index="2">Falsy!</li>
+                        <li class="fragment fade-in" data-fragment-index="3">It depends</li>
+                        <li class="fragment fade-in" data-fragment-index="4">undefined</li>
+                    </ol>
+                    <div class="nb-callout nb-tip fragment fade-up" data-fragment-index="5" style="margin-bottom: 0.5em;">
+                        <span class="callout-icon">&#9989;</span>
+                        <span class="callout-text"><strong>Answer: A &mdash; "Truthy!".</strong> <code>"0"</code> is a non-empty string, so it is truthy. Only an actual number <code>0</code> is falsy. This is one of the most common interview trick questions.</span>
+                    </div>
+                    <footer>www.nexusberry.com</footer>
+                </section>
+
+                <!-- 4.7 Interactive Question 2: || return value -->
+                <section class="interactive-q-slide">
+                    <p class="part-label">Part 4 &mdash; Interactive Question</p>
+                    <h3>&#129300; Short-Circuit — What's Logged?</h3>
+                    <pre><code data-trim data-noescape class="language-javascript">console.log(null || [] || 0 || "hello");</code></pre>
+                    <p style="font-size: 0.7em; margin: 0.5em 0;"><code>||</code> returns the first truthy value it finds. What is logged?</p>
+                    <ol class="options">
+                        <li class="fragment fade-in" data-fragment-index="1">null</li>
+                        <li class="fragment fade-in" data-fragment-index="2"><span class="fragment highlight-green" data-fragment-index="5">[ ] (empty array)</span></li>
+                        <li class="fragment fade-in" data-fragment-index="3">0</li>
+                        <li class="fragment fade-in" data-fragment-index="4">"hello"</li>
+                    </ol>
+                    <div class="nb-callout nb-tip fragment fade-up" data-fragment-index="5" style="margin-bottom: 0.5em;">
+                        <span class="callout-icon">&#9989;</span>
+                        <span class="callout-text"><strong>Answer: B &mdash; [].</strong> <code>null</code> is falsy → skip. <code>[]</code> (empty array) is <em>truthy</em> → return it immediately. Never reaches <code>0</code> or <code>"hello"</code>. This surprises almost everyone the first time.</span>
+                    </div>
+                    <footer>www.nexusberry.com</footer>
+                </section>
+
+                <!-- 4.8 Part 4 Summary -->
+                <section>
+                    <p class="part-label">Part 4 &mdash; Summary</p>
+                    <h3>Truthy &amp; Falsy — Key Takeaways</h3>
+                    <ul style="font-size: 0.68em; line-height: 1.5;">
+                        <li class="fragment fade-up"><strong style="color: var(--nb-accent-red);">Common Mistake:</strong> Checking <code>if (array)</code> to see if an array has items — use <code>if (array.length)</code></li>
+                        <li class="fragment fade-up"><strong style="color: var(--nb-accent-red);">Common Mistake:</strong> Using <code>if (price)</code> when price can legitimately be 0 — use <code>if (price !== undefined)</code></li>
+                        <li class="fragment fade-up"><strong style="color: var(--nb-accent-green);">Best Practice:</strong> Use <code>||</code> for default values, <code>&amp;&amp;</code> for guard checks — these patterns appear in every React component</li>
+                        <li class="fragment fade-up"><strong style="color: var(--nb-accent-green);">Best Practice:</strong> When unsure, use <code>Boolean(value)</code> or <code>!!value</code> to explicitly see what a value coerces to</li>
+                        <li class="fragment fade-up"><strong style="color: var(--nb-accent-purple);">Pro Tip:</strong> React's conditional rendering relies entirely on truthy/falsy: <code>{count &amp;&amp; &lt;Badge /&gt;}</code> — renders Badge only when count is truthy</li>
+                    </ul>
+                    <footer>www.nexusberry.com</footer>
+                </section>
+
+            </section>
+            <!-- END PART 4 -->
+
+            <!-- ===================================================== -->
+            <!-- PART 5: TYPESCRIPT PREVIEW                             -->
+            <!-- ===================================================== -->
+            <section>
+
+                <!-- 5.1 Part Intro -->
+                <section>
+                    <p class="part-label">Part 5 of 6</p>
+                    <h2>TypeScript Preview</h2>
+                    <p style="font-size: 0.75em; color: var(--nb-dim); margin-bottom: 0.6em;">
+                        TypeScript is JavaScript with a <strong>compile-time safety net</strong>. It catches type errors before your code ever runs.
+                    </p>
+                    <div class="nb-flow" style="margin: 0.5em 0; font-size: 0.88em;">
+                        <div class="nb-flow-step fragment fade-up">
+                            <span class="icon">&#128196;</span>
+                            <span class="label">TypeScript</span>
+                            <span class="sublabel">.ts / .tsx files</span>
+                        </div>
+                        <span class="nb-flow-arrow fragment fade-in">&#8594;</span>
+                        <div class="nb-flow-step fragment fade-up">
+                            <span class="icon">&#128296;</span>
+                            <span class="label">tsc Compiler</span>
+                            <span class="sublabel">Type checking</span>
+                        </div>
+                        <span class="nb-flow-arrow fragment fade-in">&#8594;</span>
+                        <div class="nb-flow-step fragment fade-up">
+                            <span class="icon">&#9989;</span>
+                            <span class="label">JavaScript</span>
+                            <span class="sublabel">.js files (runs)</span>
+                        </div>
+                        <span class="nb-flow-arrow fragment fade-in">&#8594;</span>
+                        <div class="nb-flow-step nb-active fragment fade-up">
+                            <span class="icon">&#127760;</span>
+                            <span class="label">Browser</span>
+                            <span class="sublabel">Executes JS</span>
+                        </div>
+                    </div>
+                    <div class="nb-callout nb-tip fragment fade-up" style="margin-bottom: 0.5em;">
+                        <span class="callout-icon">&#9889;</span>
+                        <span class="callout-text">TypeScript never runs in the browser. It compiles to plain JavaScript. You get all the safety benefits at development time — zero runtime cost.</span>
+                    </div>
+                    <footer>www.nexusberry.com</footer>
+                </section>
+
+                <!-- 5.2 JS vs TS Philosophy -->
+                <section>
+                    <p class="part-label">Part 5 &mdash; Philosophy</p>
+                    <h3>Why TypeScript Exists</h3>
+                    <div class="nb-compare fragment fade-in">
+                        <div class="nb-col-a">
+                            <h4>&#128170; JavaScript</h4>
+                            <p>Flexible. Type errors discovered at <strong>runtime</strong> — when users hit bugs in production.</p>
+                            <pre><code data-trim data-noescape class="language-javascript">function add(a, b) {
+    return a + b;
+}
+add(5, "3"); // "53" — no error!</code></pre>
+                        </div>
+                        <div class="nb-vs">VS</div>
+                        <div class="nb-col-b nb-winner">
+                            <h4>&#128282; TypeScript</h4>
+                            <p>Strict. Type errors caught at <strong>compile time</strong> — before code ships.</p>
+                            <pre><code data-trim data-noescape class="language-typescript">function add(a: number, b: number) {
+    return a + b;
+}
+add(5, "3");
+// Error: Argument of type 'string'
+// not assignable to 'number'</code></pre>
+                        </div>
+                    </div>
+                    <footer>www.nexusberry.com</footer>
+                </section>
+
+                <!-- 5.3 TS Variable Annotations -->
+                <section>
+                    <p class="part-label">Part 5 &mdash; Type Annotations</p>
+                    <h3>Declaring Types in TypeScript</h3>
+                    <pre><code data-trim data-noescape class="language-typescript" style="font-size: 0.75em;">// Primitive type annotations
+let age: number = 25;
+const name: string = "Rana";
+let isActive: boolean = true;
+
+// TypeScript infers types automatically
+let score = 100;        // inferred: number
+let city = "Lahore";    // inferred: string
+
+// Special types
+let anything: any = 42;        // disables type checking (avoid!)
+let safer: unknown = "hello";  // must check type before use
+
+// Arrays
+let prices: number[] = [10, 20, 30];
+let tags: string[] = ["react", "typescript"];</code></pre>
+                    <div class="nb-callout nb-pro fragment fade-up" style="margin-bottom: 0.5em;">
+                        <span class="callout-icon">&#128142;</span>
+                        <span class="callout-text"><strong>Pro insight:</strong> TypeScript's inference is so good that you rarely need to write type annotations for variables. You do need them for function parameters — that's where the real value is.</span>
+                    </div>
+                    <footer>www.nexusberry.com</footer>
+                </section>
+
+                <!-- 5.4 TS Type Inference -->
+                <section>
+                    <p class="part-label">Part 5 &mdash; Type Inference</p>
+                    <h3>TypeScript Type Inference</h3>
+                    <p style="font-size: 0.6em; color: var(--nb-dim); margin-bottom: 0.4em;">TS infers types from the initial assignment — annotation is optional for variables.</p>
+                    <div class="nb-compare">
+                        <div class="nb-col-a fragment fade-right">
+                            <h4><code>let</code> — Widened Type</h4>
+                            <pre><code data-trim data-noescape class="language-typescript">let status = "active";
+// inferred: string
+
+status = "inactive"; // ✅ OK
+status = 42;
+// ❌ Error: Type 'number'
+// not assignable to 'string'</code></pre>
+                        </div>
+                        <div class="nb-vs">VS</div>
+                        <div class="nb-col-b nb-winner fragment fade-left">
+                            <h4><code>const</code> — Literal Type</h4>
+                            <pre><code data-trim data-noescape class="language-typescript">const status = "active";
+// inferred: "active" (literal!)
+
+// TS knows it can ONLY be "active"
+// Never changes — most specific type</code></pre>
+                        </div>
+                    </div>
+                    <div class="nb-callout nb-tip fragment fade-up" style="margin-bottom: 0.3em;">
+                        <span class="callout-icon">&#9889;</span>
+                        <span class="callout-text"><strong>When MUST you annotate?</strong> Function parameters, empty arrays (<code>let tags: string[] = []</code>), and ambiguous return types. For simple variable assignments, let TS infer.</span>
+                    </div>
+                    <div class="nb-callout nb-pro fragment fade-up" style="margin-bottom: 1.5em;">
+                        <span class="callout-icon">&#128142;</span>
+                        <span class="callout-text"><strong>Production rule:</strong> Let TS infer for variables; always annotate function parameters. TypeScript's inference is smarter than most developers realize.</span>
+                    </div>
+                    <footer>www.nexusberry.com</footer>
+                </section>
+
+                <!-- 5.5 TS Catches Errors -->
+                <section>
+                    <p class="part-label">Part 5 &mdash; TS in Action</p>
+                    <h3>TypeScript Catches What JavaScript Misses</h3>
+                    <div class="two-col">
+                        <div>
+                            <p style="font-size: 0.6em; color: var(--nb-accent-orange); margin-bottom: 0.2em;">&#9888; JavaScript — Silent Bug</p>
+                            <pre><code data-trim data-noescape class="language-javascript">const price = "199";
+const tax = price * 0.17;
+// Result: 33.83 — looks correct!
+// But price is a string — accident!
+
+const total = price + tax;
+// "199" + 33.83 = "19933.83" 💥
+// Wrong! String concatenation.</code></pre>
+                        </div>
+                        <div>
+                            <p style="font-size: 0.6em; color: var(--nb-accent-green); margin-bottom: 0.2em;">&#9989; TypeScript — Caught Immediately</p>
+                            <pre><code data-trim data-noescape class="language-typescript">const price: number = "199";
+// ❌ ERROR at line 1:
+// Type 'string' is not assignable
+// to type 'number'.
+// Fix it before you can run code!</code></pre>
+                        </div>
+                    </div>
+                    <div class="nb-callout nb-pro fragment fade-up" style="margin-bottom: 2em;">
+                        <span class="callout-icon">&#128142;</span>
+                        <span class="callout-text">In 25+ years of development: the most common production bugs are type mismatches. TypeScript eliminates an entire category of bugs before code ships. That is why every serious React and Next.js project uses TypeScript.</span>
+                    </div>
+                    <footer>www.nexusberry.com</footer>
+                </section>
+
+                <!-- 5.5 Interactive Question: TS type -->
+                <section class="interactive-q-slide">
+                    <p class="part-label">Part 5 &mdash; Interactive Question</p>
+                    <h3>&#129300; TypeScript Type Annotation</h3>
+                    <pre><code data-trim data-noescape class="language-typescript">const price = 19.99;
+// What TypeScript type should annotate this?
+const price: ??? = 19.99;</code></pre>
+                    <p style="font-size: 0.7em; margin: 0.5em 0;">What is the correct TypeScript type for <code>19.99</code>?</p>
+                    <ol class="options">
+                        <li class="fragment fade-in" data-fragment-index="1">float</li>
+                        <li class="fragment fade-in" data-fragment-index="2">decimal</li>
+                        <li class="fragment fade-in" data-fragment-index="3"><span class="fragment highlight-green" data-fragment-index="5">number</span></li>
+                        <li class="fragment fade-in" data-fragment-index="4">double</li>
+                    </ol>
+                    <div class="nb-callout nb-tip fragment fade-up" data-fragment-index="5" style="margin-bottom: 0.5em;">
+                        <span class="callout-icon">&#9989;</span>
+                        <span class="callout-text"><strong>Answer: C &mdash; number.</strong> TypeScript (like JavaScript) has only one numeric type: <code>number</code>. It covers integers, decimals, floats — everything. There is no <code>float</code>, <code>int</code>, or <code>decimal</code> in TypeScript.</span>
+                    </div>
+                    <footer>www.nexusberry.com</footer>
+                </section>
+
+                <!-- 5.6 Part 5 Summary -->
+                <section>
+                    <p class="part-label">Part 5 &mdash; Summary</p>
+                    <h3>TypeScript Preview — Key Takeaways</h3>
+                    <ul style="font-size: 0.68em; line-height: 1.5;">
+                        <li class="fragment fade-up"><strong style="color: var(--nb-accent-red);">Common Mistake:</strong> Using <code>any</code> everywhere — it completely disables TypeScript's protection. Use <code>unknown</code> instead, then narrow with type checks.</li>
+                        <li class="fragment fade-up"><strong style="color: var(--nb-accent-red);">Common Mistake:</strong> Writing explicit type annotations for every variable — trust TypeScript's inference for simple assignments</li>
+                        <li class="fragment fade-up"><strong style="color: var(--nb-accent-green);">Best Practice:</strong> Annotate function parameters always. Let TypeScript infer return types and variable types.</li>
+                        <li class="fragment fade-up"><strong style="color: var(--nb-accent-green);">Best Practice:</strong> Enable <code>strict: true</code> in <code>tsconfig.json</code> — this activates the strongest safety checks</li>
+                        <li class="fragment fade-up"><strong style="color: var(--nb-accent-purple);">Pro Tip:</strong> We're just previewing TypeScript today. <strong>Lecture 16</strong> is a full deep dive: interfaces, generics, utility types, and full React + TypeScript integration.</li>
+                    </ul>
+                    <footer>www.nexusberry.com</footer>
+                </section>
+
+            </section>
+            <!-- END PART 5 -->
+
+            <!-- ===================================================== -->
+            <!-- CHEAT SHEET                                            -->
+            <!-- ===================================================== -->
+            <section>
+                <h2 style="font-size: 1.1em; margin-bottom: 0.5em;">Lecture 8 — Cheat Sheet</h2>
+                <div class="cs-grid">
+                    <div class="cs-block">
+                        <h4>Variables</h4>
+                        <ul>
+                            <li>Default to <code>const</code>; use <code>let</code> to reassign</li>
+                            <li>Never use <code>var</code> in modern code</li>
+                            <li><code>var</code> is hoisted as <code>undefined</code></li>
+                            <li><code>let</code>/<code>const</code> in TDZ before declaration</li>
+                        </ul>
+                    </div>
+                    <div class="cs-block">
+                        <h4>Data Types</h4>
+                        <ul>
+                            <li>7 primitives: <code>string number boolean null undefined symbol bigint</code></li>
+                            <li><code>typeof null === "object"</code> — historic bug</li>
+                            <li>Always <code>Number()</code> convert <code>prompt()</code> input</li>
+                            <li>Primitives by value, objects by reference</li>
+                        </ul>
+                    </div>
+                    <div class="cs-block">
+                        <h4>Operators</h4>
+                        <ul>
+                            <li>Always use <code>===</code> and <code>!==</code></li>
+                            <li>Precedence: <code>()</code> &gt; <code>**</code> &gt; <code>*/%</code> &gt; <code>+-</code></li>
+                            <li>Ternary: <code>condition ? true : false</code></li>
+                            <li><code>&amp;&amp;</code> returns first falsy; <code>||</code> returns first truthy</li>
+                        </ul>
+                    </div>
+                    <div class="cs-block">
+                        <h4>Truthy &amp; Falsy</h4>
+                        <ul>
+                            <li>6 falsy: <code>false 0 "" null undefined NaN</code></li>
+                            <li><code>[]</code> and <code>{}</code> are truthy!</li>
+                            <li><code>"0"</code> is truthy (non-empty string)</li>
+                            <li>Use <code>||</code> for defaults: <code>name || "Guest"</code></li>
+                        </ul>
+                    </div>
+                    <div class="cs-block">
+                        <h4>TypeScript Basics</h4>
+                        <ul>
+                            <li><code>let age: number = 25;</code></li>
+                            <li><code>const name: string = "Rana";</code></li>
+                            <li>TS infers types — no need to annotate everything</li>
+                            <li>Avoid <code>any</code>; use <code>unknown</code> instead</li>
+                        </ul>
+                    </div>
+                    <div class="cs-block">
+                        <h4>VS Code Tips</h4>
+                        <ul>
+                            <li><kbd>Ctrl+`</kbd> — Open terminal</li>
+                            <li><kbd>Ctrl+/</kbd> — Toggle comment</li>
+                            <li>Hover over variable — see inferred type</li>
+                            <li><kbd>F2</kbd> — Rename symbol everywhere</li>
+                        </ul>
+                    </div>
+                </div>
+                <p style="font-size: 0.45em; color: var(--nb-dim); margin-top: 0.5em; text-align: center;"><em>Full cheatsheet.md shared after class on Google Classroom</em></p>
+                <footer>www.nexusberry.com</footer>
+            </section>
+
+            <!-- ===================================================== -->
+            <!-- ASSIGNMENT                                             -->
+            <!-- ===================================================== -->
+            <section>
+                <h2 style="font-size: 1.1em; margin-bottom: 0.2em;">Home Assignment</h2>
+                <h3 style="font-size: 0.9em; color: var(--nb-nexus-light); margin-bottom: 0.2em;">&#127759; Financial Calculator Suite</h3>
+                <div class="two-col" style="font-size: 0.58em; gap: 0.8em;">
+                    <div>
+                        <p style="color: var(--nb-berry-light); font-weight: 600; margin-bottom: 0.3em;">Requirements:</p>
+                        <ul style="line-height: 1.7;">
+                            <li>Accept user input with <code>prompt()</code></li>
+                            <li>Convert inputs with <code>Number()</code></li>
+                            <li>Build at least <strong>3 calculators</strong>:
+                                <ul>
+                                    <li>Tax calculator (17% GST)</li>
+                                    <li>Simple interest calculator</li>
+                                    <li>Monthly instalment estimator</li>
+                                </ul>
+                            </li>
+                            <li>Use <code>const</code> &amp; <code>let</code> correctly</li>
+                            <li>Use ternary for at least one condition</li>
+                            <li>Display results with <code>console.log()</code></li>
+                        </ul>
+                    </div>
+                    <div>
+                        <p style="color: var(--nb-berry-light); font-weight: 600; margin-bottom: 0.3em;">Grading (100 pts):</p>
+                        <table class="tbl-compact" style="width: 100%; font-size: 0.9em;">
+                            <thead><tr><th>Criteria</th><th>Pts</th></tr></thead>
+                            <tbody>
+                                <tr><td>3 working calculators</td><td>40</td></tr>
+                                <tr><td>Correct var declarations</td><td>20</td></tr>
+                                <tr><td>Type conversion used</td><td>15</td></tr>
+                                <tr><td>Ternary operator used</td><td>15</td></tr>
+                                <tr><td>Code readability</td><td>10</td></tr>
+                            </tbody>
+                        </table>
+                        <p style="margin-top: 0.5em; color: var(--nb-dim);">Due: Before Lecture 9</p>
+                        <p style="color: var(--nb-dim);">Submit via Google Classroom</p>
+                    </div>
+                </div>
+                <footer>www.nexusberry.com</footer>
+            </section>
+
+            <!-- ===================================================== -->
+            <!-- CLOSING                                                -->
+            <!-- ===================================================== -->
+            <section>
+                <h2 style="margin-bottom: 0.5em;">Questions?</h2>
+                <div style="font-size: 0.75em; color: var(--nb-dim); margin-bottom: 1em;">Open floor — ask anything from today's session.</div>
+                <div class="nb-callout nb-pro" style="margin-bottom: 1em;">
+                    <span class="callout-icon">&#128640;</span>
+                    <span class="callout-text">
+                        <strong>Next Lecture:</strong> Lecture 9 &mdash; <span style="color: var(--nb-nexus-light);">University Admission Gateway</span><br>
+                        <span style="font-size: 0.9em;">Control flow with <code>if/else</code>, <code>switch</code>, and loops (<code>for</code>, <code>while</code>, <code>do-while</code>). Your programs will make real decisions.</span>
+                    </span>
+                </div>
+                <p class="nexusberry-brand" style="font-size: 1em; margin-bottom: 0.3em;">NexusBerry Training and Solutions</p>
+                <p style="font-size: 0.65em; color: var(--nb-dim); line-height: 1.7;">
+                    www.nexusberry.com &nbsp;|&nbsp; admin@nexusberry.com<br>
+                    WhatsApp: 0328-4500073<br>
+                    College Road, Near Akbar Chowk Faisal Town, Lahore
+                </p>
+                <footer>www.nexusberry.com</footer>
+            </section>
+
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/reveal.js@5/dist/reveal.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/reveal.js@5/plugin/highlight/highlight.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/reveal.js@5/plugin/notes/notes.js"></script>
+    <script>
+        Reveal.initialize({
+            hash: true,
+            slideNumber: true,
+            transition: 'fade',
+            width: 1200,
+            height: 700,
+            margin: 0.04,
+            plugins: [RevealHighlight, RevealNotes]
+        });
+
+        // Add copy buttons to all code blocks
+        document.addEventListener('DOMContentLoaded', function () {
+            document.querySelectorAll('pre').forEach(function (pre) {
+                const btn = document.createElement('button');
+                btn.className = 'copy-btn';
+                btn.innerHTML = '&#128203;';
+                btn.title = 'Copy to clipboard';
+                btn.addEventListener('click', function () {
+                    const code = pre.querySelector('code');
+                    const text = code ? code.textContent : pre.textContent;
+                    navigator.clipboard.writeText(text).then(function () {
+                        btn.innerHTML = '&#9989;';
+                        btn.classList.add('copied');
+                        setTimeout(function () {
+                            btn.innerHTML = '&#128203;';
+                            btn.classList.remove('copied');
+                        }, 2000);
+                    });
+                });
+                pre.appendChild(btn);
+            });
+        });
+    </script>
+</body>
+</html>
