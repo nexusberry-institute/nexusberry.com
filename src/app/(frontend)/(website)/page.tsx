@@ -3,35 +3,48 @@ import HeroSection from "./_components/HeroSection"
 import TopDepartments from './_components/TopDepartments'
 import Events from './_components/Events'
 import ImpactSection from './_components/ImpactSection'
-import { getImpactData } from '@/lib/getImpactData'
 import CoursesCollection from './_components/CourseCollection'
-import { getCoursesCollection } from "@/lib/getCoursesCollection";
 import Location from './_components/Location'
 import { mergeOpenGraph } from '@/utilities/mergeOpenGraph'
 import { getServerSideURL } from '@/utilities/getURL'
-// import { fetchDepartments } from '@/lib/fetchDepartments'
+import { getCachedHomePage, getCachedDepartments, getCachedCoursesCollection } from '@/lib/getHomePage'
+import { getCachedGlobal } from '@/utilities/getGlobals'
+import type { ImpactSection as ImpactSectionType, Setting } from '@/payload-types'
+
+export const revalidate = false
 
 export default async function Page() {
+  const [homePage, departments, collectionData, impactData, settings] =
+    await Promise.all([
+      getCachedHomePage(),
+      getCachedDepartments(),
+      getCachedCoursesCollection(),
+      getCachedGlobal('impact-section', 2)() as Promise<ImpactSectionType>,
+      getCachedGlobal('settings', 1)() as Promise<Setting>,
+    ])
 
-  // const departments = await fetchDepartments()
-  const data = await getImpactData();
-  if (!data) return null;
-  const collectionData = await getCoursesCollection();
   return (
     <>
-      <HeroSection />
-      <TopDepartments />
-      <CoursesCollection section={collectionData} />
-      <Events />
-      <ImpactSection
-        heading={data.heading}
-        subheading={data.subheading ?? null}
-        stats={data.stats ?? []}
-        testimonials={data.testimonials ?? []}
+      <HeroSection hero={homePage.hero} />
+      <TopDepartments
+        config={homePage.departmentsSection}
+        departments={departments}
       />
-      <Location />
-
-
+      {homePage.coursesSection?.enabled !== false && (
+        <CoursesCollection section={collectionData} />
+      )}
+      {homePage.eventsSection?.enabled !== false && (
+        <Events config={homePage.eventsSection} />
+      )}
+      <ImpactSection
+        heading={impactData.heading}
+        subheading={impactData.subheading ?? null}
+        stats={impactData.stats ?? []}
+        testimonials={impactData.testimonials ?? []}
+      />
+      {homePage.locationSection?.enabled !== false && (
+        <Location settings={settings} />
+      )}
     </>
   )
 }

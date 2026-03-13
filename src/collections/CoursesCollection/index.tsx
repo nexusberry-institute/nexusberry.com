@@ -1,5 +1,6 @@
 import { CollectionConfig } from "payload";
 import { richTextField } from "@/fields/richTextField";
+import { revalidateCoursesCollection, revalidateCoursesCollectionDelete } from "./hooks/revalidateCoursesCollection";
 
 
 export const CoursesCollection: CollectionConfig = {
@@ -8,6 +9,10 @@ export const CoursesCollection: CollectionConfig = {
     admin: {
         useAsTitle: 'title',
 
+    },
+    hooks: {
+        afterChange: [revalidateCoursesCollection],
+        afterDelete: [revalidateCoursesCollectionDelete],
     },
     fields: [
         {

@@ -37,6 +37,7 @@ import * as migration_20260311_add_tutorial_video_watch_logs from './20260311_ad
 import * as migration_20260311_fix_locked_documents_video_watch_logs from './20260311_fix_locked_documents_video_watch_logs';
 import * as migration_20260311_add_student_to_users from './20260311_add_student_to_users';
 import * as migration_20260312_replace_sessions_with_first_watched_at from './20260312_replace_sessions_with_first_watched_at';
+import * as migration_20260313_add_home_page_global from './20260313_add_home_page_global';
 
 export const migrations = [
   {
@@ -233,5 +234,10 @@ export const migrations = [
     up: migration_20260312_replace_sessions_with_first_watched_at.up,
     down: migration_20260312_replace_sessions_with_first_watched_at.down,
     name: '20260312_replace_sessions_with_first_watched_at',
+  },
+  {
+    up: migration_20260313_add_home_page_global.up,
+    down: migration_20260313_add_home_page_global.down,
+    name: '20260313_add_home_page_global',
   },
 ];

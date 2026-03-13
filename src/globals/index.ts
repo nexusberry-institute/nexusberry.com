@@ -4,6 +4,7 @@ import { GlobalEventData } from "./GlobalEventData"
 import { Meetings } from "./Meetings"
 import { ImpactSection } from './ImpactSection'
 import { Settings } from './Settings'
+import { HomePage } from './HomePage'
 
 export default [
   Header,
@@ -11,5 +12,6 @@ export default [
   GlobalEventData,
   Meetings,
   ImpactSection,
-  Settings
+  Settings,
+  HomePage,
 ]

@@ -22,9 +22,9 @@ export const queryDepartments = unstable_cache(
 
     return result.docs || null
   },
-  ['web-courses', 'departments'],
+  ['departments-listing'],
   {
-    tags: ['web-courses', 'departments'],
+    tags: ['departments-listing'],
   },
 )
 

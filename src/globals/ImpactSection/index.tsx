@@ -1,4 +1,5 @@
 import { GlobalConfig } from "payload";
+import { revalidateTag } from "next/cache";
 import {
     AlignFeature,
     FixedToolbarFeature,
@@ -19,6 +20,15 @@ export const ImpactSection: GlobalConfig = {
     access: {
         read: () => true,
         update: () => true,
+    },
+    hooks: {
+        afterChange: [
+            ({ req: { payload, context } }) => {
+                if (context.disableRevalidate) return
+                payload.logger.info("Revalidating Impact Section")
+                revalidateTag("global_impact-section")
+            },
+        ],
     },
     fields: [
         {

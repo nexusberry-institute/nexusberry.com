@@ -1,15 +1,13 @@
-import { getSettings } from '@/lib/getSettings';
+import type { Setting } from '@/payload-types'
 
-const Location = async () => {
+type LocationProps = {
+    settings: Setting
+}
 
-    const settings = await getSettings();
+const Location = ({ settings }: LocationProps) => {
     const latitude = settings?.mapLocation?.latitude
     const longitude = settings?.mapLocation?.longitude
 
-    // console.log("Lat", latitude)
-    // console.log("Lng", longitude)
-
-    // Fallback if coordinates not available
     if (!latitude || !longitude) {
         return (
             <div className="w-full container mx-auto px-4 max-sm:px-6 py-8">

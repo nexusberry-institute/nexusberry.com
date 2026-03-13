@@ -200,6 +200,7 @@ export interface Config {
     meetings: Meeting;
     'impact-section': ImpactSection;
     settings: Setting;
+    'home-page': HomePage;
   };
   globalsSelect: {
     header: HeaderSelect<false> | HeaderSelect<true>;
@@ -208,6 +209,7 @@ export interface Config {
     meetings: MeetingsSelect<false> | MeetingsSelect<true>;
     'impact-section': ImpactSectionSelect<false> | ImpactSectionSelect<true>;
     settings: SettingsSelect<false> | SettingsSelect<true>;
+    'home-page': HomePageSelect<false> | HomePageSelect<true>;
   };
   locale: null;
   widgets: {
@@ -3898,6 +3900,55 @@ export interface Setting {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "home-page".
+ */
+export interface HomePage {
+  id: number;
+  hero?: {
+    featuredImages?:
+      | {
+          image: number | Media;
+          alt?: string | null;
+          link: string;
+          id?: string | null;
+        }[]
+      | null;
+    logoCarousel?:
+      | {
+          name: string;
+          image: number | Media;
+          link?: string | null;
+          id?: string | null;
+        }[]
+      | null;
+  };
+  departmentsSection?: {
+    heading?: string | null;
+    description?: string | null;
+    buttonLabel?: string | null;
+    buttonLink?: string | null;
+  };
+  coursesSection?: {
+    enabled?: boolean | null;
+  };
+  eventsSection?: {
+    enabled?: boolean | null;
+    badgeText?: string | null;
+    heading?: string | null;
+    description?: string | null;
+    ctaHeading?: string | null;
+    ctaDescription?: string | null;
+    buttonText?: string | null;
+    buttonLink?: string | null;
+  };
+  locationSection?: {
+    enabled?: boolean | null;
+  };
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "header_select".
  */
 export interface HeaderSelect<T extends boolean = true> {
@@ -4037,6 +4088,65 @@ export interface SettingsSelect<T extends boolean = true> {
         latitude?: T;
         longitude?: T;
         googleMapsUrl?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "home-page_select".
+ */
+export interface HomePageSelect<T extends boolean = true> {
+  hero?:
+    | T
+    | {
+        featuredImages?:
+          | T
+          | {
+              image?: T;
+              alt?: T;
+              link?: T;
+              id?: T;
+            };
+        logoCarousel?:
+          | T
+          | {
+              name?: T;
+              image?: T;
+              link?: T;
+              id?: T;
+            };
+      };
+  departmentsSection?:
+    | T
+    | {
+        heading?: T;
+        description?: T;
+        buttonLabel?: T;
+        buttonLink?: T;
+      };
+  coursesSection?:
+    | T
+    | {
+        enabled?: T;
+      };
+  eventsSection?:
+    | T
+    | {
+        enabled?: T;
+        badgeText?: T;
+        heading?: T;
+        description?: T;
+        ctaHeading?: T;
+        ctaDescription?: T;
+        buttonText?: T;
+        buttonLink?: T;
+      };
+  locationSection?:
+    | T
+    | {
+        enabled?: T;
       };
   updatedAt?: T;
   createdAt?: T;
