@@ -45,21 +45,6 @@ import whtsppIcon from './whatsapp-icon.svg'
 import Majid from './Majid.jpg'
 import Map from './map.jpg'
 
-import MearnHomeImg from './MearnHomeImg.jpg'
-import MLHomeImg from './MLHomeImg.jpg'
-import FlutterHomeImg from './FlutterHomeImg.jpg'
-
-import adobeLogo from './adobeLogo.jpg'
-import DjangoLogo from './DjangoLogo.jpg'
-import FlutterLogo from './FlutterLogo.jpg'
-import JsLogo from './JsLogo.jpg'
-import NextLogo from './NextLogo.jpg'
-import NodejsLogo from './NodejsLogo.jpg'
-import powerbiLogo from './powerbiLogo.jpg'
-import pythonLogo from './pythonLogo.jpg'
-import ReactLogo from './ReactLogo.jpg'
-import tensorFlowLogo from './tensorFlowLogo.jpg'
-
 import twitter from './twitter.svg'
 import youtube from './youtub.svg'
 import facebook from './facebook.svg'
@@ -92,8 +77,7 @@ export {
   eventsBanner, master3, masterNew, masterclass,
   scan, learning, Certificate, mentor, mentor2,
   ourMentor, dataVisual, whtsppIcon, register, nexusBerryImg,
-  MearnHomeImg, MLHomeImg, FlutterHomeImg, Map, twitter, facebook, instagram, youtube,
-  adobeLogo, DjangoLogo, FlutterLogo, JsLogo, NextLogo, NodejsLogo, powerbiLogo, pythonLogo, ReactLogo, tensorFlowLogo,
+  Map, twitter, facebook, instagram, youtube,
   heroCourse2, bgImg, Majid, certification, interactiveLearning, extraLearn, Quz, certificate,
   module1, module2, module3, module4, module5, module6, modulebg, placeholderImg, login_hero, RegisterForFreeImg
 }

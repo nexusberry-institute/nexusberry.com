@@ -1,4 +1,17 @@
-the students collection has 2 tabs: enrollments and fee recepits. remove these 2 and merge both in one tab: Enrollements and Feee.
+AdmissionRequests:
+1. approve only by super admin
+2. make installments
+
+Users Collection:
+- connect with student
+- if user is blocked show blocked page with info (in user may create a block reason test field)
+
+FeeReceipts
+- show list of isntallments
+- studetns dashboard shows submit fee
+- only superadmin can verify
+
+
 
 ---
 Tutorials:
