@@ -1,4 +1,4 @@
-import { generateMetadata } from './[slug]/page'
+import type { Metadata } from 'next'
 import HeroSection from "./_components/HeroSection"
 import TopDepartments from './_components/TopDepartments'
 import Events from './_components/Events'
@@ -7,6 +7,8 @@ import { getImpactData } from '@/lib/getImpactData'
 import CoursesCollection from './_components/CourseCollection'
 import { getCoursesCollection } from "@/lib/getCoursesCollection";
 import Location from './_components/Location'
+import { mergeOpenGraph } from '@/utilities/mergeOpenGraph'
+import { getServerSideURL } from '@/utilities/getURL'
 // import { fetchDepartments } from '@/lib/fetchDepartments'
 
 export default async function Page() {
@@ -34,4 +36,20 @@ export default async function Page() {
   )
 }
 
-export { generateMetadata }
+export async function generateMetadata(): Promise<Metadata> {
+  const serverUrl = getServerSideURL()
+  return {
+    title: 'NexusBerry Training & Solutions',
+    description:
+      'Lahore-based IT training institute offering on-campus and online live courses across Pakistan.',
+    keywords:
+      'NexusBerry Training & Solutions, Online Learning Pakistan, IT Training Institute Lahore, NexusBerry Lahore Pakistan',
+    alternates: { canonical: serverUrl },
+    openGraph: mergeOpenGraph({
+      title: 'NexusBerry Training & Solutions',
+      description:
+        'Lahore-based IT training institute offering on-campus and online live courses across Pakistan.',
+      url: serverUrl,
+    }),
+  }
+}

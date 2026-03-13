@@ -1,42 +1,22 @@
 import type { Metadata } from 'next'
 
+import { unstable_cache } from 'next/cache'
 import { PayloadRedirects } from '@/components/PayloadRedirects'
 import configPromise from '@payload-config'
-import { getPayload, type RequiredDataFromCollectionSlug } from 'payload'
+import { getPayload } from 'payload'
 import { draftMode } from 'next/headers'
-import React, { cache } from 'react'
-// import { homeStatic } from '@/endpoints/seed/home-static'
+import React from 'react'
 
 import { RenderBlocks } from '@/blocks/RenderBlocks'
 import { RenderHero } from '@/heros/RenderHero'
-import { generateMeta } from '@/utilities/generateMeta'
+import { generatePagesMeta } from '@/utilities/generatePagesMeta'
 import { LivePreviewListener } from '@/components/LivePreviewListener'
 
-export const revalidate = 86400 // 24 hours in seconds
+export const revalidate = false
 
-// export async function generateStaticParams() {
-//   const payload = await getPayload({ config: configPromise })
-//   const pages = await payload.find({
-//     collection: 'pages',
-//     draft: false,
-//     limit: 1000,
-//     overrideAccess: false,
-//     pagination: false,
-//     select: {
-//       slug: true,
-//     },
-//   })
-
-//   const params = pages.docs
-//     ?.filter((doc) => {
-//       return doc.slug !== 'home'
-//     })
-//     .map(({ slug }) => {
-//       return { slug }
-//     })
-
-//   return params
-// }
+export async function generateStaticParams() {
+  return []
+}
 
 type Args = {
   params: Promise<{
@@ -44,19 +24,53 @@ type Args = {
   }>
 }
 
+// Cached query for published pages
+const queryPageBySlug = (slug: string) =>
+  unstable_cache(
+    async () => {
+      const payload = await getPayload({ config: configPromise })
+      const result = await payload.find({
+        collection: 'pages',
+        draft: false,
+        limit: 1,
+        pagination: false,
+        overrideAccess: false,
+        where: {
+          slug: {
+            equals: slug,
+          },
+        },
+      })
+      return result.docs?.[0] || null
+    },
+    [`page-${slug}`],
+    { tags: [`page-${slug}`] },
+  )()
+
+// Uncached query for draft preview
+const queryPageBySlugDraft = async (slug: string) => {
+  const payload = await getPayload({ config: configPromise })
+  const result = await payload.find({
+    collection: 'pages',
+    draft: true,
+    limit: 1,
+    pagination: false,
+    overrideAccess: true,
+    where: {
+      slug: {
+        equals: slug,
+      },
+    },
+  })
+  return result.docs?.[0] || null
+}
+
 export default async function Page({ params: paramsPromise }: Args) {
   const { isEnabled: draft } = await draftMode()
-  const { slug = 'home' } = await paramsPromise
+  const { slug = '' } = await paramsPromise
   const url = '/' + slug
 
-  const page: RequiredDataFromCollectionSlug<'pages'> | null = await queryPageBySlug({
-    slug,
-  })
-
-  // Remove this code once your website is seeded
-  // if (!page && slug === 'home') {
-  //   page = homeStatic
-  // }
+  const page = draft ? await queryPageBySlugDraft(slug) : await queryPageBySlug(slug)
 
   if (!page) {
     return <PayloadRedirects url={url} />
@@ -78,31 +92,9 @@ export default async function Page({ params: paramsPromise }: Args) {
 }
 
 export async function generateMetadata({ params: paramsPromise }: Args): Promise<Metadata> {
-  const { slug = 'home' } = await paramsPromise
-  const page = await queryPageBySlug({
-    slug,
-  })
-
-  return generateMeta({ doc: page })
-}
-
-const queryPageBySlug = cache(async ({ slug }: { slug: string }) => {
   const { isEnabled: draft } = await draftMode()
+  const { slug = '' } = await paramsPromise
+  const page = draft ? await queryPageBySlugDraft(slug) : await queryPageBySlug(slug)
 
-  const payload = await getPayload({ config: configPromise })
-
-  const result = await payload.find({
-    collection: 'pages',
-    draft,
-    limit: 1,
-    pagination: false,
-    overrideAccess: draft,
-    where: {
-      slug: {
-        equals: slug,
-      },
-    },
-  })
-
-  return result.docs?.[0] || null
-})
+  return generatePagesMeta({ doc: page })
+}

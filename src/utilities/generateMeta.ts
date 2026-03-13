@@ -68,10 +68,10 @@ export const generateMeta = async (args: {
 
   // 3. Keywords (Merging Global + Specific)
   let keywordsList = [
-    "NexusBerry Training & Solutions", 
-    "Online Learning Pakistan", 
-    "IT Training Institute Lahore", 
-    "NexusBerry Arfa Tower"
+    "NexusBerry Training & Solutions",
+    "Online Learning Pakistan",
+    "IT Training Institute Lahore",
+    "NexusBerry Lahore Pakistan"
   ]
 
   if ("departmentName" in (doc || {})) {
@@ -148,7 +148,6 @@ export const generateMeta = async (args: {
 //     "Creative Design and Video Editing",
 //     "On-campus Training Lahore",
 //     "Skill Development Pakistan",
-//     "NexusBerry Arfa Tower",
 //     "Generative AI Training"
 //   ]
 
