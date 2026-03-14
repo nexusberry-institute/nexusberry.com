@@ -28,7 +28,6 @@ interface StudentRow {
 }
 
 interface CreateAttendanceFormProps {
-  teacherId: number
   batches: Batch[]
 }
 
@@ -40,8 +39,8 @@ function getTodayDateString(): string {
   return `${year}-${month}-${day}`
 }
 
-export function CreateAttendanceForm({ teacherId, batches }: CreateAttendanceFormProps) {
-  const [selectedBatchIds, setSelectedBatchIds] = useState<number[]>([])
+export function CreateAttendanceForm({ batches }: CreateAttendanceFormProps) {
+  const [selectedBatchId, setSelectedBatchId] = useState<number | null>(null)
   const [students, setStudents] = useState<StudentRow[]>([])
   const [loadingStudents, setLoadingStudents] = useState(false)
   const [staffNotes, setStaffNotes] = useState('')
@@ -50,15 +49,10 @@ export function CreateAttendanceForm({ teacherId, batches }: CreateAttendanceFor
   const router = useRouter()
   const { toast } = useToast()
 
-  const fetchStudents = useCallback(async (batchIds: number[]) => {
-    if (batchIds.length === 0) {
-      setStudents([])
-      return
-    }
-
+  const fetchStudents = useCallback(async (batchId: number) => {
     setLoadingStudents(true)
     try {
-      const res = await fetch(`/api/create-attendance/students?batchIds=${batchIds.join(',')}`)
+      const res = await fetch(`/api/create-attendance/students?batchId=${batchId}`)
       const data = await res.json()
       if (!res.ok) {
         toast({ title: 'Error', description: data.error || 'Failed to load students', variant: 'destructive' })
@@ -76,12 +70,10 @@ export function CreateAttendanceForm({ teacherId, batches }: CreateAttendanceFor
     }
   }, [toast])
 
-  function toggleBatch(batchId: number) {
-    const next = selectedBatchIds.includes(batchId)
-      ? selectedBatchIds.filter(id => id !== batchId)
-      : [...selectedBatchIds, batchId]
-    setSelectedBatchIds(next)
-    fetchStudents(next)
+  function selectBatch(batchId: number) {
+    if (selectedBatchId === batchId) return
+    setSelectedBatchId(batchId)
+    fetchStudents(batchId)
   }
 
   function setStatus(studentId: number, status: Status) {
@@ -95,8 +87,8 @@ export function CreateAttendanceForm({ teacherId, batches }: CreateAttendanceFor
   }
 
   async function handleSubmit() {
-    if (selectedBatchIds.length === 0) {
-      toast({ title: 'Error', description: 'Select at least one batch', variant: 'destructive' })
+    if (!selectedBatchId) {
+      toast({ title: 'Error', description: 'Select a batch', variant: 'destructive' })
       return
     }
 
@@ -106,8 +98,7 @@ export function CreateAttendanceForm({ teacherId, batches }: CreateAttendanceFor
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          batchIds: selectedBatchIds,
-          teacherId,
+          batchId: selectedBatchId,
           date: selectedDate,
           staffNotes: staffNotes || undefined,
           records: students.map(s => ({
@@ -157,7 +148,7 @@ export function CreateAttendanceForm({ teacherId, batches }: CreateAttendanceFor
 
       {/* Batch Selection */}
       <div className="bg-white rounded-xl border border-gray-200 p-6">
-        <h2 className="text-sm font-semibold text-gray-900 mb-3">Select Batches</h2>
+        <h2 className="text-sm font-semibold text-gray-900 mb-3">Select Batch</h2>
         {batches.length === 0 ? (
           <p className="text-sm text-gray-500">No active batches assigned to you.</p>
         ) : (
@@ -166,14 +157,14 @@ export function CreateAttendanceForm({ teacherId, batches }: CreateAttendanceFor
               <button
                 key={batch.id}
                 type="button"
-                onClick={() => toggleBatch(batch.id)}
-                className={`px-4 py-2 text-sm font-medium rounded-lg border transition-colors text-left ${selectedBatchIds.includes(batch.id)
+                onClick={() => selectBatch(batch.id)}
+                className={`px-4 py-2 text-sm font-medium rounded-lg border transition-colors text-left ${selectedBatchId === batch.id
                     ? 'bg-gray-900 text-white border-gray-900'
                     : 'bg-white text-gray-700 border-gray-200 hover:bg-gray-50'
                   }`}
               >
                 <span className="block">{batch.courseTitle}</span>
-                <span className={`block text-xs mt-0.5 ${selectedBatchIds.includes(batch.id) ? 'text-gray-300' : 'text-gray-400'
+                <span className={`block text-xs mt-0.5 ${selectedBatchId === batch.id ? 'text-gray-300' : 'text-gray-400'
                   }`}>
                   {batch.slug}
                 </span>
@@ -188,7 +179,7 @@ export function CreateAttendanceForm({ teacherId, batches }: CreateAttendanceFor
         <div className="bg-white rounded-xl border border-gray-200 p-6">
           <p className="text-sm text-gray-500">Loading students...</p>
         </div>
-      ) : selectedBatchIds.length > 0 && (
+      ) : selectedBatchId && (
         <div className="space-y-4">
           <div className="flex items-center justify-between">
             <p className="text-sm text-gray-500">{students.length} student{students.length !== 1 ? 's' : ''} found</p>
@@ -245,7 +236,7 @@ export function CreateAttendanceForm({ teacherId, batches }: CreateAttendanceFor
       )}
 
       {/* Staff Notes */}
-      {selectedBatchIds.length > 0 && (
+      {selectedBatchId && (
         <div className="bg-white rounded-xl border border-gray-200 p-6">
           <label htmlFor="staffNotes" className="block text-sm font-semibold text-gray-900 mb-2">
             Staff Notes (optional)
@@ -262,7 +253,7 @@ export function CreateAttendanceForm({ teacherId, batches }: CreateAttendanceFor
       )}
 
       {/* Submit */}
-      {selectedBatchIds.length > 0 && students.length > 0 && (
+      {selectedBatchId && students.length > 0 && (
         <div className="flex justify-end">
           <Button onClick={handleSubmit} disabled={submitting}>
             {submitting ? 'Creating Attendance...' : 'Create Attendance Session'}

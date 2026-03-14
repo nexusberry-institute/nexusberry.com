@@ -4,9 +4,9 @@ export const Attendances: CollectionConfig = {
   slug: 'attendance',
   admin: {
     useAsTitle: 'date',
-    listSearchableFields: ['batches', 'teacher'],
+    listSearchableFields: ['batch'],
     group: 'Academic Operations',
-    defaultColumns: ['date', 'batches', 'teacher', 'visible'],
+    defaultColumns: ['date', 'batch', 'visible'],
     description: 'Manage class attendance sessions and online class links',
   },
   defaultSort: '-date',
@@ -23,14 +23,6 @@ export const Attendances: CollectionConfig = {
           pickerAppearance: 'dayOnly',
           displayFormat: 'MMM dd, yyyy',
         },
-      },
-    },
-    {
-      name: 'teacher',
-      type: 'relationship',
-      relationTo: 'teachers',
-      admin: {
-        position: 'sidebar',
       },
     },
     {
@@ -64,16 +56,16 @@ export const Attendances: CollectionConfig = {
           label: 'Class Setup',
           fields: [
             {
-              name: 'batches',
+              name: 'batch',
               type: 'relationship',
               relationTo: 'batches',
               required: true,
-              hasMany: true,
+              hasMany: false,
               filterOptions: {
                 active: { equals: true },
               },
               admin: {
-                description: 'Select the batch(es) for this attendance session',
+                description: 'Select the batch for this attendance session',
               },
             },
             {

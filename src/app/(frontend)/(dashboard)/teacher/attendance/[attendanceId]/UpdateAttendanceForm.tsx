@@ -1,9 +1,8 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useMemo } from 'react'
 import { useRouter } from 'next/navigation'
 import { Button } from '@/components/ui/button'
-import { Badge } from '@/components/ui/badge'
 import {
   Table,
   TableBody,
@@ -15,12 +14,14 @@ import {
 import { useToast } from '@/hooks/use-toast'
 
 type Status = 'PRESENT' | 'ABSENT' | 'LEAVE'
+type Medium = 'ONLINE' | 'PHYSICAL'
+type Filter = 'ALL' | Status | Medium
 
 interface StudentRow {
   studentId: number
   fullName: string
   status: Status
-  medium?: 'ONLINE' | 'PHYSICAL' | null
+  medium?: Medium | null
 }
 
 interface UpdateAttendanceFormProps {
@@ -28,15 +29,67 @@ interface UpdateAttendanceFormProps {
   students: StudentRow[]
 }
 
+const FILTER_STYLES: Record<Filter, { active: string; inactive: string }> = {
+  ALL: {
+    active: 'bg-gray-900 text-white border-gray-900',
+    inactive: 'bg-gray-50 text-gray-600 border-gray-200 hover:bg-gray-100',
+  },
+  PRESENT: {
+    active: 'bg-green-100 text-green-800 border-green-300',
+    inactive: 'bg-gray-50 text-gray-600 border-gray-200 hover:bg-gray-100',
+  },
+  ABSENT: {
+    active: 'bg-red-100 text-red-800 border-red-300',
+    inactive: 'bg-gray-50 text-gray-600 border-gray-200 hover:bg-gray-100',
+  },
+  LEAVE: {
+    active: 'bg-yellow-100 text-yellow-800 border-yellow-300',
+    inactive: 'bg-gray-50 text-gray-600 border-gray-200 hover:bg-gray-100',
+  },
+  ONLINE: {
+    active: 'bg-blue-100 text-blue-800 border-blue-300',
+    inactive: 'bg-gray-50 text-gray-600 border-gray-200 hover:bg-gray-100',
+  },
+  PHYSICAL: {
+    active: 'bg-purple-100 text-purple-800 border-purple-300',
+    inactive: 'bg-gray-50 text-gray-600 border-gray-200 hover:bg-gray-100',
+  },
+}
+
 export function UpdateAttendanceForm({ attendanceId, students: initialStudents }: UpdateAttendanceFormProps) {
   const [students, setStudents] = useState<StudentRow[]>(initialStudents)
+  const [activeFilter, setActiveFilter] = useState<Filter>('ALL')
   const [submitting, setSubmitting] = useState(false)
   const router = useRouter()
   const { toast } = useToast()
 
+  const counts = useMemo(() => {
+    const c = { ALL: students.length, PRESENT: 0, ABSENT: 0, LEAVE: 0, ONLINE: 0, PHYSICAL: 0 }
+    for (const s of students) {
+      c[s.status]++
+      const m = s.medium ?? 'ONLINE'
+      c[m]++
+    }
+    return c
+  }, [students])
+
+  const filteredStudents = useMemo(() => {
+    if (activeFilter === 'ALL') return students
+    if (activeFilter === 'ONLINE' || activeFilter === 'PHYSICAL') {
+      return students.filter(s => (s.medium ?? 'ONLINE') === activeFilter)
+    }
+    return students.filter(s => s.status === activeFilter)
+  }, [students, activeFilter])
+
   function setStatus(studentId: number, status: Status) {
     setStudents(prev =>
       prev.map(s => s.studentId === studentId ? { ...s, status } : s),
+    )
+  }
+
+  function setMedium(studentId: number, medium: Medium) {
+    setStudents(prev =>
+      prev.map(s => s.studentId === studentId ? { ...s, medium } : s),
     )
   }
 
@@ -51,6 +104,7 @@ export function UpdateAttendanceForm({ attendanceId, students: initialStudents }
           records: students.map(s => ({
             studentId: s.studentId,
             status: s.status,
+            medium: s.medium ?? 'ONLINE',
           })),
         }),
       })
@@ -83,9 +137,28 @@ export function UpdateAttendanceForm({ attendanceId, students: initialStudents }
   }
 
   const statuses: Status[] = ['PRESENT', 'ABSENT', 'LEAVE']
+  const filters: Filter[] = ['ALL', 'PRESENT', 'ABSENT', 'LEAVE', 'ONLINE', 'PHYSICAL']
 
   return (
     <div className="space-y-4">
+      {/* Analytics filter pills */}
+      <div className="flex flex-wrap gap-2">
+        {filters.map(f => {
+          const isActive = activeFilter === f
+          const style = FILTER_STYLES[f]
+          return (
+            <button
+              key={f}
+              type="button"
+              onClick={() => setActiveFilter(f)}
+              className={`px-3 py-1.5 text-xs font-medium rounded-full border transition-colors ${isActive ? style.active : style.inactive}`}
+            >
+              {f} ({counts[f]})
+            </button>
+          )
+        })}
+      </div>
+
       <div className="bg-white rounded-xl border border-gray-200 overflow-hidden">
         <Table>
           <TableHeader>
@@ -97,7 +170,7 @@ export function UpdateAttendanceForm({ attendanceId, students: initialStudents }
             </TableRow>
           </TableHeader>
           <TableBody>
-            {students.map((student, idx) => (
+            {filteredStudents.map((student, idx) => (
               <TableRow key={student.studentId}>
                 <TableCell className="text-gray-500">{idx + 1}</TableCell>
                 <TableCell className="font-medium">{student.fullName}</TableCell>
@@ -123,9 +196,14 @@ export function UpdateAttendanceForm({ attendanceId, students: initialStudents }
                   </div>
                 </TableCell>
                 <TableCell className="text-center">
-                  {student.medium === 'ONLINE' && (
-                    <Badge className="bg-blue-100 text-blue-800 text-xs">Online</Badge>
-                  )}
+                  <select
+                    value={student.medium ?? 'ONLINE'}
+                    onChange={e => setMedium(student.studentId, e.target.value as Medium)}
+                    className="rounded-lg border border-gray-200 px-2 py-1 text-xs text-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-900 focus:border-transparent"
+                  >
+                    <option value="ONLINE">Online</option>
+                    <option value="PHYSICAL">Physical</option>
+                  </select>
                 </TableCell>
               </TableRow>
             ))}

@@ -19,21 +19,21 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
     }
 
-    const batchIdsParam = request.nextUrl.searchParams.get('batchIds')
-    if (!batchIdsParam) {
-      return NextResponse.json({ error: 'batchIds query param required' }, { status: 400 })
+    const batchIdParam = request.nextUrl.searchParams.get('batchId')
+    if (!batchIdParam) {
+      return NextResponse.json({ error: 'batchId query param required' }, { status: 400 })
     }
 
-    const batchIds = batchIdsParam.split(',').map(Number).filter(id => !isNaN(id) && id > 0)
-    if (batchIds.length === 0) {
-      return NextResponse.json({ error: 'Invalid batchIds' }, { status: 400 })
+    const batchId = Number(batchIdParam)
+    if (isNaN(batchId) || batchId <= 0) {
+      return NextResponse.json({ error: 'Invalid batchId' }, { status: 400 })
     }
 
-    // Fetch active enrollments for those batches
+    // Fetch active enrollments for the batch
     const enrollmentsResult = await payload.find({
       collection: 'enrollments',
       where: {
-        batch: { in: batchIds },
+        batch: { equals: batchId },
         status: { equals: 'active' },
       },
       depth: 1,

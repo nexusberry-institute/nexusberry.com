@@ -58,10 +58,7 @@ export default async function AttendanceListPage() {
     ? await payload.find({
         collection: 'attendance',
         where: {
-          or: [
-            { teacher: { equals: teacher.id } },
-            { batches: { in: batchIds } },
-          ],
+          batch: { in: batchIds },
         },
         depth: 1,
         limit: 20,
@@ -92,11 +89,8 @@ export default async function AttendanceListPage() {
       ) : (
         <div className="space-y-3">
           {attendanceResult.docs.map((att) => {
-            const attBatches = Array.isArray(att.batches) ? att.batches : []
-            const batchNames = attBatches
-              .map((b) => typeof b === 'object' && b !== null ? b.slug || b.courseTitle : '')
-              .filter(Boolean)
-              .join(', ')
+            const batchObj = typeof att.batch === 'object' && att.batch !== null ? att.batch : null
+            const batchName = batchObj ? (batchObj.slug || batchObj.courseTitle) : ''
 
             return (
               <Link
@@ -110,7 +104,7 @@ export default async function AttendanceListPage() {
                   </div>
                   <div>
                     <p className="font-medium text-gray-900">
-                      {batchNames || 'Attendance'}
+                      {batchName || 'Attendance'}
                     </p>
                     <p className="text-xs text-gray-500">
                       {att.date && new Date(att.date).toLocaleDateString('en-US', {

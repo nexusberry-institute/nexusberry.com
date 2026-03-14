@@ -1888,7 +1888,6 @@ export interface Message {
 export interface Attendance {
   id: number;
   date: string;
-  teacher?: (number | null) | Teacher;
   /**
    * Show this session to students
    */
@@ -1898,9 +1897,9 @@ export interface Attendance {
    */
   expiry?: string | null;
   /**
-   * Select the batch(es) for this attendance session
+   * Select the batch for this attendance session
    */
-  batches: (number | Batch)[];
+  batch: number | Batch;
   /**
    * Google Meet or Zoom link for the class
    */
@@ -3066,10 +3065,9 @@ export interface FeeReceiptsSelect<T extends boolean = true> {
  */
 export interface AttendanceSelect<T extends boolean = true> {
   date?: T;
-  teacher?: T;
   visible?: T;
   expiry?: T;
-  batches?: T;
+  batch?: T;
   onlineClassLink?: T;
   users?: T;
   staffNotes?: T;

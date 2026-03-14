@@ -27,33 +27,24 @@ export default async function MarkAttendancePage({
     redirect('/dashboard')
   }
 
-  // Find teacher record (for teacher role users)
-  let teacherId: number | null = null
-  if (roles.includes('teacher')) {
-    const teacherResult = await payload.find({
-      collection: 'teachers',
-      where: { user: { equals: user.id } },
-      limit: 1,
-      depth: 0,
-    })
-    const teacher = teacherResult.docs[0]
-    if (!teacher) {
-      return (
-        <div className="p-6 bg-white rounded-xl border border-gray-200">
-          <p className="text-gray-600">Teacher profile not found.</p>
-        </div>
-      )
-    }
-    teacherId = teacher.id
-  }
-
-  // Fetch attendance record with batch details
-  const attendance = await payload.findByID({
-    collection: 'attendance',
-    id,
-    depth: 1,
-    overrideAccess: true,
-  })
+  // Round 1: fetch attendance (with batch+teachers) and teacher record in parallel
+  const isTeacher = roles.includes('teacher')
+  const [attendance, teacherResult] = await Promise.all([
+    payload.findByID({
+      collection: 'attendance',
+      id,
+      depth: 1,
+      overrideAccess: true,
+    }),
+    isTeacher
+      ? payload.find({
+          collection: 'teachers',
+          where: { user: { equals: user.id } },
+          limit: 1,
+          depth: 0,
+        })
+      : null,
+  ])
 
   if (!attendance) {
     return (
@@ -63,48 +54,63 @@ export default async function MarkAttendancePage({
     )
   }
 
-  // Verify teacher is assigned to one of the batches (for teacher role)
-  const attendanceBatches = Array.isArray(attendance.batches) ? attendance.batches : []
-  const batchIds = attendanceBatches
-    .map((b) => typeof b === 'object' && b !== null ? b.id : b)
-    .filter(Boolean) as number[]
-
-  if (teacherId && batchIds.length > 0) {
-    const assignedBatches = await payload.find({
-      collection: 'batches',
-      where: {
-        id: { in: batchIds },
-        teachers: { contains: teacherId },
-      },
-      limit: 1,
-      depth: 0,
-      overrideAccess: true,
-    })
-    if (assignedBatches.docs.length === 0) {
+  // Verify teacher authorization via batch.teachers
+  if (isTeacher) {
+    const teacher = teacherResult?.docs[0]
+    if (!teacher) {
       return (
         <div className="p-6 bg-white rounded-xl border border-gray-200">
-          <p className="text-gray-600">You are not assigned to this attendance session&apos;s batches.</p>
+          <p className="text-gray-600">Teacher profile not found.</p>
+        </div>
+      )
+    }
+
+    const batchObj = typeof attendance.batch === 'object' && attendance.batch !== null
+      ? attendance.batch
+      : null
+    const batchTeacherIds = batchObj && Array.isArray(batchObj.teachers)
+      ? batchObj.teachers.map((t: number | { id: number }) => typeof t === 'object' && t !== null ? t.id : t)
+      : []
+
+    if (!batchTeacherIds.includes(teacher.id)) {
+      return (
+        <div className="p-6 bg-white rounded-xl border border-gray-200">
+          <p className="text-gray-600">You are not assigned to this attendance session&apos;s batch.</p>
         </div>
       )
     }
   }
 
-  // Fetch enrolled students in those batches
-  const enrollmentsResult = batchIds.length > 0
-    ? await payload.find({
-      collection: 'enrollments',
-      where: {
-        batch: { in: batchIds },
-        status: { equals: 'active' },
-      },
-      depth: 1,
-      limit: 200,
+  const batchId = typeof attendance.batch === 'object' && attendance.batch !== null
+    ? attendance.batch.id
+    : attendance.batch
+
+  // Round 2: fetch enrollments and existing details in parallel
+  const [enrollmentsResult, existingDetails] = await Promise.all([
+    batchId
+      ? payload.find({
+          collection: 'enrollments',
+          where: {
+            batch: { equals: batchId },
+            status: { equals: 'active' },
+          },
+          depth: 1,
+          limit: 200,
+          pagination: false,
+          overrideAccess: true,
+        })
+      : Promise.resolve({ docs: [] }),
+    payload.find({
+      collection: 'attendance-details',
+      where: { attendance: { equals: id } },
+      depth: 0,
+      limit: 500,
       pagination: false,
       overrideAccess: true,
-    })
-    : { docs: [] }
+    }),
+  ])
 
-  // Deduplicate students (a student might be enrolled in multiple batches)
+  // Build student map from enrollments
   const studentMap = new Map<number, { id: number; fullName: string }>()
   for (const enrollment of enrollmentsResult.docs) {
     const student = typeof enrollment.student === 'object' && enrollment.student !== null
@@ -117,16 +123,6 @@ export default async function MarkAttendancePage({
       })
     }
   }
-
-  // Fetch existing attendance details for this session
-  const existingDetails = await payload.find({
-    collection: 'attendance-details',
-    where: { attendance: { equals: id } },
-    depth: 0,
-    limit: 500,
-    pagination: false,
-    overrideAccess: true,
-  })
 
   const detailsByStudent = new Map<number, { status: string; medium: string | null }>()
   for (const detail of existingDetails.docs) {
@@ -154,10 +150,10 @@ export default async function MarkAttendancePage({
       }
     })
 
-  const batchNames = attendanceBatches
-    .map((b) => typeof b === 'object' && b !== null ? b.slug || b.courseTitle : '')
-    .filter(Boolean)
-    .join(', ')
+  const batchObj = typeof attendance.batch === 'object' && attendance.batch !== null
+    ? attendance.batch
+    : null
+  const batchName = batchObj ? (batchObj.slug || batchObj.courseTitle) : ''
 
   return (
     <div className="space-y-6">
@@ -178,8 +174,8 @@ export default async function MarkAttendancePage({
               day: 'numeric',
               year: 'numeric',
             })}
-            {batchNames && (
-              <span className="text-gray-400">| {batchNames}</span>
+            {batchName && (
+              <span className="text-gray-400">| {batchName}</span>
             )}
           </div>
         </div>

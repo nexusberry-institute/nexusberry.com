@@ -7,6 +7,7 @@ import type { User } from '@/payload-types'
 interface AttendanceRecord {
   studentId: number
   status: 'PRESENT' | 'ABSENT' | 'LEAVE'
+  medium?: 'ONLINE' | 'PHYSICAL'
 }
 
 export async function POST(request: NextRequest) {
@@ -43,7 +44,7 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Attendance session not found' }, { status: 404 })
     }
 
-    // If user is a teacher (not admin/superadmin), verify they're assigned to the attendance
+    // If user is a teacher (not admin/superadmin), verify they're assigned to the attendance batch
     if (!roles.includes('superadmin') && !roles.includes('admin')) {
       const teacherResult = await payload.find({
         collection: 'teachers',
@@ -57,15 +58,15 @@ export async function POST(request: NextRequest) {
         return NextResponse.json({ error: 'Teacher profile not found' }, { status: 403 })
       }
 
-      // Check if teacher is assigned to one of the attendance's batches
-      const attendanceBatchIds = (attendance.batches as (number | { id: number })[])
-        ?.map(b => typeof b === 'object' && b !== null ? b.id : b)
-        .filter(Boolean) as number[]
+      // Check if teacher is assigned to the attendance's batch
+      const batchId = typeof attendance.batch === 'object' && attendance.batch !== null
+        ? attendance.batch.id
+        : attendance.batch
 
-      const batchesResult = await payload.find({
+      const batchResult = await payload.find({
         collection: 'batches',
         where: {
-          id: { in: attendanceBatchIds },
+          id: { equals: batchId },
           teachers: { contains: teacher.id },
         },
         limit: 1,
@@ -73,7 +74,7 @@ export async function POST(request: NextRequest) {
         overrideAccess: true,
       })
 
-      if (batchesResult.docs.length === 0) {
+      if (batchResult.docs.length === 0) {
         return NextResponse.json({ error: 'Not authorized for this attendance session' }, { status: 403 })
       }
     }
@@ -82,7 +83,7 @@ export async function POST(request: NextRequest) {
     let updated = 0
 
     for (const record of records) {
-      const { studentId, status } = record
+      const { studentId, status, medium } = record
       if (!studentId || !['PRESENT', 'ABSENT', 'LEAVE'].includes(status)) continue
 
       // Check if detail already exists
@@ -101,7 +102,7 @@ export async function POST(request: NextRequest) {
         await payload.update({
           collection: 'attendance-details',
           id: existing.docs[0]!.id,
-          data: { status },
+          data: { status, ...(medium ? { medium } : {}) },
           overrideAccess: true,
         })
         updated++
@@ -111,7 +112,7 @@ export async function POST(request: NextRequest) {
           data: {
             attendance: attendanceId,
             student: studentId,
-            medium: 'ONLINE',
+            medium: medium || 'ONLINE',
             status,
           },
           overrideAccess: true,

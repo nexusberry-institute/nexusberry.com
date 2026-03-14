@@ -38,6 +38,7 @@ import * as migration_20260311_fix_locked_documents_video_watch_logs from './202
 import * as migration_20260311_add_student_to_users from './20260311_add_student_to_users';
 import * as migration_20260312_replace_sessions_with_first_watched_at from './20260312_replace_sessions_with_first_watched_at';
 import * as migration_20260313_add_home_page_global from './20260313_add_home_page_global';
+import * as migration_20260314_simplify_attendance_single_batch from './20260314_simplify_attendance_single_batch';
 
 export const migrations = [
   {
@@ -239,5 +240,10 @@ export const migrations = [
     up: migration_20260313_add_home_page_global.up,
     down: migration_20260313_add_home_page_global.down,
     name: '20260313_add_home_page_global',
+  },
+  {
+    up: migration_20260314_simplify_attendance_single_batch.up,
+    down: migration_20260314_simplify_attendance_single_batch.down,
+    name: '20260314_simplify_attendance_single_batch',
   },
 ];

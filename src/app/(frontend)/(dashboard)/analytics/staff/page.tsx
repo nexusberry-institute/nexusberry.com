@@ -43,7 +43,7 @@ export default async function StaffAnalyticsPage() {
       where: { date: { greater_than_equal: threeMonthsAgo } },
       limit: 5000,
       depth: 1,
-      select: { teacher: true, date: true },
+      select: { batch: true, date: true },
       pagination: false,
     }),
     payload.find({
@@ -62,8 +62,13 @@ export default async function StaffAnalyticsPage() {
   recentAttendance.docs
     .filter((a) => a.date && a.date >= startOfMonth)
     .forEach((a) => {
-      const teacherId = typeof a.teacher === 'object' && a.teacher ? String((a.teacher as any).id) : String(a.teacher)
-      teacherClassesThisMonth[teacherId] = (teacherClassesThisMonth[teacherId] || 0) + 1
+      const batchObj = typeof a.batch === 'object' && a.batch !== null ? a.batch : null
+      if (!batchObj) return
+      const batchTeachers = Array.isArray(batchObj.teachers) ? batchObj.teachers : []
+      batchTeachers.forEach((t: any) => {
+        const tId = typeof t === 'object' && t !== null ? String(t.id) : String(t)
+        teacherClassesThisMonth[tId] = (teacherClassesThisMonth[tId] || 0) + 1
+      })
     })
 
   let monthlyTeacherCost = 0
@@ -127,16 +132,21 @@ export default async function StaffAnalyticsPage() {
     recentAttendance.docs
       .filter((a) => a.date && a.date >= monthStart && a.date <= monthEnd)
       .forEach((a) => {
-        const teacher = typeof a.teacher === 'object' && a.teacher ? a.teacher : null
-        if (!teacher) return
-        const id = String((teacher as any).id)
-        if (!teacherWorkload[id]) {
-          teacherWorkload[id] = {
-            name: (teacher as any).nick || (teacher as any).fullName || 'Unknown',
-            months: {},
+        const batchObj = typeof a.batch === 'object' && a.batch !== null ? a.batch : null
+        if (!batchObj) return
+        const batchTeachers = Array.isArray(batchObj.teachers) ? batchObj.teachers : []
+        batchTeachers.forEach((t: any) => {
+          const teacher = typeof t === 'object' && t !== null ? t : null
+          if (!teacher) return
+          const id = String(teacher.id)
+          if (!teacherWorkload[id]) {
+            teacherWorkload[id] = {
+              name: teacher.nick || teacher.fullName || 'Unknown',
+              months: {},
+            }
           }
-        }
-        teacherWorkload[id]!.months[monthKey] = (teacherWorkload[id]!.months[monthKey] || 0) + 1
+          teacherWorkload[id]!.months[monthKey] = (teacherWorkload[id]!.months[monthKey] || 0) + 1
+        })
       })
   }
 

@@ -7,6 +7,7 @@ import type { User } from '@/payload-types'
 interface AttendanceRecord {
   studentId: number
   status: 'PRESENT' | 'ABSENT' | 'LEAVE'
+  medium?: 'ONLINE' | 'PHYSICAL'
 }
 
 export async function POST(request: NextRequest) {
@@ -25,23 +26,22 @@ export async function POST(request: NextRequest) {
     }
 
     const body = await request.json()
-    const { batchIds, teacherId, staffNotes, date, records } = body as {
-      batchIds: number[]
-      teacherId: number
+    const { batchId, staffNotes, date, records } = body as {
+      batchId: number
       staffNotes?: string
       date?: string
       records: AttendanceRecord[]
     }
 
-    if (!Array.isArray(batchIds) || batchIds.length === 0) {
-      return NextResponse.json({ error: 'At least one batch is required' }, { status: 400 })
+    if (!batchId || typeof batchId !== 'number') {
+      return NextResponse.json({ error: 'A batch is required' }, { status: 400 })
     }
 
-    if (!teacherId || !Array.isArray(records)) {
+    if (!Array.isArray(records)) {
       return NextResponse.json({ error: 'Invalid request body' }, { status: 400 })
     }
 
-    // Verify the teacher record belongs to this user (unless admin/superadmin)
+    // Verify the teacher record belongs to this user and is assigned to the batch (unless admin/superadmin)
     if (!roles.includes('superadmin') && !roles.includes('admin')) {
       const teacherResult = await payload.find({
         collection: 'teachers',
@@ -51,25 +51,25 @@ export async function POST(request: NextRequest) {
         overrideAccess: true,
       })
       const teacher = teacherResult.docs[0]
-      if (!teacher || teacher.id !== teacherId) {
-        return NextResponse.json({ error: 'Teacher mismatch' }, { status: 403 })
+      if (!teacher) {
+        return NextResponse.json({ error: 'Teacher profile not found' }, { status: 403 })
       }
 
-      // Verify teacher is assigned to all selected batches
-      const assignedBatches = await payload.find({
+      // Verify teacher is assigned to the selected batch
+      const assignedBatch = await payload.find({
         collection: 'batches',
         where: {
-          id: { in: batchIds },
-          teachers: { contains: teacherId },
+          id: { equals: batchId },
+          teachers: { contains: teacher.id },
           active: { equals: true },
         },
         depth: 0,
-        limit: 50,
+        limit: 1,
         overrideAccess: true,
       })
 
-      if (assignedBatches.docs.length !== batchIds.length) {
-        return NextResponse.json({ error: 'Not assigned to all selected batches' }, { status: 403 })
+      if (assignedBatch.docs.length === 0) {
+        return NextResponse.json({ error: 'Not assigned to the selected batch' }, { status: 403 })
       }
     }
 
@@ -89,8 +89,7 @@ export async function POST(request: NextRequest) {
     const attendance = await payload.create({
       collection: 'attendance',
       data: {
-        batches: batchIds,
-        teacher: teacherId,
+        batch: batchId,
         date: sessionDate,
         visible: true,
         staffNotes: staffNotes || undefined,
@@ -101,7 +100,7 @@ export async function POST(request: NextRequest) {
     // Create attendance-details for each student
     let detailsCreated = 0
     for (const record of records) {
-      const { studentId, status } = record
+      const { studentId, status, medium } = record
       if (!studentId || !['PRESENT', 'ABSENT', 'LEAVE'].includes(status)) continue
 
       await payload.create({
@@ -109,7 +108,7 @@ export async function POST(request: NextRequest) {
         data: {
           attendance: attendance.id,
           student: studentId,
-          medium: 'ONLINE',
+          medium: medium || 'ONLINE',
           status,
         },
         overrideAccess: true,

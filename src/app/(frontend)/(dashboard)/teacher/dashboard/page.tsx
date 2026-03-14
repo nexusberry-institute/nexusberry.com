@@ -181,12 +181,12 @@ export default async function TeacherDashboardPage() {
           ) : (
             <div className="space-y-3">
               {recentAttendanceResult.docs.map((att) => {
-                const attBatches = Array.isArray(att.batches) ? att.batches : []
+                const batchObj = typeof att.batch === 'object' && att.batch !== null ? att.batch : null
                 return (
                   <div key={att.id} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
                     <div>
                       <p className="font-medium text-gray-900">
-                        {attBatches.map((b: any) => typeof b === 'object' ? (b.slug || b.courseTitle) : b).join(', ') || 'Attendance'}
+                        {batchObj ? (batchObj.slug || batchObj.courseTitle) : 'Attendance'}
                       </p>
                       <p className="text-xs text-gray-500">
                         {att.date && new Date(att.date).toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' })}

@@ -215,12 +215,9 @@ export default async function StudentDashboardPage() {
             </div>
             <div className="space-y-3">
               {activeClassesResult.docs.map((cls) => {
-                const clsBatches = Array.isArray(cls.batches) ? cls.batches : []
                 // Show only if student's batch is included
-                const relevant = clsBatches.some((b: any) => {
-                  const bId = typeof b === 'object' ? b.id : b
-                  return batchIds.includes(bId)
-                })
+                const clsBatchId = typeof cls.batch === 'object' && cls.batch !== null ? cls.batch.id : cls.batch
+                const relevant = batchIds.includes(clsBatchId as number)
                 if (!relevant) return null
 
                 const hasLink = Boolean(cls.onlineClassLink)

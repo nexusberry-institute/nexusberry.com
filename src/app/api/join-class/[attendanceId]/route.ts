@@ -60,11 +60,11 @@ export async function GET(
       return NextResponse.redirect(new URL(`${DASHBOARD_URL}?error=expired`, _request.url))
     }
 
-    // Check enrollment: student must be enrolled in one of the attendance's batches
+    // Check enrollment: student must be enrolled in the attendance's batch
     // OR be in the attendance's `users` override list
-    const attendanceBatchIds = (attendance.batches as (number | { id: number })[])
-      ?.map(b => typeof b === 'object' && b !== null ? b.id : b)
-      .filter(Boolean) as number[]
+    const batchId = typeof attendance.batch === 'object' && attendance.batch !== null
+      ? attendance.batch.id
+      : attendance.batch
 
     const overrideUserIds = (attendance.users as (number | { id: number })[])
       ?.map(u => typeof u === 'object' && u !== null ? u.id : u)
@@ -73,12 +73,12 @@ export async function GET(
     const isOverrideUser = overrideUserIds.includes(user.id)
 
     let isEnrolled = false
-    if (!isOverrideUser && attendanceBatchIds.length > 0) {
+    if (!isOverrideUser && batchId) {
       const enrollmentResult = await payload.find({
         collection: 'enrollments',
         where: {
           student: { equals: student.id },
-          batch: { in: attendanceBatchIds },
+          batch: { equals: batchId },
           status: { equals: 'active' },
         },
         limit: 1,

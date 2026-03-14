@@ -42,7 +42,7 @@ export default async function AttendanceAnalyticsPage() {
       where: { date: { greater_than_equal: sixMonthsAgo } },
       limit: 5000,
       depth: 1,
-      select: { date: true, batches: true, teacher: true },
+      select: { date: true, batch: true },
       pagination: false,
     }),
     payload.find({
@@ -66,7 +66,7 @@ export default async function AttendanceAnalyticsPage() {
       where: { date: { greater_than_equal: thirtyDaysAgo } },
       limit: 5000,
       depth: 1,
-      select: { teacher: true },
+      select: { batch: true },
       pagination: false,
     }),
   ])
@@ -104,22 +104,20 @@ export default async function AttendanceAnalyticsPage() {
   // Attendance rate by batch
   const batchAttendance: Record<string, { present: number; total: number }> = {}
   // Map attendance sessions to batch IDs
-  const sessionToBatches: Record<string, string[]> = {}
+  const sessionToBatch: Record<string, string> = {}
   allAttendanceSessions.docs.forEach((s) => {
-    const batches = Array.isArray(s.batches)
-      ? s.batches.map((b: any) => (typeof b === 'object' ? String(b.id) : String(b)))
-      : []
-    sessionToBatches[String(s.id)] = batches
+    const batchId = typeof s.batch === 'object' && s.batch !== null ? String(s.batch.id) : String(s.batch)
+    if (batchId) sessionToBatch[String(s.id)] = batchId
   })
 
   attendanceDetails.docs.forEach((d) => {
     const sessionId = typeof d.attendance === 'object' && d.attendance ? String(d.attendance.id || d.attendance) : String(d.attendance)
-    const batchIds = sessionToBatches[sessionId] || []
-    batchIds.forEach((batchId) => {
+    const batchId = sessionToBatch[sessionId]
+    if (batchId) {
       if (!batchAttendance[batchId]) batchAttendance[batchId] = { present: 0, total: 0 }
       batchAttendance[batchId]!.total++
       if (d.status === 'PRESENT') batchAttendance[batchId]!.present++
-    })
+    }
   })
 
   const batchRateData = activeBatches.docs
@@ -158,16 +156,21 @@ export default async function AttendanceAnalyticsPage() {
     return { day, classes: sessions.length }
   })
 
-  // Teacher activity (last 30 days)
+  // Teacher activity (last 30 days) — derived from batch.teachers
   const teacherClasses: Record<string, { name: string; count: number }> = {}
   recentByTeacher.docs.forEach((s) => {
-    const teacher = typeof s.teacher === 'object' && s.teacher ? s.teacher : null
-    if (!teacher) return
-    const id = String((teacher as any).id)
-    if (!teacherClasses[id]) {
-      teacherClasses[id] = { name: (teacher as any).nick || (teacher as any).fullName || 'Unknown', count: 0 }
-    }
-    teacherClasses[id]!.count++
+    const batchObj = typeof s.batch === 'object' && s.batch !== null ? s.batch : null
+    if (!batchObj) return
+    const batchTeachers = Array.isArray(batchObj.teachers) ? batchObj.teachers : []
+    batchTeachers.forEach((t: any) => {
+      const teacher = typeof t === 'object' && t !== null ? t : null
+      if (!teacher) return
+      const id = String(teacher.id)
+      if (!teacherClasses[id]) {
+        teacherClasses[id] = { name: teacher.nick || teacher.fullName || 'Unknown', count: 0 }
+      }
+      teacherClasses[id]!.count++
+    })
   })
   const teacherActivityData = Object.values(teacherClasses)
     .sort((a, b) => b.count - a.count)

@@ -73,7 +73,7 @@ export default async function CreateAttendancePage() {
         </div>
       </div>
 
-      <CreateAttendanceForm teacherId={teacher.id} batches={batches} />
+      <CreateAttendanceForm batches={batches} />
     </div>
   )
 }
