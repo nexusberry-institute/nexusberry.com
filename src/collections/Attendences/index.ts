@@ -35,6 +35,15 @@ export const Attendances: CollectionConfig = {
       },
     },
     {
+      name: 'summary',
+      type: 'text',
+      admin: {
+        position: 'sidebar',
+        readOnly: true,
+        description: 'Auto-calculated: P:present|A:absent|L:leave',
+      },
+    },
+    {
       name: 'expiry',
       type: 'date',
       defaultValue: () => new Date(Date.now() + 90 * 60 * 1000),

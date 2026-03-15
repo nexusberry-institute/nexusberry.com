@@ -39,6 +39,7 @@ import * as migration_20260311_add_student_to_users from './20260311_add_student
 import * as migration_20260312_replace_sessions_with_first_watched_at from './20260312_replace_sessions_with_first_watched_at';
 import * as migration_20260313_add_home_page_global from './20260313_add_home_page_global';
 import * as migration_20260314_simplify_attendance_single_batch from './20260314_simplify_attendance_single_batch';
+import * as migration_20260315_add_attendance_summary from './20260315_add_attendance_summary';
 
 export const migrations = [
   {
@@ -245,5 +246,10 @@ export const migrations = [
     up: migration_20260314_simplify_attendance_single_batch.up,
     down: migration_20260314_simplify_attendance_single_batch.down,
     name: '20260314_simplify_attendance_single_batch',
+  },
+  {
+    up: migration_20260315_add_attendance_summary.up,
+    down: migration_20260315_add_attendance_summary.down,
+    name: '20260315_add_attendance_summary',
   },
 ];

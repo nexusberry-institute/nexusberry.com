@@ -1893,6 +1893,10 @@ export interface Attendance {
    */
   visible?: boolean | null;
   /**
+   * Auto-calculated: P:present|A:absent|L:leave
+   */
+  summary?: string | null;
+  /**
    * Online class link auto-hides after this time
    */
   expiry?: string | null;
@@ -3066,6 +3070,7 @@ export interface FeeReceiptsSelect<T extends boolean = true> {
 export interface AttendanceSelect<T extends boolean = true> {
   date?: T;
   visible?: T;
+  summary?: T;
   expiry?: T;
   batch?: T;
   onlineClassLink?: T;

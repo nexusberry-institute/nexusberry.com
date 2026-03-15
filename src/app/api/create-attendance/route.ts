@@ -3,6 +3,7 @@ import { headers as nextHeaders } from 'next/headers'
 import configPromise from '@payload-config'
 import { getPayload } from 'payload'
 import type { User } from '@/payload-types'
+import { updateAttendanceSummary } from '@/utilities/updateAttendanceSummary'
 
 interface AttendanceRecord {
   studentId: number
@@ -115,6 +116,8 @@ export async function POST(request: NextRequest) {
       })
       detailsCreated++
     }
+
+    await updateAttendanceSummary(payload, attendance.id)
 
     return NextResponse.json({ attendanceId: attendance.id, detailsCreated })
   } catch {
