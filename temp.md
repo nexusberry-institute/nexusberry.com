@@ -25,6 +25,14 @@ You don't need to cd anywhere. You just start talking to Claude and it's already
 
 ---
 
+https://www.nexusberry.com/admin/collections/attendance
+
+show infinitely : 
+Confirm deletion
+You are about to delete 1 Attendance
+
+---
+
 AdmissionRequests:
 1. approve only by super admin
 2. make installments
