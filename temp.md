@@ -1,7 +1,28 @@
-At page /teacher/attendance/14, submit button is hidding below whatsapp button, it should be in the center
+# Manually create a worktree branching from dev
+git worktree add .claude/worktrees/auth-module -b worktree-auth-module dev
+
+# Then start Claude inside it
+cd .claude/worktrees/auth-module && claude
+
+Create a new worktree called auth-module branching from dev, then open it
+Create a worktree from dev for the auth module, work on it, then commit, push, and open a PR targeting dev
 
 ---
-Enable Claude Desktop Notifications
+New terminal for each worktree — yes, always. Each terminal = one Claude session = one worktree. That's the whole point of parallel work:
+
+Terminal 1 → claude --worktree auth-module    (Claude working on auth)
+Terminal 2 → claude --worktree payment-module (you planning next task)
+Terminal 3 → your normal terminal             (git, npm, whatever)
+
+Does it create AND open? — yes. One command does everything:
+
+Creates .claude/worktrees/auth-module/ folder
+Creates worktree-auth-module branch from main
+Opens Claude Code already inside that worktree directory
+Claude's context is scoped to that worktree automatically
+
+You don't need to cd anywhere. You just start talking to Claude and it's already on the right branch in the right folder.
+
 ---
 
 AdmissionRequests:
@@ -11,7 +32,7 @@ AdmissionRequests:
 ---
 
 FeeReceipts
-- admin: separate upload c ollection for fee receipts
+- admin: separate upload collection for fee receipts
 - admin: only superadmin can verify
 - dashboard: show list of isntallments
 - dashboard: studetns dashboard shows submit fee
