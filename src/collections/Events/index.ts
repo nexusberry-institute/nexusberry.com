@@ -2,6 +2,8 @@ import { slugField } from '@/fields/slug';
 import { richTextField } from '@/fields/richTextField';
 import { CollectionConfig } from 'payload';
 import { revalidateEvents, revalidateDelete } from './hooks/revalidateEvents'
+import { anyone } from '@/access/anyone'
+import { authenticated } from '@/access/authenticated'
 
 import {
   MetaDescriptionField,
@@ -14,6 +16,12 @@ import {
 
 export const Events: CollectionConfig = {
   slug: 'events',
+  access: {
+    read: anyone,
+    create: authenticated,
+    update: authenticated,
+    delete: authenticated,
+  },
   admin: {
     useAsTitle: 'title',
     components: {

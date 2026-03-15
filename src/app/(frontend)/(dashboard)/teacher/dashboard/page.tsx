@@ -87,13 +87,15 @@ export default async function TeacherDashboardPage() {
         limit: 20,
       })
       : Promise.resolve({ docs: [] }),
-    payload.find({
-      collection: 'attendance',
-      where: { teacher: { equals: teacher.id } },
-      depth: 1,
-      limit: 5,
-      sort: '-date',
-    }),
+    batchIds.length > 0
+      ? payload.find({
+        collection: 'attendance',
+        where: { batch: { in: batchIds } },
+        depth: 1,
+        limit: 5,
+        sort: '-date',
+      })
+      : Promise.resolve({ docs: [] }),
   ])
 
   return (

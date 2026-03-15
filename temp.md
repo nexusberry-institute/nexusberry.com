@@ -1,25 +1,7 @@
+At page /teacher/attendance/14, submit button is hidding below whatsapp button, it should be in the center
 
 ---
-Fix this breaking route /teacher/dashboard. the vercel log is:
-f: The following path cannot be queried: teacher
-    at l (.next/server/chunks/7115.js:306:29182)
-    at async x (.next/server/chunks/7115.js:766:171797)
-    at async q (.next/server/app/(frontend)/(dashboard)/teacher/dashboard/page.js:1:2107) {
-  data: [Array],
-  isOperational: true,
-  isPublic: true,
-  status: 400,
-  digest: '4145184775',
-  [cause]: [Array]
-}
-
-
----
-Users Collection:
-- remove student field and use connect virtual field with student instead
-- if user is blocked show blocked page with instructions that his account is temporarily blocked and contact nexusberry staff for help
-- only superadmin can create to assign admin or superadmin role to a user
-
+Enable Claude Desktop Notifications
 ---
 
 AdmissionRequests:

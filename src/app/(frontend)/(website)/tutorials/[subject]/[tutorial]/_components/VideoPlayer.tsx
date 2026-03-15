@@ -21,6 +21,7 @@ function useVideoTracking(tutorialId: string | undefined, activeIndexRef: React.
     fetch('/api/video-watch', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
+      credentials: 'include',
       body: JSON.stringify({
         tutorialId,
         videoIndex: activeIndexRef.current,
