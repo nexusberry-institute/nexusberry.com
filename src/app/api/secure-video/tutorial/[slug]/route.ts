@@ -64,6 +64,7 @@ export async function GET(
 
       // Check enrollment if user is authenticated and tutorial has batches
       if (isAuthenticated && user && tutorialBatchIds && tutorialBatchIds.length > 0) {
+        // Check student enrollment
         const studentResult = await payload.find({
           collection: 'students',
           where: { user: { equals: user.id } },
@@ -86,6 +87,31 @@ export async function GET(
             .map((e) => (typeof e.batch === 'object' && e.batch !== null ? e.batch.id : e.batch))
             .filter(Boolean) as number[]
           isEnrolled = tutorialBatchIds.some((id) => enrolledBatchIds.includes(id))
+        }
+
+        // If not enrolled as student, check teacher batch assignment
+        if (!isEnrolled) {
+          const teacherResult = await payload.find({
+            collection: 'teachers',
+            where: { user: { equals: user.id } },
+            limit: 1,
+            depth: 0,
+          })
+          const teacher = teacherResult.docs[0]
+          if (teacher) {
+            const batchesResult = await payload.find({
+              collection: 'batches',
+              where: {
+                teachers: { contains: teacher.id },
+                active: { equals: true },
+              },
+              depth: 0,
+              limit: 50,
+              pagination: false,
+            })
+            const teacherBatchIds = batchesResult.docs.map((b) => b.id)
+            isEnrolled = tutorialBatchIds.some((id) => teacherBatchIds.includes(id))
+          }
         }
       }
     }

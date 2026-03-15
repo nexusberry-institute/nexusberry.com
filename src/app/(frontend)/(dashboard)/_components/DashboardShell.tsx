@@ -51,6 +51,7 @@ function getNavItems(roles: string[]): NavItem[] {
     items.push(
       { href: '/teacher/dashboard', label: 'My Batches', icon: <Users size={18} /> },
       { href: '/teacher/attendance', label: 'Attendance', icon: <ClipboardCheck size={18} /> },
+      { href: '/teacher/tutorials', label: 'Tutorials', icon: <Video size={18} /> },
     )
   }
 
