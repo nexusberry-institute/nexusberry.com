@@ -170,6 +170,7 @@ export default async function MarkAttendancePage({
       backHref="/teacher/attendance"
       date={formattedDate}
       batchName={batchName}
+      onlineClassLink={attendance.onlineClassLink}
     />
   )
 }

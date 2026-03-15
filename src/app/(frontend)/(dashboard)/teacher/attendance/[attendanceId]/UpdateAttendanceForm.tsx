@@ -2,7 +2,7 @@
 
 import { useState, useMemo, useRef, useEffect, useCallback } from 'react'
 import { useRouter } from 'next/navigation'
-import { ArrowLeft, CalendarDays } from 'lucide-react'
+import { ArrowLeft, CalendarDays, ExternalLink } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import {
   Table,
@@ -39,6 +39,7 @@ interface UpdateAttendanceFormProps {
   backHref?: string
   date?: string
   batchName?: string
+  onlineClassLink?: string | null
 }
 
 const FILTER_STYLES: Record<Filter, { active: string; inactive: string }> = {
@@ -74,6 +75,7 @@ export function UpdateAttendanceForm({
   backHref = '/teacher/attendance',
   date,
   batchName,
+  onlineClassLink,
 }: UpdateAttendanceFormProps) {
   const [students, setStudents] = useState<StudentRow[]>(initialStudents)
   const [activeFilter, setActiveFilter] = useState<Filter>('ALL')
@@ -208,6 +210,17 @@ export function UpdateAttendanceForm({
               <CalendarDays size={14} />
               {date} {batchName && <span className="text-gray-400">| {batchName}</span>}
             </div>
+          )}
+          {onlineClassLink && (
+            <a
+              href={onlineClassLink}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-1 mt-2 px-3 py-1 text-xs font-medium rounded-lg bg-blue-100 text-blue-700 hover:bg-blue-200 transition-colors"
+            >
+              <ExternalLink size={12} />
+              Join Class
+            </a>
           )}
         </div>
       </div>

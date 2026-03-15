@@ -4,7 +4,7 @@ import { getPayload } from 'payload'
 import config from '@/payload.config'
 import { Badge } from '@/components/ui/badge'
 import Link from 'next/link'
-import { Users, CalendarDays, ClipboardCheck } from 'lucide-react'
+import { Users, CalendarDays, ClipboardCheck, ExternalLink } from 'lucide-react'
 import type { User } from '@/payload-types'
 
 const DAY_NAMES = ['SUNDAY', 'MONDAY', 'TUESDAY', 'WEDNESDAY', 'THURSDAY', 'FRIDAY', 'SATURDAY']
@@ -195,6 +195,17 @@ export default async function TeacherDashboardPage() {
                       </p>
                     </div>
                     <div className="flex items-center gap-2">
+                      {att.onlineClassLink && att.expiry && new Date(att.expiry) > new Date() && (
+                        <a
+                          href={att.onlineClassLink}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="inline-flex items-center gap-1 px-3 py-1 text-xs font-medium rounded-lg bg-blue-100 text-blue-700 hover:bg-blue-200 transition-colors"
+                        >
+                          <ExternalLink size={12} />
+                          Join Class
+                        </a>
+                      )}
                       <Link
                         href={`/teacher/attendance/${att.id}`}
                         className="px-3 py-1 text-xs font-medium rounded-lg bg-emerald-100 text-emerald-700 hover:bg-emerald-200 transition-colors"
