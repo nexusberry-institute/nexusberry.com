@@ -1,3 +1,12 @@
+students suggestion:
+video quality control
+presentation download
++10 sec or -10 sec option on mobile
+volume control option inc and dec
+re-join class
+
+---
+
 # Manually create a worktree branching from dev
 git worktree add .claude/worktrees/auth-module -b worktree-auth-module dev
 
