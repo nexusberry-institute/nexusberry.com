@@ -166,6 +166,7 @@ export function UpdateAttendanceForm({
           description: data.error || 'Failed to save attendance',
           variant: 'destructive',
         })
+        setSubmitting(false)
         return
       }
 
@@ -174,16 +175,14 @@ export function UpdateAttendanceForm({
         description: `${data.created} created, ${data.updated} updated`,
         variant: 'success',
       })
-      // Update baseline so form resets to clean
       initialRef.current = students.map(s => ({ ...s }))
-      router.refresh()
+      router.push(backHref)
     } catch {
       toast({
         title: 'Error',
         description: 'Something went wrong',
         variant: 'destructive',
       })
-    } finally {
       setSubmitting(false)
     }
   }

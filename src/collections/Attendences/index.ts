@@ -1,7 +1,11 @@
 import { CollectionConfig } from 'payload';
+import { cascadeDeleteDetails } from './hooks/cascadeDeleteDetails';
 
 export const Attendances: CollectionConfig = {
   slug: 'attendance',
+  hooks: {
+    afterDelete: [cascadeDeleteDetails],
+  },
   admin: {
     useAsTitle: 'date',
     listSearchableFields: ['batch'],
