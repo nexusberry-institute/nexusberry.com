@@ -2,7 +2,7 @@
 
 import { useState, useMemo, useRef, useEffect, useCallback } from 'react'
 import { useRouter } from 'next/navigation'
-import { ArrowLeft } from 'lucide-react'
+import { ArrowLeft, CalendarDays } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import {
   Table,
@@ -37,6 +37,8 @@ interface UpdateAttendanceFormProps {
   attendanceId: number
   students: StudentRow[]
   backHref?: string
+  date?: string
+  batchName?: string
 }
 
 const FILTER_STYLES: Record<Filter, { active: string; inactive: string }> = {
@@ -70,6 +72,8 @@ export function UpdateAttendanceForm({
   attendanceId,
   students: initialStudents,
   backHref = '/teacher/attendance',
+  date,
+  batchName,
 }: UpdateAttendanceFormProps) {
   const [students, setStudents] = useState<StudentRow[]>(initialStudents)
   const [activeFilter, setActiveFilter] = useState<Filter>('ALL')
@@ -189,14 +193,25 @@ export function UpdateAttendanceForm({
 
   return (
     <div className="space-y-4">
-      {/* Back button */}
-      <button
-        type="button"
-        onClick={handleBackClick}
-        className="p-2 rounded-lg hover:bg-gray-100 transition-colors"
-      >
-        <ArrowLeft size={20} />
-      </button>
+      {/* Header with back button */}
+      <div className="flex items-center gap-3">
+        <button
+          type="button"
+          onClick={handleBackClick}
+          className="p-2 rounded-lg hover:bg-gray-100 transition-colors"
+        >
+          <ArrowLeft size={20} />
+        </button>
+        <div>
+          <h1 className="text-2xl font-bold text-gray-900">Update Attendance</h1>
+          {(date || batchName) && (
+            <div className="flex items-center gap-2 mt-1 text-sm text-gray-500">
+              <CalendarDays size={14} />
+              {date} {batchName && <span className="text-gray-400">| {batchName}</span>}
+            </div>
+          )}
+        </div>
+      </div>
 
       {/* Unsaved changes dialog */}
       <Dialog open={showLeaveDialog} onOpenChange={setShowLeaveDialog}>
@@ -236,7 +251,26 @@ export function UpdateAttendanceForm({
         })}
       </div>
 
-      <div className="bg-white rounded-xl border border-gray-200 overflow-hidden">
+      {/* Bulk actions */}
+      <div className="flex flex-wrap gap-2">
+        <Button
+          variant="outline"
+          size="sm"
+          onClick={() => setStudents(prev => prev.map(s => ({ ...s, status: 'PRESENT' as Status })))}
+        >
+          Mark All Present
+        </Button>
+        <Button
+          variant="outline"
+          size="sm"
+          onClick={() => setStudents(prev => prev.map(s => ({ ...s, status: 'ABSENT' as Status })))}
+        >
+          Mark All Absent
+        </Button>
+      </div>
+
+      {/* Desktop table */}
+      <div className="hidden md:block bg-white rounded-xl border border-gray-200 overflow-hidden">
         <Table>
           <TableHeader>
             <TableRow>
@@ -288,10 +322,52 @@ export function UpdateAttendanceForm({
         </Table>
       </div>
 
+      {/* Mobile card list */}
+      <div className="md:hidden space-y-3">
+        {filteredStudents.map((student, idx) => (
+          <div
+            key={student.studentId}
+            className="bg-white rounded-xl border border-gray-200 p-4 space-y-3"
+          >
+            <div className="flex items-center gap-2">
+              <span className="text-xs text-gray-400">{idx + 1}.</span>
+              <span className="font-medium text-gray-900">{student.fullName}</span>
+            </div>
+            <div className="flex flex-wrap gap-2">
+              {statuses.map(s => (
+                <button
+                  key={s}
+                  type="button"
+                  onClick={() => setStatus(student.studentId, s)}
+                  className={`px-3 py-1 text-xs font-medium rounded-full border transition-colors ${student.status === s
+                      ? s === 'PRESENT'
+                        ? 'bg-green-100 text-green-800 border-green-300'
+                        : s === 'ABSENT'
+                          ? 'bg-red-100 text-red-800 border-red-300'
+                          : 'bg-yellow-100 text-yellow-800 border-yellow-300'
+                      : 'bg-gray-50 text-gray-500 border-gray-200 hover:bg-gray-100'
+                    }`}
+                >
+                  {s}
+                </button>
+              ))}
+            </div>
+            <select
+              value={student.medium ?? 'ONLINE'}
+              onChange={e => setMedium(student.studentId, e.target.value as Medium)}
+              className="rounded-lg border border-gray-200 px-2 py-1 text-xs text-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-900 focus:border-transparent"
+            >
+              <option value="ONLINE">Online</option>
+              <option value="PHYSICAL">Physical</option>
+            </select>
+          </div>
+        ))}
+      </div>
+
       {students.length === 0 ? (
         <p className="text-sm text-gray-500">No enrolled students found for this session.</p>
       ) : (
-        <div className="flex justify-end">
+        <div className="flex justify-center pb-16">
           <Button onClick={handleSubmit} disabled={submitting || !isDirty}>
             {submitting
               ? 'Submitting...'

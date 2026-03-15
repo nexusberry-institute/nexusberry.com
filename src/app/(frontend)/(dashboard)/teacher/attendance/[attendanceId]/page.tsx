@@ -2,7 +2,7 @@ import { headers as getHeaders } from 'next/headers'
 import { redirect } from 'next/navigation'
 import { getPayload } from 'payload'
 import config from '@/payload.config'
-import { CalendarDays } from 'lucide-react'
+
 import type { User } from '@/payload-types'
 import { UpdateAttendanceForm } from './UpdateAttendanceForm'
 
@@ -154,25 +154,22 @@ export default async function MarkAttendancePage({
     : null
   const batchName = batchObj ? (batchObj.slug || batchObj.courseTitle) : ''
 
-  return (
-    <div className="space-y-6">
-      <div>
-        <h1 className="text-2xl font-bold text-gray-900">Update Attendance</h1>
-        <div className="flex items-center gap-2 mt-1 text-sm text-gray-500">
-          <CalendarDays size={14} />
-          {attendance.date && new Date(attendance.date).toLocaleDateString('en-US', {
-            weekday: 'long',
-            month: 'short',
-            day: 'numeric',
-            year: 'numeric',
-          })}
-          {batchName && (
-            <span className="text-gray-400">| {batchName}</span>
-          )}
-        </div>
-      </div>
+  const formattedDate = attendance.date
+    ? new Date(attendance.date).toLocaleDateString('en-US', {
+        weekday: 'long',
+        month: 'short',
+        day: 'numeric',
+        year: 'numeric',
+      })
+    : ''
 
-      <UpdateAttendanceForm attendanceId={id} students={studentRows} backHref="/teacher/attendance" />
-    </div>
+  return (
+    <UpdateAttendanceForm
+      attendanceId={id}
+      students={studentRows}
+      backHref="/teacher/attendance"
+      date={formattedDate}
+      batchName={batchName}
+    />
   )
 }
