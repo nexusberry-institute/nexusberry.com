@@ -1,7 +1,8 @@
 'use client'
 
-import { useState, useMemo } from 'react'
+import { useState, useMemo, useRef, useEffect, useCallback } from 'react'
 import { useRouter } from 'next/navigation'
+import { ArrowLeft } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import {
   Table,
@@ -11,6 +12,14 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table'
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/ui/dialog'
 import { useToast } from '@/hooks/use-toast'
 
 type Status = 'PRESENT' | 'ABSENT' | 'LEAVE'
@@ -27,6 +36,7 @@ interface StudentRow {
 interface UpdateAttendanceFormProps {
   attendanceId: number
   students: StudentRow[]
+  backHref?: string
 }
 
 const FILTER_STYLES: Record<Filter, { active: string; inactive: string }> = {
@@ -56,12 +66,47 @@ const FILTER_STYLES: Record<Filter, { active: string; inactive: string }> = {
   },
 }
 
-export function UpdateAttendanceForm({ attendanceId, students: initialStudents }: UpdateAttendanceFormProps) {
+export function UpdateAttendanceForm({
+  attendanceId,
+  students: initialStudents,
+  backHref = '/teacher/attendance',
+}: UpdateAttendanceFormProps) {
   const [students, setStudents] = useState<StudentRow[]>(initialStudents)
   const [activeFilter, setActiveFilter] = useState<Filter>('ALL')
   const [submitting, setSubmitting] = useState(false)
+  const [showLeaveDialog, setShowLeaveDialog] = useState(false)
   const router = useRouter()
   const { toast } = useToast()
+
+  const initialRef = useRef<StudentRow[]>(initialStudents)
+
+  const dirtyStudents = useMemo(() => {
+    return students.filter((s) => {
+      const initial = initialRef.current.find((i) => i.studentId === s.studentId)
+      if (!initial) return true
+      return s.status !== initial.status || (s.medium ?? 'ONLINE') !== (initial.medium ?? 'ONLINE')
+    })
+  }, [students])
+
+  const isDirty = dirtyStudents.length > 0
+
+  // Browser beforeunload guard
+  useEffect(() => {
+    if (!isDirty) return
+    const handler = (e: BeforeUnloadEvent) => {
+      e.preventDefault()
+    }
+    window.addEventListener('beforeunload', handler)
+    return () => window.removeEventListener('beforeunload', handler)
+  }, [isDirty])
+
+  const handleBackClick = useCallback(() => {
+    if (isDirty) {
+      setShowLeaveDialog(true)
+    } else {
+      router.push(backHref)
+    }
+  }, [isDirty, router, backHref])
 
   const counts = useMemo(() => {
     const c = { ALL: students.length, PRESENT: 0, ABSENT: 0, LEAVE: 0, ONLINE: 0, PHYSICAL: 0 }
@@ -94,6 +139,7 @@ export function UpdateAttendanceForm({ attendanceId, students: initialStudents }
   }
 
   async function handleSubmit() {
+    if (dirtyStudents.length === 0) return
     setSubmitting(true)
     try {
       const res = await fetch('/api/mark-attendance', {
@@ -101,7 +147,7 @@ export function UpdateAttendanceForm({ attendanceId, students: initialStudents }
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           attendanceId,
-          records: students.map(s => ({
+          records: dirtyStudents.map(s => ({
             studentId: s.studentId,
             status: s.status,
             medium: s.medium ?? 'ONLINE',
@@ -124,6 +170,8 @@ export function UpdateAttendanceForm({ attendanceId, students: initialStudents }
         description: `${data.created} created, ${data.updated} updated`,
         variant: 'success',
       })
+      // Update baseline so form resets to clean
+      initialRef.current = students.map(s => ({ ...s }))
       router.refresh()
     } catch {
       toast({
@@ -141,6 +189,35 @@ export function UpdateAttendanceForm({ attendanceId, students: initialStudents }
 
   return (
     <div className="space-y-4">
+      {/* Back button */}
+      <button
+        type="button"
+        onClick={handleBackClick}
+        className="p-2 rounded-lg hover:bg-gray-100 transition-colors"
+      >
+        <ArrowLeft size={20} />
+      </button>
+
+      {/* Unsaved changes dialog */}
+      <Dialog open={showLeaveDialog} onOpenChange={setShowLeaveDialog}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Unsaved Changes</DialogTitle>
+            <DialogDescription>
+              You have unsaved changes. Are you sure you want to leave?
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setShowLeaveDialog(false)}>
+              Stay
+            </Button>
+            <Button variant="destructive" onClick={() => router.push(backHref)}>
+              Leave
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
       {/* Analytics filter pills */}
       <div className="flex flex-wrap gap-2">
         {filters.map(f => {
@@ -215,8 +292,12 @@ export function UpdateAttendanceForm({ attendanceId, students: initialStudents }
         <p className="text-sm text-gray-500">No enrolled students found for this session.</p>
       ) : (
         <div className="flex justify-end">
-          <Button onClick={handleSubmit} disabled={submitting}>
-            {submitting ? 'Updating...' : 'Update Attendance'}
+          <Button onClick={handleSubmit} disabled={submitting || !isDirty}>
+            {submitting
+              ? 'Submitting...'
+              : isDirty
+                ? `Submit (${dirtyStudents.length} ${dirtyStudents.length === 1 ? 'change' : 'changes'})`
+                : 'Submit'}
           </Button>
         </div>
       )}

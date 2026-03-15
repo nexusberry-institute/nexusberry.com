@@ -1,26 +1,38 @@
-i want to simplify the architecture for the attendance module.
-1. in each @src/collections/Attendences\ there will be exaclty one batch. 
-2. in @src/collections/Attendences\ the Teacher field should be removed. It seems redundent and voilating data integretigy and no single source of truth and bad ux. Every batch is assigend one or more teachers and when we assign a batch to a attendance we can get teachers for that batch via this relation. we can also get teachers list in frontend via attenace -> batche -> teachers
-3. It will also rrduce api find calls at @src\app\(frontend)\(dashboard)\teacher\attendance\[attendanceId]\page.tsx 
-4. i want to add some analytics and filters above table in @src\app\(frontend)\(dashboard)\teacher\attendance\[attendanceId]\page.tsx . Show counters: all, present, absent, leave, and online, physical. these counters should aslo also act as filters.  The last column in the list or table i.e. Medium should be editable showing possible values in dropdown but initialzed from api.
-Plan the changes in frontend and payloadcms collections. reseach carefully for updates required at all place. also preserving data already added, just one session attendance is saved so far. Run all steps in claude.md
+
+---
+Fix this breaking route /teacher/dashboard. the vercel log is:
+f: The following path cannot be queried: teacher
+    at l (.next/server/chunks/7115.js:306:29182)
+    at async x (.next/server/chunks/7115.js:766:171797)
+    at async q (.next/server/app/(frontend)/(dashboard)/teacher/dashboard/page.js:1:2107) {
+  data: [Array],
+  isOperational: true,
+  isPublic: true,
+  status: 400,
+  digest: '4145184775',
+  [cause]: [Array]
+}
 
 
 ---
 Users Collection:
-- remove student field
-- connect with student
-- if user is blocked show blocked page with info (in user may create a block reason test field)
+- remove student field and use connect virtual field with student instead
+- if user is blocked show blocked page with instructions that his account is temporarily blocked and contact nexusberry staff for help
+- only superadmin can create to assign admin or superadmin role to a user
+
+---
 
 AdmissionRequests:
 1. approve only by super admin
 2. make installments
 
-FeeReceipts
-- show list of isntallments
-- studetns dashboard shows submit fee
-- only superadmin can verify
+---
 
+FeeReceipts
+- admin: separate upload c ollection for fee receipts
+- admin: only superadmin can verify
+- dashboard: show list of isntallments
+- dashboard: studetns dashboard shows submit fee
 
 
 ---
@@ -37,3 +49,14 @@ only 4 tutorials in main with order: features or last four desc
 batch slug
 ---
 add a new field to add student student picture and diplay in dashboard
+---
+login page:
+do not auto save last login  
+login -> brower back -> login (not recommended)
+
+---
+Media
+- delete all pictures from frontend
+- organize in folders
+
+---
