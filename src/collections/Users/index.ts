@@ -165,12 +165,10 @@ export const Users: CollectionConfig = {
     },
     {
       name: 'student',
-      type: 'relationship',
-      relationTo: 'students',
-      hasMany: false,
+      type: 'join',
+      collection: 'students',
+      on: 'user',
       admin: {
-        position: 'sidebar',
-        description: 'Linked student profile for this user.',
         condition: (data) => Array.isArray(data?.roles) && data.roles.includes('student'),
       },
     },

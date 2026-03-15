@@ -115,6 +115,9 @@ export interface Config {
     'payload-migrations': PayloadMigration;
   };
   collectionsJoins: {
+    users: {
+      student: 'students';
+    };
     'web-courses': {
       events: 'events';
     };
@@ -302,10 +305,11 @@ export interface User {
    * Protected tutorials this user can access on a trial basis.
    */
   trialTutorials?: (number | Tutorial)[] | null;
-  /**
-   * Linked student profile for this user.
-   */
-  student?: (number | null) | Student;
+  student?: {
+    docs?: (number | Student)[];
+    hasNextPage?: boolean;
+    totalDocs?: number;
+  };
   updatedAt: string;
   createdAt: string;
   email: string;

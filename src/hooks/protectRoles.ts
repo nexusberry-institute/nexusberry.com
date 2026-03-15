@@ -78,9 +78,19 @@ export const protectRoles: FieldHook = async ({ data, req: { user }, originalDoc
     throwRolesError('You cannot remove the superadmin role');
   }
 
+  // Check if admin role is being removed from existing user
+  if (originalDoc?.roles?.includes('admin') && !data.roles.includes('admin')) {
+    throwRolesError('You cannot remove the admin role');
+  }
+
   // Check if superadmin role is being assigned
   if (data.roles.includes('superadmin')) {
     throwRolesError('You cannot assign the superadmin role');
+  }
+
+  // Check if admin role is being assigned
+  if (data.roles.includes('admin')) {
+    throwRolesError('You cannot assign the admin role');
   }
 
   return;

@@ -5,6 +5,7 @@ import config from '@/payload.config'
 import type { User } from '@/payload-types'
 import { HydrateClientUser } from '../_components/HydrateClientUser'
 import { DashboardShell } from './_components/DashboardShell'
+import { BlockedPage } from './_components/BlockedPage'
 
 export default async function DashboardLayout({ children }: { children: React.ReactNode }) {
   const headers = await getHeaders()
@@ -13,6 +14,10 @@ export default async function DashboardLayout({ children }: { children: React.Re
 
   if (!user || user.collection !== 'users') {
     redirect(`/login?error=${encodeURIComponent('You must be logged in to access this page.')}`)
+  }
+
+  if (user.blocked) {
+    return <BlockedPage />
   }
 
   return (
